@@ -25,12 +25,12 @@ public interface UserDao extends JpaRepository<User,String>, JpaSpecificationExe
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "insert into user_likes values (?2, ?1)", nativeQuery = true)
+    //@Query(value = "insert into user_likes values (?2, ?1)", nativeQuery = true)
     void addLikeToProduct(String userId, String productId);
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "delete from user_likes where user_id = ?1 and product_id = ?2", nativeQuery = true)
+    //@Query(value = "delete from user_likes where user_id = ?1 and product_id = ?2", nativeQuery = true)
     void removeLikeToProduct(String userId, String productId);
 
     Page<User> findAllByLikedProducts(String productId, Pageable pageable);
