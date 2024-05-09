@@ -6,9 +6,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Transient;
 import lombok.NoArgsConstructor;
+
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
-
 
 @Embeddable
 @NoArgsConstructor
