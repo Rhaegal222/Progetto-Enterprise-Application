@@ -29,9 +29,6 @@ public class UserDTO {
     @NotNull
     private String email;
 
-    @Length(max = 500)
-    private String bio;
-
     private UserImageDTO photoProfile;
 
     @NotNull
@@ -46,19 +43,5 @@ public class UserDTO {
 
     @NotNull
     private UserRole role;
-
-    /*
-    @PositiveOrZero
-    private int reviewsTotalSum;
-
-    @PositiveOrZero
-    private int reviewsNumber;
-
-    @PositiveOrZero
-    private Integer followersNumber;
-
-    @PositiveOrZero
-    private Integer followingNumber;
-     */
 
 }

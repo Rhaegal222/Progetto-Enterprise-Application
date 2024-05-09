@@ -1,29 +1,24 @@
-package it.unical.inf.ea.backend.dto.basics;
+package it.unical.inf.ea.backend.dto.creation;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.dto.CustomMoneyDTO;
 import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
-import it.unical.inf.ea.backend.dto.ProductImageDTO;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @ToString
-@AllArgsConstructor
-@Builder
-public class ProductBasicDTO {
+public class ProductCreateDTO {
 
     @NotNull
-    private String id;
-
     @Length(max = 100)
     private String title;
+
 
     @Length(max = 1000)
     private String description;
@@ -37,9 +32,6 @@ public class ProductBasicDTO {
     @Length(max = 1000)
     private String nutritionalValues;
 
-    @Past
-    private LocalDateTime uploadDate;
-
     @NotNull
     private CustomMoneyDTO productCost;
 
@@ -49,13 +41,7 @@ public class ProductBasicDTO {
     @Length(max = 100)
     private String brand;
 
-    private List<ProductImageDTO> productImages;
+    @NotNull
     private ProductCategoryDTO productCategory;
-
-    @JsonSetter
-    public void setProductImages(List<ProductImageDTO> productImages) {
-        if(productImages != null && productImages.size() > 0)
-            this.productImages = List.of(productImages.get(0));
-    }
-
 }
+

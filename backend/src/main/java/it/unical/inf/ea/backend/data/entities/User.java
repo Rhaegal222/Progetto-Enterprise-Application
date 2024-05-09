@@ -40,9 +40,6 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false, length = 100)
     private String email;
 
-    @Column(name = "bio", length = 500)
-    private String bio;
-
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserImage photoProfile;
 
@@ -75,15 +72,8 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "usersThatLiked",fetch = FetchType.LAZY)
     List<Product> likedProducts= new ArrayList<>();
 
-    @OneToMany(mappedBy = "sendUser",fetch = FetchType.LAZY)
-    private List<Message> sentMessages;
-
-    @OneToMany(mappedBy = "receivedUser",fetch = FetchType.LAZY)
-    private List<Message> receivedMessages;
-
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Order> orders;
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -99,7 +89,7 @@ public class User implements UserDetails {
     private List<Report> adminFollowedMyReport;
 
     public Boolean isAdministrator() {
-        return role.equals(UserRole.ADMIN) || role.equals(UserRole.SUPER_ADMIN);
+        return role.equals(UserRole.ADMIN);
     }
 
     @Override
@@ -110,9 +100,6 @@ public class User implements UserDetails {
             }
             case ADMIN -> {
                 return Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            }
-            case SUPER_ADMIN -> {
-                return Collections.singleton(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
             }
         }
         return null;
