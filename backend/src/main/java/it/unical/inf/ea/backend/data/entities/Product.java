@@ -33,6 +33,15 @@ public class Product {
     @Column(name = "description", length = 1000)
     private String description;
 
+    @Column(name = "descriptionBrand", length = 1000)
+    private String descriptionBrand;
+
+    @Column(name = "ingredients", length = 1000)
+    private String ingredients;
+
+    @Column(name = "nutritionalValues", length = 1000)
+    private String nutritionalValues;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="price",column=@Column(name="product_price",nullable = false)),
@@ -55,19 +64,6 @@ public class Product {
     @Column(name = "delivery_type")
     private ProductSize productSize;
 
-    @Column(name = "views", nullable = false)
-    private Integer views;
-
-    @Column(name = "upload_date", nullable = false)
-    private LocalDateTime uploadDate;
-
-    @Column(name = "last_update_date", nullable = false)
-    private LocalDateTime lastUpdateDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "visibility", nullable = false)
-    private Visibility visibility;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "availability", nullable = false)
     private Availability availability;
@@ -78,20 +74,6 @@ public class Product {
 
     @Column(name = "like_number", nullable = false)
     private Integer likesNumber ;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User seller;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(
-            name = "user_likes",
-            joinColumns = @JoinColumn(name = "product_id",nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "user_id",nullable = false))
-    List<User> usersThatLiked = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
-    private List<Message> messages = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
     private List<Order> order = new ArrayList<>();
@@ -104,10 +86,6 @@ public class Product {
 
     @PreRemove
     private void preRemove(){
-
-        for (Message message:this.messages){
-            message.setProduct(null);
-        }
         for(Report report:this.reports){
             report.setReportedProduct(null);
         }
