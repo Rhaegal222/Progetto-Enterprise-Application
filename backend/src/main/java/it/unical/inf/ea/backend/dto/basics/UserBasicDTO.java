@@ -24,11 +24,6 @@ public class UserBasicDTO {
     private String bio;
 
     private UserImageDTO photoProfile;
-    private Integer reviewsTotalSum;
-    private Integer reviewsNumber;
-
-    private Integer followersNumber;
-    private Integer followingNumber;
 
     private UserStatus status;
 
