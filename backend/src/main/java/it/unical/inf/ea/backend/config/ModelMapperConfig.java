@@ -1,4 +1,4 @@
-package it.unical.inf.ea.backend.config.security;
+package it.unical.inf.ea.backend.config;
 
 public class ModelMapperConfig {
 }
