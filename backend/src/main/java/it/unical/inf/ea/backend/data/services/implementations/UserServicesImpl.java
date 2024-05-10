@@ -1,30 +1,20 @@
-package it.unical.inf.ea.backend.data.services;
+package it.unical.inf.ea.backend.data.services.implementations;
 
-import java.util.Base64;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import it.unical.inf.ea.backend.data.dao.ProductDao;
-import it.unical.inf.ea.backend.data.entities.Order;
-import it.unical.inf.ea.backend.data.entities.Product;
+import it.unical.inf.ea.backend.data.services.interfaces.UserServices;
 import it.unical.inf.ea.backend.dto.basics.OrderBasicDTO;
 import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +25,6 @@ import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.dto.UserDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.server.ResponseStatusException;
 
 
 @Service

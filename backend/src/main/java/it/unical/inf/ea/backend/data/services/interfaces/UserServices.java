@@ -1,4 +1,4 @@
-package it.unical.inf.ea.backend.data.services;
+package it.unical.inf.ea.backend.data.services.interfaces;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -28,5 +28,4 @@ public interface UserServices {
     void createUser(String username, String password, String email);
     Page<OrderBasicDTO> getMyOrders(int page, int size);
     UserDTO banUser(String userId);
-
 }
