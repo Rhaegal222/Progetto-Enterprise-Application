@@ -1,5 +1,7 @@
 package it.unical.inf.ea.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 import it.unical.inf.ea.backend.dto.enums.ProductSize;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +15,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @ToString
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
+@JsonSubTypes({ //annotazione che definisce i sotto-tipi per la classe genitore
+        @JsonSubTypes.Type(value = SavoryDTO.class, name = "Savory"),
+        @JsonSubTypes.Type(value = SweetDTO.class, name = "Sweet"),
+        @JsonSubTypes.Type(value = AlcoholicDTO.class, name = "Alcoholic")
+})
 public class ProductDTO {
 
     @NotNull
