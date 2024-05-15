@@ -7,13 +7,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
-public interface OrderDao extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order> {
-    Page<Order> findAllByUser(User user, Pageable pageable);
+import java.time.LocalDateTime;
+import java.util.List;
 
-    Page<Order> findAllByUserAndState(User user, OrderState state, Pageable pageable);
+public interface OrderDao extends JpaRepository<Order, Long> {
 
-    Page<Order> findAllByProduct_Seller(User user, Pageable pageable);
+    @Query("SELECT o FROM Order o WHERE o.user.id = ?1")
+    List<Order> findByUserId(Long userId);
 
-    Page<Order> findAllByProduct_SellerAndState(User user, OrderState state, Pageable pageable);
+    @Query("SELECT o FROM Order o WHERE o.state = ?1")
+    List<Order> findByStatus(String status);
+
+    @Query("SELECT o FROM Order o WHERE o.orderDate >= ?1 AND o.orderDate <= ?2")
+    List<Order> findByOrderDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+
 }

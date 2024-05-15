@@ -16,30 +16,28 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserDao userDao;
 
+    private UserDao userDao;
 
     private ModelMapper modelMapper;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public UserDTO createUser(UserDTO userDto) {
-        // Convert UserDto to User entity
-        User user = modelMapper.map(userDto, User.class);
+        User user = new User();
 
-        // Additional logic for password encoding (if applicable)
-        if (User.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(User.getPassword()));
+        if (userDao.findByEmail(userDto.getEmail())) {
+            throw new IllegalArgumentException("Email già esistente");
         }
-
-        // Save user in database
+        if (userDao.findByUsername(userDto.getUsername())) {
+            throw new IllegalArgumentException("Username già esistente");
+        }
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        //user.setPassword(passwordEncoder.encode(userDto.getPassword())); // Codifica la password
         user = userDao.save(user);
-
-        // Convert User entity back to UserDto
         return modelMapper.map(user, UserDTO.class);
     }
 
@@ -58,13 +56,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDTO updateUser(String id, UserDTO userDto) {
         User existingUser = userDao.findById(id).orElse(null);
 
         if (existingUser != null) {
             existingUser.setUsername(userDto.getUsername());
             existingUser.setEmail(userDto.getEmail());
+            existingUser.setRole(userDto.getRole());
 
             existingUser = userDao.save(existingUser);
 
@@ -73,6 +71,7 @@ public class UserServiceImpl implements UserService {
 
         return null;
     }
+
 
     @Override
     @Transactional
