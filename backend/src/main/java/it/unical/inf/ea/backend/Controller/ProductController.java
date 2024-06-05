@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.Controller;
 import it.unical.inf.ea.backend.data.entities.Product;
-import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,7 +35,7 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@RequestParam Long id) {
         try {
             productService.deleteProduct(productService.getProductById(id));
-            return ResponseEntity.ok("{\"message\": \"User deleted successfully\"}");
+            return ResponseEntity.ok("{\"message\": \"Product deleted successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
@@ -51,21 +50,21 @@ public class ProductController {
 
     @GetMapping("/getProductById/")
     public ResponseEntity<?> getProductById(@RequestParam Long id) {
-        User user = productService.getProductById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return ResponseEntity.ok(user);
+        Product product = productService.getProductById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        return ResponseEntity.ok(product);
     }
 
     @PutMapping("/updateProduct/")
-    public ResponseEntity<?> updateUser(@RequestParam Long id, @RequestBody ProductDTO product) {
+    public ResponseEntity<?> updateProduct(@RequestParam Long id, @RequestBody ProductDTO product) {
         ResponseEntity<?> response = validateProduct(product);
         if (response != null) return response;
         try {
-            Product productToUpdate =productService.getProductById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+            Product productToUpdate =productService.getProductById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
             productToUpdate.setTitle(product.getTitle());
             productToUpdate.setDescription(product.getDescription());
             productToUpdate.setProductCost(product.getProductCost());
             productService.createProduct(product);
-            return ResponseEntity.ok("{\"message\": \"User updated successfully\"}");
+            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
