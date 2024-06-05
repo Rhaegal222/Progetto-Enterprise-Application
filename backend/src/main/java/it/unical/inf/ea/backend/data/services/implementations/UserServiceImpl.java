@@ -5,12 +5,12 @@ import it.unical.inf.ea.backend.data.services.interfaces.UserService;
 import it.unical.inf.ea.backend.dto.UserDTO;
 import it.unical.inf.ea.backend.data.entities.User; // Replace with your user entity
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder; // If applicable
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO createUser(UserDTO userDto) {
+
         User user = new User();
 
         if (userDao.findByEmail(userDto.getEmail())) {
@@ -36,10 +37,17 @@ public class UserServiceImpl implements UserService {
         }
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
-        //user.setPassword(passwordEncoder.encode(userDto.getPassword())); // Codifica la password
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user = userDao.save(user);
         return modelMapper.map(user, UserDTO.class);
     }
+
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return Optional.empty();
+    }
+
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -56,6 +64,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return userDao.findById(String.valueOf(id));
+    }
+
+    @Override
     public UserDTO updateUser(String id, UserDTO userDto) {
         User existingUser = userDao.findById(id).orElse(null);
 
@@ -63,7 +76,7 @@ public class UserServiceImpl implements UserService {
             existingUser.setUsername(userDto.getUsername());
             existingUser.setEmail(userDto.getEmail());
             existingUser.setRole(userDto.getRole());
-
+            existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
             existingUser = userDao.save(existingUser);
 
             return modelMapper.map(existingUser, UserDTO.class);

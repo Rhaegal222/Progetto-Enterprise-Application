@@ -1,11 +1,11 @@
 package it.unical.inf.ea.backend.dto;
 
+import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -22,8 +22,18 @@ public class UserDTO {
     private String id;
 
     @Length(min = 3, max = 25)
+
     @NotNull
     private String username;
+
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String surname;
+
+    @NotNull
+    private String cf;
 
     @Email
     @NotNull
@@ -36,6 +46,9 @@ public class UserDTO {
 
     @NotNull
     private UserStatus status;
+
+    @NotNull
+    private String password;
 
     private List<AddressDTO> addresses;
 
