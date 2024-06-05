@@ -1,5 +1,4 @@
 package it.unical.inf.ea.backend.Controller;
-import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.UserService;
 import it.unical.inf.ea.backend.dto.UserDTO;
@@ -7,7 +6,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,23 +20,17 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 
-
-    @Qualifier("userService")
-    private final UserService UserService;
-
-    private final UserDao userDao;
-
     private final UserService userService;
 
     private PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/AddUser")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
-        ResponseEntity<String> response = validateUser(userDTO);
+    public ResponseEntity<?> createUser(@RequestBody UserDTO user) {
+        ResponseEntity<String> response = validateUser(user);
         if(response!=null) return response;
         try {
-            userService.createUser(userDTO);
+            userService.createUser(user);
             return ResponseEntity.ok("{\"message\": \"User registered successfully\"}");
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Email already in use\"}");
@@ -62,15 +54,15 @@ public class UserController {
     }
 
     @PutMapping("/updateUser/")
-    public ResponseEntity<?> updateUser(@RequestParam Long id, @RequestBody UserDTO userDTO) {
-        ResponseEntity<String> response = validateUser(userDTO);
+    public ResponseEntity<?> updateUser(@RequestParam Long id, @RequestBody UserDTO user) {
+        ResponseEntity<String> response = validateUser(user);
         if (response != null) return response;
         try {
             User userToUpdate = userService.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-            userToUpdate.setUsername(userDTO.getSurname());
-            userToUpdate.setEmail(userDTO.getEmail());
-            userToUpdate.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            userService.createUser(userDTO);
+            userToUpdate.setUsername(user.getSurname());
+            userToUpdate.setEmail(user.getEmail());
+            userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+            userService.createUser(user);
             return ResponseEntity.ok("{\"message\": \"User updated successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

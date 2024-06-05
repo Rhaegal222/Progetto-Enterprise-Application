@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserDao extends JpaRepository<User,String>, JpaSpecificationExecutor<User> {
+    @Query("SELECT u FROM User u WHERE u.username = :username")
     boolean findByUsername(String username);
 
     @Query("SELECT u FROM User u WHERE u.email = :email")
