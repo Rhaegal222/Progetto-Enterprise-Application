@@ -14,7 +14,7 @@ public interface ProductService {
 
     List<ProductDTO> getAllProducts();
 
-    ProductDTO getProductById(Long id);
+    Long getProductById(Long id);
 
     ProductDTO updateProduct(Long id, ProductDTO productDto);
 

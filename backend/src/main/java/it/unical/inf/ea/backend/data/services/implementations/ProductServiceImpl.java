@@ -38,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(Long id) {
+    public Long getProductById(Long id) {
         Product product = productDao.findById(String.valueOf(id)).orElse(null);
-        if (product != null) return modelMapper.map(product, ProductDTO.class);
+        if (product != null) return modelMapper.map(product, ProductDTO.class).getId();
         return null;
     }
 
