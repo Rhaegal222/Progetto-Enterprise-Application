@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(String id) {
-        User user = userDao.findById(id).orElse(null);
+    public UserDTO getUserById(Long id) {
+        User user = userDao.findById(String.valueOf(id)).orElse(null);
         return user != null ? modelMapper.map(user, UserDTO.class) : null;
     }
 
@@ -69,8 +69,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(String id, UserDTO userDto) {
-        User existingUser = userDao.findById(id).orElse(null);
+    public UserDTO updateUser(Long id, UserDTO userDto) {
+        User existingUser = userDao.findById(String.valueOf(id)).orElse(null);
 
         if (existingUser != null) {
             existingUser.setUsername(userDto.getUsername());
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(String id) {
-        userDao.deleteById(id);
+    public void deleteUser(Long id) {
+        userDao.deleteById(String.valueOf(id));
     }
 }

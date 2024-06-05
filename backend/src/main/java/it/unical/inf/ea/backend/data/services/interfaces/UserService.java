@@ -15,10 +15,11 @@ public interface UserService {
 
     List<UserDTO> getAllUsers();
 
-    UserDTO getUserById(String id);
+    UserDTO getUserById(Long id);
+
     Optional<User> findById(Long id);
 
-    UserDTO updateUser(String id, UserDTO userDto);
+    UserDTO updateUser(Long id, UserDTO userDto);
 
-    void deleteUser(String id);
+    void deleteUser(Long id);
 }

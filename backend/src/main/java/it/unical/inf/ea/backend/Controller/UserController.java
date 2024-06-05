@@ -44,7 +44,7 @@ public class UserController {
     @DeleteMapping("/deleteUser/")
     public ResponseEntity<String> deleteUser(@RequestParam Long id) {
         try {
-            userService.deleteUser(userService.getUserById(String.valueOf(id)).getId());
+            userService.deleteUser(Long.valueOf(userService.getUserById((id)).getId()));
             return ResponseEntity.ok("{\"message\": \"User deleted successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

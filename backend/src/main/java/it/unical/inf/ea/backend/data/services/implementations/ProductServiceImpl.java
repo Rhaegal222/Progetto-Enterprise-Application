@@ -2,14 +2,17 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.entities.Product;
+import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
+import it.unical.inf.ea.backend.dto.UserDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,13 +41,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Long getProductById(Long id) {
+    public ProductDTO getProductById(Long id) {
         Product product = productDao.findById(String.valueOf(id)).orElse(null);
-        if (product != null) return modelMapper.map(product, ProductDTO.class).getId();
-        return null;
+        return product != null ? modelMapper.map(product, ProductDTO.class) : null;
     }
 
-
+    @Override
+    public Optional<User> findProductById(Long id) {
+        return Optional.empty();
+    }
 
 
     @Override

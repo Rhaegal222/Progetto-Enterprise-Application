@@ -1,5 +1,5 @@
 package it.unical.inf.ea.backend.Controller;
-import it.unical.inf.ea.backend.data.entities.Product;
+import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductDao productDao;
 
     @PostMapping("/AddProduct")
     public ResponseEntity<?> createProduct(@RequestBody ProductDTO product) {
@@ -34,7 +35,7 @@ public class ProductController {
     @DeleteMapping("/deleteProduct/")
     public ResponseEntity<String> deleteProduct(@RequestParam Long id) {
         try {
-            productService.deleteProduct(productService.getProductById(id));
+            productService.deleteProduct(productService.getProductById(id).getId());
             return ResponseEntity.ok("{\"message\": \"Product deleted successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -50,7 +51,7 @@ public class ProductController {
 
     @GetMapping("/getProductById/")
     public ResponseEntity<?> getProductById(@RequestParam Long id) {
-        Product product = productService.getProductById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        ProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }
 
@@ -59,7 +60,7 @@ public class ProductController {
         ResponseEntity<?> response = validateProduct(product);
         if (response != null) return response;
         try {
-            Product productToUpdate =productService.getProductById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+            ProductDTO productToUpdate = productDao.findProductById(String.valueOf(id));
             productToUpdate.setTitle(product.getTitle());
             productToUpdate.setDescription(product.getDescription());
             productToUpdate.setProductCost(product.getProductCost());
