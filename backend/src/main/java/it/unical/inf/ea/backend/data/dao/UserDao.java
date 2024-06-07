@@ -11,14 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface UserDao extends JpaRepository<User,String>, JpaSpecificationExecutor<User> {
+
     @Query("SELECT u FROM User u WHERE u.username = :username")
-    boolean findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     @Query("SELECT u FROM User u WHERE u.email = :email")
-    boolean findByEmail(@Param("email") String email);
-
-
-
+    Optional<User> findByEmail(@Param("email") String email);
 
 
 }

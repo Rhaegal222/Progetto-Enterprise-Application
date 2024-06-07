@@ -60,13 +60,8 @@ public class User implements UserDetails {
 //    @OneToMany(mappedBy = "ownerUser",fetch = FetchType.LAZY)
 //    private List<PaymentMethod> paymentMethods;
 
-    @OneToMany(mappedBy = "seller",fetch = FetchType.LAZY)
-    private List<Product> sellingProducts = new ArrayList<>();
 
 
-
-    @ManyToMany(mappedBy = "usersThatLiked",fetch = FetchType.LAZY)
-    List<Product> likedProducts= new ArrayList<>();
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Order> orders;

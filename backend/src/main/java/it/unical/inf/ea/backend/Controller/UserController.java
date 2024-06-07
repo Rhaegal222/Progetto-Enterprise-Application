@@ -41,10 +41,11 @@ public class UserController {
         }
     }
 
+
     @DeleteMapping("/deleteUser/")
-    public ResponseEntity<String> deleteUser(@RequestParam Long id) {
+    public ResponseEntity<String> deleteUser(@RequestParam String id) {
         try {
-            userService.deleteUser(Long.valueOf(userService.getUserById((id)).getId()));
+            userService.deleteUser(id);
             return ResponseEntity.ok("{\"message\": \"User deleted successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -54,15 +55,14 @@ public class UserController {
     }
 
     @PutMapping("/updateUser/")
-    public ResponseEntity<?> updateUser(@RequestParam Long id, @RequestBody UserDTO user) {
+    public ResponseEntity<?> updateUser(@RequestParam String id, @RequestBody UserDTO user) {
         ResponseEntity<String> response = validateUser(user);
         if (response != null) return response;
         try {
             User userToUpdate = userService.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-            userToUpdate.setUsername(user.getSurname());
+            userToUpdate.setUsername(user.getUsername());
             userToUpdate.setEmail(user.getEmail());
-            userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
-            userService.createUser(user);
+            userService.save(userToUpdate);
             return ResponseEntity.ok("{\"message\": \"User updated successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -76,11 +76,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @GetMapping("/getUserById/")
-    public ResponseEntity<?> getUserById(@RequestParam Long id) {
-        User user = userService.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return ResponseEntity.ok(user);
-    }
+
 
     @GetMapping("/getUserByEmail/")
     public ResponseEntity<?> getUserByEmail(@RequestParam String email) {
@@ -93,11 +89,8 @@ public class UserController {
     }
 
     private ResponseEntity<String> validateUser(UserDTO UserDTO) {
-        if (UserDTO.getSurname() == null || UserDTO.getSurname().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Surname is required\"}"); // JSON response
-        }
-        if (UserDTO.getName() == null || UserDTO.getName().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"First name is required\"}"); // JSON response
+        if (UserDTO.getUsername() == null || UserDTO.getUsername().isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Username is required\"}"); // JSON response
         }
         if (UserDTO.getEmail() == null || UserDTO.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Email is required\"}"); // JSON response
@@ -107,4 +100,5 @@ public class UserController {
         }
         return null;
     }
+
 }

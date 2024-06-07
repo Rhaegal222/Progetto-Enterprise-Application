@@ -10,16 +10,14 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
+
     UserDTO createUser(UserDTO userDto);
+
     Optional<User> findByEmail(String email);
 
     List<UserDTO> getAllUsers();
 
-    UserDTO getUserById(Long id);
-
-    Optional<User> findById(Long id);
-
-    UserDTO updateUser(Long id, UserDTO userDto);
-
-    void deleteUser(Long id);
+    Optional<User> findById(String id);
+    void save(User user);
+    void deleteUser(String id);
 }

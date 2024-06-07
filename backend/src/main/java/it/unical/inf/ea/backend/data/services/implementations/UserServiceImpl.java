@@ -1,13 +1,15 @@
 package it.unical.inf.ea.backend.data.services.implementations;
 
-import it.unical.inf.ea.backend.data.dao.UserDao; // Replace with your user repository interface
+import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.services.interfaces.UserService;
 import it.unical.inf.ea.backend.dto.UserDTO;
-import it.unical.inf.ea.backend.data.entities.User; // Replace with your user entity
+import it.unical.inf.ea.backend.data.entities.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder; // If applicable
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,37 +17,57 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final UserDao userDao;
+
+    private final ModelMapper modelMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
 
-    private UserDao userDao;
+    @Autowired
+    public UserServiceImpl(UserDao userDao, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    private ModelMapper modelMapper;
-
-    private PasswordEncoder passwordEncoder;
+    public void save(User user) {
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userDao.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("Invalid user data", e);
+        }
+    }
 
     @Override
-    @Transactional
     public UserDTO createUser(UserDTO userDto) {
-
-        User user = new User();
-
-        if (userDao.findByEmail(userDto.getEmail())) {
+        if (userDao.findByEmail(userDto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email già esistente");
         }
-        if (userDao.findByUsername(userDto.getUsername())) {
+        if (userDao.findByUsername(userDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username già esistente");
         }
+
+        User user = new User();
+        user.setId(userDto.getId());
+        user.setRole(userDto.getRole());
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
+        user.setProvider(userDto.getProvider());
+        user.setEmailVerified(userDto.isEmailVerified());
+        user.setStatus(userDto.getStatus());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user = userDao.save(user);
-        return modelMapper.map(user, UserDTO.class);
+
+        User savedUser = userDao.save(user);
+        return modelMapper.map(savedUser, UserDTO.class);
     }
+
 
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.empty();
+        return userDao.findByEmail(email);
     }
 
 
@@ -57,38 +79,17 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public UserDTO getUserById(Long id) {
-        User user = userDao.findById(String.valueOf(id)).orElse(null);
-        return user != null ? modelMapper.map(user, UserDTO.class) : null;
-    }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userDao.findById(String.valueOf(id));
-    }
-
-    @Override
-    public UserDTO updateUser(Long id, UserDTO userDto) {
-        User existingUser = userDao.findById(String.valueOf(id)).orElse(null);
-
-        if (existingUser != null) {
-            existingUser.setUsername(userDto.getUsername());
-            existingUser.setEmail(userDto.getEmail());
-            existingUser.setRole(userDto.getRole());
-            existingUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            existingUser = userDao.save(existingUser);
-
-            return modelMapper.map(existingUser, UserDTO.class);
-        }
-
-        return null;
+    public Optional<User> findById(String id) {
+        return userDao.findById(id);
     }
 
 
+
     @Override
-    @Transactional
-    public void deleteUser(Long id) {
-        userDao.deleteById(String.valueOf(id));
+    public void deleteUser(String id) {
+        User userToDelete = userDao.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        userDao.delete(userToDelete);
     }
 }
