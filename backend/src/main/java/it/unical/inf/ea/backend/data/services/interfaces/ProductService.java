@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.data.services.interfaces;
 
 
+import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.UserDTO;
@@ -19,9 +20,8 @@ public interface ProductService {
 
     ProductDTO getProductById(Long id);
 
-    Optional<User> findProductById(Long id);
-
     ProductDTO updateProduct(Long id, ProductDTO productDto);
+    void save(ProductDTO product);
 
     void deleteProduct(Long id);
 

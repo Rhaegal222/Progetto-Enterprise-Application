@@ -21,8 +21,8 @@ public class ProductCategory {
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
-    @Column(nullable = false)
-    private String CategoryName;
+    @Column(nullable = false,unique = true)
+    private String categoryName;
 
 
     @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY)
@@ -32,7 +32,7 @@ public class ProductCategory {
     @PrePersist
     @PreUpdate
     public void capitalizeNames() {
-        this.CategoryName = capitalize(this.CategoryName);
+        this.categoryName = capitalize(this.categoryName);
     }
 
     private String capitalize(String name) {

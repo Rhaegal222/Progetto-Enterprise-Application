@@ -17,12 +17,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @ToString
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
-@JsonSubTypes({ //annotazione che definisce i sotto-tipi per la classe genitore
-        @JsonSubTypes.Type(value = SavoryDTO.class, name = "Savory"),
-        @JsonSubTypes.Type(value = SweetDTO.class, name = "Sweet"),
-        @JsonSubTypes.Type(value = AlcoholicDTO.class, name = "Alcoholic")
-})
 public class ProductDTO {
 
     @NotNull
@@ -59,6 +53,9 @@ public class ProductDTO {
 
     @NotNull
     private Availability availability;
+
+    @NotNull
+    private Integer likesNumber ;
 
     @NotNull
     private ProductCategoryDTO productCategory;

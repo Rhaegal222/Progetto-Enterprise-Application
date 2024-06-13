@@ -63,7 +63,7 @@ public class ProductController {
             ProductDTO productToUpdate = productDao.findProductById(String.valueOf(id));
             productToUpdate.setTitle(product.getTitle());
             productToUpdate.setDescription(product.getDescription());
-            productService.createProduct(product);
+            productService.save(productToUpdate);
             return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -75,8 +75,10 @@ public class ProductController {
 
     private ResponseEntity<String> validateProduct(ProductDTO product) {
         if (product.getTitle() == null || product.getTitle().isEmpty()) return ResponseEntity.badRequest().body("{\"message\": \"Name cannot be empty\"}");
+        if(product.getProductPrice() == null) return ResponseEntity.badRequest().body("{\"message\": \"Price cannot be null\"}");
+        if (product.getDeliveryPrice() == null ) return ResponseEntity.badRequest().body("{\"message\": \"Delivery Price cannot be null\"}");
+        if (product.getAvailability() == null ) return ResponseEntity.badRequest().body("{\"message\": \"Availability cannot be null\"}");
         if (product.getProductCategory() == null ) return ResponseEntity.badRequest().body("{\"message\": \"Category cannot be null\"}");
-        if (product.getProductSize() == null ) return ResponseEntity.badRequest().body("{\"message\": \"Product Size cannot be null\"}");
         return null;
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1bb35dde-d282-424f-8de4-2b1d3e46a949" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/ProductCategoryController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/ProductCategoryServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/ProductCategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductCategoryDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductCategoryDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/entities/ProductCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/entities/ProductCategory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductCategoryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductCategoryDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/creation/ProductCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/creation/ProductCreateDTO.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2hpxGPuALCvEs7oAeODxWNB0M7G" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1bb35dde-d282-424f-8de4-2b1d3e46a949" name="Changes" comment="" />
+      <created>1718304730211</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1718304730211</updated>
+      <workItem from="1718304732455" duration="20000" />
+      <workItem from="1718304765291" duration="9000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

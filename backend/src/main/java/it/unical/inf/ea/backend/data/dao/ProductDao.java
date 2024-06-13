@@ -13,9 +13,6 @@ import java.util.List;
 @Repository
 public interface ProductDao extends JpaRepository<Product,String>, JpaSpecificationExecutor<Product> {
 
-    @Query("SELECT p FROM Product p WHERE p.productCategory = :productCategory")
-    List<ProductDTO> findByProductCategory(ProductCategoryDTO productCategoryDTO);
-
 
     @Query("SELECT p FROM Product p WHERE p.id = :id")
     ProductDTO findProductById(String id);

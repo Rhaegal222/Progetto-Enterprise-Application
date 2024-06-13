@@ -8,6 +8,7 @@ import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.UserDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,18 +19,30 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductDao productDao;
+    private final ProductDao productDao;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public ProductServiceImpl(ProductDao productDao, ModelMapper modelMapper) {
+        this.productDao = productDao;
+        this.modelMapper = modelMapper;
+    }
+
+    public void save(ProductDTO productDTO) {
+        Product product = modelMapper.map(productDTO, Product.class);
+        productDao.save(product);
+    }
 
     @Override
     @Transactional
     public ProductDTO createProduct(ProductDTO productDto) {
-        Product product = modelMapper.map(productDto, Product.class);
-        product = productDao.save(product);
-        return modelMapper.map(product, ProductDTO.class);
+        Product product = new Product();
+        product.setTitle(productDto.getTitle());
+        product.setProductPrice(productDto.getProductPrice());
+        product.setDeliveryPrice(productDto.getDeliveryPrice());
+        product.setAvailability(productDto.getAvailability());
+        Product newProduct = productDao.save(product);
+        return modelMapper.map(newProduct, ProductDTO.class);
     }
 
     @Override
@@ -46,20 +59,16 @@ public class ProductServiceImpl implements ProductService {
         return product != null ? modelMapper.map(product, ProductDTO.class) : null;
     }
 
-    @Override
-    public Optional<User> findProductById(Long id) {
-        return Optional.empty();
-    }
-
 
     @Override
     public ProductDTO updateProduct(Long id, ProductDTO productDto) {
         ProductDTO existingProduct = productDao.findProductById(String.valueOf(id));
 
         if (existingProduct != null) {
-            // Update relevant fields (excluding id)
             existingProduct.setTitle(productDto.getTitle());
-            existingProduct.setDescription(productDto.getDescription());
+            existingProduct.setProductPrice(productDto.getProductPrice());
+            existingProduct.setDeliveryPrice(productDto.getDeliveryPrice());
+            existingProduct.setAvailability(productDto.getAvailability());
             existingProduct.setProductCategory(productDto.getProductCategory());
             Product product = modelMapper.map(productDto, Product.class);
             productDao.save(product);

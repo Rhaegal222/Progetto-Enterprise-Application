@@ -88,14 +88,14 @@ public class UserController {
         }
     }
 
-    private ResponseEntity<String> validateUser(UserDTO UserDTO) {
-        if (UserDTO.getUsername() == null || UserDTO.getUsername().isEmpty()) {
+    private ResponseEntity<String> validateUser(UserDTO userDTO) {
+        if (userDTO.getUsername() == null || userDTO.getUsername().isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Username is required\"}"); // JSON response
         }
-        if (UserDTO.getEmail() == null || UserDTO.getEmail().isEmpty()) {
+        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Email is required\"}"); // JSON response
         }
-        if (UserDTO.getPassword() == null || UserDTO.getPassword().isEmpty()) {
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Password is required\"}"); // JSON response
         }
         return null;

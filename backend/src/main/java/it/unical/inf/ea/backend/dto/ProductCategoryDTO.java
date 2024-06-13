@@ -1,5 +1,6 @@
 package it.unical.inf.ea.backend.dto;
 
+import it.unical.inf.ea.backend.data.entities.ProductCategory;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -8,11 +9,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ProductCategoryDTO {
+public class ProductCategoryDTO  {
 
     private String id;
 
     @NotNull
-    private String CategoryName;
+    private String categoryName;
 
 }
