@@ -12,11 +12,8 @@ public interface UserService {
 
 
     UserDTO createUser(UserDTO userDto);
-
     Optional<User> findByEmail(String email);
-
     List<UserDTO> getAllUsers();
-
     Optional<User> findById(String id);
     void save(User user);
     void deleteUser(String id);

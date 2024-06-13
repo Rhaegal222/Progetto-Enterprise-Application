@@ -13,11 +13,6 @@ public class ProductCategoryDTO {
     private String id;
 
     @NotNull
-    private String primaryCat;
+    private String CategoryName;
 
-    @NotNull
-    private String secondaryCat;
-
-    @NotNull
-    private String tertiaryCat;
 }

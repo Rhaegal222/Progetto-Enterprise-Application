@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.data.entities;
 
-import it.unical.inf.ea.backend.dto.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,20 +22,23 @@ public class ProductCategory {
     private String id;
 
     @Column(nullable = false)
-    private String primaryCat;
+    private String CategoryName;
 
-    @Column(nullable = false)
-    private String secondaryCat;
-
-    @Column(nullable = false)
-    private String tertiaryCat;
-
-    @Column()
-    @Enumerated(EnumType.STRING)
-    private Visibility visibility;
 
     @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY)
     private List<Product> products;
 
 
+    @PrePersist
+    @PreUpdate
+    public void capitalizeNames() {
+        this.CategoryName = capitalize(this.CategoryName);
+    }
+
+    private String capitalize(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+    }
 }

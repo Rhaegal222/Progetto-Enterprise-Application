@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 import it.unical.inf.ea.backend.dto.enums.ProductSize;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -33,8 +35,6 @@ public class ProductDTO {
     @Length(max = 1000)
     private String description;
 
-    @Length(max = 1000)
-    private String descriptionBrand;
 
     @Length(max = 1000)
     private String ingredients;
@@ -43,10 +43,13 @@ public class ProductDTO {
     private String nutritionalValues;
 
     @NotNull
-    private CustomMoneyDTO productCost;
+    @PositiveOrZero
+
+    private BigDecimal productPrice;
 
     @NotNull
-    private CustomMoneyDTO deliveryCost;
+    @PositiveOrZero
+    private BigDecimal deliveryPrice;
 
     @Length(max = 100)
     private String brand;

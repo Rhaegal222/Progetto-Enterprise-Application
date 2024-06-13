@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @ToString
@@ -37,10 +39,10 @@ public class ProductCreateDTO {
     private String nutritionalValues;
 
     @NotNull
-    private CustomMoneyDTO productCost;
+    private BigDecimal productCost;
 
     @NotNull
-    private CustomMoneyDTO deliveryCost;
+    private BigDecimal deliveryCost;
 
     @Length(max = 100)
     private String brand;

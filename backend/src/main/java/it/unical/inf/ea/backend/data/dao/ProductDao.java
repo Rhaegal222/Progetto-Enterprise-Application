@@ -16,7 +16,6 @@ public interface ProductDao extends JpaRepository<Product,String>, JpaSpecificat
     @Query("SELECT p FROM Product p WHERE p.productCategory = :productCategory")
     List<ProductDTO> findByProductCategory(ProductCategoryDTO productCategoryDTO);
 
-    boolean isProductAvailable(String productId);
 
     @Query("SELECT p FROM Product p WHERE p.id = :id")
     ProductDTO findProductById(String id);

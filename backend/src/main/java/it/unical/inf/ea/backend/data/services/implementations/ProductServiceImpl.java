@@ -60,7 +60,6 @@ public class ProductServiceImpl implements ProductService {
             // Update relevant fields (excluding id)
             existingProduct.setTitle(productDto.getTitle());
             existingProduct.setDescription(productDto.getDescription());
-            existingProduct.setProductCost(productDto.getProductCost());
             existingProduct.setProductCategory(productDto.getProductCategory());
             Product product = modelMapper.map(productDto, Product.class);
             productDao.save(product);

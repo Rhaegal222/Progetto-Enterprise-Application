@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.data.entities;
 
-import it.unical.inf.ea.backend.data.entities.embedded.CustomMoney;
 import it.unical.inf.ea.backend.dto.enums.TransactionState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -31,7 +31,7 @@ public class Transaction {
 
     @Embedded
     @Column(nullable = false)
-    private CustomMoney amount;
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
