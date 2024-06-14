@@ -1,4 +1,5 @@
-package it.unical.inf.ea.backend.Controller;
+package it.unical.inf.ea.backend.controller;
+
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.UserService;
 import it.unical.inf.ea.backend.dto.UserDTO;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/User-api/")
+@RequestMapping("/user-api/")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 @Slf4j
@@ -25,8 +26,8 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
 
-    @PostMapping("/AddUser")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO user) {
+    @PostMapping("/addUser")
+    public ResponseEntity<?> addUser(@RequestBody UserDTO user) {
         ResponseEntity<String> response = validateUser(user);
         if(response!=null) return response;
         try {

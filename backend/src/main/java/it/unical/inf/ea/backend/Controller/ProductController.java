@@ -1,4 +1,5 @@
-package it.unical.inf.ea.backend.Controller;
+package it.unical.inf.ea.backend.controller;
+
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/Product-api/")
+@RequestMapping("/product-api/")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
 @Slf4j
@@ -19,8 +20,8 @@ public class ProductController {
     private final ProductService productService;
     private final ProductDao productDao;
 
-    @PostMapping("/AddProduct")
-    public ResponseEntity<?> createProduct(@RequestBody ProductDTO product) {
+    @PostMapping("/addProduct")
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO product) {
         ResponseEntity<String> response = validateProduct(product);
         if(response!=null) return response;
         try {

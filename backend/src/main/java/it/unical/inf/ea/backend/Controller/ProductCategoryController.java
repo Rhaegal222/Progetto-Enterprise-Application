@@ -1,4 +1,4 @@
-package it.unical.inf.ea.backend.Controller;
+package it.unical.inf.ea.backend.controller;
 
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
