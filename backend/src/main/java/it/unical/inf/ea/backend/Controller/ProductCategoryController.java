@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProductCategoryController {
 
     private final ProductCategoryService productCategoryService;
-    private final ProductDao productDao;
 
     @PostMapping("/addCategory")
     public ResponseEntity<?> addCategory(@RequestBody ProductCategoryDTO productCategory) {

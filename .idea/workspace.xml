@@ -2,19 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1bb35dde-d282-424f-8de4-2b1d3e46a949" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/ProductCategoryController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/ProductCategoryServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/ProductCategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/Controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductCategoryDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductCategoryDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/ProductDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/entities/ProductCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/entities/ProductCategory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/ProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductCategoryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductCategoryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/ProductDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/creation/ProductCreateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/dto/creation/ProductCreateDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/CustomAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/CustomAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/JwtContextUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/JwtContextUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/RequestFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/RequestFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/TokenStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/config/security/TokenStore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/InvalidTokenDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/InvalidTokenDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/dao/UserDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/entities/InvalidToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/entities/InvalidToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/CustomUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/EmailServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/EmailServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/implementations/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/it/unical/inf/ea/backend/data/services/interfaces/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,15 +36,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Rhaegal222/OneDrive - Università della Calabria/GitHub/Unical/Terzo Anno/Enterprise Applications/Progetto-Enterprise-Application",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -52,6 +64,7 @@
       <updated>1718304730211</updated>
       <workItem from="1718304732455" duration="20000" />
       <workItem from="1718304765291" duration="9000" />
+      <workItem from="1718883124646" duration="40000" />
     </task>
     <servers />
   </component>
