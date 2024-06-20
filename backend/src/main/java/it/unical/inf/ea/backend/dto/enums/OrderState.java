@@ -8,7 +8,6 @@ public enum OrderState {
     PURCHASED,
     SHIPPED,
     DELIVERED,
-    COMPLETED,
-    REVIEWED,
+    COMPLETED
 
 }

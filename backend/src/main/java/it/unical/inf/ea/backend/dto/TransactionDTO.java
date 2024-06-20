@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -24,7 +23,7 @@ public class TransactionDTO {
 
     @Min(0)
     @NotNull
-    private BigDecimal amount;
+    private CustomMoneyDTO amount;
 
     @NotNull
     private TransactionState transactionState;

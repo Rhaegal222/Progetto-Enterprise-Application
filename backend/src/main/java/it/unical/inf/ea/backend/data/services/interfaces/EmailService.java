@@ -1,5 +1,6 @@
 package it.unical.inf.ea.backend.data.services.interfaces;
 
+
 import jakarta.mail.MessagingException;
 
 public interface EmailService {

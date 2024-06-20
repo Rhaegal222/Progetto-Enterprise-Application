@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -24,7 +23,7 @@ public class DeliveryDTO {
     private LocalDateTime deliveredTime;
 
 
-    private BigDecimal deliveryCost;
+    private CustomMoneyDTO deliveryCost;
 
     @Length(max = 50)
     private String shipper;

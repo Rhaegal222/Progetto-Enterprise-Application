@@ -3,7 +3,7 @@ package it.unical.inf.ea.backend.config.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import it.unical.inf.ea.backend.data.dao.InvalidTokenDao;
+import it.unical.inf.ea.backend.data.dao.InvalidTokensDao;
 import it.unical.inf.ea.backend.data.services.implementations.CustomUserDetailsService;
 import it.unical.inf.ea.backend.exception.TokenExpiredException;
 import jakarta.servlet.FilterChain;
@@ -34,7 +34,7 @@ public class RequestFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
     private final TokenStore tokenStore;
-    private final InvalidTokenDao invalidTokenDao;
+    private final InvalidTokensDao invalidTokensDao;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class RequestFilter extends OncePerRequestFilter {
         String loggedUser = "";
 
         String token = tokenStore.getToken(request);
-        if(!token.equals("invalid") && invalidTokenDao.findByToken(token).isPresent()) {
+        if(!token.equals("invalid") && invalidTokensDao.findByToken(token).isPresent()) {
             throw new ServletException("Invalid token");
         }
         if(!"invalid".equals(token)) {

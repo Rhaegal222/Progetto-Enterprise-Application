@@ -2,6 +2,7 @@ package it.unical.inf.ea.backend.data.services.interfaces;
 
 import com.nimbusds.jose.JOSEException;
 import it.unical.inf.ea.backend.data.entities.User;
+import it.unical.inf.ea.backend.dto.AddressDTO;
 import it.unical.inf.ea.backend.dto.UserDTO;
 import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
@@ -10,32 +11,59 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
 import java.util.Optional;
 
-@Service
 public interface UserService {
     UserDTO createUser(User user);
     UserDTO updateUser(String id, UserDTO patch) throws IllegalAccessException;
     void deleteUser(String id);
+    UserBasicDTO findUserById(String id);
 
+    Optional<UserBasicDTO> findBasicByUsername(String username);
 
-    void registerUser(String username, String email, String password);
-    void sendVerificationEmail(String username) throws MessagingException;
-    void activateUser(String token) throws ParseException, JOSEException;
+    Page<UserBasicDTO> searchUsersByUsername(String usernameQuery, int page, int size);
+
+    Page<UserDTO> findAll(int page, int size, UserRole userRole, String username) throws IllegalAccessException;
+
+    Optional<UserDTO> findByUsername(String username);
+
+    Map<String, String> googleAuth(String code) throws Exception;
+
+    Map<String, String> keycloakAuth(String idTokenString);
+
     Map<String, String> authenticateUser(String username, String password, Provider provider) throws JOSEException;
-    void logout(HttpServletRequest request) throws ParseException, JOSEException;
+
+    ResponseEntity<String> registerUser(String username, String email, String password);
+
+    ResponseEntity<String> sendVerificationEmail(String username) throws MessagingException;
+
     Map<String, String> refreshToken(String authorizationHeader, HttpServletResponse response) throws IOException;
 
     void createUser(String username, String password, String email);
 
-    Page<UserDTO> findAll(int page, int size, UserRole userRole, String username) throws IllegalAccessException;
-    Optional<UserDTO> findByUsername(String username);
-    UserBasicDTO findUserById(String id);
+    void activateUser(String token) throws ParseException, JOSEException;
 
-    void save(User user);
+
+    UserDTO changeRole(String userId, UserRole role);
+
+    UserDTO banUser(String userId);
+
+    UserDTO unBanUser(String userId);
+
+
+    void logout(HttpServletRequest request) throws ParseException, JOSEException;
+
+    void changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws ParseException, JOSEException, MessagingException;
+
+    void changePassword(String token) throws ParseException, JOSEException, MessagingException;
+
+    void resetPassword(String email) throws MessagingException;
+
+    UserDTO findMyProfile();
+
 }

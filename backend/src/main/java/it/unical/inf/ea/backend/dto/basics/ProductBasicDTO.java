@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.dto.basics;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import it.unical.inf.ea.backend.dto.CustomMoneyDTO;
 import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
 import it.unical.inf.ea.backend.dto.ProductImageDTO;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,6 @@ import jakarta.validation.constraints.Past;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,10 +41,10 @@ public class ProductBasicDTO {
     private LocalDateTime uploadDate;
 
     @NotNull
-    private BigDecimal productCost;
+    private CustomMoneyDTO productCost;
 
     @NotNull
-    private BigDecimal deliveryCost;
+    private CustomMoneyDTO deliveryCost;
 
     @Length(max = 100)
     private String brand;

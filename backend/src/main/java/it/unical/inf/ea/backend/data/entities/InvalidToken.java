@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name="invalid_token")
+@Table(name="invalid_tokens")
 public class InvalidToken {
 
     @Id

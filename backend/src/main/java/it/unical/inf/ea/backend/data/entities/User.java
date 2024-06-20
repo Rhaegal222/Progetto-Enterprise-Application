@@ -47,9 +47,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Provider provider;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Address> addresses = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
@@ -57,27 +54,12 @@ public class User implements UserDetails {
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified;
 
-//    @OneToMany(mappedBy = "ownerUser",fetch = FetchType.LAZY)
-//    private List<PaymentMethod> paymentMethods;
-
-
-
-
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-    private List<Order> orders;
+    @OneToMany(mappedBy = "seller",fetch = FetchType.LAZY)
+    private List<Product> sellingProducts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private UserStatus status;
-
-    @OneToMany(mappedBy = "reporterUser",fetch = FetchType.LAZY)
-    private List<Report> reports;
-
-    @OneToMany(mappedBy = "reportedUser",fetch = FetchType.LAZY)
-    private List<Report> reported;
-
-    @OneToMany(mappedBy = "adminFollowedReport",fetch = FetchType.LAZY)
-    private List<Report> adminFollowedMyReport;
 
     public Boolean isAdministrator() {
         return role.equals(UserRole.ADMIN);
@@ -122,7 +104,10 @@ public class User implements UserDetails {
         return username;
     }
 
-
+    @Override
+    public String getPassword() {
+        return  password;
+    }
 
 
 

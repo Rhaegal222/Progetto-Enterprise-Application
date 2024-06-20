@@ -4,6 +4,5 @@ public enum UserStatus {
     ACTIVE,
     BANNED,
     HIDDEN,
-    HOLIDAY,
     CANCELLED
 }

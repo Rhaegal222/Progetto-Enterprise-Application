@@ -1,13 +1,16 @@
 package it.unical.inf.ea.backend.data.entities;
 
+import it.unical.inf.ea.backend.data.entities.embedded.CustomMoney;
+
 import it.unical.inf.ea.backend.dto.enums.Availability;
 import it.unical.inf.ea.backend.dto.enums.ProductSize;
+import it.unical.inf.ea.backend.dto.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,8 @@ public class Product {
     @Column(name = "description", length = 1000)
     private String description;
 
+    @Column(name = "descriptionBrand", length = 1000)
+    private String descriptionBrand;
 
     @Column(name = "ingredients", length = 1000)
     private String ingredients;
@@ -37,14 +42,28 @@ public class Product {
     @Column(name = "nutritionalValues", length = 1000)
     private String nutritionalValues;
 
-    @Column(name = "productPrice", nullable = false)
-    private BigDecimal productPrice;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="price",column=@Column(name="product_price",nullable = false)),
+            @AttributeOverride(name="currency",column=@Column(name="product_currency",nullable = false))
+    })
+    private CustomMoney productCost;
 
-    @Column(name = "deliveryPrice", nullable = false)
-    private BigDecimal deliveryPrice;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="price",column=@Column(name="delivery_price",nullable = false)),
+            @AttributeOverride(name="currency",column=@Column(name="delivery_currency",nullable = false))
+    })
+    private CustomMoney deliveryCost;
 
     @Column(name = "brand")
     private String brand;
+
+    @Column(name = "upload_date", nullable = false)
+    private LocalDateTime uploadDate;
+
+    @Column(name = "last_update_date", nullable = false)
+    private LocalDateTime lastUpdateDate;
 
     //si riferisce alle dimensioni dell'imballo della spedizione
     @Enumerated(EnumType.STRING)
@@ -55,32 +74,19 @@ public class Product {
     @Column(name = "availability", nullable = false)
     private Availability availability;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false)
+    private Visibility visibility;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory productCategory;
 
-
-    @Column(name = "like_number", nullable = false)
-    private Integer likesNumber ;
-
-
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
-    private List<Order> order = new ArrayList<>();
-
-
     @OneToMany(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<ProductImage> productImages = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "reportedProduct",fetch = FetchType.LAZY)
-    private List<Report> reports = new ArrayList<>();
-
-
-    @PreRemove
-    private void preRemove(){
-        for(Report report:this.reports){
-            report.setReportedProduct(null);
-        }
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User seller;
 
 }
