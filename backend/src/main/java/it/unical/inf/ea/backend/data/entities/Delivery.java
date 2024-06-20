@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.data.entities;
 
-import it.unical.inf.ea.backend.data.entities.embedded.CustomMoney;
 import it.unical.inf.ea.backend.dto.enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -34,7 +34,7 @@ public class  Delivery {
     private LocalDateTime deliveredTime;
 
     @Column(name = "delivery_cost")
-    private CustomMoney deliveryCost;
+    private BigDecimal deliveryCost;
 
     private String shipper;
 

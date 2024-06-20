@@ -5,7 +5,6 @@ import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +14,31 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductDao productDao;
+    private final ProductDao productDao;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public ProductServiceImpl(ProductDao productDao, ModelMapper modelMapper) {
+        this.productDao = productDao;
+        this.modelMapper = modelMapper;
+    }
+
+    public void save(ProductDTO productDTO) {
+        Product product = modelMapper.map(productDTO, Product.class);
+        productDao.save(product);
+    }
 
     @Override
     @Transactional
-    public ProductDTO createProduct(ProductDTO productDto) {
-        Product product = modelMapper.map(productDto, Product.class);
-        product = productDao.save(product);
-        return modelMapper.map(product, ProductDTO.class);
+    public void addProduct(ProductDTO productDto) {
+
+        Product product = new Product();
+        product.setTitle(productDto.getTitle());
+        product.setProductPrice(productDto.getProductPrice());
+        product.setDeliveryPrice(productDto.getDeliveryPrice());
+        product.setAvailability(productDto.getAvailability());
+        Product newProduct = productDao.save(product);
+        modelMapper.map(newProduct, ProductDTO.class);
     }
 
     @Override
@@ -40,11 +52,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductById(Long id) {
         Product product = productDao.findById(String.valueOf(id)).orElse(null);
-        if (product != null) return modelMapper.map(product, ProductDTO.class);
-        return null;
+        return product != null ? modelMapper.map(product, ProductDTO.class) : null;
     }
-
-
 
 
     @Override
@@ -52,10 +61,10 @@ public class ProductServiceImpl implements ProductService {
         ProductDTO existingProduct = productDao.findProductById(String.valueOf(id));
 
         if (existingProduct != null) {
-            // Update relevant fields (excluding id)
             existingProduct.setTitle(productDto.getTitle());
-            existingProduct.setDescription(productDto.getDescription());
-            existingProduct.setProductCost(productDto.getProductCost());
+            existingProduct.setProductPrice(productDto.getProductPrice());
+            existingProduct.setDeliveryPrice(productDto.getDeliveryPrice());
+            existingProduct.setAvailability(productDto.getAvailability());
             existingProduct.setProductCategory(productDto.getProductCategory());
             Product product = modelMapper.map(productDto, Product.class);
             productDao.save(product);

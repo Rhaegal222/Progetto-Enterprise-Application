@@ -60,17 +60,8 @@ public class User implements UserDetails {
 //    @OneToMany(mappedBy = "ownerUser",fetch = FetchType.LAZY)
 //    private List<PaymentMethod> paymentMethods;
 
-    @OneToMany(mappedBy = "seller",fetch = FetchType.LAZY)
-    private List<Product> sellingProducts = new ArrayList<>();
 
-    @Column(name = "reviews_total_sum", nullable = false)
-    private int reviewsTotalSum;
 
-    @Column(name = "reviews_number", nullable = false)
-    private int reviewsNumber;
-
-    @ManyToMany(mappedBy = "usersThatLiked",fetch = FetchType.LAZY)
-    List<Product> likedProducts= new ArrayList<>();
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<Order> orders;
@@ -105,20 +96,6 @@ public class User implements UserDetails {
         return null;
     }
 
-    public void addReview(int vote) {
-        reviewsNumber++;
-        reviewsTotalSum += vote;
-    }
-
-    public void removeReview(int vote) {
-        reviewsNumber--;
-        reviewsTotalSum -= vote;
-    }
-
-    public void editReview(int oldVote, int newVote) {
-        reviewsTotalSum -= oldVote;
-        reviewsTotalSum += newVote;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -145,10 +122,7 @@ public class User implements UserDetails {
         return username;
     }
 
-    @Override
-    public String getPassword() {
-        return  password;
-    }
+
 
 
 
