@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 import it.unical.inf.ea.backend.dto.enums.ProductSize;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
@@ -24,11 +27,11 @@ public class ProductDTO {
 
     @Length(max = 100)
     @NotNull
+    @NotEmpty
     private String title;
 
     @Length(max = 1000)
     private String description;
-
 
     @Length(max = 1000)
     private String ingredients;
@@ -38,7 +41,6 @@ public class ProductDTO {
 
     @NotNull
     @PositiveOrZero
-
     private BigDecimal productPrice;
 
     @NotNull

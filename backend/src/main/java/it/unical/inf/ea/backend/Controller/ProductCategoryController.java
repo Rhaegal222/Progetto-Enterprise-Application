@@ -19,9 +19,7 @@ public class ProductCategoryController {
     private final ProductDao productDao;
 
     @PostMapping("/addCategory")
-    public ResponseEntity<?> AddProductCategory(@RequestBody ProductCategoryDTO productCategory) {
-        ResponseEntity<String> response = validateCategory(productCategory);
-        if (response != null) return response;
+    public ResponseEntity<?> addCategory(@RequestBody ProductCategoryDTO productCategory) {
         try {
             productCategoryService.addCategory(productCategory);
             return ResponseEntity.ok("{\"message\": \"productCategory registered successfully\"}");
@@ -45,13 +43,4 @@ public class ProductCategoryController {
     public ResponseEntity<?> getAllCategories() {
         return ResponseEntity.ok(this.productCategoryService.getAllCategories());
     }
-
-
-    private ResponseEntity<String> validateCategory(ProductCategoryDTO productCategory) {
-        if (productCategory.getCategoryName() == null || productCategory.getCategoryName().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"CategoryName is required\"}"); // JSON response
-        }
-        return null;
-    }
-
 }

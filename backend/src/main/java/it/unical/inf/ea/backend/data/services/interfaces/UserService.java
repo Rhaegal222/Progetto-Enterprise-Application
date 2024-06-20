@@ -9,9 +9,7 @@ import java.util.Optional;
 
 @Service
 public interface UserService {
-
-
-    UserDTO createUser(UserDTO userDto);
+    void addUser(UserDTO userDto);
     Optional<User> findByEmail(String email);
     List<UserDTO> getAllUsers();
     Optional<User> findById(String id);

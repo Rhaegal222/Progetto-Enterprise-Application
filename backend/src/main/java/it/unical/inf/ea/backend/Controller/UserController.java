@@ -28,15 +28,9 @@ public class UserController {
 
     @PostMapping("/addUser")
     public ResponseEntity<?> addUser(@RequestBody UserDTO user) {
-        ResponseEntity<String> response = validateUser(user);
-        if(response!=null) return response;
         try {
-            userService.createUser(user);
+            userService.addUser(user);
             return ResponseEntity.ok("{\"message\": \"User registered successfully\"}");
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Email already in use\"}");
-        } catch (ConstraintViolationException e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Invalid data\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
         }
@@ -57,8 +51,6 @@ public class UserController {
 
     @PutMapping("/updateUser/")
     public ResponseEntity<?> updateUser(@RequestParam String id, @RequestBody UserDTO user) {
-        ResponseEntity<String> response = validateUser(user);
-        if (response != null) return response;
         try {
             User userToUpdate = userService.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
             userToUpdate.setUsername(user.getUsername());
@@ -88,18 +80,4 @@ public class UserController {
             throw new EntityNotFoundException("User not found");
         }
     }
-
-    private ResponseEntity<String> validateUser(UserDTO userDTO) {
-        if (userDTO.getUsername() == null || userDTO.getUsername().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Username is required\"}"); // JSON response
-        }
-        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Email is required\"}"); // JSON response
-        }
-        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Password is required\"}"); // JSON response
-        }
-        return null;
-    }
-
 }

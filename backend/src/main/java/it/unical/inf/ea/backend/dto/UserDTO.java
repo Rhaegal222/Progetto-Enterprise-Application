@@ -37,5 +37,4 @@ public class UserDTO {
 
     @NotNull
     private UserRole role;
-
 }

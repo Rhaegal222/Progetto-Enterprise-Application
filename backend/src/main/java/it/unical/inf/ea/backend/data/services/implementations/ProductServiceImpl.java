@@ -2,18 +2,13 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.entities.Product;
-import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
-import it.unical.inf.ea.backend.dto.UserDTO;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,14 +30,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO createProduct(ProductDTO productDto) {
+    public void addProduct(ProductDTO productDto) {
+
         Product product = new Product();
         product.setTitle(productDto.getTitle());
         product.setProductPrice(productDto.getProductPrice());
         product.setDeliveryPrice(productDto.getDeliveryPrice());
         product.setAvailability(productDto.getAvailability());
         Product newProduct = productDao.save(product);
-        return modelMapper.map(newProduct, ProductDTO.class);
+        modelMapper.map(newProduct, ProductDTO.class);
     }
 
     @Override

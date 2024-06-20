@@ -13,10 +13,6 @@ import java.util.Optional;
 @Repository
 public interface ProductCategoryDao extends JpaRepository<ProductCategory,String>, JpaSpecificationExecutor<ProductCategory> {
 
-
     @Query("select p from ProductCategory p where p.categoryName = :categoryName")
     Optional<ProductCategory> findByCategoryName(String categoryName);
-
-
-
 }

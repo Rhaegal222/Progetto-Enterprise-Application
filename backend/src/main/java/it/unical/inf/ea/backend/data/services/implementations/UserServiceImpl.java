@@ -41,13 +41,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDto) {
-        if (userDao.findByEmail(userDto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email già esistente");
-        }
-        if (userDao.findByUsername(userDto.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username già esistente");
-        }
+    public void addUser(UserDTO userDto) {
+        // validateUserBeforeSave(userDto);
 
         User user = new User();
         user.setId(userDto.getId());
@@ -60,7 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         User savedUser = userDao.save(user);
-        return modelMapper.map(savedUser, UserDTO.class);
+        modelMapper.map(savedUser, UserDTO.class);
     }
 
 
@@ -91,5 +86,29 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String id) {
         User userToDelete = userDao.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         userDao.delete(userToDelete);
+    }
+
+    private void validateUserBeforeSave(UserDTO userDto) {
+        if (userDto.getUsername() == null || userDto.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username is required");
+        }
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (userDto.isEmailVerified()) {
+            throw new IllegalArgumentException("Email verification is required");
+        }
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        if (userDto.getProvider() == null) {
+            throw new IllegalArgumentException("Provider is required");
+        }
+        if (userDto.getStatus() == null) {
+            throw new IllegalArgumentException("Status is required");
+        }
+        if (userDto.getRole() == null) {
+            throw new IllegalArgumentException("Role is required");
+        }
     }
 }

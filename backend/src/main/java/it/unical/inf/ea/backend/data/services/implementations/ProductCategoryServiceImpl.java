@@ -22,17 +22,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public ProductCategoryDTO addCategory(ProductCategoryDTO productCategoryDto) {
+    public void addCategory(ProductCategoryDTO productCategoryDto) {
 
-        if (productCategoryDao.findByCategoryName(productCategoryDto.getCategoryName()).isPresent()) {
-            throw new IllegalArgumentException("la Categoria è già esistente");
-        }
         ProductCategory productCategory = new ProductCategory();
         productCategory.setCategoryName(productCategoryDto.getCategoryName());
 
-
         ProductCategory newProductCategory = productCategoryDao.save(productCategory);
-        return modelMapper.map(newProductCategory, ProductCategoryDTO.class);
+        modelMapper.map(newProductCategory, ProductCategoryDTO.class);
     }
 
     @Override
@@ -57,5 +53,4 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public Optional<ProductCategory> findByCategoryName(String categoryName) {
         return productCategoryDao.findByCategoryName(categoryName);
     }
-
 }
