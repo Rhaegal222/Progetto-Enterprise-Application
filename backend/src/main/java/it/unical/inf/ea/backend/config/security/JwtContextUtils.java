@@ -17,11 +17,6 @@ public class JwtContextUtils {
 
     private final UserDao userRepository;
 
-<<<<<<< HEAD
-=======
-    //USELESS CLASS, USE TokenStore.getUser(token) INSTEAD
-
->>>>>>> 06af0e3d553d8ced8be3e2ddb7569f3beedec786
     public Optional<String> getUsernameFromContext() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
