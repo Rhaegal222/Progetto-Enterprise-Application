@@ -153,9 +153,10 @@ fun LoginScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        if (formState.value) {
-                            viewModel.login()
-                        }
+                        navController.navigate(Screen.HomeScreen.route)
+//                        if (formState.value) {
+//                            viewModel.login()
+//                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
