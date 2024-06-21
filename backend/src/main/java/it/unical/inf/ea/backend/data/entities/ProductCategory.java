@@ -9,11 +9,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
 
-@Entity
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "productCategories")
 public class ProductCategory {
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")

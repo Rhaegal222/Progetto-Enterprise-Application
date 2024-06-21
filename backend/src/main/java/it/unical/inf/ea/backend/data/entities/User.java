@@ -54,9 +54,6 @@ public class User implements UserDetails {
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified;
 
-    @OneToMany(mappedBy = "seller",fetch = FetchType.LAZY)
-    private List<Product> sellingProducts = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private UserStatus status;
