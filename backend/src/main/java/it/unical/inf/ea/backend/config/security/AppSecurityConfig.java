@@ -53,6 +53,7 @@ public class AppSecurityConfig {
                         .requestMatchers("/api/v1/superAdmin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**", "/api/v1/deliveries/address/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}", "/api/v1/users/find-by-username").permitAll()
+                        .requestMatchers("/api/v1/productCategory/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/{id}", "/api/v1/products/filter", "/api/v1/images/**").permitAll()
                         .requestMatchers("/api/v1/demo", "/api/v1/users/register", "/api/v1/users/authenticate", "/api/v1/users/login-with-google", "api/v1/users/google-auth", "/api/v1/users/login-with-keycloak", "api/v1/users/keycloak-auth",
                                 "/api/v1/users/refreshToken", "/api/v1/users/google_auth", "swagger-ui/**", "/v3/api-docs/**", "/api/v1/products/categories", "/api/v1/products/sizes",
