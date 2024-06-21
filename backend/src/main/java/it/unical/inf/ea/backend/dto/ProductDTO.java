@@ -1,9 +1,7 @@
 package it.unical.inf.ea.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.dto.enums.Availability;
-import it.unical.inf.ea.backend.dto.enums.ProductSize;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
