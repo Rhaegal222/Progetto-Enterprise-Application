@@ -49,6 +49,9 @@ public class ProductDTO {
     private String productWeight;
 
     @NotNull
+    private int quantity;
+
+    @NotNull
     private Availability availability;
 
     @NotNull

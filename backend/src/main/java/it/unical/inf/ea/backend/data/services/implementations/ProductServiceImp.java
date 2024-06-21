@@ -42,25 +42,23 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductDTO addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
-        try {
             LocalDateTime now = getTimeNow();
             Product product = new Product();
             product.setTitle(productCreateDTO.getTitle());
+            product.setBrand(productCreateDTO.getBrand());
             product.setProductPrice(productCreateDTO.getProductPrice());
+            product.setDescription(productCreateDTO.getDescription());
+            product.setIngredients(productCreateDTO.getIngredients());
+            product.setNutritionalValues(productCreateDTO.getNutritionalValues());
+            product.setQuantity(productCreateDTO.getQuantity());
             product.setDeliveryPrice(productCreateDTO.getDeliveryPrice());
             product.setAvailability(productCreateDTO.getAvailability());
             product.setUploadDate(now);
             product.setLastUpdateDate(now);
-            ProductCategory category;
-            if(productCreateDTO.getProductCategory().getId() == null) {
-                category = productCategoryDao.findByCategoryName(productCreateDTO.getProductCategory().getCategoryName()).orElseThrow(EntityNotFoundException::new);
-            }
+            product.setProductCategory(modelMapper.map(productCreateDTO.getProductCategory(), ProductCategory.class));
             productDao.save(product);
             return modelMapper.map(product, ProductDTO.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     public void save(ProductDTO productDTO) {
@@ -94,8 +92,16 @@ public class ProductServiceImp implements ProductService {
             product.setNutritionalValues(productDTO.getNutritionalValues());
             product.setProductPrice(productDTO.getProductPrice());
             product.setDeliveryPrice(productDTO.getDeliveryPrice());
+            product.setAvailability(productDTO.getAvailability());
+            product.setQuantity(productDTO.getQuantity());
+            product.setProductWeight(productDTO.getProductWeight());
             product.setUploadDate(now);
             product.setLastUpdateDate(now);
+            ProductCategory category;
+            if(productDTO.getProductCategory().getId() == null) {
+                category = productCategoryDao.findByCategoryName(productDTO.getProductCategory().getCategoryName()).orElseThrow(EntityNotFoundException::new);
+            }
+
             productDao.save(product);
             return modelMapper.map(product, ProductDTO.class);
 
@@ -105,15 +111,7 @@ public class ProductServiceImp implements ProductService {
     @Override
     public void deleteProduct(String id) throws IllegalAccessException{
         Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        if ( !loggedUser.getRole().equals(UserRole.USER) )
-            throw new IllegalAccessException("Only admin can delete product");
-        try {
-            productDao.delete(product);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        productDao.delete(product);
     }
 
     private LocalDateTime getTimeNow() {

@@ -3,8 +3,11 @@ package it.unical.inf.ea.backend.data.entities;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.min;
 import org.hibernate.annotations.GenericGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -52,7 +55,13 @@ public class Product {
     @Column(name = "availability", nullable = false)
     private Availability availability;
 
+    @Column(name = "productWeight")
     private String productWeight;
+
+    @Column(name = "quantity",nullable = false)
+    @Min(0)
+    @Max(1000)
+    private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

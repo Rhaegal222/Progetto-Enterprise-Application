@@ -46,6 +46,9 @@ public class ProductBasicDTO {
     @NotNull
     private BigDecimal deliveryCost;
 
+    @NotNull
+    private int quantity;
+
     @Length(max = 100)
     private String brand;
 
