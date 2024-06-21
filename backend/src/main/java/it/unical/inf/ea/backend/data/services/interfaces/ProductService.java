@@ -11,10 +11,10 @@ import java.util.List;
 public interface ProductService {
     ProductDTO addProduct(ProductCreateDTO productCreateDTO)throws IllegalAccessException;
     List<ProductDTO> getAllProducts();
-    ProductDTO getProductById(Long id);
-    ProductDTO updateProduct(Long id, ProductDTO productDto);
+    ProductDTO getProductById(String id);
+    ProductDTO updateProduct(String id, ProductDTO productDTO) ;
     void save(ProductDTO product);
-    void deleteProduct(Long id);
+    void deleteProduct(String id) throws IllegalAccessException;
 
 }
 

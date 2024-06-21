@@ -20,6 +20,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Clock;
@@ -62,33 +63,60 @@ public class ProductServiceImp implements ProductService {
         }
     }
 
-    private LocalDateTime getTimeNow() {
-        return LocalDateTime.now(clock);
+    public void save(ProductDTO productDTO) {
+        Product product = modelMapper.map(productDTO, Product.class);
+        productDao.save(product);
     }
-
 
     @Override
     public List<ProductDTO> getAllProducts() {
-        return List.of();
+        List<Product> products = productDao.findAll();
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ProductDTO getProductById(Long id) {
-        return null;
+    public ProductDTO getProductById(String id) {
+        Product product = productDao.findById(String.valueOf(id)).orElse(null);
+        return product != null ? modelMapper.map(product, ProductDTO.class) : null;
     }
 
     @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDto) {
-        return null;
+    public ProductDTO updateProduct(String id, ProductDTO productDTO) {
+
+            Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
+            LocalDateTime now = getTimeNow();
+            product.setTitle(productDTO.getTitle());
+            product.setDescription(productDTO.getDescription());
+            product.setBrand(productDTO.getBrand());
+            product.setIngredients(productDTO.getIngredients());
+            product.setNutritionalValues(productDTO.getNutritionalValues());
+            product.setProductPrice(productDTO.getProductPrice());
+            product.setDeliveryPrice(productDTO.getDeliveryPrice());
+            product.setUploadDate(now);
+            product.setLastUpdateDate(now);
+            productDao.save(product);
+            return modelMapper.map(product, ProductDTO.class);
+
     }
 
-    @Override
-    public void save(ProductDTO product) {
 
+    @Override
+    public void deleteProduct(String id) throws IllegalAccessException{
+        Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if ( !loggedUser.getRole().equals(UserRole.USER) )
+            throw new IllegalAccessException("Only admin can delete product");
+        try {
+            productDao.delete(product);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void deleteProduct(Long id) {
-
+    private LocalDateTime getTimeNow() {
+        return LocalDateTime.now(clock);
     }
 }
