@@ -27,6 +27,9 @@ fun TopBar(
     val customColor = Color(android.graphics.Color.parseColor("#73813C"))
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val profileDrawerState = rememberDrawerState(DrawerValue.Closed)
+
+    val userName = "Nome Utente" // Replace with actual user name
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -66,43 +69,115 @@ fun TopBar(
         },
         drawerState = drawerState,
     ) {
-        TopAppBar(
-            title = {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .scale(2.0F)
-                            .padding(start = 25.dp)
+        ModalNavigationDrawer(
+            drawerContent = {
+                ModalDrawerSheet {
+                    // Contenuto del navigation drawer
+                    ProfileDrawerMenuItem(
+                        icon = painterResource(id = R.drawable.profile_icon),
+                        label = "Profilo",
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navController.navigate("profile_screen")
+                        }
+                    )
+                    ProfileDrawerMenuItem(
+                        icon = painterResource(id = R.drawable.orders_icon),
+                        label = "I miei ordini",
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navController.navigate("orders_screen")
+                        }
+                    )
+                    ProfileDrawerMenuItem(
+                        icon = painterResource(id = R.drawable.wishlist_icon),
+                        label = "Lista desideri",
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navController.navigate("wishlist_screen")
+                        }
+                    )
+                    ProfileDrawerMenuItem(
+                        icon = painterResource(id = R.drawable.paymentmethod_icon),
+                        label = "Metodi di pagamento",
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navController.navigate("paymentMethod_screen")
+                        }
+                    )
+                    ProfileDrawerMenuItem(
+                        icon = painterResource(id = R.drawable.address_icon),
+                        label = "Indirizzi di spedizione",
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                            navController.navigate("adresses_screen")
+                        }
+                    )
+                    ProfileDrawerMenuItem(
+                        icon = painterResource(id = R.drawable.logout_icon),
+                        label = "Logout",
+                        onClick = {
+                            coroutineScope.launch {
+                                drawerState.close()
+                            }
+                        }
                     )
                 }
             },
-            navigationIcon = {
-                IconButton(onClick = {
-                    coroutineScope.launch {
-                        drawerState.open()
+            drawerState = profileDrawerState,
+        ) {
+            TopAppBar(
+                title = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .scale(2.0F)
+                                .padding(start = 25.dp)
+                        )
                     }
-                }) {
-                    Icon(painter = painterResource(id = R.drawable.menu_icon), contentDescription = null, tint = Color.Black)
-                }
-            },
-            actions = {
-                IconButton(onClick = onProfileClick) {
-                    Icon(painter = painterResource(id = R.drawable.profile_icon), contentDescription = null, tint = Color.Black)
-                }
-                IconButton(onClick = onCartClick) {
-                    Icon(painter = painterResource(id = R.drawable.cart_icon), contentDescription = null, tint = Color.Black)
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = customColor
-            ),
-            modifier = Modifier.height(50.dp)
-        )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        coroutineScope.launch {
+                            drawerState.open()
+                        }
+                    }) {
+                        Icon(painter = painterResource(id = R.drawable.menu_icon), contentDescription = null, tint = Color.Black)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        coroutineScope.launch {
+                            profileDrawerState.open()
+                        }
+                    }) {
+                        Icon(painter = painterResource(id = R.drawable.profile_icon), contentDescription = null, tint = Color.Black)
+                    }
+                    IconButton(onClick = onCartClick) {
+                        Icon(painter = painterResource(id = R.drawable.cart_icon), contentDescription = null, tint = Color.Black)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = customColor
+                ),
+                modifier = Modifier.height(50.dp)
+            )
+        }
     }
 }
 
@@ -120,6 +195,24 @@ fun DrawerMenuItem(icon: Painter, label: String, onClick: () -> Unit) {
             contentDescription = label,
             tint = Color.Black, // stessa tint delle icone nel TopBar
             modifier = Modifier.size(40.dp) // stessa dimensione delle icone nel TopBar
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+fun ProfileDrawerMenuItem(icon: Painter, label: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(painter = icon,
+            contentDescription = label,
+            modifier = Modifier.size(40.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = label, style = MaterialTheme.typography.bodyLarge)
