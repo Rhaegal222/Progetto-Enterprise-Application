@@ -86,4 +86,4 @@
 
 ## Problemi
 
-- [ ] Chiamata authenticate non funziona correttamente
+- [x] Chiamata authenticate non funziona correttamente
