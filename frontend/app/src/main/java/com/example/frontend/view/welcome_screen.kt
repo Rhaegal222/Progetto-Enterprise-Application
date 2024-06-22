@@ -46,14 +46,14 @@ fun WelcomeScreenContent(navController: NavHostController) {
         ) {
             Spacer(modifier = Modifier.height(height * 0.1f))
             Image(
-                painter = painterResource(R.drawable.logo), // R.drawable.ChatBot rappresenta il nome del file nella cartella drawable
+                painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
                 modifier = Modifier
-                    .size(400.dp)  // Imposta la dimensione desiderata
-                    .padding(16.dp)  // Aggiunge il padding se necessario
+                    .size(400.dp)
+                    .padding(16.dp)
             )
             Text(
-                text = "Benvenuto", // Replace with your welcome title
+                text = "Benvenuto",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = textColor,
@@ -61,7 +61,7 @@ fun WelcomeScreenContent(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "Accedi o registrati per acquistare i prodotti", // Replace with your welcome subtitle
+                text = "Accedi o registrati per acquistare i prodotti",
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = textColor

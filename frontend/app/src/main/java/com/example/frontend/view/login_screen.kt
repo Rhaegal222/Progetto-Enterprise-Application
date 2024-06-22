@@ -1,6 +1,7 @@
 package com.example.frontend.view
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -8,7 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -38,6 +40,7 @@ import com.example.frontend.view_models.LoginViewModel
 @Composable
 fun LoginScreen(navController: NavHostController) {
     val viewModel: LoginViewModel = viewModel()
+    val context = LocalContext.current
     val size = with(LocalDensity.current) {
         DpSize(
             width = LocalConfiguration.current.screenWidthDp.dp,
@@ -45,6 +48,8 @@ fun LoginScreen(navController: NavHostController) {
         )
     }
     val isDarkMode = isSystemInDarkTheme()
+
+    var isObscured by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
@@ -95,17 +100,15 @@ fun LoginScreen(navController: NavHostController) {
             val textColor = Color.Black
             val iconColor = Color.Black
 
-            val formState = remember { mutableStateOf(true) }
-
             Column(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
                 OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
-                    label = { Text("email", color = textColor) },
+                    value = viewModel.username,
+                    onValueChange = { viewModel.username = it },
+                    label = { Text("username", color = textColor) },
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null, tint = iconColor)
                     },
@@ -126,16 +129,16 @@ fun LoginScreen(navController: NavHostController) {
                         Icon(Icons.Default.Lock, contentDescription = null, tint = iconColor)
                     },
                     trailingIcon = {
-                        IconButton(onClick = { viewModel.isPasswordVisible = !viewModel.isPasswordVisible }) {
+                        IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
-                                if (viewModel.isPasswordVisible) Icons.Default.Clear else Icons.Default.Done,
+                                imageVector = if (isObscured) Icons.Default.Close else Icons.Default.Done,
                                 contentDescription = null,
                                 tint = iconColor
                             )
                         }
                     },
                     singleLine = true,
-                    visualTransformation = if (viewModel.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = inputBorderColor,
@@ -153,8 +156,13 @@ fun LoginScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        if (formState.value) {
-                            viewModel.login()
+                        viewModel.loginUser { success, errorMessage ->
+                            if (success) {
+                                Toast.makeText(context, "Login avvenuto con successo", Toast.LENGTH_SHORT).show()
+                                navController.navigate(Screen.SignUpScreen.route)
+                            } else {
+                                Toast.makeText(context, "Login fallito: $errorMessage", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -174,7 +182,7 @@ fun LoginScreen(navController: NavHostController) {
                 Text("OPPURE")
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedButton(
-                    onClick = { viewModel.googleSignIn() },
+                    onClick = { /* Handle Google Sign-In */ },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
@@ -194,7 +202,7 @@ fun LoginScreen(navController: NavHostController) {
                         buildAnnotatedString {
                             append(text = "Non hai un account ?")
                             withStyle(style = SpanStyle(color = Color.Blue)) {
-                                append(text = "Registrati")
+                                append(" Registrati ora")
                             }
                         },
                         color = textColor

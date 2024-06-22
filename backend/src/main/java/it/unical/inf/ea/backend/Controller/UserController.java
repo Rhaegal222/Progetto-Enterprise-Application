@@ -49,6 +49,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Map<String, String>> authenticate( @RequestParam( "username" ) String username, @RequestParam( "password" ) String password, HttpServletResponse
             response) throws JOSEException {
+        System.out.println(username);
+        System.out.println(password);
         return ResponseEntity.ok(userService.authenticateUser(username, password, Provider.LOCAL));
     }
 

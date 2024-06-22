@@ -1,9 +1,21 @@
 package com.example.frontend.view_models
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.frontend.RetrofitInstance
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 
 class SignUpViewModel : ViewModel() {
     var username by mutableStateOf("")
@@ -11,15 +23,35 @@ class SignUpViewModel : ViewModel() {
     var password by mutableStateOf("")
 
     fun validateForm(): Boolean {
-        // Aggiungi la logica di validazione qui
         return username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
     }
 
-    // Funzione per creare l'utente (simulata)
-    fun createUser(user: UserModel) {
-        // Implementa la logica per creare l'utente qui
+    fun registerUser(onResult: (Boolean, String) -> Unit) {
+        if (validateForm()) {
+            viewModelScope.launch {
+                val call = RetrofitInstance.api.register(username, email, password)
+                call.enqueue(object : Callback<Void> {
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        if (response.isSuccessful) {
+                            onResult(true, "")
+                        } else {
+                            // Log the error response
+                            val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                            println("Error: $errorMessage")
+                            onResult(false, errorMessage)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                        // Log the failure message
+                        val failureMessage = t.message ?: "Unknown failure"
+                        println("Failure: $failureMessage")
+                        onResult(false, failureMessage)
+                    }
+                })
+            }
+        } else {
+            onResult(false, "Form validation failed")
+        }
     }
 }
-
-// Modello di esempio per l'utente
-data class UserModel(val email: String, val password: String, val userName: String, val profilePicture: String)

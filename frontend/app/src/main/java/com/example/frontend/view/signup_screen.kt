@@ -1,6 +1,7 @@
 package com.example.frontend.view
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -163,16 +165,13 @@ fun SignUpScreen(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        if (viewModel.validateForm()) {
-                            /*
-                            val user = UserModel(
-                                email = viewModel.email.trim(),
-                                password = viewModel.password.trim(),
-                                userName = viewModel.username.trim(),
-                                profilePicture = stringResource(R.string.profilo_image)
-                            )
-                            viewModel.createUser(user)
-                             */
+                        viewModel.registerUser { success, errorMessage ->
+                            if (success) {
+                                Toast.makeText(context, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show()
+                                navController.navigate(Screen.LoginScreen.route)
+                            } else {
+                                Toast.makeText(context, "Registrazione fallita: $errorMessage", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -183,6 +182,7 @@ fun SignUpScreen(navController: NavHostController) {
                 ) {
                     Text(text = "REGISTRATI")
                 }
+
             }
 
             Spacer(modifier = Modifier.height(32.dp))
