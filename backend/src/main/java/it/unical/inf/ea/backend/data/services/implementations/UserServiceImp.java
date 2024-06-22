@@ -3,15 +3,11 @@ package it.unical.inf.ea.backend.data.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import it.unical.inf.ea.backend.config.security.*;
-import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.*;
 import it.unical.inf.ea.backend.data.services.interfaces.EmailService;
-import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.data.services.interfaces.UserService;
-import it.unical.inf.ea.backend.dto.AddressDTO;
 import it.unical.inf.ea.backend.dto.UserDTO;
-import it.unical.inf.ea.backend.dto.basics.OrderBasicDTO;
 import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
@@ -27,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +35,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -52,10 +46,10 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class UserServiceImp implements UserService{
 
     private final UserDao userDao;
-    private final ProductService productService;
+    // private final ProductService productService;
     private final ModelMapper modelMapper;
     private final JwtContextUtils jwtContextUtils;
-    private final ProductDao productDao;
+    // private final ProductDao productDao;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenStore tokenStore;
@@ -107,8 +101,8 @@ public class UserServiceImp implements UserService{
             loggedUser.setUsername(newUsername);
 
             userDao.save(loggedUser);
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error deleting user", e);
         }
     }
 
@@ -214,7 +208,7 @@ public class UserServiceImp implements UserService{
             return authenticateUser(pair.getUser().getUsername(), Constants.STANDARD_GOOGLE_ACCOUNT_PASSWORD, Provider.GOOGLE);
         }
         catch (Exception e) {
-            log.error("Error validating google code: " + e.getMessage(), e);
+            log.error("Error validating google code: {}", e.getMessage(), e);
             throw new Exception("Error validating google code", e);
         }
     }
@@ -235,7 +229,7 @@ public class UserServiceImp implements UserService{
             return authenticateUser(pair.getUser().getUsername(), Constants.STANDARD_KEYCLOAK_ACCOUNT_PASSWORD, Provider.KEYCLOAK);
         }
         catch (Exception e) {
-            log.error("Error validating keycloak token: " + e.getMessage(), e);
+            log.error("Error validating keycloak token: {}", e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Error validating keycloak token", e);
         }
     }
@@ -258,7 +252,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public ResponseEntity<String> registerUser(String firstname, String lastname, String email, String password) throws MessagingException {
+    public ResponseEntity<String> registerUser(String firstname, String lastname, String email, String password) {
         if (firstname == null || lastname == null || email == null || password == null)
             throw new IllegalArgumentException("firstname, lastname, email and password cannot be null");
         if (password.length() < 8)
@@ -269,7 +263,7 @@ public class UserServiceImp implements UserService{
         if(userDao.findByEmail(email) != null)
             throw new IllegalArgumentException("email already exists");
         createUser(lastname, firstname, email, passwordEncoder.encode(password));
-        log.info("User created: " + firstname);
+        log.info("User created: {}", firstname);
         return new ResponseEntity<>( "user created" , HttpStatus.CREATED);
     }
 
@@ -315,20 +309,12 @@ public class UserServiceImp implements UserService{
 
     @Override
     public void logout(HttpServletRequest request) throws ParseException, JOSEException {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        String refreshToken = request.getHeader("refresh-token");
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && refreshToken != null && refreshToken.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring("Bearer ".length());
-            String refreshToken2 = refreshToken.substring("Bearer ".length());
-            tokenStore.logout(accessToken, refreshToken2);
-        } else {
-            throw new RuntimeException("Token is missing");
-        }
+        processRequest(request);
     }
 
     @Override
     @Transactional
-    public void changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws ParseException, JOSEException, MessagingException {
+    public void changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws ParseException, JOSEException {
         if (newPassword.length() < 8)
             throw new RuntimeException("Password must be at least 8 characters long");
         if (oldPassword.equals(newPassword))
@@ -339,14 +325,17 @@ public class UserServiceImp implements UserService{
         user.setPassword(passwordEncoder.encode(newPassword));
         userDao.save(user);
 
+        processRequest(request);
+    }
+
+    private void processRequest(HttpServletRequest request) throws ParseException, JOSEException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         String refreshToken = request.getHeader("refresh-token");
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && refreshToken != null && refreshToken.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring("Bearer ".length());
             String refreshToken2 = refreshToken.substring("Bearer ".length());
             tokenStore.logout(accessToken, refreshToken2);
-        }else
-            throw new RuntimeException("Token is missing");
+        } else throw new RuntimeException("Token is missing");
     }
 
     @Override
@@ -379,13 +368,10 @@ public class UserServiceImp implements UserService{
             User user = jwtContextUtils.getUserLoggedFromContext();
             if (user == null)
                 return null;
-            UserDTO userDTO = modelMapper.map(user,UserDTO.class);
-            return userDTO;
+            return modelMapper.map(user,UserDTO.class);
         }catch (Exception e){
-            e.printStackTrace();
-            return null;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized Request", e);
         }
-
     }
 
     public void throwOnIdMismatch(String id, UserDTO userDTO){
@@ -394,18 +380,21 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public void createUser(String lastname, String firstname, String email, String password) throws MessagingException {
-
-        User user = new User();
-        user.setFirstName(firstname);
-        user.setLastName(lastname);
-        user.setUsername(email);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setRole(UserRole.USER);
-        user.setProvider(Provider.LOCAL);
-        user.setEmailVerified(false);
-        createUser(user);
+    public void createUser(String lastname, String firstname, String email, String password) {
+        try {
+            User user = new User();
+            user.setFirstName(firstname);
+            user.setLastName(lastname);
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setRole(UserRole.USER);
+            user.setStatus(UserStatus.ACTIVE);
+            user.setEmailVerified(false);
+            userDao.save(user);
+            sendVerificationEmail(user.getUsername());
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error creating user", e);
+        }
     }
 
     @Override
@@ -460,8 +449,7 @@ public class UserServiceImp implements UserService{
             this.user = user;
         }
 
-        public Pair() {
-        }
+        public Pair() { }
 
         public T getUserExists() {
             return userExists;
