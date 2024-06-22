@@ -73,21 +73,40 @@ fun SignUpScreen(navController: NavHostController) {
             )
         }
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 32.dp, horizontal = 16.dp),
+                .padding(vertical = 16.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth().height(200.dp)
+            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = null,
-                    modifier = Modifier.size(200.dp)
-                )
+                TextButton(
+                    onClick = { navController.navigate(Screen.LoginScreen.route) }
+                ) {
+                    Text(
+                        buildAnnotatedString {
+                            append(text = "Hai già un account?")
+                            withStyle(style = SpanStyle(color = Color.Blue)) {
+                                append(text = " Accedi")
+                            }
+                        },
+                        color = textColor
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "REGISTRAZIONE",
                     style = MaterialTheme.typography.titleLarge,
@@ -95,7 +114,7 @@ fun SignUpScreen(navController: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Column(
                 modifier = Modifier
@@ -132,7 +151,7 @@ fun SignUpScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                 OutlinedTextField(
+                OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
                     label = { Text("E-mail", color = textColor) },
@@ -212,22 +231,6 @@ fun SignUpScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Accedi con Google", color = textColor)
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            TextButton(
-                onClick = { navController.navigate(Screen.LoginScreen.route) }
-            ) {
-                Text(
-                    buildAnnotatedString {
-                        append(text = "Hai già un account?")
-                        withStyle(style = SpanStyle(color = Color.Blue)) {
-                            append(text = " Accedi")
-                        }
-                    },
-                    color = textColor
-                )
             }
         }
     }
