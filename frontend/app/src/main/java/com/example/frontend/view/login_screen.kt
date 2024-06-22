@@ -13,6 +13,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -108,7 +110,7 @@ fun LoginScreen(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.username,
                     onValueChange = { viewModel.username = it },
-                    label = { Text("username", color = textColor) },
+                    label = { Text("E-mail", color = textColor) },
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null, tint = iconColor)
                     },
@@ -120,18 +122,18 @@ fun LoginScreen(navController: NavHostController) {
                         cursorColor = textColor
                     ),
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = viewModel.password,
                     onValueChange = { viewModel.password = it },
-                    label = { Text("password", color = textColor) },
-                    leadingIcon = {
-                        Icon(Icons.Default.Lock, contentDescription = null, tint = iconColor)
-                    },
+                    label = { Text("Password", color = textColor) },
+                    leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null, tint = iconColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
-                                imageVector = if (isObscured) Icons.Default.Close else Icons.Default.Done,
+                                imageVector = if (isObscured) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                                 contentDescription = null,
                                 tint = iconColor
                             )
@@ -146,12 +148,14 @@ fun LoginScreen(navController: NavHostController) {
                         cursorColor = textColor
                     ),
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 TextButton(
                     onClick = {  },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text(text = "password dimenticata ?", color = textColor)
+                    Text(text = "Password dimenticata?", color = textColor)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(

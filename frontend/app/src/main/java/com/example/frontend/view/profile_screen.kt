@@ -83,7 +83,7 @@ fun ProfileScreen(navController: NavHostController) {
             ProfileField(label = "Nome", value = firstName)
             ProfileField(label = "Cognome", value = lastName)
             ProfileField(label = "Nome Utente", value = userName)
-            ProfileField(label = "Email", value = email)
+            ProfileField(label = "E-mail", value = email)
         }
     }
 }
