@@ -102,11 +102,40 @@ fun SignUpScreen(navController: NavHostController) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                OutlinedTextField(
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text("Nome", color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text("Cognome", color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                  OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
                     label = { Text("E-mail", color = textColor) },
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = iconColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -122,7 +151,6 @@ fun SignUpScreen(navController: NavHostController) {
                     value = viewModel.password,
                     onValueChange = { viewModel.password = it },
                     label = { Text("Password", color = textColor) },
-                    leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null, tint = iconColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
