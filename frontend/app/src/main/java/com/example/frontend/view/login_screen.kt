@@ -148,7 +148,7 @@ fun LoginScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextButton(
-                    onClick = { /* Handle forget password */ },
+                    onClick = {  },
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Text(text = "password dimenticata ?", color = textColor)
@@ -159,7 +159,7 @@ fun LoginScreen(navController: NavHostController) {
                         viewModel.loginUser { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(context, "Login avvenuto con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Screen.SignUpScreen.route)
+                                navController.navigate(Screen.HomeScreen.route)
                             } else {
                                 Toast.makeText(context, "Login fallito: $errorMessage", Toast.LENGTH_SHORT).show()
                             }
@@ -182,7 +182,7 @@ fun LoginScreen(navController: NavHostController) {
                 Text("OPPURE")
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedButton(
-                    onClick = { /* Handle Google Sign-In */ },
+                    onClick = {  },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(

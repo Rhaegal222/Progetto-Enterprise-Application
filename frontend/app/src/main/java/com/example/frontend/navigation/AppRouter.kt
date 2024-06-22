@@ -7,6 +7,7 @@ sealed class Screen(val route: String) {
     object SignUpScreen : Screen(route = "signup_screen")
     object LoginScreen : Screen(route = "login_screen")
     object WelcomeScreen : Screen(route = "start_screen")
+    object HomeScreen : Screen(route = "home_screen")
 }
 
 sealed class Navigation(val route: String) {

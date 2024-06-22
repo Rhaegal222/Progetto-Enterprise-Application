@@ -1,26 +1,21 @@
 package it.unical.inf.ea.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.dto.enums.Availability;
-import it.unical.inf.ea.backend.dto.enums.ProductSize;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @ToString
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
-@JsonSubTypes({ //annotazione che definisce i sotto-tipi per la classe genitore
-        @JsonSubTypes.Type(value = SavoryDTO.class, name = "Savory"),
-        @JsonSubTypes.Type(value = SweetDTO.class, name = "Sweet"),
-        @JsonSubTypes.Type(value = AlcoholicDTO.class, name = "Alcoholic")
-})
+
 public class ProductDTO {
 
     @NotNull
@@ -43,16 +38,18 @@ public class ProductDTO {
     private String nutritionalValues;
 
     @NotNull
-    private CustomMoneyDTO productCost;
+    private BigDecimal productPrice;
 
     @NotNull
-    private CustomMoneyDTO deliveryCost;
+    private BigDecimal deliveryPrice;
 
     @Length(max = 100)
     private String brand;
 
+    private String productWeight;
+
     @NotNull
-    private ProductSize productSize;
+    private int quantity;
 
     @NotNull
     private Availability availability;

@@ -81,7 +81,6 @@ fun SignUpScreen(navController: NavHostController) {
                 .padding(vertical = 32.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Form Header
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -99,7 +98,6 @@ fun SignUpScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Registration Form
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -168,7 +166,7 @@ fun SignUpScreen(navController: NavHostController) {
                         viewModel.registerUser { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(context, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Screen.LoginScreen.route)
+                                navController.navigate(Screen.HomeScreen.route)
                             } else {
                                 Toast.makeText(context, "Registrazione fallita: $errorMessage", Toast.LENGTH_SHORT).show()
                             }
@@ -187,12 +185,10 @@ fun SignUpScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // OR Section
             Text("OPPURE", color = textColor)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Google Sign In Button
             OutlinedButton(
                 onClick = { /* Handle Google Sign-In */ },
                 modifier = Modifier.fillMaxWidth()
@@ -209,7 +205,6 @@ fun SignUpScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Login Section
             TextButton(
                 onClick = { navController.navigate(Screen.LoginScreen.route) }
             ) {

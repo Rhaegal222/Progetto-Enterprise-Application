@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.data.entities;
 
-import it.unical.inf.ea.backend.dto.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,11 +9,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
 
-@Entity
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "productCategories")
 public class ProductCategory {
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
@@ -22,21 +20,24 @@ public class ProductCategory {
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
-    @Column(nullable = false)
-    private String primaryCat;
+    @Column(nullable = false,unique = true)
+    private String categoryName;
 
-    @Column(nullable = false)
-    private String secondaryCat;
-
-    @Column(nullable = false)
-    private String tertiaryCat;
-
-    @Column()
-    @Enumerated(EnumType.STRING)
-    private Visibility visibility;
 
     @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY)
     private List<Product> products;
 
 
+    @PrePersist
+    @PreUpdate
+    public void capitalizeNames() {
+        this.categoryName = capitalize(this.categoryName);
+    }
+
+    private String capitalize(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+    }
 }

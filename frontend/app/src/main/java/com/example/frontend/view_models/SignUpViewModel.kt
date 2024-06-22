@@ -35,7 +35,6 @@ class SignUpViewModel : ViewModel() {
                         if (response.isSuccessful) {
                             onResult(true, "")
                         } else {
-                            // Log the error response
                             val errorMessage = response.errorBody()?.string() ?: "Unknown error"
                             println("Error: $errorMessage")
                             onResult(false, errorMessage)
@@ -43,7 +42,6 @@ class SignUpViewModel : ViewModel() {
                     }
 
                     override fun onFailure(call: Call<Void>, t: Throwable) {
-                        // Log the failure message
                         val failureMessage = t.message ?: "Unknown failure"
                         println("Failure: $failureMessage")
                         onResult(false, failureMessage)

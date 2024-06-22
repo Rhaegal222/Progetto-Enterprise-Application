@@ -65,12 +65,11 @@ class LoginViewModel : ViewModel() {
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
                         } else {
-                            // Gestire il caso in cui il refresh del token fallisce
+
                         }
                     }
 
                     override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                        // Gestire il fallimento della chiamata di refresh del token
                     }
                 })
             }
