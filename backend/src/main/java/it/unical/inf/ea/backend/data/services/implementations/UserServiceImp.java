@@ -61,7 +61,6 @@ public class UserServiceImp implements UserService{
     public UserDTO createUser(User user) {
         user.setStatus(UserStatus.ACTIVE);
         user = userDao.save(user);
-
         return mapToDto(user);
     }
 
@@ -383,15 +382,15 @@ public class UserServiceImp implements UserService{
     public void createUser(String lastname, String firstname, String email, String password) {
         try {
             User user = new User();
+            user.setUsername(email);
             user.setFirstName(firstname);
             user.setLastName(lastname);
             user.setEmail(email);
             user.setPassword(password);
             user.setRole(UserRole.USER);
-            user.setStatus(UserStatus.ACTIVE);
+            user.setProvider(Provider.LOCAL);
             user.setEmailVerified(false);
-            userDao.save(user);
-            sendVerificationEmail(user.getUsername());
+            createUser(user);
         } catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error creating user", e);
         }
