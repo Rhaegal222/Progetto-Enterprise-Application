@@ -18,20 +18,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 
 class SignUpViewModel : ViewModel() {
-    var firstname by mutableStateOf("")
     var lastname by mutableStateOf("")
+    var firstname by mutableStateOf("")
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
 
     fun validateForm(): Boolean {
-        return firstname.isNotEmpty() && lastname.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
+        return lastname.isNotEmpty() && firstname.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
     }
 
     fun registerUser(onResult: (Boolean, String) -> Unit) {
         if (validateForm()) {
             viewModelScope.launch {
-                val call = RetrofitInstance.api.register(firstname, lastname, email, password)
+                val call = RetrofitInstance.api.register(lastname, firstname, email, password)
                 call.enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if (response.isSuccessful) {

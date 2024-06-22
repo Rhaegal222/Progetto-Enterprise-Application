@@ -38,13 +38,13 @@ public interface UserService {
 
     Map<String, String> authenticateUser(String username, String password, Provider provider) throws JOSEException;
 
-    ResponseEntity<String> registerUser(String username, String email, String password);
+    ResponseEntity<String> registerUser(String firstname, String lastname, String email, String password) throws MessagingException;
 
     ResponseEntity<String> sendVerificationEmail(String username) throws MessagingException;
 
     Map<String, String> refreshToken(String authorizationHeader, HttpServletResponse response) throws IOException;
 
-    void createUser(String username, String password, String email);
+    void createUser(String lastname, String firstname, String email, String password) throws MessagingException;
 
     void activateUser(String token) throws ParseException, JOSEException;
 

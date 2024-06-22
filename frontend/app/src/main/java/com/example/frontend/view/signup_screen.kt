@@ -105,7 +105,7 @@ fun SignUpScreen(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
-                    label = { Text("Nome", color = textColor) },
+                    label = { Text("Cognome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -120,7 +120,7 @@ fun SignUpScreen(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
-                    label = { Text("Cognome", color = textColor) },
+                    label = { Text("Nome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(

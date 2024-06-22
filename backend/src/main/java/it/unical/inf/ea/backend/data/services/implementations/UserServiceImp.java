@@ -258,18 +258,18 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public ResponseEntity<String> registerUser(String username, String email, String password) {
-        if (username == null || email == null || password == null)
-            throw new IllegalArgumentException("username, email and password cannot be null");
+    public ResponseEntity<String> registerUser(String firstname, String lastname, String email, String password) throws MessagingException {
+        if (firstname == null || lastname == null || email == null || password == null)
+            throw new IllegalArgumentException("firstname, lastname, email and password cannot be null");
         if (password.length() < 8)
             throw new IllegalArgumentException("password must be at least 8 characters long");
 
-        if(findByUsername(username).isPresent())
+        if(findByUsername(email).isPresent())
             throw new IllegalArgumentException("username already exists");
         if(userDao.findByEmail(email) != null)
             throw new IllegalArgumentException("email already exists");
-        createUser(username, passwordEncoder.encode(password), email);
-        log.info("User created: " + username);
+        createUser(lastname, firstname, email, passwordEncoder.encode(password));
+        log.info("User created: " + firstname);
         return new ResponseEntity<>( "user created" , HttpStatus.CREATED);
     }
 
@@ -394,10 +394,12 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public void createUser(String username, String password, String email) {
+    public void createUser(String lastname, String firstname, String email, String password) throws MessagingException {
 
         User user = new User();
-        user.setUsername(username);
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+        user.setUsername(email);
         user.setPassword(password);
         user.setEmail(email);
         user.setRole(UserRole.USER);
