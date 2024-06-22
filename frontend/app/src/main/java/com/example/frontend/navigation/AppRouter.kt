@@ -8,7 +8,11 @@ sealed class Screen(val route: String) {
     object LoginScreen : Screen(route = "login_screen")
     object WelcomeScreen : Screen(route = "start_screen")
     object HomeScreen : Screen(route = "home_screen")
+<<<<<<< HEAD
+    object ForgetPassword: Screen(route = "forgetPassword_screen")
+=======
     object ProfileScreen : Screen(route = "profile_screen")
+>>>>>>> 580476857702dca3f962be5915f700cc2ea44294
 }
 
 sealed class Navigation(val route: String) {

@@ -25,4 +25,9 @@ interface UserService {
     fun refreshToken(
         @Header("Authorization") authorization: String
     ): Call<Map<String, String>>
+
+    @GET("/api/v1/users/resetPassword")
+    fun resetPassword(
+        @Query("email") email: String
+    ): Call<Void>
 }

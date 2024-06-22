@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.frontend.navigation.Screen
 import com.example.frontend.ui.theme.FrontendTheme
+import com.example.frontend.view.ForgetPasswordScreen
 import com.example.frontend.view.HomeScreen
 import com.example.frontend.view.ProfileScreen
 import com.example.frontend.view.SignUpScreen
@@ -43,9 +44,15 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(Screen.HomeScreen.route) {
             HomeScreen(navController)
         }
+<<<<<<< HEAD
+        composable(Screen.ForgetPassword.route) {
+            ForgetPasswordScreen(navController)
+        }
+=======
         composable(Screen.ProfileScreen.route){
             ProfileScreen(navController)
         }
 
+>>>>>>> 580476857702dca3f962be5915f700cc2ea44294
     }
 }
