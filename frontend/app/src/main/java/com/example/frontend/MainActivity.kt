@@ -44,15 +44,11 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(Screen.HomeScreen.route) {
             HomeScreen(navController)
         }
-<<<<<<< HEAD
         composable(Screen.ForgetPassword.route) {
             ForgetPasswordScreen(navController)
         }
-=======
         composable(Screen.ProfileScreen.route){
             ProfileScreen(navController)
         }
-
->>>>>>> 580476857702dca3f962be5915f700cc2ea44294
     }
 }

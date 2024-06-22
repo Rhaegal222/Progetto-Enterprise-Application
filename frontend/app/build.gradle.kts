@@ -65,7 +65,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation(libs.androidx.navigation.compose)
-    implementation("androidx.compose.material:material-icons-extended:1.0.5") // Dipendenza aggiunta
+    implementation("androidx.compose.material:material-icons-extended:1.0.5")
+    implementation(libs.androidx.material3.android) // Dipendenza aggiunta
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
