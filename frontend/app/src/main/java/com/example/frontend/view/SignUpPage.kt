@@ -121,8 +121,8 @@ fun SignUpPage(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
+                    value = viewModel.lastname,
+                    onValueChange = { viewModel.lastname = it },
                     label = { Text("Cognome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -136,8 +136,8 @@ fun SignUpPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
+                    value = viewModel.firstname,
+                    onValueChange = { viewModel.firstname = it },
                     label = { Text("Nome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),

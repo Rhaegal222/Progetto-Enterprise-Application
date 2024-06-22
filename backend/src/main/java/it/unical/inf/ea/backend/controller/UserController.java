@@ -55,8 +55,8 @@ public class UserController {
     @PostMapping(path= "/register" )
     @ResponseStatus(HttpStatus.OK)
     public void register(
-            @RequestParam("firstName") String firstname,
-            @RequestParam("lastName") String lastname,
+            @RequestParam("firstname") String firstname,
+            @RequestParam("lastname") String lastname,
             @RequestParam("email") String email,
             @RequestParam("password" ) String password) throws MessagingException {
         userService.registerUser(firstname, lastname, email, password);

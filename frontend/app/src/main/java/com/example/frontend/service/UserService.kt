@@ -9,8 +9,8 @@ import retrofit2.http.Query
 interface UserService {
     @POST("/api/v1/users/register")
     fun register(
-        @Query("firstName") firstName: String,
-        @Query("lastName") lastName: String,
+        @Query("firstname") firstname: String,
+        @Query("lastname") lastname: String,
         @Query("email") email: String,
         @Query("password") password: String
     ): Call<Void>
