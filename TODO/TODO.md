@@ -83,3 +83,7 @@
   - [ ] Recupero password
 
 ---
+
+## Problemi
+
+- [ ] Chiamata authenticate non funziona correttamente
