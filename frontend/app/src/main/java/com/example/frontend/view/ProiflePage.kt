@@ -16,13 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.frontend.R
-import com.example.frontend.view.components.TopBar
 
 @Composable
-fun ProfileScreen(navController: NavHostController) {
-    val profileImage = painterResource(id = R.drawable.profile_placeholder) // Replace with actual profile image resource
+fun ProfilePage() {
+    println("ProfilePage loaded")
+    val profileImage = painterResource(id = R.drawable.user_image) // Replace with actual profile image resource
     val userName = "Nome Utente" // Replace with actual username
     val email = "email@example.com" // Replace with actual email
     val firstName = "Nome" // Replace with actual first name
@@ -31,6 +30,7 @@ fun ProfileScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(0.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
@@ -39,52 +39,34 @@ fun ProfileScreen(navController: NavHostController) {
                         Color(0xFF90caf9),
                     )
                 )
-            )
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopBar(
-            navController = navController,
-            onMenuClick = {
-                // Gestito in TopBar
-            },
-            onProfileClick = {
-                // Gestito in TopBar
-            },
-            onCartClick = {
-                // Gestito in TopBar
-            }
+        Image(
+            painter = profileImage,
+            contentDescription = "Profile Image",
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = profileImage,
-                contentDescription = "Profile Image",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-            )
+        Spacer(modifier = Modifier.height(50.dp))
 
-            Spacer(modifier = Modifier.height(50.dp))
+        Text(
+            text = "Il tuo profilo",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            fontSize = 25.sp,
+            color = Color(0xFF1e88e5)
+        )
 
-            Text(
-                text = "Il tuo profilo",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                color = Color(0xFF1e88e5)
-            )
+        Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
+        ProfileField(label = "Nome", value = firstName)
+        ProfileField(label = "Cognome", value = lastName)
+        ProfileField(label = "Nome Utente", value = userName)
+        ProfileField(label = "Email", value = email)
 
-            ProfileField(label = "Nome", value = firstName)
-            ProfileField(label = "Cognome", value = lastName)
-            ProfileField(label = "Nome Utente", value = userName)
-            ProfileField(label = "E-mail", value = email)
-        }
     }
 }
 
@@ -95,7 +77,7 @@ fun ProfileField(label: String, value: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .padding(horizontal = 15.dp),
+            .padding(start = 15.dp, end = 15.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -114,6 +96,7 @@ fun ProfileField(label: String, value: String) {
                 text = value,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Black
+
             )
         }
     }

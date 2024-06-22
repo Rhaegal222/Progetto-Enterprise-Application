@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Frontend</string>
+    <string name="app_name">Home</string>
+    <string name="home">Home Page</string>
+    <string name="profile">Profile</string>
+    <string name="cart">Cart</string>
+    <string name="menu">Menu</string>
+    <string name="back">back</string>
+    <string name="chi_siamo">Chi Siamo?</string>
+    <string name="prodotti">Prodotti</string>
+    <string name="il_mio_profilo">Il mio profilo</string>
+    <string name="i_miei_ordini">I miei ordini</string>
+    <string name="lista_desideri">Lista desideri</string>
+    <string name="metodi_di_pagamento">Metodi di pagamento</string>
+    <string name="indirizzi_di_spedizione">Indirizzi di spedizione</string>
+    <string name="logout">Logout</string>
+    <string name="profile_menu">Profile Menu</string>
+
 </resources>

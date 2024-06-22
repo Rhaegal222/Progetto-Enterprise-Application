@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.example.frontend.view.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.background

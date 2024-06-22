@@ -1,14 +1,10 @@
-package com.example.frontend.view
+package com.example.frontend.view.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +23,7 @@ import com.example.frontend.navigation.Screen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WelcomeScreenContent(navController: NavHostController) {
+fun WelcomeScreen(navController: NavHostController) {
     val context = LocalContext.current
     val height = LocalConfiguration.current.screenHeightDp.dp
     val isDarkMode = isSystemInDarkTheme()

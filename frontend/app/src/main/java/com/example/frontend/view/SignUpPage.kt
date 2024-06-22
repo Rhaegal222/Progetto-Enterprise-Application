@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,12 +42,13 @@ import com.example.frontend.R
 import com.example.frontend.navigation.Screen
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import com.example.frontend.navigation.Navigation
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SignUpScreen(navController: NavHostController) {
+fun SignUpPage(navController: NavHostController) {
     val viewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
 
@@ -196,7 +195,7 @@ fun SignUpScreen(navController: NavHostController) {
                         viewModel.registerUser { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(context, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Screen.HomeScreen.route)
+                                navController.navigate(Navigation.HomePage.route)
                             } else {
                                 Toast.makeText(context, "Registrazione fallita: $errorMessage", Toast.LENGTH_SHORT).show()
                             }

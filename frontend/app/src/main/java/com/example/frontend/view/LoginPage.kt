@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -40,7 +38,7 @@ import com.example.frontend.view_models.LoginViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginPage(navController: NavHostController) {
     val viewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
     val size = with(LocalDensity.current) {
@@ -163,7 +161,7 @@ fun LoginScreen(navController: NavHostController) {
                         viewModel.loginUser { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(context, "Login avvenuto con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Screen.HomeScreen.route)
+                                navController.navigate(Screen.MainScreen.route)
                             } else {
                                 Toast.makeText(context, "Login fallito: $errorMessage", Toast.LENGTH_SHORT).show()
                             }
