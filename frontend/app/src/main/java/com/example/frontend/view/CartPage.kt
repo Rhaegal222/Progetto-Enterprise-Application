@@ -24,6 +24,7 @@ fun CartPage() {
 
     Column(
         modifier = Modifier
+            .background(Color.Gray)
             .padding(16.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,

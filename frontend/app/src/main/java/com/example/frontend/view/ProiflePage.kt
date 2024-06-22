@@ -30,7 +30,6 @@ fun ProfilePage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(0.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
@@ -42,11 +41,13 @@ fun ProfilePage() {
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(50.dp))
+
         Image(
             painter = profileImage,
             contentDescription = "Profile Image",
             modifier = Modifier
-                .size(120.dp)
+                .size(140.dp)
                 .clip(CircleShape)
         )
 
@@ -57,7 +58,7 @@ fun ProfilePage() {
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             fontSize = 25.sp,
-            color = Color(0xFF1e88e5)
+            color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -96,7 +97,6 @@ fun ProfileField(label: String, value: String) {
                 text = value,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Black
-
             )
         }
     }

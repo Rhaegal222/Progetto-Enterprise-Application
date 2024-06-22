@@ -18,6 +18,8 @@ sealed class Navigation(val route: String) {
     object CartPage : Navigation(route = "cart_page")
     object MenuPage : Navigation(route = "menu_page")
     object ProfileMenuPage : Navigation(route = "profilemenu_page")
+    object AboutPage : Navigation(route = "about_page")
+
 }
 
 object AppRouter{

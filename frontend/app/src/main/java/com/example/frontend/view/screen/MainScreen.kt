@@ -28,7 +28,7 @@ fun MainScreen() {
         content = { paddingValues ->
             Box(modifier = Modifier
                 .padding(paddingValues)
-                .padding(top = 50.dp) // Adjust the top padding to the height of the TopBar
+                .padding(top = 0.dp) // Adjust the top padding to the height of the TopBar
             ) {
                 MainPageGraph(navController = navController)
                 BackHandler { navController.popBackStack() }

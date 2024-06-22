@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.frontend.R
+import com.example.frontend.navigation.Navigation
 
 @Composable
 fun MenuPage(navController: NavHostController) {
@@ -47,7 +48,7 @@ fun MenuPage(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(8.dp)
                 .clickable {
-                    // Navigate to the Chi Siamo? screen when implemented
+                    navController.navigate(Navigation.AboutPage.route)
                 }
         ) {
             Row(

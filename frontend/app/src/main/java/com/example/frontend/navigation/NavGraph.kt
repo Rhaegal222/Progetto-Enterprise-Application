@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.frontend.view.AboutPage
 import com.example.frontend.view.CartPage
 import com.example.frontend.view.HomePage
 import com.example.frontend.view.LoginPage
@@ -60,6 +61,9 @@ fun MainPageGraph(navController: NavHostController) {
         }
         composable(Navigation.ProfilePage.route) {
             ProfilePage()
+        }
+        composable(Navigation.AboutPage.route) {
+            AboutPage()
         }
     }
 }

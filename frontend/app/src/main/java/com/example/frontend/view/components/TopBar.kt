@@ -22,13 +22,13 @@ import androidx.navigation.NavHostController
 import com.example.frontend.R
 import com.example.frontend.navigation.Navigation
 import kotlinx.coroutines.launch
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(navController: NavHostController) {
     val currentPage =
         navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
     val route = currentPage.value?.destination?.route
-
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -77,7 +77,15 @@ fun TopBar(navController: NavHostController) {
 
                         route != null && route.contains(Navigation.ProfileMenuPage.route) -> {
                             Text(
-                                text = stringResource(id = R.string.profile_menu),
+                                text = stringResource(id = R.string.menuProfile),
+                                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        route != null && route.contains(Navigation.AboutPage.route) -> {
+                            Text(
+                                text = stringResource(id = R.string.about),
                                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                                 textAlign = TextAlign.Center
                             )
@@ -98,21 +106,22 @@ fun TopBar(navController: NavHostController) {
                         )
                     }
                 },
-
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.popBackStack()
+                    if (route != null && !route.contains(Navigation.HomePage.route)) {
+                        IconButton(
+                            onClick = {
+                                navController.popBackStack()
+                            }
+                        ) {
+                            Icon(
+                                painterResource(id = R.drawable.arrowleft_icon),
+                                contentDescription = stringResource(id = R.string.back),
+                                modifier = Modifier.height(20.dp)
+                            )
                         }
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.arrowleft_icon),
-                            contentDescription = stringResource(id = R.string.back),
-                            modifier = Modifier.height(20.dp)
-                        )
                     }
-                })
+                }
+            )
         }
     }
 }
-

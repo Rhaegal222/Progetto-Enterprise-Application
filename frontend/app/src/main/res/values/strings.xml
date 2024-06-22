@@ -5,6 +5,8 @@
     <string name="cart">Cart</string>
     <string name="menu">Menu</string>
     <string name="back">back</string>
+    <string name="about">Chi Siamo?</string>
+    <string name="menuProfile">Profile</string>
     <string name="chi_siamo">Chi Siamo?</string>
     <string name="prodotti">Prodotti</string>
     <string name="il_mio_profilo">Il mio profilo</string>
@@ -13,6 +15,8 @@
     <string name="metodi_di_pagamento">Metodi di pagamento</string>
     <string name="indirizzi_di_spedizione">Indirizzi di spedizione</string>
     <string name="logout">Logout</string>
-    <string name="profile_menu">Profile Menu</string>
-
+    <string name="about_description">"La nostra missione è portare sulla vostra tavola il meglio della tradizione culinaria calabrese, offrendo prodotti autentici e di alta qualità. Siamo un team appassionato e dedicato che crede nel valore della tradizione e nella ricchezza dei sapori della nostra terra."</string>
+    <string name="github">Github</string>
+    <string name="twitter">Twitter</string>
+    <string name="instagram">Instagram</string>
 </resources>
