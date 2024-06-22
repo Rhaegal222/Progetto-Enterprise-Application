@@ -148,7 +148,7 @@ fun LoginScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextButton(
-                    onClick = {  },
+                    onClick = { navController.navigate(Screen.ForgetPassword.route) },
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Text(text = "password dimenticata ?", color = textColor)
