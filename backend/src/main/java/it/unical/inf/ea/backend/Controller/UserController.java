@@ -54,9 +54,13 @@ public class UserController {
 
     @PostMapping(path= "/register" )
     @ResponseStatus(HttpStatus.OK)
-    public void register( @RequestParam( "username" ) String username, @RequestParam("email") String email, @RequestParam( "password" ) String password) throws MessagingException {
-        userService.registerUser(username, email, password);
-        userService.sendVerificationEmail(username);
+    public void register(
+            @RequestParam("firstName") String firstname,
+            @RequestParam("lastName") String lastname,
+            @RequestParam("email") String email,
+            @RequestParam("password" ) String password) throws MessagingException {
+        userService.registerUser(firstname, lastname, email, password);
+        userService.sendVerificationEmail(email);
     }
 
     @GetMapping("/activate")

@@ -13,10 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -35,10 +33,19 @@ public class User implements UserDetails {
     private String username;
 
     @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(unique = true, nullable = false, length = 100)
     private String email;
+
+    @Column
+    private String phoneNumber;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private UserImage photoProfile;

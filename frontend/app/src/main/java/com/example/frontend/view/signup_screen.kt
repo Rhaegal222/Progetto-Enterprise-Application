@@ -9,10 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,7 +25,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +42,9 @@ import androidx.navigation.NavHostController
 import com.example.frontend.view_models.SignUpViewModel
 import com.example.frontend.R
 import com.example.frontend.navigation.Screen
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -104,10 +103,9 @@ fun SignUpScreen(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
-                    value = viewModel.username,
-                    onValueChange = { viewModel.username = it },
-                    label = { Text("username", color = textColor) },
-                    leadingIcon = { Icon(Icons.Default.Face, contentDescription = null, tint = iconColor) },
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text("Cognome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -122,8 +120,22 @@ fun SignUpScreen(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
-                    label = { Text("email", color = textColor) },
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = iconColor) },
+                    label = { Text("Nome", color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                 OutlinedTextField(
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text("E-mail", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -138,12 +150,11 @@ fun SignUpScreen(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.password,
                     onValueChange = { viewModel.password = it },
-                    label = { Text("password", color = textColor) },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = iconColor) },
+                    label = { Text("Password", color = textColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
-                                imageVector = if (isObscured) Icons.Default.Close else Icons.Default.Done,
+                                imageVector = if (isObscured) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                                 contentDescription = null,
                                 tint = iconColor
                             )
@@ -183,7 +194,7 @@ fun SignUpScreen(navController: NavHostController) {
 
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text("OPPURE", color = textColor)
 

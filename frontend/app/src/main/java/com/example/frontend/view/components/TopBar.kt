@@ -72,66 +72,72 @@ fun TopBar(
         ModalNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
-                    // Contenuto del navigation drawer
-                    ProfileDrawerMenuItem(
-                        icon = painterResource(id = R.drawable.profile_icon),
-                        label = "Profilo",
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
+                    Column {
+                        Text(
+                            text = "Ciao, $userName",
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        ProfileDrawerMenuItem(
+                            icon = painterResource(id = R.drawable.profile_icon),
+                            label = "Profilo",
+                            onClick = {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                                navController.navigate("profile_screen")
                             }
-                            navController.navigate("profile_screen")
-                        }
-                    )
-                    ProfileDrawerMenuItem(
-                        icon = painterResource(id = R.drawable.orders_icon),
-                        label = "I miei ordini",
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
+                        )
+                        ProfileDrawerMenuItem(
+                            icon = painterResource(id = R.drawable.orders_icon),
+                            label = "I miei ordini",
+                            onClick = {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                                navController.navigate("orders_screen")
                             }
-                            navController.navigate("orders_screen")
-                        }
-                    )
-                    ProfileDrawerMenuItem(
-                        icon = painterResource(id = R.drawable.wishlist_icon),
-                        label = "Lista desideri",
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
+                        )
+                        ProfileDrawerMenuItem(
+                            icon = painterResource(id = R.drawable.wishlist_icon),
+                            label = "Lista desideri",
+                            onClick = {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                                navController.navigate("wishlist_screen")
                             }
-                            navController.navigate("wishlist_screen")
-                        }
-                    )
-                    ProfileDrawerMenuItem(
-                        icon = painterResource(id = R.drawable.paymentmethod_icon),
-                        label = "Metodi di pagamento",
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
+                        )
+                        ProfileDrawerMenuItem(
+                            icon = painterResource(id = R.drawable.paymentmethod_icon),
+                            label = "Metodi di pagamento",
+                            onClick = {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                                navController.navigate("paymentMethod_screen")
                             }
-                            navController.navigate("paymentMethod_screen")
-                        }
-                    )
-                    ProfileDrawerMenuItem(
-                        icon = painterResource(id = R.drawable.address_icon),
-                        label = "Indirizzi di spedizione",
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
+                        )
+                        ProfileDrawerMenuItem(
+                            icon = painterResource(id = R.drawable.address_icon),
+                            label = "Indirizzi di spedizione",
+                            onClick = {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                                navController.navigate("adresses_screen")
                             }
-                            navController.navigate("adresses_screen")
-                        }
-                    )
-                    ProfileDrawerMenuItem(
-                        icon = painterResource(id = R.drawable.logout_icon),
-                        label = "Logout",
-                        onClick = {
-                            coroutineScope.launch {
-                                drawerState.close()
+                        )
+                        ProfileDrawerMenuItem(
+                            icon = painterResource(id = R.drawable.logout_icon),
+                            label = "Logout",
+                            onClick = {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             },
             drawerState = profileDrawerState,
