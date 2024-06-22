@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.frontend.navigation.Screen
 import com.example.frontend.ui.theme.FrontendTheme
 import com.example.frontend.view.HomeScreen
+import com.example.frontend.view.ProfileScreen
 import com.example.frontend.view.SignUpScreen
 
 class MainActivity : ComponentActivity() {
@@ -42,5 +43,9 @@ fun SetupNavGraph(navController: NavHostController) {
         composable(Screen.HomeScreen.route) {
             HomeScreen(navController)
         }
+        composable(Screen.ProfileScreen.route){
+            ProfileScreen(navController)
+        }
+
     }
 }
