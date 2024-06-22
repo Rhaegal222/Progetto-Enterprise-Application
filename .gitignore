@@ -91,3 +91,5 @@ frontend/.gradle/buildOutputCleanup/buildOutputCleanup.lock
 frontend/.gradle/buildOutputCleanup/cache.properties
 frontend/.gradle/buildOutputCleanup/outputFiles.bin
 frontend/.gradle/vcs-1/gc.properties
+frontend/.idea/frontend.iml
+frontend/.idea/modules.xml
