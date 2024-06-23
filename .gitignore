@@ -137,3 +137,4 @@ frontend/.gradle/8.6/dependencies-accessors/b600816a95c7c977e6d6bdfe48ef45fe6c9f
 frontend/.gradle/8.6/dependencies-accessors/b600816a95c7c977e6d6bdfe48ef45fe6c9f6a91/classes/org/gradle/accessors/dm/LibrariesForLibsInPluginsBlock$VersionAccessors.class
 frontend/.gradle/8.6/dependencies-accessors/b600816a95c7c977e6d6bdfe48ef45fe6c9f6a91/sources/org/gradle/accessors/dm/LibrariesForLibs.java
 frontend/.gradle/8.6/dependencies-accessors/b600816a95c7c977e6d6bdfe48ef45fe6c9f6a91/sources/org/gradle/accessors/dm/LibrariesForLibsInPluginsBlock.java
+frontend/local.properties

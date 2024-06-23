@@ -1,4 +1,27 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">Frontend</string>
     <string name="web_client_id">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+=======
+    <string name="app_name">Home</string>
+    <string name="home">Home Page</string>
+    <string name="profile">Profile</string>
+    <string name="cart">Cart</string>
+    <string name="menu">Menu</string>
+    <string name="back">back</string>
+    <string name="about">Chi Siamo?</string>
+    <string name="menuProfile">Profile</string>
+    <string name="chi_siamo">Chi Siamo?</string>
+    <string name="prodotti">Prodotti</string>
+    <string name="il_mio_profilo">Il mio profilo</string>
+    <string name="i_miei_ordini">I miei ordini</string>
+    <string name="lista_desideri">Lista desideri</string>
+    <string name="metodi_di_pagamento">Metodi di pagamento</string>
+    <string name="indirizzi_di_spedizione">Indirizzi di spedizione</string>
+    <string name="logout">Logout</string>
+    <string name="about_description">"La nostra missione è portare sulla vostra tavola il meglio della tradizione culinaria calabrese, offrendo prodotti autentici e di alta qualità. Siamo un team appassionato e dedicato che crede nel valore della tradizione e nella ricchezza dei sapori della nostra terra."</string>
+    <string name="github">Github</string>
+    <string name="twitter">Twitter</string>
+    <string name="instagram">Instagram</string>
+>>>>>>> 9736a18bea01c0ea70ddfc6bc9932267eacdb203
 </resources>

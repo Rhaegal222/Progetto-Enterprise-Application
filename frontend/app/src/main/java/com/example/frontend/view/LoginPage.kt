@@ -44,7 +44,7 @@ import com.stevdzasan.onetap.rememberOneTapSignInState
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginPage(navController: NavHostController) {
     val viewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
     val size = with(LocalDensity.current) {
@@ -171,7 +171,7 @@ fun LoginScreen(navController: NavHostController) {
                         viewModel.loginUser { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(context, "Login avvenuto con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Screen.HomeScreen.route)
+                                navController.navigate(Screen.MainScreen.route)
                             } else {
                                 Toast.makeText(context, "Login fallito: $errorMessage", Toast.LENGTH_SHORT).show()
                             }

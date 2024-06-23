@@ -24,14 +24,14 @@ class SignUpViewModel : ViewModel() {
     var password by mutableStateOf("")
 
 
-    fun validateForm(): Boolean {
+    private fun validateForm(): Boolean {
         return lastname.isNotEmpty() && firstname.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
     }
 
     fun registerUser(onResult: (Boolean, String) -> Unit) {
         if (validateForm()) {
             viewModelScope.launch {
-                val call = RetrofitInstance.api.register(lastname, firstname, email, password)
+                val call = RetrofitInstance.api.register(firstname, lastname, email, password)
                 call.enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if (response.isSuccessful) {

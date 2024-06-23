@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,12 +42,13 @@ import com.example.frontend.R
 import com.example.frontend.navigation.Screen
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import com.example.frontend.navigation.Navigation
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SignUpScreen(navController: NavHostController) {
+fun SignUpPage(navController: NavHostController) {
     val viewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
 
@@ -73,21 +72,40 @@ fun SignUpScreen(navController: NavHostController) {
             )
         }
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 32.dp, horizontal = 16.dp),
+                .padding(vertical = 16.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth().height(200.dp)
+            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = null,
-                    modifier = Modifier.size(200.dp)
-                )
+                TextButton(
+                    onClick = { navController.navigate(Screen.LoginScreen.route) }
+                ) {
+                    Text(
+                        buildAnnotatedString {
+                            append(text = "Hai già un account?")
+                            withStyle(style = SpanStyle(color = Color.Blue)) {
+                                append(text = " Accedi")
+                            }
+                        },
+                        color = textColor
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "REGISTRAZIONE",
                     style = MaterialTheme.typography.titleLarge,
@@ -95,7 +113,7 @@ fun SignUpScreen(navController: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Column(
                 modifier = Modifier
@@ -103,8 +121,8 @@ fun SignUpScreen(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
+                    value = viewModel.lastname,
+                    onValueChange = { viewModel.lastname = it },
                     label = { Text("Cognome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -118,8 +136,8 @@ fun SignUpScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
+                    value = viewModel.firstname,
+                    onValueChange = { viewModel.firstname = it },
                     label = { Text("Nome", color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -132,7 +150,7 @@ fun SignUpScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                 OutlinedTextField(
+                OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
                     label = { Text("E-mail", color = textColor) },
@@ -177,7 +195,7 @@ fun SignUpScreen(navController: NavHostController) {
                         viewModel.registerUser { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(context, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Screen.HomeScreen.route)
+                                navController.navigate(Navigation.HomePage.route)
                             } else {
                                 Toast.makeText(context, "Registrazione fallita: $errorMessage", Toast.LENGTH_SHORT).show()
                             }
@@ -212,22 +230,6 @@ fun SignUpScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Accedi con Google", color = textColor)
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            TextButton(
-                onClick = { navController.navigate(Screen.LoginScreen.route) }
-            ) {
-                Text(
-                    buildAnnotatedString {
-                        append(text = "Hai già un account?")
-                        withStyle(style = SpanStyle(color = Color.Blue)) {
-                            append(text = " Accedi")
-                        }
-                    },
-                    color = textColor
-                )
             }
         }
     }
