@@ -6,7 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frontend.RetrofitInstance
+import com.example.frontend.model.CurrentDataUtils
 import com.example.frontend.service.UserService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -65,14 +67,38 @@ class LoginViewModel : ViewModel() {
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
                         } else {
-                            // Gestisci la risposta di errore se necessario
+
                         }
                     }
 
                     override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                        // Gestisci il fallimento se necessario
+
                     }
                 })
+            }
+        }
+    }
+
+    fun authenticateGoogle(idToken: String, onError: () -> Unit, onSuccess: () -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = userService.googleAuth(idToken).execute()
+                if (response.isSuccessful) {
+                    val tokenMap = response.body()
+                    if (tokenMap != null && tokenMap.isNotEmpty()) {
+                        CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
+                        CurrentDataUtils.setRefresh(tokenMap["refreshToken"].toString())
+                        CurrentDataUtils.retrieveCurrentUser(userService,idToken)
+                        onSuccess()
+                    } else {
+                        onError()
+                    }
+                } else {
+                    onError()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                onError()
             }
         }
     }

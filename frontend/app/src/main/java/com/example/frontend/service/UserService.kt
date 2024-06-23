@@ -1,5 +1,6 @@
 package com.example.frontend.service
 
+import com.example.frontend.controller.models.UserDTO
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -30,4 +31,14 @@ interface UserService {
     fun resetPassword(
         @Query("email") email: String
     ): Call<Void>
+
+    @POST("/api/v1/users/google-auth")
+    fun googleAuth(
+        @Query("idTokenString") idTokenString: String
+    ): Call<Map<String, String>>
+
+    @GET("/api/v1/users/me")
+    fun me(
+        @Header("Authorization") authorization: String
+    ): Call<UserDTO>
 }

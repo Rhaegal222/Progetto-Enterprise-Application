@@ -1,6 +1,7 @@
 package com.example.frontend.view
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -9,8 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -24,6 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,8 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.frontend.R
+import com.example.frontend.model.CurrentDataUtils
 import com.example.frontend.navigation.Screen
 import com.example.frontend.view_models.LoginViewModel
+import com.stevdzasan.onetap.OneTapSignInState
+import com.stevdzasan.onetap.OneTapSignInWithGoogle
+import com.stevdzasan.onetap.rememberOneTapSignInState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +56,10 @@ fun LoginScreen(navController: NavHostController) {
     val isDarkMode = isSystemInDarkTheme()
 
     var isObscured by remember { mutableStateOf(true) }
+
+    val loginViewModel: LoginViewModel = viewModel()
+
+    val state = rememberOneTapSignInState()
 
     Scaffold(
         topBar = {
@@ -185,19 +193,23 @@ fun LoginScreen(navController: NavHostController) {
             ) {
                 Text("OPPURE")
                 Spacer(modifier = Modifier.height(16.dp))
-                OutlinedButton(
-                    onClick = {  },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.googlelogo),
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = iconColor
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Accedi con Google", color = textColor)
-                }
+
+                GoogleSignInButton(
+                    state = state,
+                    onTokenIdReceived = { tokenId ->
+                        Log.d("LoginPage", "tokenId: $tokenId")
+                        loginViewModel.authenticateGoogle(tokenId, onError = {
+                            Toast.makeText(context, "Autenticazione Google fallita", Toast.LENGTH_SHORT).show()
+                        }, onSuccess = {
+                            CurrentDataUtils.goToHome.value = true
+                            navController.navigate(Screen.HomeScreen.route)
+                        })
+                    },
+                    onDialogDismissed = { message ->
+                        Log.d("LoginPage", "dismissed, message: $message")
+                    }
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
                 TextButton(
                     onClick = { navController.navigate(Screen.SignUpScreen.route) }
@@ -216,3 +228,44 @@ fun LoginScreen(navController: NavHostController) {
         }
     }
 }
+
+@Composable
+fun GoogleSignInButton(
+    state: OneTapSignInState,
+    onTokenIdReceived: (String) -> Unit,
+    onDialogDismissed: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val iconColor = Color.Black
+
+    OutlinedButton(
+        onClick = {
+            Log.d("GoogleSignInButton", "Button clicked, opening state")
+            state.open()
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.googlelogo),
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            tint = iconColor
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "Accedi con Google", color = iconColor)
+    }
+
+    OneTapSignInWithGoogle(
+        state = state,
+        clientId = stringResource(id = R.string.web_client_id),
+        onTokenIdReceived = { tokenId ->
+            Log.d("GoogleSignInButton", "Token ID Received: $tokenId")
+            onTokenIdReceived(tokenId)
+        },
+        onDialogDismissed = { message ->
+            Log.d("GoogleSignInButton", "Dialog Dismissed: $message")
+            onDialogDismissed(message)
+        }
+    )
+}
+
