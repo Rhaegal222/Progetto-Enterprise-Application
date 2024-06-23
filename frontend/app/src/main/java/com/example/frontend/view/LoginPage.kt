@@ -202,7 +202,6 @@ fun LoginPage(navController: NavHostController) {
                             Toast.makeText(context, "Autenticazione Google fallita", Toast.LENGTH_SHORT).show()
                         }, onSuccess = {
                             CurrentDataUtils.goToHome.value = true
-                            navController.navigate(Screen.HomeScreen.route)
                         })
                     },
                     onDialogDismissed = { message ->

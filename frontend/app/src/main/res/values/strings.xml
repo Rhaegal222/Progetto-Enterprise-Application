@@ -1,9 +1,6 @@
 <resources>
-<<<<<<< HEAD
     <string name="app_name">Frontend</string>
     <string name="web_client_id">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
-=======
-    <string name="app_name">Home</string>
     <string name="home">Home Page</string>
     <string name="profile">Profile</string>
     <string name="cart">Cart</string>

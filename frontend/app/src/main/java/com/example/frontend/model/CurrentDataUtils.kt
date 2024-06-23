@@ -9,6 +9,7 @@ import com.example.frontend.controller.models.AddressDTO
 import com.example.frontend.controller.models.PaymentMethodDTO
 import com.example.frontend.controller.models.UserBasicDTO
 import com.example.frontend.controller.models.UserDTO
+import com.example.frontend.model.persistence.AppDatabase
 import com.example.frontend.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
