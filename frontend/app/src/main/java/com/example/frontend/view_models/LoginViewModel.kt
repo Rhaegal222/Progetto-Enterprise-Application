@@ -36,8 +36,9 @@ class LoginViewModel : ViewModel() {
                         if (response.isSuccessful) {
                             val tokenMap = response.body()!!
                             accessToken = tokenMap["accessToken"].toString()
-                            CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
+                            CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
+                            CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
                             onResult(true, null)
                             refreshAccessToken()
                         } else {
@@ -89,7 +90,7 @@ class LoginViewModel : ViewModel() {
                     if (tokenMap != null && tokenMap.isNotEmpty()) {
                         CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
                         CurrentDataUtils.setRefresh(tokenMap["refreshToken"].toString())
-                        CurrentDataUtils.retrieveCurrentUser(userService,idToken)
+                        CurrentDataUtils.retrieveCurrentUser()
                         onSuccess()
                     } else {
                         onError()

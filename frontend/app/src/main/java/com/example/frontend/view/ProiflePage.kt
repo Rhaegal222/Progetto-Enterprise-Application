@@ -32,6 +32,7 @@ fun ProfilePage(profileViewModel: ProfileViewModel = viewModel()) {
     val firstName by profileViewModel.firstName
     val lastName by profileViewModel.lastName
     val email by profileViewModel.email
+    val phoneNumber by profileViewModel.phoneNumber
     val profileImage by profileViewModel.profileImage
 
     Column(
@@ -73,6 +74,7 @@ fun ProfilePage(profileViewModel: ProfileViewModel = viewModel()) {
         ProfileField(label = "Nome", value = firstName)
         ProfileField(label = "Cognome", value = lastName)
         ProfileField(label = "Email", value = email)
+        ProfileField(label = "Numero di telefono", value = phoneNumber)
     }
 }
 
