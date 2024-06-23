@@ -64,6 +64,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/getAllProductsBrands")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getAllProductsBrands() {
+        List<String> brands = productService.getAllProductsBrands();
+        return ResponseEntity.ok(brands);
+    }
 
 
     @PutMapping("/updateProduct/")

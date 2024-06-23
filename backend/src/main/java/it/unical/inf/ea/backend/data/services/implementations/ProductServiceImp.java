@@ -84,6 +84,21 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    public List<String> getAllProductsBrands() {
+        List<String> brands = productDao.findAllProductsBrands();
+        return new ArrayList<>(brands);
+    }
+    /*
+        @Override
+    public List<ProductCategoryDTO> getAllCategories() {
+        List<ProductCategory> ProductCategories = productCategoryDao.findAll();
+        return ProductCategories.stream()
+                .map(ProductCategory -> modelMapper.map(ProductCategory, ProductCategoryDTO.class))
+                .collect(Collectors.toList());
+    }
+     */
+
+    @Override
     public List<ProductDTO> getProductsByPriceRange(Double min, Double max) {
         List<Product> products = productDao.findProductsByPriceRange(min, max);
         return products.stream()

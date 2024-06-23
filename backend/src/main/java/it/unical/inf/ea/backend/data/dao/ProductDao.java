@@ -23,6 +23,9 @@ public interface ProductDao extends JpaRepository<Product,String>, JpaSpecificat
 
     @Query("SELECT p FROM Product p WHERE p.productPrice BETWEEN :min AND :max")
     List<Product> findProductsByPriceRange(Double min, Double max);
+
+    @Query("SELECT DISTINCT p.brand FROM Product p")
+    List<String> findAllProductsBrands();
 }
 
 
