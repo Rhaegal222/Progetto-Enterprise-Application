@@ -36,6 +36,7 @@ class LoginViewModel : ViewModel() {
                         if (response.isSuccessful) {
                             val tokenMap = response.body()!!
                             accessToken = tokenMap["accessToken"].toString()
+                            CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
                             onResult(true, null)
                             refreshAccessToken()

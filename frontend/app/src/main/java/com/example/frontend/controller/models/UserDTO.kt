@@ -3,9 +3,11 @@ package com.example.frontend.controller.models
 data class UserDTO (
 
     val id: kotlin.String, //
+    val firstName: kotlin.String, //
+    val lastName: kotlin.String, //
     val username: kotlin.String, //
     val email: kotlin.String, //
-    val bio: kotlin.String? = null,
+    val phoneNumber: String? = null, //
     val photoProfile: UserImageDTO? = null, //
     val provider: Provider, //
     val status: Status, //
@@ -23,22 +25,20 @@ data class UserDTO (
     }
     /**
      *
-     * Values: ACTIVE,BANNED,HIDDEN,HOLIDAY,CANCELLED
+     * Values: ACTIVE,BANNED,HIDDEN,CANCELLED
      */
     enum class Status(val value: kotlin.String){
         ACTIVE("ACTIVE"),
         BANNED("BANNED"),
         HIDDEN("HIDDEN"),
-        HOLIDAY("HOLIDAY"),
         CANCELLED("CANCELLED");
     }
     /**
      *
-     * Values: ADMIN,USER,SUPERADMIN
+     * Values: ADMIN,USER
      */
     enum class Role(val value: kotlin.String){
         ADMIN("ADMIN"),
-        USER("USER"),
-        SUPERADMIN("SUPER_ADMIN");
+        USER("USER");
     }
 }

@@ -7,6 +7,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,16 +19,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.frontend.R
+import com.example.frontend.view_models.ProfileViewModel
 
 @Composable
-fun ProfilePage() {
-    println("ProfilePage loaded")
-    val profileImage = painterResource(id = R.drawable.user_image) // Replace with actual profile image resource
-    val userName = "Nome Utente" // Replace with actual username
-    val email = "email@example.com" // Replace with actual email
-    val firstName = "Nome" // Replace with actual first name
-    val lastName = "Cognome" // Replace with actual last name
+fun ProfilePage(profileViewModel: ProfileViewModel = viewModel()) {
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchUserProfile()
+    }
+
+    val firstName by profileViewModel.firstName
+    val lastName by profileViewModel.lastName
+    val email by profileViewModel.email
+    val profileImage by profileViewModel.profileImage
 
     Column(
         modifier = Modifier
@@ -44,7 +51,7 @@ fun ProfilePage() {
         Spacer(modifier = Modifier.height(50.dp))
 
         Image(
-            painter = profileImage,
+            painter = painterResource(id = profileImage),
             contentDescription = "Profile Image",
             modifier = Modifier
                 .size(140.dp)
@@ -65,9 +72,7 @@ fun ProfilePage() {
 
         ProfileField(label = "Nome", value = firstName)
         ProfileField(label = "Cognome", value = lastName)
-        ProfileField(label = "Nome Utente", value = userName)
         ProfileField(label = "Email", value = email)
-
     }
 }
 

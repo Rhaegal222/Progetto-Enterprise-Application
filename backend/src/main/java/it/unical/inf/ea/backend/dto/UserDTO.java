@@ -21,6 +21,12 @@ public class UserDTO {
     @NotNull
     private String id;
 
+    @NotNull
+    private String firstName;
+
+    @NotNull
+    private String lastName;
+
     @Length(min = 3, max = 25)
     @NotNull
     private String username;
