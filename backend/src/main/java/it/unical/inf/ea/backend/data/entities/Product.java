@@ -30,9 +30,6 @@ public class Product {
     @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "descriptionBrand", length = 1000)
-    private String descriptionBrand;
-
     @Column(name = "ingredients", length = 1000)
     private String ingredients;
 
@@ -45,8 +42,9 @@ public class Product {
     @Column(name = "deliveryPrice", nullable = false)
     private BigDecimal deliveryPrice;
 
-    @Column(name = "brand")
-    private String brand;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
 
     @Column(name = "upload_date", nullable = false)
     private LocalDateTime uploadDate;

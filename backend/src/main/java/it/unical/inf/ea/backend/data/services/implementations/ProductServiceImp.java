@@ -37,7 +37,7 @@ public class ProductServiceImp implements ProductService {
             LocalDateTime now = getTimeNow();
             Product product = new Product();
             product.setTitle(productCreateDTO.getTitle());
-            product.setBrand(productCreateDTO.getBrand());
+            product.setBrand(modelMapper.map(productCreateDTO.getBrand(), Brand.class));
             product.setProductPrice(productCreateDTO.getProductPrice());
             product.setDescription(productCreateDTO.getDescription());
             product.setIngredients(productCreateDTO.getIngredients());
@@ -119,7 +119,7 @@ public class ProductServiceImp implements ProductService {
             LocalDateTime now = getTimeNow();
             product.setTitle(productDTO.getTitle());
             product.setDescription(productDTO.getDescription());
-            product.setBrand(productDTO.getBrand());
+            product.setBrand(modelMapper.map(productDTO.getBrand(), Brand.class));
             product.setIngredients(productDTO.getIngredients());
             product.setNutritionalValues(productDTO.getNutritionalValues());
             product.setProductPrice(productDTO.getProductPrice());
@@ -129,11 +129,7 @@ public class ProductServiceImp implements ProductService {
             product.setProductWeight(productDTO.getProductWeight());
             product.setUploadDate(now);
             product.setLastUpdateDate(now);
-            ProductCategory category;
-            if(productDTO.getProductCategory().getId() == null) {
-                category = productCategoryDao.findByCategoryName(productDTO.getProductCategory().getCategoryName()).orElseThrow(EntityNotFoundException::new);
-            }
-
+            product.setProductCategory(modelMapper.map(productDTO.getProductCategory(), ProductCategory.class));
             productDao.save(product);
             return modelMapper.map(product, ProductDTO.class);
 

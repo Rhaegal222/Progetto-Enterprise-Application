@@ -40,10 +40,12 @@ public class ProductCreateDTO {
 
     @NotNull
     private Availability availability;
+
     @NotNull
     private int quantity;
-    @Length(max = 100)
-    private String brand;
+
+    @NotNull
+    private BrandDTO brand;
 
     @NotNull
     private ProductCategoryDTO productCategory;

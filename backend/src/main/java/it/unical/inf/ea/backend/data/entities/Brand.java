@@ -1,6 +1,8 @@
 package it.unical.inf.ea.backend.data.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,11 +20,15 @@ public class Brand {
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
+    @NotNull
+    @NotEmpty
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "descriptionBrand", length = 1000)
-    private String descriptionBrand;
+    @NotNull
+    @NotEmpty
+    @Column(name = "description", length = 1000)
+    private String description;
 
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
     private List<Product> products;

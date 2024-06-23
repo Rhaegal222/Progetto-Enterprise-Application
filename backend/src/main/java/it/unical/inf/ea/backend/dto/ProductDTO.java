@@ -29,9 +29,6 @@ public class ProductDTO {
     private String description;
 
     @Length(max = 1000)
-    private String descriptionBrand;
-
-    @Length(max = 1000)
     private String ingredients;
 
     @Length(max = 1000)
@@ -43,8 +40,8 @@ public class ProductDTO {
     @NotNull
     private BigDecimal deliveryPrice;
 
-    @Length(max = 100)
-    private String brand;
+    @NotNull
+    private BrandDTO brand;
 
     private String productWeight;
 
