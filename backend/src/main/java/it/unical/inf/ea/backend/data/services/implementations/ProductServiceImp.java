@@ -6,22 +6,13 @@ import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.*;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.*;
-import it.unical.inf.ea.backend.dto.basics.ProductBasicDTO;
 import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
-import it.unical.inf.ea.backend.dto.enums.*;
-import it.unical.inf.ea.backend.exception.IdMismatchException;
-import it.unical.inf.ea.backend.config.security.Constants;
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.config.security.TokenStore;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -40,6 +31,7 @@ public class ProductServiceImp implements ProductService {
     private final Clock clock;
     private final JwtContextUtils jwtContextUtils;
 
+
     @Override
     public ProductDTO addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
             LocalDateTime now = getTimeNow();
@@ -49,6 +41,7 @@ public class ProductServiceImp implements ProductService {
             product.setProductPrice(productCreateDTO.getProductPrice());
             product.setDescription(productCreateDTO.getDescription());
             product.setIngredients(productCreateDTO.getIngredients());
+            product.setProductWeight(productCreateDTO.getProductWeight());
             product.setNutritionalValues(productCreateDTO.getNutritionalValues());
             product.setQuantity(productCreateDTO.getQuantity());
             product.setDeliveryPrice(productCreateDTO.getDeliveryPrice());
@@ -69,6 +62,30 @@ public class ProductServiceImp implements ProductService {
     @Override
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productDao.findAll();
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByCategory(ProductCategory productCategory) {
+        List<Product> products = productDao.findProductByProductCategory(productCategory);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByBrand(String brand) {
+        List<Product> products = productDao.findByBrand(brand);
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByPriceRange(Double min, Double max) {
+        List<Product> products = productDao.findProductsByPriceRange(min, max);
         return products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());

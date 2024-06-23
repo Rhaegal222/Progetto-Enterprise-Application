@@ -1,7 +1,7 @@
 package it.unical.inf.ea.backend.data.dao;
 import it.unical.inf.ea.backend.data.entities.Product;
+import it.unical.inf.ea.backend.data.entities.ProductCategory;
 import it.unical.inf.ea.backend.dto.ProductDTO;
-import it.unical.inf.ea.backend.dto.enums.Availability;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,15 +15,14 @@ public interface ProductDao extends JpaRepository<Product,String>, JpaSpecificat
     @Query("SELECT p FROM Product p WHERE p.id = :id")
     ProductDTO findProductById(String id);
 
+    @Query("SELECT p FROM Product p,ProductCategory pc WHERE p.productCategory = :productCategory")
+    List<Product> findProductByProductCategory(ProductCategory productCategory);
 
     @Query("SELECT p FROM Product p WHERE p.brand = :brand")
-    List<ProductDTO> findByBrand(String brand);
+    List<Product> findByBrand(String brand);
 
-    @Query("SELECT p FROM Product p WHERE p.availability = :availability")
-    List<ProductDTO> findByAvailability(Availability availability);
-
-
-
+    @Query("SELECT p FROM Product p WHERE p.productPrice BETWEEN :min AND :max")
+    List<Product> findProductsByPriceRange(Double min, Double max);
 }
 
 

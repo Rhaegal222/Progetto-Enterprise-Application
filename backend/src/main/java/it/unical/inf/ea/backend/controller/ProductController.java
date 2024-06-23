@@ -2,7 +2,11 @@ package it.unical.inf.ea.backend.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
+import it.unical.inf.ea.backend.data.entities.Product;
+import it.unical.inf.ea.backend.data.entities.ProductCategory;
+import it.unical.inf.ea.backend.data.services.interfaces.ProductCategoryService;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
+import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
@@ -25,6 +33,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductDao productDao;
+    private final ProductCategoryService productCategoryService;
 
     @PostMapping("/addProduct")
     @ResponseStatus(HttpStatus.OK)
@@ -55,6 +64,36 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+
+
+    @PutMapping("/updateProduct/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) {
+        try {
+            ProductDTO productToUpdate = productDao.findProductById(String.valueOf(id));
+            productService.updateProduct(productToUpdate.getId(), product);
+            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("\"message\": \"Error: " + e + "\"");
+        }
+    }
+    @GetMapping("/getProductsByCategory/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getProductsByCategory(@RequestParam String categoryName) {
+        ProductCategory productCategory = productCategoryService.findByCategoryName(categoryName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        List<ProductDTO> products = productService.getProductsByCategory(productCategory);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/getProductsByBrand/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getProductsByBrand(@RequestParam String brand) {
+        List<ProductDTO> products = productService.getProductsByBrand(brand);
+        return ResponseEntity.ok(products);
+
+    }
+
     @GetMapping("/getProductById/")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getProductById(@RequestParam String id) {
@@ -62,17 +101,11 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @PutMapping("/updateProduct/")
+    @GetMapping("/getProductsByPriceRange/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) {
-        try {
-            ProductDTO productToUpdate = productDao.findProductById(String.valueOf(id));
-            productToUpdate.setTitle(product.getTitle());
-            productToUpdate.setDescription(product.getDescription());
-            productService.save(productToUpdate);
-            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("\"message\": \"Error: " + e + "\"");
-        }
+    public ResponseEntity<?> getProductsByPriceRange(@RequestParam Double min, @RequestParam Double max) {
+        List<ProductDTO> products = productService.getProductsByPriceRange(min, max);
+        return ResponseEntity.ok(products);
     }
+
 }
