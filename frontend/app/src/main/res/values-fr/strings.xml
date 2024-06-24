@@ -35,7 +35,7 @@
     <string name="github">github</string>
     <string name="instagram">instagram</string>
     <string name="twitter">instagram</string>
-    <string name="web_client_id" >pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+    <string name="web_client_id" >485345755621-drc3g0njl3ejk13eaa2e7iebh6e381h1.apps.googleusercontent.com</string>
     <string name="login_success">Connexion réussie</string>
     <string name="or">ou</string>
     <string name="not_registered_yet">Vous n\'avez pas de compte?</string>
@@ -46,4 +46,5 @@
     <string name="personal_informations">Informations personnelles</string>
     <string name="access_and_security">Accès et sécurité</string>
     <string name="change_password">Changer le mot de passe</string>
+    <string name="unknown_error">Errore sconosciuto</string>
 </resources>

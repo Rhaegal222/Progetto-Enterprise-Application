@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
+    implementation(libs.androidx.appcompat)
+    implementation("com.google.android.gms:play-services-auth:19.2.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
