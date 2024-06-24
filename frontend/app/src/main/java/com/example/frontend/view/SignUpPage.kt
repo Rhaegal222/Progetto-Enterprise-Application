@@ -172,7 +172,7 @@ fun SignUpPage(navController: NavHostController) {
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
-                                imageVector = if (isObscured) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
                                 contentDescription = null,
                                 tint = iconColor
                             )
@@ -222,11 +222,10 @@ fun SignUpPage(navController: NavHostController) {
                 onClick = { /* Handle Google Sign-In */ },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
+                Image(
                     painter = painterResource(id = R.drawable.googlelogo),
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = iconColor
+                    contentDescription = "Google Icon",
+                    modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Accedi con Google", color = textColor)

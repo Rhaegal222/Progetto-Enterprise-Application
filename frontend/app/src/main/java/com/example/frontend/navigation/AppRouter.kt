@@ -13,6 +13,8 @@ sealed class Screen(val route: String) {
 }
 
 sealed class Navigation(val route: String) {
+    object SignUpPage : Navigation(route = "signup_page")
+    object LoginPage : Navigation(route = "login_page")
     object HomePage : Navigation(route = "home_page")
     object ProfilePage : Navigation(route = "profile_page")
     object CartPage : Navigation(route = "cart_page")

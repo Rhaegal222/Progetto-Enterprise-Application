@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,9 @@ fun WelcomeScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Spacer(modifier = Modifier.height(height * 0.1f))
+
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
@@ -48,25 +51,31 @@ fun WelcomeScreen(navController: NavHostController) {
                     .size(400.dp)
                     .padding(16.dp)
             )
+
             Text(
-                text = "Benvenuto",
+                text = stringResource(id = R.string.welcome),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = textColor,
                 textAlign = TextAlign.Center
             )
+
             Spacer(modifier = Modifier.height(10.dp))
+
             Text(
-                text = "Accedi o registrati per acquistare i prodotti",
+                text = stringResource(id = R.string.welcome_description),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = textColor
             )
+
             Spacer(modifier = Modifier.height(30.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+
                 OutlinedButton(
                     onClick = {
                         navController.navigate(Screen.LoginScreen.route)
@@ -77,9 +86,15 @@ fun WelcomeScreen(navController: NavHostController) {
                     ),
                     border = BorderStroke(1.dp, Color.Black)
                 ) {
-                    Text(text = "LOGIN")
+                    Text(
+                        text = stringResource(id = R.string.login).uppercase(),
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+
                 Spacer(modifier = Modifier.width(10.dp))
+
                 Button(
                     onClick = {
                         navController.navigate(Screen.SignUpScreen.route)
@@ -90,7 +105,11 @@ fun WelcomeScreen(navController: NavHostController) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "REGISTRATI")
+                    Text(
+                        text = stringResource(id = R.string.register).uppercase(),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))

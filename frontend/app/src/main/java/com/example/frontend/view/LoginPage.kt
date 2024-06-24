@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -65,7 +66,9 @@ fun LoginPage(navController: NavHostController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "LOGIN", color = if (isDarkMode) Color.White else Color.Black)
+                    Text(
+                        text = stringResource(id = R.string.login).uppercase(),
+                        color = if (isDarkMode) Color.White else Color.Black)
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -94,16 +97,6 @@ fun LoginPage(navController: NavHostController) {
                         .height(size.height * 0.25f)
                         .fillMaxWidth()
                 )
-                Text(
-                    text = "ACCEDI",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-                Text(
-                    text = "Accedi per acquistare i prodotti",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
             }
 
             val inputBorderColor = Color.Gray
@@ -118,7 +111,12 @@ fun LoginPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.username,
                     onValueChange = { viewModel.username = it },
-                    label = { Text("E-mail", color = textColor) },
+                    label = {
+                            Text(
+                                text = stringResource(id = R.string.email),
+                                color = textColor
+                            )
+                            },
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null, tint = iconColor)
                     },
@@ -136,12 +134,17 @@ fun LoginPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.password,
                     onValueChange = { viewModel.password = it },
-                    label = { Text("Password", color = textColor) },
-                    leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null, tint = iconColor) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.password),
+                            color = textColor
+                        )
+                            },
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = iconColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
-                                imageVector = if (isObscured) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
                                 contentDescription = null,
                                 tint = iconColor
                             )
@@ -163,7 +166,10 @@ fun LoginPage(navController: NavHostController) {
                     onClick = { navController.navigate(Screen.ForgetPassword.route) },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text(text = "Password dimenticata?", color = textColor)
+                    Text(
+                        text = stringResource(id = R.string.forgot_password),
+                        color = textColor
+                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
@@ -183,7 +189,11 @@ fun LoginPage(navController: NavHostController) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "login".uppercase())
+                    Text(
+                        text = stringResource(id = R.string.login).uppercase(),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
 

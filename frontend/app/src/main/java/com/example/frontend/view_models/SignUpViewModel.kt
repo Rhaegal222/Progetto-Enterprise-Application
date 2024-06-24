@@ -11,12 +11,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewModelScope
-
 class SignUpViewModel : ViewModel() {
     var lastname by mutableStateOf("")
     var firstname by mutableStateOf("")

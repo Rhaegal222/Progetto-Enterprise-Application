@@ -1,15 +1,10 @@
 package com.example.frontend.view.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -17,11 +12,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.frontend.R
 import com.example.frontend.navigation.Navigation
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +70,7 @@ fun TopBar(navController: NavHostController) {
 
                         route != null && route.contains(Navigation.ProfileMenuPage.route) -> {
                             Text(
-                                text = stringResource(id = R.string.menuProfile),
+                                text = stringResource(id = R.string.menu_profile),
                                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                                 textAlign = TextAlign.Center
                             )
