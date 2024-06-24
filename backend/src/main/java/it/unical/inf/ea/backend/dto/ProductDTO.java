@@ -14,8 +14,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @ToString
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
-
 public class ProductDTO {
 
     @NotNull

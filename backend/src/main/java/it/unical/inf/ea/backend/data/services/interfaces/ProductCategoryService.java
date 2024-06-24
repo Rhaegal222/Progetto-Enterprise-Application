@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface ProductCategoryService {
 
     void addCategory(ProductCategoryDTO productCategoryDto);
-    void deleteCategory(String id);
+    void deleteCategory(Integer id);
     List<ProductCategoryDTO> getAllCategories();
-    Optional<ProductCategory> findByCategoryId(String id);
+    Optional<ProductCategory> findByCategoryId(Integer id);
     Optional<ProductCategory> findByCategoryName(String categoryName);
 }

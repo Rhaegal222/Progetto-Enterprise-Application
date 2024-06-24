@@ -2,8 +2,10 @@ package it.unical.inf.ea.backend.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
+import it.unical.inf.ea.backend.data.entities.Brand;
 import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.ProductCategory;
+import it.unical.inf.ea.backend.data.services.interfaces.BrandService;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductCategoryService;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
@@ -34,6 +36,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductDao productDao;
     private final ProductCategoryService productCategoryService;
+    private final BrandService brandService;
 
     @PostMapping("/addProduct")
     @ResponseStatus(HttpStatus.OK)
@@ -64,24 +67,18 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @GetMapping("/getAllProductsBrands")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getAllProductsBrands() {
-        List<String> brands = productService.getAllProductsBrands();
-        return ResponseEntity.ok(brands);
-    }
+//    @GetMapping("/getAllProductsBrands")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ResponseEntity<?> getAllProductsBrands() {
+//        List<String> brands = productService.getAllProductsBrands();
+//        return ResponseEntity.ok(brands);
+//    }
 
 
     @PutMapping("/updateProduct/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) {
-        try {
-            ProductDTO productToUpdate = productDao.findProductById(String.valueOf(id));
-            productService.updateProduct(productToUpdate.getId(), product);
-            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("\"message\": \"Error: " + e + "\"");
-        }
+    public ResponseEntity<ProductDTO> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) {
+        return ResponseEntity.ok(productService.updateProduct(id, product));
     }
     @GetMapping("/getProductsByCategory/")
     @ResponseStatus(HttpStatus.OK)
@@ -94,10 +91,11 @@ public class ProductController {
 
     @GetMapping("/getProductsByBrand/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getProductsByBrand(@RequestParam String brand) {
+    public ResponseEntity<?> getProductsByBrand(@RequestParam String brandName) {
+        Brand brand = brandService.findBrandByName(brandName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Brand not found"));
         List<ProductDTO> products = productService.getProductsByBrand(brand);
         return ResponseEntity.ok(products);
-
     }
 
     @GetMapping("/getProductById/")

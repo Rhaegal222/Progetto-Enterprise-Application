@@ -12,7 +12,8 @@ import lombok.*;
 @ToString
 public class ProductCategoryDTO  {
 
-    private String id;
+    @NotNull
+    private Integer id;
 
     @NotNull
     @NotEmpty

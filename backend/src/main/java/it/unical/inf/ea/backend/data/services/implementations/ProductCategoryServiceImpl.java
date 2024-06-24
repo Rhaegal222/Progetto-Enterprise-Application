@@ -32,8 +32,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public void deleteCategory(String id) {
-        this.productCategoryDao.deleteById(id);
+    public void deleteCategory(Integer id) {
+        this.productCategoryDao.deleteById(String.valueOf(id));
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public Optional<ProductCategory> findByCategoryId(String id) {
-        return productCategoryDao.findById(id);
+    public Optional<ProductCategory> findByCategoryId(Integer id) {
+        return productCategoryDao.findById(String.valueOf(id));
     }
 
     @Override
