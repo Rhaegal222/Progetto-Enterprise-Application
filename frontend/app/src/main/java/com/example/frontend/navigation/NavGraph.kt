@@ -11,8 +11,8 @@ import com.example.frontend.view.AboutPage
 import com.example.frontend.view.CartPage
 import com.example.frontend.view.HomePage
 import com.example.frontend.view.LoginPage
-import com.example.frontend.view.MenuPage
-import com.example.frontend.view.ProfileMenuPage
+import com.example.frontend.view.menu.MenuPage
+import com.example.frontend.view.menu.ProfileMenuPage
 import com.example.frontend.view.ProfilePage
 import com.example.frontend.view.SignUpPage
 import com.example.frontend.view.screen.ForgetPasswordScreen

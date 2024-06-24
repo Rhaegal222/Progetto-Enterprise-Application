@@ -33,7 +33,7 @@ fun AboutPage(){
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row() {
+        Row {
             Text(
                 text = stringResource(R.string.about_description),
                 style = TextStyle(fontSize = 20.sp),
@@ -59,7 +59,7 @@ fun AboutPage(){
             ) {
                 Icon(
                     imageVector = FontAwesomeIcons.Brands.Github,
-                    contentDescription = stringResource(R.string.github),
+                    contentDescription = stringResource(R.string.social_github),
                     tint = Color.White
                 )
             }
@@ -74,7 +74,7 @@ fun AboutPage(){
             ) {
                 Icon(
                     imageVector = FontAwesomeIcons.Brands.Instagram,
-                    contentDescription = stringResource(R.string.instagram),
+                    contentDescription = stringResource(R.string.social_instagram),
                     tint = Color.White
                 )
             }
@@ -89,7 +89,7 @@ fun AboutPage(){
             ) {
                 Icon(
                     imageVector = FontAwesomeIcons.Brands.Twitter,
-                    contentDescription = stringResource(R.string.twitter),
+                    contentDescription = stringResource(R.string.social_twitter),
                     tint = Color.White
                 )
             }

@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.example.frontend.view.menu
 
 import android.content.ComponentName
 import android.content.Intent
@@ -36,7 +36,7 @@ fun ProfileMenuPage(navController: NavHostController) {
             modifier = Modifier.padding(16.dp)
         )
 
-        ProfileMenuItem(navController, Icons.Default.LocalShipping, R.string.account_my_orders)
+        ProfileMenuItem(navController, Icons.Default.LocalShipping, R.string.my_orders)
         ProfileMenuItem(navController, Icons.Default.Favorite, R.string.wishlist)
         ProfileMenuItem(navController, Icons.Default.Payment, R.string.payment_methods)
         ProfileMenuItem(navController, Icons.Default.LocationOn, R.string.shipping_addresses)
@@ -64,8 +64,10 @@ fun ProfileMenuItem(navController: NavHostController, icon: ImageVector, textRes
                         .exit(0)
                 } else {
                     when (textResId) {
-                        R.string.profile -> navController.navigate(Navigation.ProfilePage.route)
-                        // Add other navigation logic here
+                        // R.string.my_orders -> navController.navigate(Navigation.MyOrdersPage.route)
+                        // R.string.wishlist -> navController.navigate(Navigation.WishlistPage.route)
+                        // R.string.payment_methods -> navController.navigate(Navigation.PaymentMethodsPage.route)
+                        // R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
                     }
                 }
             }

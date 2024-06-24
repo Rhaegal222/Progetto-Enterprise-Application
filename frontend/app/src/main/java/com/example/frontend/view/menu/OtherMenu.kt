@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.example.frontend.view.menu
 
 import android.content.ComponentName
 import android.content.Intent
@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,7 +18,6 @@ import com.example.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Store
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.example.frontend.model.CurrentDataUtils
@@ -31,8 +29,8 @@ fun MenuPage(navController: NavHostController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        MenuItem(navController, Icons.Default.Info, R.string.menu_about, false)
-        MenuItem(navController, Icons.Default.Logout, R.string.menu_logout, false)
+        MenuItem(navController, Icons.Default.Info, R.string.about, false)
+        MenuItem(navController, Icons.Default.Logout, R.string.logout, false)
     }
 }
 
@@ -57,8 +55,8 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                         .exit(0)
                 } else {
                     when (textResId) {
-                        R.string.my_profile -> navController.navigate(Navigation.ProfilePage.route)
-                        // Add other navigation logic here
+                        R.string.about -> navController.navigate(Navigation.AboutPage.route)
+                        R.string.logout -> navController.navigate(Navigation.LoginPage.route)
                     }
                 }
             }

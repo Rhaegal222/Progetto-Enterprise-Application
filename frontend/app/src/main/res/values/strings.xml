@@ -1,23 +1,12 @@
 <resources>
     <string name="app_name">Frontend</string>
     <string name="web_client_id">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+
+    <!-- Bottom Navigation -->
     <string name="home">Home</string>
-    <string name="profile">Profile</string>
+    <string name="profile">Profilo</string>
     <string name="cart">Carrello</string>
     <string name="menu">Menu</string>
-    <string name="back">Indietro</string>
-    <string name="about">Chi Siamo?</string>
-    <string name="products">Prodotti</string>
-    <string name="my_profile">Il mio profilo</string>
-    <string name="orders">I miei ordini</string>
-    <string name="wishlist">Lista desideri</string>
-    <string name="payment_methods">Metodi di pagamento</string>
-    <string name="shipping_addresses">Indirizzi di spedizione</string>
-    <string name="logout">Esci</string>
-    <string name="about_description">"La nostra missione è portare sulla vostra tavola il meglio della tradizione culinaria calabrese, offrendo prodotti autentici e di alta qualità. Siamo un team appassionato e dedicato che crede nel valore della tradizione e nella ricchezza dei sapori della nostra terra."</string>
-    <string name="github">Github</string>
-    <string name="twitter">Twitter</string>
-    <string name="instagram">Instagram</string>
 
     <!-- Welcome -->
     <string name="welcome">Benvenuto</string>
@@ -47,8 +36,6 @@
     <string name="register_success">Registrazione avvenuta con successo</string>
     <string name="register_error">Errore durante la registrazione</string>
     <string name="login_error">Errore durante l\'accesso</string>
-    <string name="logout_success">Disconnessione avvenuta con successo</string>
-    <string name="logout_error">Errore durante la disconnessione</string>
     <string name="email_error">E-mail non valida</string>
     <string name="password_error">Password non valida</string>
     <string name="passwords_error">Le password non corrispondono</string>
@@ -58,8 +45,12 @@
     <string name="reset_password_title">Reimposta password</string>
     <string name="reset_password_description">Inserisci la tua e-mail per ricevere un link per reimpostare la tua password</string>
     <string name="reset_password_button">Invia</string>
-
-
+    <string name="reset_password_email">E-mail di recupero</string>
+    <string name="reset_password_email_error">E-mail di recupero non valida</string>
+    <string name="reset_password_email_sent">E-mail di recupero inviata con successo</string>
+    <string name="reset_password_email_not_sent">Errore durante l\'invio dell\'e-mail di recupero</string>
+    <string name="reset_password_email_not_found">E-mail di recupero non trovata</string>
+    <string name="reset_password_email_subject">Reimposta password</string>
 
     <!-- Social -->
     <string name="social_facebook">Facebook</string>
@@ -69,30 +60,23 @@
     <string name="social_linkedin">LinkedIn</string>
     <string name="social_github">GitHub</string>
 
-    <!-- Menu -->
-    <string name="menu_home">Home</string>
-    <string name="menu_profile">Profilo</string>
-    <string name="menu_cart">Carrello</string>
-    <string name="menu_about">Chi Siamo?</string>
-    <string name="menu_logout">Esci</string>
-    <string name="menu_login">Accedi</string>
-    <string name="menu_register">Registrati</string>
-    <string name="menu_wishlist">Lista desideri</string>
-    <string name="menu_orders">I miei ordini</string>
-    <string name="menu_payment_methods">Metodi di pagamento</string>
-    <string name="menu_shipping_addresses">Indirizzi di spedizione</string>
-    <string name="menu_products">Prodotti</string>
-    <string name="menu_categories">Categorie</string>
-    <string name="menu_search">Cerca</string>
-    <string name="menu_settings">Impostazioni</string>
-    <string name="menu_language">Lingua</string>
-    <string name="menu_currency">Valuta</string>
-    <string name="menu_dark_mode">Modalità scura</string>
-    <string name="menu_notifications">Notifiche</string>
-    <string name="menu_help">Aiuto</string>
-    <string name="menu_terms">Termini e condizioni</string>
-    <string name="menu_privacy">Privacy</string>
-    <string name="menu_version">Versione</string>
-    <string name="menu_contact">Contatti</string>
+    <!-- Profile Menu Items -->
+    <string name="my_orders">I miei ordini</string>
+    <string name="wishlist">Lista dei desideri</string>
+    <string name="payment_methods">Metodi di pagamento</string>
+    <string name="shipping_addresses">Indirizzi di spedizione</string>
+
+    <!-- Other Menu Items -->
+    <!-- About -->
+    <string name="about">Chi siamo?</string>
+    <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
+
+    <!-- Logout -->
+    <string name="logout">Esci</string>
+    <string name="logout_description">Sei sicuro di voler uscire?</string>
+    <string name="logout_confirm">Conferma</string>
+    <string name="logout_cancel">Annulla</string>
+    <string name="logout_success">Disconnessione avvenuta con successo</string>
+    <string name="logout_error">Errore durante la disconnessione</string>
 
 </resources>
