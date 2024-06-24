@@ -46,5 +46,11 @@
     <string name="personal_informations">Personal informations</string>
     <string name="access_and_security">Access and security</string>
     <string name="change_password">Change Password</string>
-    <string name="unknown_error">Errore sconosciuto</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="oldPassword">Old Password</string>
+    <string name="newPassword">New Password</string>
+    <string name="repeatNewPassword">Repeat the new password</string>
+    <string name="passwordMissmatch">Passwords do not match</string>
+    <string name="passwordTooShort">Password too short</string>
+    <string name="apply">Apply changes</string>
 </resources>

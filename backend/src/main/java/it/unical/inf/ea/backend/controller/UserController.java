@@ -42,7 +42,7 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final Oauth2GoogleValidation oauth2GoogleValidation;
-  
+
     @PostMapping(path = "/authenticate" )
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Map<String, String>> authenticate( @RequestParam( "username" ) String username, @RequestParam( "password" ) String password, HttpServletResponse
@@ -71,7 +71,7 @@ public class UserController {
 
     @PatchMapping(path="/{id}", consumes = "application/json")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") String id, @Valid @RequestBody UserDTO patch) throws IllegalAccessException {
-            return ResponseEntity.ok(userService.updateUser(id,patch));
+        return ResponseEntity.ok(userService.updateUser(id,patch));
     }
 
     @DeleteMapping(path="/{id}")
@@ -134,11 +134,6 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/changePassword")
-    public ResponseEntity<Void> changePassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword, HttpServletRequest request) throws EntityNotFoundException, MessagingException, ParseException, JOSEException {
-        userService.changePassword(oldPassword, newPassword, request);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/resetPassword")
     public ResponseEntity<Void> resetPassword(@RequestParam("email") String email) throws EntityNotFoundException, MessagingException {
@@ -146,9 +141,15 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/changePassword")
+    public ResponseEntity<Void> changePassword(@RequestParam("token") String token, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) throws EntityNotFoundException, ParseException, JOSEException {
+        userService.changePassword(token, oldPassword, newPassword);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/getNewPassword")
-    public ResponseEntity<Void> resetPasswordToken(@RequestParam("token") String token) throws EntityNotFoundException, ParseException, JOSEException, MessagingException {
-        userService.changePassword(token);
+    public ResponseEntity<Void> getNewPassword(@RequestParam("token") String token) throws EntityNotFoundException, ParseException, JOSEException, MessagingException {
+        userService.getNewPasswordByEmail(token);
         return ResponseEntity.ok().build();
     }
 }

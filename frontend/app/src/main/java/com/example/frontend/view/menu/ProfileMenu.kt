@@ -40,7 +40,7 @@ fun ProfileMenu(navController: NavHostController) {
         ProfileMenuItem(navController, Icons.Default.Favorite, R.string.wishlist)
         ProfileMenuItem(navController, Icons.Default.Payment, R.string.payment_methods)
         ProfileMenuItem(navController, Icons.Default.LocationOn, R.string.shipping_addresses)
-        }
+    }
 }
 
 @Composable
