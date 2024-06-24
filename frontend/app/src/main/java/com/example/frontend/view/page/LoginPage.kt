@@ -61,6 +61,7 @@ fun LoginPage(navController: NavHostController) {
     val loginViewModel: LoginViewModel = viewModel()
 
     val state = rememberOneTapSignInState()
+    val loginErrorString = stringResource(id = R.string.login_failed)
 
     Scaffold(
         topBar = {
@@ -68,7 +69,8 @@ fun LoginPage(navController: NavHostController) {
                 title = {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
-                        color = if (isDarkMode) Color.White else Color.Black)
+                        color = if (isDarkMode) Color.White else Color.Black
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -112,20 +114,20 @@ fun LoginPage(navController: NavHostController) {
                     value = viewModel.username,
                     onValueChange = { viewModel.username = it },
                     label = {
-                            Text(
-                                text = stringResource(id = R.string.email),
-                                color = textColor
-                            )
-                            },
+                        Text(
+                            text = stringResource(id = R.string.email),
+                            color = textColor
+                        )
+                    },
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null, tint = iconColor)
                     },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = textColor,
                         focusedBorderColor = inputBorderColor,
                         unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
                     ),
                 )
 
@@ -139,7 +141,7 @@ fun LoginPage(navController: NavHostController) {
                             text = stringResource(id = R.string.password),
                             color = textColor
                         )
-                            },
+                    },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = iconColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
@@ -153,10 +155,10 @@ fun LoginPage(navController: NavHostController) {
                     singleLine = true,
                     visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = textColor,
                         focusedBorderColor = inputBorderColor,
                         unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
                     ),
                 )
 
@@ -171,15 +173,20 @@ fun LoginPage(navController: NavHostController) {
                         color = textColor
                     )
                 }
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
                     onClick = {
                         viewModel.loginUser { success, errorMessage ->
                             if (success) {
-                                Toast.makeText(context, "Login avvenuto con successo", Toast.LENGTH_SHORT).show()
                                 navController.navigate(Screen.MainScreen.route)
                             } else {
-                                Toast.makeText(context, "Login fallito: $errorMessage", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    errorMessage ?: loginErrorString,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     },
@@ -201,7 +208,10 @@ fun LoginPage(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("OPPURE")
+                Text(
+                    text = stringResource(id = R.string.or),
+                    color = textColor
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 GoogleSignInButton(
@@ -225,9 +235,13 @@ fun LoginPage(navController: NavHostController) {
                 ) {
                     Text(
                         buildAnnotatedString {
-                            append(text = "Non hai un account ?")
+                            append(
+                                text = stringResource(id = R.string.not_registered_yet) + " "
+                            )
                             withStyle(style = SpanStyle(color = Color.Blue)) {
-                                append(" Registrati ora")
+                                append(
+                                    text = stringResource(id = R.string.sign_up)
+                                )
                             }
                         },
                         color = textColor
@@ -261,7 +275,9 @@ fun GoogleSignInButton(
             tint = iconColor
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "Accedi con Google", color = iconColor)
+        Text(
+            text = stringResource(id = R.string.sign_up_with_google),
+            color = iconColor)
     }
 
     OneTapSignInWithGoogle(

@@ -103,7 +103,7 @@ fun SignUpPage(navController: NavHostController) {
                 Text(
                     buildAnnotatedString {
                         append(
-                            text = stringResource(id = R.string.already_have_account)
+                            text = stringResource(id = R.string.already_have_account) + " "
                         )
                         withStyle(style = SpanStyle(color = Color.Blue)) {
                             append(text = stringResource(id = R.string.login))
@@ -120,10 +120,11 @@ fun SignUpPage(navController: NavHostController) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 OutlinedTextField(
-                    value = viewModel.lastname,
-                    onValueChange = { viewModel.lastname = it },
-                    label = { Text("Cognome", color = textColor) },
+                    value = viewModel.firstname,
+                    onValueChange = { viewModel.firstname = it },
+                    label = { Text(stringResource(id = R.string.firstname), color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -136,9 +137,9 @@ fun SignUpPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = viewModel.firstname,
-                    onValueChange = { viewModel.firstname = it },
-                    label = { Text("Nome", color = textColor) },
+                    value = viewModel.lastname,
+                    onValueChange = { viewModel.lastname = it },
+                    label = { Text(stringResource(id = R.string.lastname), color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -153,7 +154,7 @@ fun SignUpPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
-                    label = { Text("E-mail", color = textColor) },
+                    label = { Text(stringResource(id = R.string.email), color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -168,7 +169,7 @@ fun SignUpPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = viewModel.password,
                     onValueChange = { viewModel.password = it },
-                    label = { Text("Password", color = textColor) },
+                    label = { Text(stringResource(id = R.string.password), color = textColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
@@ -215,14 +216,14 @@ fun SignUpPage(navController: NavHostController) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "REGISTRATI")
+                    Text(stringResource(id = R.string.register).uppercase())
                 }
 
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("OPPURE", color = textColor)
+            Text(stringResource(id = R.string.or), color = textColor)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -236,7 +237,7 @@ fun SignUpPage(navController: NavHostController) {
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Accedi con Google", color = textColor)
+                Text(text = stringResource(id = R.string.login_with_google))
             }
         }
     }

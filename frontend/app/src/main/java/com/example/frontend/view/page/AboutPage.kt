@@ -97,7 +97,7 @@ fun AboutPage(navController: NavController){
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Github,
-                        contentDescription = stringResource(R.string.social_github),
+                        contentDescription = stringResource(R.string.github),
                         tint = Color.White
                     )
                 }
@@ -112,7 +112,7 @@ fun AboutPage(navController: NavController){
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Instagram,
-                        contentDescription = stringResource(R.string.social_instagram),
+                        contentDescription = stringResource(R.string.instagram),
                         tint = Color.White
                     )
                 }
@@ -127,7 +127,7 @@ fun AboutPage(navController: NavController){
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Twitter,
-                        contentDescription = stringResource(R.string.social_twitter),
+                        contentDescription = stringResource(R.string.twitter),
                         tint = Color.White
                     )
                 }

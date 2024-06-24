@@ -43,4 +43,7 @@
     <string name="sign_up_with_google">Regístrate con Google</string>
     <string name="login_with_google">Iniciar sesión con Google</string>
     <string name="login_failed">Iniciar sesión sin éxito</string>
+    <string name="personal_informations">Informazioni personali</string>
+    <string name="access_and_security">Accesso e sicurezza</string>
+    <string name="change_password">Cambia password</string>
 </resources>

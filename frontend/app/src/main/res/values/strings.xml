@@ -42,4 +42,7 @@
     <string name="not_registered_yet">Non hai un account?</string>
     <string name="sign_up">Registrati ora!</string>
     <string name="login_failed">Accesso fallito</string>
+    <string name="personal_informations">Informazioni personali</string>
+    <string name="access_and_security">Accesso e sicurezza</string>
+    <string name="change_password">Cambia password</string>
 </resources>
