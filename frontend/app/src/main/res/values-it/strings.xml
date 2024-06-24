@@ -47,4 +47,10 @@
     <string name="access_and_security">Accesso e sicurezza</string>
     <string name="change_password">Cambia password</string>
     <string name="unknown_error">Errore sconosciuto</string>
+    <string name="oldPassword">Vecchia Password</string>
+    <string name="newPassword">Nuova Password</string>
+    <string name="repeatNewPassword">Ripeti la nuova password</string>
+    <string name="passwordMissmatch">Le password non corrispondono</string>
+    <string name="passwordTooShort">Password troppo corta</string>
+    <string name="apply">Applica i cambiamenti</string>
 </resources>

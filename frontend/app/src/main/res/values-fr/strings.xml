@@ -46,5 +46,11 @@
     <string name="personal_informations">Informations personnelles</string>
     <string name="access_and_security">Accès et sécurité</string>
     <string name="change_password">Changer le mot de passe</string>
-    <string name="unknown_error">Errore sconosciuto</string>
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="oldPassword">Ancien mot de passe</string>
+    <string name="newPassword">Nouveau mot de passe</string>
+    <string name="repeatNewPassword">Répétez le nouveau mot de passe</string>
+    <string name="passwordMissmatch">Les mots de passe ne correspondent pas</string>
+    <string name="passwordTooShort">Mot de passe trop court</string>
+    <string name="apply">Appliquer les modifications</string>
 </resources>

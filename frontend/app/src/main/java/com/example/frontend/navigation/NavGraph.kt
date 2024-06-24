@@ -16,6 +16,7 @@ import com.example.frontend.view.page.LoginPage
 import com.example.frontend.view.menu.OtherMenu
 import com.example.frontend.view.menu.ProfileMenu
 import com.example.frontend.view.menu.SecurityMenu
+import com.example.frontend.view.page.ChangePasswordPage
 import com.example.frontend.view.page.SignUpPage
 import com.example.frontend.view.screen.ForgetPasswordScreen
 import com.example.frontend.view.screen.MainScreen
@@ -72,6 +73,9 @@ fun MainPageGraph(navController: NavHostController) {
         }
         composable(Navigation.SecurityMenu.route) {
             SecurityMenu(navController)
+        }
+        composable(Navigation.ChangePasswordPage.route) {
+            ChangePasswordPage(navController)
         }
     }
 }

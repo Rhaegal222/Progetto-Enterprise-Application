@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.frontend.navigation.Navigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -65,7 +66,7 @@ fun SecurityItem(navController: NavHostController, icon: ImageVector, textResId:
             .padding(8.dp)
             .clickable {
                 when (textResId) {
-                    // R.string.change_password -> navController.navigate(Navigation.ChangePasswordPage.route)
+                    R.string.change_password -> navController.navigate(Navigation.ChangePasswordPage.route)
                 }
             }
     ) {

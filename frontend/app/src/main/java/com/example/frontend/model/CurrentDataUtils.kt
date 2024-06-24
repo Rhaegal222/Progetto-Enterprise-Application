@@ -44,6 +44,9 @@ object CurrentDataUtils {
         get() = _accessToken.value
         set(newValue) { _accessToken.value = newValue }
 
+    val currentUser: UserDTO?
+        get() = _currentUser.value
+
     val showLoadingScreen: MutableState<Boolean>
         get() = _showLoadingScreen
 
