@@ -1,10 +1,14 @@
-package com.example.frontend.view
+package com.example.frontend.view.page
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,13 +23,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.frontend.view_models.ProfileViewModel
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AccountPage(profileViewModel: ProfileViewModel = viewModel()) {
+fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
     LaunchedEffect(Unit) {
         profileViewModel.fetchUserProfile()
     }
+
+    val isDarkMode = isSystemInDarkTheme()
 
     val firstName by profileViewModel.firstName
     val lastName by profileViewModel.lastName
@@ -33,46 +43,71 @@ fun AccountPage(profileViewModel: ProfileViewModel = viewModel()) {
     val phoneNumber by profileViewModel.phoneNumber
     val profileImage by profileViewModel.profileImage
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFFe3f2fd),
-                        Color(0xFFbbdefb),
-                        Color(0xFF90caf9),
-                    )
-                )
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                colors = topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                title = { },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+            )
+        }
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
 
-        Image(
-            painter = painterResource(id = profileImage),
-            contentDescription = "Profile Image",
+        Column(
             modifier = Modifier
-                .size(140.dp)
-                .clip(CircleShape)
-        )
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFe3f2fd),
+                            Color(0xFFbbdefb),
+                            Color(0xFF90caf9),
+                        )
+                    )
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
 
-        Spacer(modifier = Modifier.height(50.dp))
+            Image(
+                painter = painterResource(id = profileImage),
+                contentDescription = "Profile Image",
+                modifier = Modifier
+                    .size(140.dp)
+                    .clip(CircleShape)
+            )
 
-        Text(
-            text = "Il tuo profilo",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            fontSize = 25.sp,
-            color = Color.Black
-        )
+            Spacer(modifier = Modifier.height(50.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Il tuo profilo",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                fontSize = 25.sp,
+                color = Color.Black
+            )
 
-        ProfileField(label = "Nome", value = firstName)
-        ProfileField(label = "Cognome", value = lastName)
-        ProfileField(label = "Email", value = email)
-        ProfileField(label = "Numero di telefono", value = phoneNumber)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            ProfileField(label = "Nome", value = firstName)
+            ProfileField(label = "Cognome", value = lastName)
+            ProfileField(label = "Email", value = email)
+            ProfileField(label = "Numero di telefono", value = phoneNumber)
+        }
     }
 }
 

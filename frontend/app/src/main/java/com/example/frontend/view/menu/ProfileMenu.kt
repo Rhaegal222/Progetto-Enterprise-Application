@@ -25,7 +25,7 @@ import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-fun ProfileMenuPage(navController: NavHostController) {
+fun ProfileMenu(navController: NavHostController) {
     val userName = "Nome Utente"
     Column(modifier = Modifier
         .fillMaxSize()

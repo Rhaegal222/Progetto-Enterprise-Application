@@ -18,19 +18,22 @@ import com.example.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.ManageAccounts
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.example.frontend.model.CurrentDataUtils
 
 @Composable
-fun MenuPage(navController: NavHostController) {
+fun OtherMenu(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        MenuItem(navController, Icons.Default.ManageAccounts, R.string.account, false)
         MenuItem(navController, Icons.Default.Info, R.string.about, false)
-        MenuItem(navController, Icons.Default.Logout, R.string.logout, false)
+        MenuItem(navController, Icons.Default.Logout, R.string.logout, true)
     }
 }
 
@@ -55,8 +58,8 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                         .exit(0)
                 } else {
                     when (textResId) {
+                        R.string.account -> navController.navigate(Navigation.AccountPage.route)
                         R.string.about -> navController.navigate(Navigation.AboutPage.route)
-                        R.string.logout -> navController.navigate(Navigation.LoginPage.route)
                     }
                 }
             }

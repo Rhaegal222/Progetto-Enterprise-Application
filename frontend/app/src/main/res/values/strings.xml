@@ -19,38 +19,12 @@
     <string name="register">Registrati</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
-    <string name="confirm_password">Conferma password</string>
+
+    <!-- Register -->
+    <string name="firstname">Nome</string>
+    <string name="lastname">Cognome</string>
     <string name="forgot_password">Password dimenticata?</string>
-    <string name="reset_password">Reimposta password</string>
-    <string name="new_user">Nuovo utente?</string>
-    <string name="already_registered">Già registrato?</string>
-    <string name="name">Nome</string>
-    <string name="surname">Cognome</string>
-    <string name="phone">Telefono</string>
-    <string name="address">Indirizzo</string>
-    <string name="city">Città</string>
-    <string name="postal_code">CAP</string>
-    <string name="country">Paese</string>
-    <string name="register_now">Registrati ora</string>
-    <string name="login_now">Accedi ora</string>
-    <string name="register_success">Registrazione avvenuta con successo</string>
-    <string name="register_error">Errore durante la registrazione</string>
-    <string name="login_error">Errore durante l\'accesso</string>
-    <string name="email_error">E-mail non valida</string>
-    <string name="password_error">Password non valida</string>
-    <string name="passwords_error">Le password non corrispondono</string>
-    <string name="required_error">Campo obbligatorio</string>
-    <string name="reset_password_success">E-mail di recupero inviata con successo</string>
-    <string name="reset_password_error">Errore durante l\'invio dell\'e-mail di recupero</string>
-    <string name="reset_password_title">Reimposta password</string>
-    <string name="reset_password_description">Inserisci la tua e-mail per ricevere un link per reimpostare la tua password</string>
-    <string name="reset_password_button">Invia</string>
-    <string name="reset_password_email">E-mail di recupero</string>
-    <string name="reset_password_email_error">E-mail di recupero non valida</string>
-    <string name="reset_password_email_sent">E-mail di recupero inviata con successo</string>
-    <string name="reset_password_email_not_sent">Errore durante l\'invio dell\'e-mail di recupero</string>
-    <string name="reset_password_email_not_found">E-mail di recupero non trovata</string>
-    <string name="reset_password_email_subject">Reimposta password</string>
+    <string name="already_have_account">Hai già un account?</string>
 
     <!-- Social -->
     <string name="social_facebook">Facebook</string>
@@ -68,6 +42,8 @@
 
     <!-- Other Menu Items -->
     <!-- About -->
+    <string name="account">Account</string>
+    <string name="settings">Impostazioni</string>
     <string name="about">Chi siamo?</string>
     <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
 

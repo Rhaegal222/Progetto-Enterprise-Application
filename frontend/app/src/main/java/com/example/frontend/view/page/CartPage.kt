@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.example.frontend.view.page
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

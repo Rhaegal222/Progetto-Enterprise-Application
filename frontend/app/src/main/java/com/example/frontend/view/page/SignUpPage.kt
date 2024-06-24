@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.example.frontend.view.page
 
 import android.annotation.SuppressLint
 import android.widget.Toast
@@ -42,7 +42,6 @@ import com.example.frontend.navigation.Screen
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.res.stringResource
-import com.example.frontend.navigation.Navigation
 
 
 @OptIn(ExperimentalMaterial3Api::class)

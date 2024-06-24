@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.example.frontend.view.page
 
 import android.annotation.SuppressLint
 import android.util.Log

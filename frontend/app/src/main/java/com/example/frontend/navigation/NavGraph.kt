@@ -7,14 +7,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.frontend.view.AboutPage
-import com.example.frontend.view.CartPage
-import com.example.frontend.view.HomePage
-import com.example.frontend.view.LoginPage
-import com.example.frontend.view.menu.MenuPage
-import com.example.frontend.view.menu.ProfileMenuPage
-import com.example.frontend.view.ProfilePage
-import com.example.frontend.view.SignUpPage
+import com.example.frontend.view.page.AboutPage
+import com.example.frontend.view.page.AccountPage
+import com.example.frontend.view.page.CartPage
+import com.example.frontend.view.page.HomePage
+import com.example.frontend.view.page.LoginPage
+import com.example.frontend.view.menu.OtherMenu
+import com.example.frontend.view.menu.ProfileMenu
+import com.example.frontend.view.page.SignUpPage
 import com.example.frontend.view.screen.ForgetPasswordScreen
 import com.example.frontend.view.screen.MainScreen
 import com.example.frontend.view.screen.WelcomeScreen
@@ -50,20 +50,20 @@ fun MainPageGraph(navController: NavHostController) {
         composable(Navigation.HomePage.route) {
             HomePage(navController)
         }
+        composable(Navigation.ProfileMenu.route) {
+            ProfileMenu(navController)
+        }
         composable(Navigation.CartPage.route) {
             CartPage()
         }
-        composable(Navigation.MenuPage.route) {
-            MenuPage(navController)
+        composable(Navigation.OtherMenu.route) {
+            OtherMenu(navController)
         }
-        composable(Navigation.ProfileMenuPage.route) {
-            ProfileMenuPage(navController)
-        }
-        composable(Navigation.ProfilePage.route) {
-            ProfilePage()
+        composable(Navigation.AccountPage.route) {
+            AccountPage(navController)
         }
         composable(Navigation.AboutPage.route) {
-            AboutPage()
+            AboutPage(navController)
         }
     }
 }
