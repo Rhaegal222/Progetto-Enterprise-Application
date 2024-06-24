@@ -4,19 +4,36 @@
 
 ### Gaetano
 
-- [ ] Area utente
-  - [ ] Profilo
+- [ ] Profilo
   - [ ] I miei ordini
   - [ ] Lista desideri (pubblica, privata, condivisa)
   - [ ] Metodi di pagamento
   - [ ] Indirizzi di spedizione
-  - [ ] Logout
 
-- [ ] Menu
-  - [ ] Home
-  - [ ] Prodotti
-  - [ ] Chi siamo
-
+- [ ] Menu secondario
+  - [ ] Account
+    - [ ] Informazioni personali
+      - [ ] Nome utente
+      - [ ] Tipo di account
+      - [ ] Nome e cognome
+      - [ ] Indirizzo e-mail
+      - [ ] Numero di telefono
+      - [ ] Nome del titolare, indirizzo predefinito
+    - [ ] Accesso e sicurezza
+      - [ ] Modifica password
+      - [ ] Accesso via social (Da implementare se c'è tempo)
+      - [ ] Preferenze di accesso
+        - [ ] Rimani connesso su questo dispositivo
+    - [ ] Notifiche (Da implementare se c'è tempo)
+    - [ ] Email (Da implementare se c'è tempo)
+  - [ ] Impostazioni
+    - [ ] Tema
+    - [ ] Paese e lingua
+    - [ ] Privacy
+      - [ ] Cancella cronologia delle ricerche
+  - [ ] Chi siamo?
+  - [ ] Esci
+  
 ---
 
 ### Francesco
