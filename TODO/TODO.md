@@ -4,12 +4,6 @@
 
 ### Gaetano
 
-- [ ] Profilo
-  - [ ] I miei ordini
-  - [ ] Lista desideri (pubblica, privata, condivisa)
-  - [ ] Metodi di pagamento
-  - [ ] Indirizzi di spedizione
-
 - [ ] Menu secondario
   - [ ] Account
     - [ ] Informazioni personali
@@ -37,6 +31,12 @@
 ---
 
 ### Francesco
+
+- [ ] Profilo
+  - [ ] I miei ordini
+  - [ ] Lista desideri (pubblica, privata, condivisa)
+  - [ ] Metodi di pagamento
+  - [ ] Indirizzi di spedizione
 
 - [ ] Home
   - [ ] Barra di ricerca
