@@ -1,3 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile">Perfil</string>
+    <string name="cart">Cesta</string>
+    <string name="menu">Menú</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="welcome_description">Inicia sesión para comprar nuestros productos</string>
+    <string name="welcome_login">Iniciar la sesión</string>
+    <string name="welcome_register">Inscribirse</string>
+    <string name="login">Iniciar la sesión</string>
+    <string name="register">Inscribirse</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="firstname">Nombre</string>
+    <string name="lastname">Apellido</string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
+    <string name="already_have_account">Ya tienes una cuenta?</string>
+    <string name="my_orders">Mis ordenes</string>
+    <string name="wishlist">Lista de deseos</string>
+    <string name="payment_methods">Métodos de pago</string>
+    <string name="shipping_addresses">Dirección de Envío</string>
+    <string name="settings">Ajustes</string>
+    <string name="about">Sobre nosotros</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="logout_description">¿Estás seguro de que quieres dejar de fumar?</string>
+    <string name="logout_confirm">Confirmar</string>
+    <string name="logout_cancel">Cancelar</string>
+    <string name="logout_success">Cerrar sesión exitosamente</string>
+    <string name="logout_error">Error al cerrar sesión</string>
+    <string name="hello_user">Hola</string>
+    <string name="about_description">Frontend es una aplicación de muestra para comprar productos online</string>
+    <string name="home">Página principal</string>
 </resources>

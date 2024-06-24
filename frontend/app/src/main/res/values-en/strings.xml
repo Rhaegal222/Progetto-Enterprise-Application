@@ -1,3 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="cart">Cart</string>
+    <string name="menu">Menu</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_description">Log in to purchase our products</string>
+    <string name="welcome_login">Log in</string>
+    <string name="welcome_register">Sign Up</string>
+    <string name="login">Log in</string>
+    <string name="register">"Sign Up "</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="already_have_account">Do you already have an account?</string>
+    <string name="my_orders">My orders</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="payment_methods">Payment methods</string>
+    <string name="shipping_addresses">Shipping addresses</string>
+    <string name="settings">Settings</string>
+    <string name="about">About us</string>
+    <string name="about_description">Frontend is a sample application for purchasing products online</string>
+    <string name="logout">Log out</string>
+    <string name="logout_description">Are you sure you want to quit?</string>
+    <string name="logout_confirm">Confirm</string>
+    <string name="logout_cancel">Cancel</string>
+    <string name="logout_success">Logging out successful</string>
+    <string name="logout_error">Error logging out</string>
+    <string name="hello_user">Hi</string>
 </resources>

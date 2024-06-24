@@ -1,3 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile">Profil</string>
+    <string name="cart">Panier</string>
+    <string name="menu">Menu</string>
+    <string name="welcome">Bienvenue</string>
+    <string name="welcome_description">Connectez-vous pour acheter nos produits</string>
+    <string name="welcome_login">Connexion</string>
+    <string name="welcome_register">Inscription</string>
+    <string name="login">Connexion</string>
+    <string name="register">Inscription</string>
+    <string name="email">E-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="firstname">Prénom</string>
+    <string name="lastname">Nom</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="already_have_account">Vous avez déjà un compte ?</string>
+    <string name="my_orders">Mes commandes</string>
+    <string name="wishlist">Liste de souhaits</string>
+    <string name="payment_methods">Méthodes de paiement</string>
+    <string name="shipping_addresses">Adresses de livraison</string>
+    <string name="settings">Paramètres</string>
+    <string name="about">À propos</string>
+    <string name="logout">Déconnexion</string>
+    <string name="logout_description">Êtes-vous sûr de vouloir vous déconnecter ?</string>
+    <string name="logout_confirm">Confirmer</string>
+    <string name="logout_cancel">Annuler</string>
+    <string name="logout_success">Déconnexion réussie</string>
+    <string name="logout_error">Erreur lors de la déconnexion</string>
+    <string name="hello_user">Bonjour</string>
+    <string name="about_description">Frontend est une application exemple pour l\'achat de produits en ligne</string>
+    <string name="home">Page d\'accueil</string>
 </resources>

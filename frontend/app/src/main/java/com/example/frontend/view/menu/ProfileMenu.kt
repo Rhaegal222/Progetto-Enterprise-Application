@@ -31,7 +31,7 @@ fun ProfileMenu(navController: NavHostController) {
         .fillMaxSize()
         .padding(16.dp)) {
         Text(
-            text = "Ciao, $userName",
+            text = stringResource(id = R.string.hello_user, userName),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )

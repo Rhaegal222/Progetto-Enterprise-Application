@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Frontend</string>
-    <string name="web_client_id">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+    <string name="app_name" translatable="false">Frontend</string>
+    <string name="web_client_id" translatable="false">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
 
     <!-- Bottom Navigation -->
     <string name="home">Home</string>
@@ -27,14 +27,15 @@
     <string name="already_have_account">Hai già un account?</string>
 
     <!-- Social -->
-    <string name="social_facebook">Facebook</string>
-    <string name="social_twitter">Twitter</string>
-    <string name="social_instagram">Instagram</string>
-    <string name="social_youtube">YouTube</string>
-    <string name="social_linkedin">LinkedIn</string>
-    <string name="social_github">GitHub</string>
+    <string name="social_facebook" translatable="false">Facebook</string>
+    <string name="social_twitter" translatable="false">Twitter</string>
+    <string name="social_instagram" translatable="false">Instagram</string>
+    <string name="social_youtube" translatable="false">YouTube</string>
+    <string name="social_linkedin" translatable="false">LinkedIn</string>
+    <string name="social_github" translatable="false">GitHub</string>
 
     <!-- Profile Menu Items -->
+    <string name="hello_user">Ciao</string>
     <string name="my_orders">I miei ordini</string>
     <string name="wishlist">Lista dei desideri</string>
     <string name="payment_methods">Metodi di pagamento</string>
@@ -42,9 +43,9 @@
 
     <!-- Other Menu Items -->
     <!-- About -->
-    <string name="account">Account</string>
+    <string name="account" translatable="false">Account</string>
     <string name="settings">Impostazioni</string>
-    <string name="about">Chi siamo?</string>
+    <string name="about">Chi siamo</string>
     <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
 
     <!-- Logout -->
