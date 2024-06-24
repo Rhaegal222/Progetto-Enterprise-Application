@@ -20,6 +20,9 @@ sealed class Navigation(val route: String) {
     object AboutPage : Navigation(route = "about_page")
     object OtherMenu : Navigation(route = "other_menu")
     object ProfileMenu : Navigation(route = "profile_menu")
+    object AccountMenu : Navigation(route = "account_menu")
+    object SecurityMenu : Navigation(route = "security_menu")
+
 
 }
 

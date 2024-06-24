@@ -30,4 +30,7 @@
     <string name="logout_success">Logging out successful</string>
     <string name="logout_error">Error logging out</string>
     <string name="hello_user">Hi</string>
+    <string name="personal_informations">Personal Informations</string>
+    <string name="access_and_security">Access and security</string>
+    <string name="change_password">Change password</string>
 </resources>

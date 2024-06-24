@@ -58,7 +58,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                         .exit(0)
                 } else {
                     when (textResId) {
-                        R.string.account -> navController.navigate(Navigation.AccountPage.route)
+                        R.string.account -> navController.navigate(Navigation.AccountMenu.route)
                         R.string.about -> navController.navigate(Navigation.AboutPage.route)
                     }
                 }

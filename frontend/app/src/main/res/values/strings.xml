@@ -34,6 +34,14 @@
     <string name="social_linkedin" translatable="false">LinkedIn</string>
     <string name="social_github" translatable="false">GitHub</string>
 
+    <!-- Account Menu Items -->
+    <string name="personal_informations">Informazioni Personali</string>
+    <string name="access_and_security">Accesso e sicurezza</string>
+
+    <!-- Security Menu Items -->
+    <string name="change_password">Modifica password</string>
+
+
     <!-- Profile Menu Items -->
     <string name="hello_user">Ciao</string>
     <string name="my_orders">I miei ordini</string>

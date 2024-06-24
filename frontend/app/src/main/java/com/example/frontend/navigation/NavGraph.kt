@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.frontend.view.menu.AccountMenu
 import com.example.frontend.view.page.AboutPage
 import com.example.frontend.view.page.AccountPage
 import com.example.frontend.view.page.CartPage
@@ -14,6 +15,7 @@ import com.example.frontend.view.page.HomePage
 import com.example.frontend.view.page.LoginPage
 import com.example.frontend.view.menu.OtherMenu
 import com.example.frontend.view.menu.ProfileMenu
+import com.example.frontend.view.menu.SecurityMenu
 import com.example.frontend.view.page.SignUpPage
 import com.example.frontend.view.screen.ForgetPasswordScreen
 import com.example.frontend.view.screen.MainScreen
@@ -64,6 +66,12 @@ fun MainPageGraph(navController: NavHostController) {
         }
         composable(Navigation.AboutPage.route) {
             AboutPage(navController)
+        }
+        composable(Navigation.AccountMenu.route) {
+            AccountMenu(navController)
+        }
+        composable(Navigation.SecurityMenu.route) {
+            SecurityMenu(navController)
         }
     }
 }

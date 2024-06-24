@@ -30,4 +30,7 @@
     <string name="hello_user">Ciao</string>
     <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
     <string name="home">Pagina principale</string>
+    <string name="personal_informations">Informazioni Personali</string>
+    <string name="access_and_security">Accesso e sicurezza</string>
+    <string name="change_password">Modifica password</string>
 </resources>
