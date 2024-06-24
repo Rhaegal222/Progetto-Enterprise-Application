@@ -61,7 +61,8 @@ class LoginViewModel : ViewModel() {
     fun refreshAccessToken() {
         viewModelScope.launch(Dispatchers.IO) {
             if (refreshToken.isNotEmpty()) {
-                val call = userService.refreshToken("Bearer $refreshToken")
+                val token = if (refreshToken.startsWith("Bearer ")) refreshToken else "Bearer $refreshToken"
+                val call = userService.refreshToken(token)
                 call.enqueue(object : Callback<Map<String, String>> {
                     override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                         if (response.isSuccessful) {
@@ -69,7 +70,7 @@ class LoginViewModel : ViewModel() {
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
                         } else {
-
+                            
                         }
                     }
 
@@ -80,6 +81,7 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
+
 
     fun authenticateGoogle(idToken: String, onError: () -> Unit, onSuccess: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
