@@ -30,7 +30,17 @@
     <string name="hello_user">Ciao</string>
     <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
     <string name="home">Pagina principale</string>
-    <string name="personal_informations">Informazioni Personali</string>
-    <string name="access_and_security">Accesso e sicurezza</string>
-    <string name="change_password">Modifica password</string>
+    <string name="app_name">Frontend</string>
+    <string name="account">cuenta</string>
+    <string name="github">github</string>
+    <string name="instagram">instagram</string>
+    <string name="twitter">instagram</string>
+    <string name="web_client_id">pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+    <string name="login_success">Accesso riuscito</string>
+    <string name="or">oppure</string>
+    <string name="not_registered_yet">Non hai un account?</string>
+    <string name="sign_up">Registrati ora!</string>
+    <string name="sign_up_with_google">Registrati con Google</string>
+    <string name="login_with_google">Accedi con Google</string>
+    <string name="login_failed">Log in unsuccessful</string>
 </resources>

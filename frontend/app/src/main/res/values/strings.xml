@@ -1,67 +1,45 @@
 <resources>
-    <string name="app_name" translatable="false">Frontend</string>
-    <string name="web_client_id" translatable="false">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
-
-    <!-- Bottom Navigation -->
-    <string name="home">Home</string>
     <string name="profile">Profilo</string>
     <string name="cart">Carrello</string>
     <string name="menu">Menu</string>
-
-    <!-- Welcome -->
     <string name="welcome">Benvenuto</string>
     <string name="welcome_description">Accedi per acquistare i nostri prodotti</string>
     <string name="welcome_login">Accedi</string>
     <string name="welcome_register">Registrati</string>
-
-    <!-- Auth -->
     <string name="login">Accedi</string>
     <string name="register">Registrati</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
-
-    <!-- Register -->
     <string name="firstname">Nome</string>
     <string name="lastname">Cognome</string>
     <string name="forgot_password">Password dimenticata?</string>
     <string name="already_have_account">Hai già un account?</string>
-
-    <!-- Social -->
-    <string name="social_facebook" translatable="false">Facebook</string>
-    <string name="social_twitter" translatable="false">Twitter</string>
-    <string name="social_instagram" translatable="false">Instagram</string>
-    <string name="social_youtube" translatable="false">YouTube</string>
-    <string name="social_linkedin" translatable="false">LinkedIn</string>
-    <string name="social_github" translatable="false">GitHub</string>
-
-    <!-- Account Menu Items -->
-    <string name="personal_informations">Informazioni Personali</string>
-    <string name="access_and_security">Accesso e sicurezza</string>
-
-    <!-- Security Menu Items -->
-    <string name="change_password">Modifica password</string>
-
-
-    <!-- Profile Menu Items -->
-    <string name="hello_user">Ciao</string>
     <string name="my_orders">I miei ordini</string>
     <string name="wishlist">Lista dei desideri</string>
     <string name="payment_methods">Metodi di pagamento</string>
     <string name="shipping_addresses">Indirizzi di spedizione</string>
-
-    <!-- Other Menu Items -->
-    <!-- About -->
-    <string name="account" translatable="false">Account</string>
     <string name="settings">Impostazioni</string>
     <string name="about">Chi siamo</string>
-    <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
-
-    <!-- Logout -->
     <string name="logout">Esci</string>
     <string name="logout_description">Sei sicuro di voler uscire?</string>
     <string name="logout_confirm">Conferma</string>
     <string name="logout_cancel">Annulla</string>
     <string name="logout_success">Disconnessione avvenuta con successo</string>
     <string name="logout_error">Errore durante la disconnessione</string>
-
+    <string name="hello_user">Ciao</string>
+    <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
+    <string name="home">Pagina principale</string>
+    <string name="app_name">Frontend</string>
+    <string name="account">cuenta</string>
+    <string name="github">github</string>
+    <string name="instagram">instagram</string>
+    <string name="twitter">instagram</string>
+    <string name="web_client_id">485345755621-pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+    <string name="login_success">Accesso riuscito</string>
+    <string name="or">oppure</string>
+    <string name="login_with_google">Accedi con Google</string>
+    <string name="sign_up_with_google">Registrati con Google</string>
+    <string name="not_registered_yet">Non hai un account?</string>
+    <string name="sign_up">Registrati ora!</string>
+    <string name="login_failed">Accesso fallito</string>
 </resources>

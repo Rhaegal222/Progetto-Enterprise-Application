@@ -30,7 +30,17 @@
     <string name="logout_success">Logging out successful</string>
     <string name="logout_error">Error logging out</string>
     <string name="hello_user">Hi</string>
-    <string name="personal_informations">Personal Informations</string>
-    <string name="access_and_security">Access and security</string>
-    <string name="change_password">Change password</string>
+    <string name="app_name">Frontend</string>
+    <string name="account">cuenta</string>
+    <string name="github">github</string>
+    <string name="instagram">instagram</string>
+    <string name="twitter">instagram</string>
+    <string name="web_client_id" >pc0qtloepsmkdlvudtkrrp6ij5ed4htm.apps.googleusercontent.com</string>
+    <string name="login_success">Log in successful</string>
+    <string name="or">or</string>
+    <string name="not_registered_yet">Do not have an account?</string>
+    <string name="sign_up">Sign up now!</string>
+    <string name="sign_up_with_google">Sign up with Google</string>
+    <string name="login_with_google">Log in with Google</string>
+    <string name="login_failed">Log in unsuccessful</string>
 </resources>
