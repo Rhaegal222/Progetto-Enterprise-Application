@@ -1,5 +1,6 @@
 package com.example.frontend.view_models
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.frontend.RetrofitInstance
 import com.example.frontend.model.CurrentDataUtils
 import com.example.frontend.service.UserService
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -23,7 +23,7 @@ class LoginViewModel : ViewModel() {
 
     private val userService: UserService = RetrofitInstance.api
 
-    fun validateForm(): Boolean {
+    private fun validateForm(): Boolean {
         return username.isNotEmpty() && password.isNotEmpty()
     }
 
@@ -70,7 +70,7 @@ class LoginViewModel : ViewModel() {
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
                         } else {
-                            
+
                         }
                     }
 
@@ -78,31 +78,6 @@ class LoginViewModel : ViewModel() {
 
                     }
                 })
-            }
-        }
-    }
-
-
-    fun authenticateGoogle(idToken: String, onError: () -> Unit, onSuccess: () -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = userService.googleAuth(idToken).execute()
-                if (response.isSuccessful) {
-                    val tokenMap = response.body()
-                    if (tokenMap != null && tokenMap.isNotEmpty()) {
-                        CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
-                        CurrentDataUtils.setRefresh(tokenMap["refreshToken"].toString())
-                        CurrentDataUtils.retrieveCurrentUser()
-                        onSuccess()
-                    } else {
-                        onError()
-                    }
-                } else {
-                    onError()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                onError()
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.example.frontend.view.page
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -34,20 +33,18 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.frontend.MainActivity
 import com.example.frontend.R
-import com.example.frontend.model.CurrentDataUtils
 import com.example.frontend.navigation.Screen
 import com.example.frontend.view_models.LoginViewModel
-import com.stevdzasan.onetap.OneTapSignInState
-import com.stevdzasan.onetap.OneTapSignInWithGoogle
-import com.stevdzasan.onetap.rememberOneTapSignInState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage(navController: NavHostController) {
-    val viewModel: LoginViewModel = viewModel()
-    val context = LocalContext.current
+    val loginViewModel: LoginViewModel = viewModel()
+    val context = LocalContext.current as MainActivity
+
     val size = with(LocalDensity.current) {
         DpSize(
             width = LocalConfiguration.current.screenWidthDp.dp,
@@ -58,9 +55,6 @@ fun LoginPage(navController: NavHostController) {
 
     var isObscured by remember { mutableStateOf(true) }
 
-    val loginViewModel: LoginViewModel = viewModel()
-
-    val state = rememberOneTapSignInState()
     val loginErrorString = stringResource(id = R.string.login_failed)
 
     Scaffold(
@@ -111,8 +105,8 @@ fun LoginPage(navController: NavHostController) {
                     .fillMaxWidth()
             ) {
                 OutlinedTextField(
-                    value = viewModel.username,
-                    onValueChange = { viewModel.username = it },
+                    value = loginViewModel.username,
+                    onValueChange = { loginViewModel.username = it },
                     label = {
                         Text(
                             text = stringResource(id = R.string.email),
@@ -134,15 +128,21 @@ fun LoginPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = viewModel.password,
-                    onValueChange = { viewModel.password = it },
+                    value = loginViewModel.password,
+                    onValueChange = { loginViewModel.password = it },
                     label = {
                         Text(
                             text = stringResource(id = R.string.password),
                             color = textColor
                         )
                     },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = iconColor) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Lock,
+                            contentDescription = null,
+                            tint = iconColor
+                        )
+                    },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
@@ -166,7 +166,7 @@ fun LoginPage(navController: NavHostController) {
 
                 TextButton(
                     onClick = { navController.navigate(Screen.ForgetPassword.route) },
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(
                         text = stringResource(id = R.string.forgot_password),
@@ -178,7 +178,7 @@ fun LoginPage(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        viewModel.loginUser { success, errorMessage ->
+                        loginViewModel.loginUser { success, errorMessage ->
                             if (success) {
                                 navController.navigate(Screen.MainScreen.route)
                             } else {
@@ -199,98 +199,65 @@ fun LoginPage(navController: NavHostController) {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
                         color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+            Text(
+                text = stringResource(id = R.string.or).uppercase(),
+                color = textColor,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    context.startSignIn()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.googlelogo),
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.White
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = stringResource(id = R.string.sign_up_with_google),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(
+                onClick = { navController.navigate("sign_up_screen_route") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = stringResource(id = R.string.or),
-                    color = textColor
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-
-                GoogleSignInButton(
-                    state = state,
-                    onTokenIdReceived = { tokenId ->
-                        Log.d("LoginPage", "tokenId: $tokenId")
-                        loginViewModel.authenticateGoogle(tokenId, onError = {
-                            Toast.makeText(context, "Autenticazione Google fallita", Toast.LENGTH_SHORT).show()
-                        }, onSuccess = {
-                            CurrentDataUtils.goToHome.value = true
-                        })
-                    },
-                    onDialogDismissed = { message ->
-                        Log.d("LoginPage", "dismissed, message: $message")
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                TextButton(
-                    onClick = { navController.navigate(Screen.SignUpScreen.route) }
-                ) {
-                    Text(
-                        buildAnnotatedString {
+                    buildAnnotatedString {
+                        append(
+                            text = stringResource(id = R.string.not_registered_yet) + " "
+                        )
+                        withStyle(style = SpanStyle(color = Color.Blue)) {
                             append(
-                                text = stringResource(id = R.string.not_registered_yet) + " "
+                                text = stringResource(id = R.string.sign_up)
                             )
-                            withStyle(style = SpanStyle(color = Color.Blue)) {
-                                append(
-                                    text = stringResource(id = R.string.sign_up)
-                                )
-                            }
-                        },
-                        color = textColor
-                    )
-                }
+                        }
+                    },
+                    color = Color.Black
+                )
             }
         }
     }
 }
-
-@Composable
-fun GoogleSignInButton(
-    state: OneTapSignInState,
-    onTokenIdReceived: (String) -> Unit,
-    onDialogDismissed: (String) -> Unit
-) {
-    val context = LocalContext.current
-    val iconColor = Color.Black
-
-    OutlinedButton(
-        onClick = {
-            Log.d("GoogleSignInButton", "Button clicked, opening state")
-            state.open()
-        },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.googlelogo),
-            contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = iconColor
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = stringResource(id = R.string.sign_up_with_google),
-            color = iconColor)
-    }
-
-    OneTapSignInWithGoogle(
-        state = state,
-        clientId = stringResource(id = R.string.web_client_id),
-        onTokenIdReceived = { tokenId ->
-            Log.d("GoogleSignInButton", "Token ID Received: $tokenId")
-            onTokenIdReceived(tokenId)
-        },
-        onDialogDismissed = { message ->
-            Log.d("GoogleSignInButton", "Dialog Dismissed: $message")
-            onDialogDismissed(message)
-        }
-    )
-}
-
