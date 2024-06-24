@@ -313,18 +313,34 @@ public class UserServiceImp implements UserService{
 
     @Override
     @Transactional
-    public void changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws ParseException, JOSEException {
+    public void changePassword(String token, String oldPassword, String newPassword) throws ParseException, JOSEException {
+        tokenStore.verifyToken(token, Constants.RESET_PASSWORD_CLAIM);
+        String username = tokenStore.getUser(token);
+        User user = userDao.findByUsername(username);
+        if(user == null)
+            throw new RuntimeException("User not found");
         if (newPassword.length() < 8)
             throw new RuntimeException("Password must be at least 8 characters long");
         if (oldPassword.equals(newPassword))
             throw new RuntimeException("New password must be different from old password");
-        User user = jwtContextUtils.getUserLoggedFromContext();
         if(!passwordEncoder.matches(oldPassword, user.getPassword()))
             throw new RuntimeException("Wrong old password");
         user.setPassword(passwordEncoder.encode(newPassword));
         userDao.save(user);
+    }
 
-        processRequest(request);
+    @Override
+    @Transactional
+    public void getNewPasswordByEmail(String token) throws ParseException, JOSEException, MessagingException {
+        tokenStore.verifyToken(token, Constants.RESET_PASSWORD_CLAIM);
+        String username = tokenStore.getUser(token);
+        User user = userDao.findByUsername(username);
+        if(user == null)
+            throw new RuntimeException("User not found");
+        String newPassword = RandomStringUtils.randomAlphanumeric(12);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userDao.save(user);
+        emailService.sendEmail(user.getEmail(), Constants.NEW_PASSWORD_EMAIL_SUBJECT,Constants.NEW_PASSWORD_EMAIL_TEXT + newPassword);
     }
 
     private void processRequest(HttpServletRequest request) throws ParseException, JOSEException {
@@ -335,20 +351,6 @@ public class UserServiceImp implements UserService{
             String refreshToken2 = refreshToken.substring("Bearer ".length());
             tokenStore.logout(accessToken, refreshToken2);
         } else throw new RuntimeException("Token is missing");
-    }
-
-    @Override
-    @Transactional
-    public void changePassword(String token) throws ParseException, JOSEException, MessagingException {
-        tokenStore.verifyToken(token, Constants.RESET_PASSWORD_CLAIM);
-        String username = tokenStore.getUser(token);
-        User user = userDao.findByUsername(username);
-        if(user == null)
-            throw new RuntimeException("User not found");
-        String newPassword = RandomStringUtils.randomAlphanumeric(12);
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userDao.save(user);
-        emailService.sendEmail(user.getEmail(), Constants.NEW_PASSWORD_EMAIL_SUBJECT,Constants.NEW_PASSWORD_EMAIL_TEXT + newPassword);
     }
 
     @Override
