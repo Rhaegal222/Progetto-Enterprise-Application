@@ -14,7 +14,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -42,6 +41,7 @@ import com.example.frontend.R
 import com.example.frontend.navigation.Screen
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.res.stringResource
 import com.example.frontend.navigation.Navigation
 
 
@@ -63,12 +63,21 @@ fun SignUpPage(navController: NavHostController) {
         containerColor = Color.White,
         topBar = {
             TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.register).uppercase(),
+                        color = if (isDarkMode) Color.White else Color.Black
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null, tint = iconColor)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = if (isDarkMode) Color.White else Color.Black
+                        )
                     }
-                },
-                title = {}
+                }
             )
         }
     ) {
@@ -84,31 +93,23 @@ fun SignUpPage(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth().height(200.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
             )
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            TextButton(
+                onClick = { navController.navigate(Screen.LoginScreen.route) }
             ) {
-                TextButton(
-                    onClick = { navController.navigate(Screen.LoginScreen.route) }
-                ) {
-                    Text(
-                        buildAnnotatedString {
-                            append(text = "Hai già un account?")
-                            withStyle(style = SpanStyle(color = Color.Blue)) {
-                                append(text = " Accedi")
-                            }
-                        },
-                        color = textColor
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Text(
-                    text = "REGISTRAZIONE",
-                    style = MaterialTheme.typography.titleLarge,
+                    buildAnnotatedString {
+                        append(
+                            text = stringResource(id = R.string.already_have_account)
+                        )
+                        withStyle(style = SpanStyle(color = Color.Blue)) {
+                            append(text = stringResource(id = R.string.login))
+                        }
+                    },
                     color = textColor
                 )
             }
@@ -194,10 +195,18 @@ fun SignUpPage(navController: NavHostController) {
                     onClick = {
                         viewModel.registerUser { success, errorMessage ->
                             if (success) {
-                                Toast.makeText(context, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show()
-                                navController.navigate(Navigation.HomePage.route)
+                                Toast.makeText(
+                                    context,
+                                    "Registrazione avvenuta con successo",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navController.navigate(Screen.LoginScreen.route)
                             } else {
-                                Toast.makeText(context, "Registrazione fallita: $errorMessage", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Registrazione fallita: $errorMessage",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                     },

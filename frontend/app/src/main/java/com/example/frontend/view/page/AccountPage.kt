@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.frontend.view_models.ProfileViewModel
 
 @Composable
-fun ProfilePage(profileViewModel: ProfileViewModel = viewModel()) {
+fun AccountPage(profileViewModel: ProfileViewModel = viewModel()) {
     LaunchedEffect(Unit) {
         profileViewModel.fetchUserProfile()
     }
