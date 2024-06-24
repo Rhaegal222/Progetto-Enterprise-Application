@@ -35,7 +35,7 @@ public class ProductCategoryController {
 
     @DeleteMapping("/deleteCategory")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteCategory(@RequestParam String id) {
+    public ResponseEntity<String> deleteCategory(@RequestParam Integer id) {
         try {
             this.productCategoryService.deleteCategory(id);
             return ResponseEntity.ok("{\"message\": \"Category deleted successfully\"}");

@@ -15,10 +15,9 @@ import java.util.List;
 @Table(name = "brands")
 public class Brand {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @GeneratedValue
     @Column(length = 36, nullable = false, updatable = false)
-    private String id;
+    private Integer id;
 
     @NotNull
     @NotEmpty
@@ -32,4 +31,17 @@ public class Brand {
 
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
     private List<Product> products;
+
+    @PrePersist
+    @PreUpdate
+    public void capitalizeNames() {
+        this.name = capitalize(this.name);
+    }
+
+    private String capitalize(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+    }
 }

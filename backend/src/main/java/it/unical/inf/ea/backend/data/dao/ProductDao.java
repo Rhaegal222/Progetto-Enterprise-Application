@@ -1,4 +1,5 @@
 package it.unical.inf.ea.backend.data.dao;
+import it.unical.inf.ea.backend.data.entities.Brand;
 import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.ProductCategory;
 import it.unical.inf.ea.backend.dto.ProductDTO;
@@ -19,7 +20,7 @@ public interface ProductDao extends JpaRepository<Product,String>, JpaSpecificat
     List<Product> findProductByProductCategory(ProductCategory productCategory);
 
     @Query("SELECT p FROM Product p WHERE p.brand = :brand")
-    List<Product> findByBrand(String brand);
+    List<Product> findByBrand(Brand brand);
 
     @Query("SELECT p FROM Product p WHERE p.productPrice BETWEEN :min AND :max")
     List<Product> findProductsByPriceRange(Double min, Double max);

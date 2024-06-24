@@ -76,27 +76,19 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProductsByBrand(String brand) {
+    public List<ProductDTO> getProductsByBrand(Brand brand) {
         List<Product> products = productDao.findByBrand(brand);
         return products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<String> getAllProductsBrands() {
-        List<String> brands = productDao.findAllProductsBrands();
-        return new ArrayList<>(brands);
-    }
-    /*
-        @Override
-    public List<ProductCategoryDTO> getAllCategories() {
-        List<ProductCategory> ProductCategories = productCategoryDao.findAll();
-        return ProductCategories.stream()
-                .map(ProductCategory -> modelMapper.map(ProductCategory, ProductCategoryDTO.class))
-                .collect(Collectors.toList());
-    }
-     */
+//    @Override
+//    public List<String> getAllProductsBrands() {
+//        List<String> brands = productDao.findAllProductsBrands();
+//        return new ArrayList<>(brands);
+//    }
+
 
     @Override
     public List<ProductDTO> getProductsByPriceRange(Double min, Double max) {
@@ -117,6 +109,7 @@ public class ProductServiceImp implements ProductService {
 
             Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
             LocalDateTime now = getTimeNow();
+            product.setId(id);
             product.setTitle(productDTO.getTitle());
             product.setDescription(productDTO.getDescription());
             product.setBrand(modelMapper.map(productDTO.getBrand(), Brand.class));

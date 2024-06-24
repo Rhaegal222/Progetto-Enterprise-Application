@@ -15,10 +15,9 @@ import java.util.List;
 @Table(name = "productCategories")
 public class ProductCategory {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @GeneratedValue
     @Column(length = 36, nullable = false, updatable = false)
-    private String id;
+    private Integer id;
 
     @Column(nullable = false,unique = true)
     private String categoryName;
