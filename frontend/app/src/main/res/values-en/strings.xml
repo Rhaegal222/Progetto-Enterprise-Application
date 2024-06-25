@@ -51,6 +51,16 @@
     <string name="newPassword">New Password</string>
     <string name="repeatNewPassword">Repeat the new password</string>
     <string name="passwordMissmatch">Passwords do not match</string>
-    <string name="passwordTooShort">Password too short</string>
+    <string name="passwordTooShort">The password must be at least 8 characters</string>
     <string name="apply">Apply changes</string>
-</resources>
+    <string name="password1UpChar">The password must contain at least one capital letter</string>
+    <string name="password1Numb">The password must contain at least one number</string>
+    <string name="password1SpecChar">The password must contain at least one special character</string>
+    <string name="passwordChangedSucc">Password changed successfully</string>
+    <string name="connection_error">Connection error</string>
+    <string name="miss_fields">Missing fields</string>
+    <string name="pass_changed">Password changed</string>
+    <string name="passwordRequirements_line1">- At least 8 characters</string>
+    <string name="passwordRequirements_line2">- At least 1 number</string>
+    <string name="passwordRequirements_line3">- At least 1 uppercase letter</string>
+    <string name="passwordRequirements_line4">- At least 1 special character</string></resources>

@@ -69,6 +69,8 @@ class LoginViewModel : ViewModel() {
                             val tokenMap = response.body()!!
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
+                            CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
+                            CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
                         } else {
 
                         }

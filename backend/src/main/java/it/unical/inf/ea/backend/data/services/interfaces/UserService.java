@@ -58,7 +58,7 @@ public interface UserService {
 
     void logout(HttpServletRequest request) throws ParseException, JOSEException;
 
-    void changePassword(String token, String oldPassword, String newPassword) throws ParseException, JOSEException;
+    void changePassword(String authorizationHeader, String oldPassword, String newPassword) throws ParseException, JOSEException;
 
     void getNewPasswordByEmail(String token) throws ParseException, JOSEException, MessagingException;
 

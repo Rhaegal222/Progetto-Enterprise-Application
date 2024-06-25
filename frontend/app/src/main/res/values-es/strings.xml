@@ -51,6 +51,17 @@
     <string name="newPassword">Nueva contraseña</string>
     <string name="repeatNewPassword">Repita la nueva contraseña</string>
     <string name="passwordMissmatch">Las contraseñas no coinciden</string>
-    <string name="passwordTooShort">Contraseña demasiado corta</string>
+    <string name="passwordTooShort">La contraseña debe tener al menos 8 caracteres.</string>
     <string name="apply">Aplicar cambios</string>
+    <string name="password1UpChar">La contraseña debe contener al menos una letra mayúscula.</string>
+    <string name="password1Numb">La contraseña debe contener al menos un número.</string>
+    <string name="password1SpecChar">La contraseña debe contener al menos un carácter especial.</string>
+    <string name="passwordChangedSucc">Contraseña cambiada con éxito</string>
+    <string name="connection_error">Error de conexión</string>
+    <string name="miss_fields">Campos faltantes</string>
+    <string name="pass_changed">contraseña cambiada</string>
+    <string name="passwordRequirements_line1">- Al menos 8 caracteres</string>
+    <string name="passwordRequirements_line2">- Al menos 1 número</string>
+    <string name="passwordRequirements_line3">- Al menos 1 letra mayúscula</string>
+    <string name="passwordRequirements_line4">- Al menos 1 carácter especial</string>
 </resources>

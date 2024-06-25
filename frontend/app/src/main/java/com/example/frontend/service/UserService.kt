@@ -2,7 +2,6 @@ package com.example.frontend.service
 
 import com.example.frontend.controller.models.UserDTO
 import com.example.frontend.controller.models.UserBasicDTO
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -62,11 +61,11 @@ interface UserService {
         @Path("id") id: String
     ): Call<Void>
 
-    @GET("/api/v1/users/changePassword")
+    @POST("/api/v1/users/changePassword")
     fun changePassword(
-        @Query("token") token: String,
-        @Query("oldPassword") oldPassword: String,
-        @Query("newPassword") newPassword: String
+        @Header("Authorization") authorization: String,
+        @Query("oldPassword") oldPpassword: String,
+        @Query("newPassword") newPpassword: String
     ): Call<Void>
 
     @GET("/api/v1/users/getNewPassword")

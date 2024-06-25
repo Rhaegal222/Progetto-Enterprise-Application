@@ -313,21 +313,25 @@ public class UserServiceImp implements UserService{
 
     @Override
     @Transactional
-    public void changePassword(String token, String oldPassword, String newPassword) throws ParseException, JOSEException {
-        tokenStore.verifyToken(token, Constants.RESET_PASSWORD_CLAIM);
-        String username = tokenStore.getUser(token);
-        User user = userDao.findByUsername(username);
-        if(user == null)
-            throw new RuntimeException("User not found");
-        if (newPassword.length() < 8)
-            throw new RuntimeException("Password must be at least 8 characters long");
-        if (oldPassword.equals(newPassword))
-            throw new RuntimeException("New password must be different from old password");
-        if(!passwordEncoder.matches(oldPassword, user.getPassword()))
-            throw new RuntimeException("Wrong old password");
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userDao.save(user);
+    public void changePassword(String authorizationHeader, String oldPassword, String newPassword) throws ParseException, JOSEException {
+        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            String accessToken = authorizationHeader.substring("Bearer ".length());
+            tokenStore.verifyToken(accessToken, Constants.RESET_PASSWORD_CLAIM);
+            String username = tokenStore.getUser(accessToken);
+            User user = userDao.findByUsername(username);
+            if(user == null)
+                throw new RuntimeException("User not found");
+            if (newPassword.length() < 8)
+                throw new RuntimeException("Password must be at least 8 characters long");
+            if (oldPassword.equals(newPassword))
+                throw new RuntimeException("New password must be different from old password");
+            if(!passwordEncoder.matches(oldPassword, user.getPassword()))
+                throw new RuntimeException("Wrong old password");
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userDao.save(user);
+        }
     }
+
 
     @Override
     @Transactional
