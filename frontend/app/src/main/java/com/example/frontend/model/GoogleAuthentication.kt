@@ -20,7 +20,7 @@ import kotlin.random.Random
 class GoogleAuthentication(private val context: Context) {
 
     private lateinit var request: GetCredentialRequest
-    private var filterAuthorizedAccounts = true
+    private var filterAuthorizedAccounts = false
     private val webClientId = context.getString(R.string.web_client_id)
     private val credentialManager = CredentialManager.create(context)
 
