@@ -8,7 +8,7 @@
     <string name="welcome_login">Accedi</string>
     <string name="welcome_register">Registrati</string>
     <string name="login">Accedi</string>
-    <string name="register">Registrati</string>
+    <string name="sign_up">Registrati</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="firstname">Nome</string>
@@ -31,7 +31,7 @@
     <string name="about_description">Frontend è un\'applicazione di esempio per l\'acquisto di prodotti online</string>
     <string name="home">Pagina principale</string>
     <string name="app_name">Frontend</string>
-    <string name="account">cuenta</string>
+    <string name="account">Account</string>
     <string name="github">github</string>
     <string name="instagram">instagram</string>
     <string name="twitter">instagram</string>
@@ -39,7 +39,7 @@
     <string name="login_success">Accesso riuscito</string>
     <string name="or">oppure</string>
     <string name="not_registered_yet">Non hai un account?</string>
-    <string name="sign_up">Registrati ora!</string>
+    <string name="sign_up_now">Registrati ora!</string>
     <string name="sign_up_with_google">Registrati con Google</string>
     <string name="login_with_google">Accedi con Google</string>
     <string name="login_failed">Log in unsuccessful</string>

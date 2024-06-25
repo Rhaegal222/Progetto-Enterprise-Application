@@ -8,7 +8,7 @@
     <string name="welcome_login">Iniciar la sesión</string>
     <string name="welcome_register">Inscribirse</string>
     <string name="login">Iniciar la sesión</string>
-    <string name="register">Inscribirse</string>
+    <string name="sign_up">Inscribirse</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="firstname">Nombre</string>
@@ -31,7 +31,7 @@
     <string name="about_description">Frontend es una aplicación de muestra para comprar productos online</string>
     <string name="home">Página principal</string>
     <string name="app_name">Frontend</string>
-    <string name="account">cuenta</string>
+    <string name="account">Cuenta</string>
     <string name="github">github</string>
     <string name="instagram">instagram</string>
     <string name="twitter">instagram</string>
@@ -39,7 +39,7 @@
     <string name="login_success">Inicio de sesión correcto</string>
     <string name="or">o</string>
     <string name="not_registered_yet">¿No tiene una cuenta?</string>
-    <string name="sign_up">¡Regístrate ahora!</string>
+    <string name="sign_up_now">¡Regístrate ahora!</string>
     <string name="sign_up_with_google">Regístrate con Google</string>
     <string name="login_with_google">Iniciar sesión con Google</string>
     <string name="login_failed">Iniciar sesión sin éxito</string>

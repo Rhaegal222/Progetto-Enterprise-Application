@@ -11,11 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -25,11 +26,15 @@ import com.example.frontend.navigation.Screen
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomeScreen(navController: NavHostController) {
-    val context = LocalContext.current
-    val height = LocalConfiguration.current.screenHeightDp.dp
     val isDarkMode = isSystemInDarkTheme()
-    val backgroundColor = if (isDarkMode) Color.Gray else Color.White
     val textColor = if (isDarkMode) Color.White else Color.Black
+
+    val size = with(LocalDensity.current) {
+        DpSize(
+            width = LocalConfiguration.current.screenWidthDp.dp,
+            height = LocalConfiguration.current.screenHeightDp.dp
+        )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -38,18 +43,16 @@ fun WelcomeScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(height * 0.1f))
 
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
                 modifier = Modifier
-                    .size(400.dp)
-                    .padding(16.dp)
+                    .height(size.height * 0.5f)
+                    .fillMaxWidth()
             )
 
             Text(
@@ -60,7 +63,7 @@ fun WelcomeScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(id = R.string.welcome_description),
@@ -69,7 +72,7 @@ fun WelcomeScreen(navController: NavHostController) {
                 color = textColor
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -106,13 +109,12 @@ fun WelcomeScreen(navController: NavHostController) {
                     )
                 ) {
                     Text(
-                        text = stringResource(id = R.string.register).uppercase(),
+                        text = stringResource(id = R.string.sign_up).uppercase(),
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

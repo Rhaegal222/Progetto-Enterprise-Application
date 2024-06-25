@@ -9,7 +9,7 @@
     <string name="welcome_login">Log in</string>
     <string name="welcome_register">Sign Up</string>
     <string name="login">Log in</string>
-    <string name="register">"Sign Up "</string>
+    <string name="sign_up">"Sign Up "</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="firstname">First name</string>
@@ -31,7 +31,7 @@
     <string name="logout_error">Error logging out</string>
     <string name="hello_user">Hi</string>
     <string name="app_name">Frontend</string>
-    <string name="account">cuenta</string>
+    <string name="account">Account</string>
     <string name="github">github</string>
     <string name="instagram">instagram</string>
     <string name="twitter">instagram</string>
@@ -39,7 +39,7 @@
     <string name="login_success">Log in successful</string>
     <string name="or">or</string>
     <string name="not_registered_yet">Do not have an account?</string>
-    <string name="sign_up">Sign up now!</string>
+    <string name="sign_up_now">Sign up now!</string>
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="login_with_google">Log in with Google</string>
     <string name="login_failed">Log in unsuccessful</string>

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import com.example.frontend.RetrofitInstance
 import com.example.frontend.controller.models.AddressDTO
 import com.example.frontend.controller.models.PaymentMethodDTO
