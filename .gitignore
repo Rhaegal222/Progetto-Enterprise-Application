@@ -133,3 +133,10 @@ frontend/.gradle/buildOutputCleanup/cache.properties
 frontend/.gradle/buildOutputCleanup/outputFiles.bin
 frontend/.gradle/vcs-1/gc.properties
 frontend/.gradle/workspace-id.txt.lock
+.idea
+.idea/compiler.xml
+.idea/dataSources.local.xml
+.idea/dataSources.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
