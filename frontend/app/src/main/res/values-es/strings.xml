@@ -60,8 +60,8 @@
     <string name="connection_error">Error de conexión</string>
     <string name="miss_fields">Campos faltantes</string>
     <string name="pass_changed">contraseña cambiada</string>
-    <string name="passwordRequirements_line1">- Al menos 8 caracteres</string>
-    <string name="passwordRequirements_line2">- Al menos 1 número</string>
-    <string name="passwordRequirements_line3">- Al menos 1 letra mayúscula</string>
-    <string name="passwordRequirements_line4">- Al menos 1 carácter especial</string>
+    <string name="passwordRequirements_line1"> - Al menos 8 caracteres</string>
+    <string name="passwordRequirements_line2"> - Al menos 1 número</string>
+    <string name="passwordRequirements_line3"> - Al menos 1 letra mayúscula</string>
+    <string name="passwordRequirements_line4"> - Al menos 1 carácter especial</string>
 </resources>

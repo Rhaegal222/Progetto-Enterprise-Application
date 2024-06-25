@@ -2,6 +2,7 @@ package com.example.frontend.service
 
 import com.example.frontend.controller.models.UserDTO
 import com.example.frontend.controller.models.UserBasicDTO
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 

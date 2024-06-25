@@ -60,7 +60,7 @@
     <string name="connection_error">Connection error</string>
     <string name="miss_fields">Missing fields</string>
     <string name="pass_changed">Password changed</string>
-    <string name="passwordRequirements_line1">- At least 8 characters</string>
-    <string name="passwordRequirements_line2">- At least 1 number</string>
-    <string name="passwordRequirements_line3">- At least 1 uppercase letter</string>
-    <string name="passwordRequirements_line4">- At least 1 special character</string></resources>
+    <string name="passwordRequirements_line1"> - At least 8 characters</string>
+    <string name="passwordRequirements_line2"> - At least 1 number</string>
+    <string name="passwordRequirements_line3"> - At least 1 uppercase letter</string>
+    <string name="passwordRequirements_line4"> - At least 1 special character</string></resources>

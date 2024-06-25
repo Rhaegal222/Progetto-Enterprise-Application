@@ -35,8 +35,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.frontend.MainActivity
 import com.example.frontend.R
+import com.example.frontend.model.GoogleAuthentication
 import com.example.frontend.navigation.Screen
 import com.example.frontend.view_models.LoginViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -203,7 +207,9 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    // context.startSignIn()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        GoogleAuthentication(context).signIn(false)
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
