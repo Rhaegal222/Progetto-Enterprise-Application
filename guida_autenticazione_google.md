@@ -47,6 +47,8 @@
     </dependency>
     ```
 
+<div class="page"/>
+
 2. Configura il database PostgreSQL nel file `application.properties`:
 
     ```properties
@@ -100,6 +102,8 @@
     ```xml
     <string name="web_client_id">your_web_client_id</string>
     ```
+
+<div class="page"/>
 
 3. Implementa l'autenticazione Google nella tua app Android:
 
@@ -199,6 +203,8 @@
     }
     ```
 
+<div class="page"/>
+
 4. Modifica `AndroidManifest.xml` per aggiungere l'autorizzazione per Internet:
 
     ```xml
@@ -238,6 +244,8 @@ public class GoogleTokenVerifier {
     }
 }
 ```
+
+<div class="page"/>
 
 ## Schema di Autenticazione
 
