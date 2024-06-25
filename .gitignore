@@ -142,3 +142,5 @@ frontend/.gradle/workspace-id.txt.lock
 .idea/workspace.xml
 .vscode
 .vscode/settings.json
+backend/.idea
+backend/.idea/dataSources

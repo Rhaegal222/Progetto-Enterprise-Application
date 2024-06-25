@@ -141,12 +141,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/changePassword")
+    @GetMapping("/changePassword")
     public ResponseEntity<Void> changePassword(HttpServletRequest request, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) throws EntityNotFoundException, ParseException, JOSEException {
         userService.changePassword(request.getHeader(AUTHORIZATION), oldPassword, newPassword);
         return ResponseEntity.ok().build();
     }
-
 
     @GetMapping("/getNewPassword")
     public ResponseEntity<Void> getNewPassword(@RequestParam("token") String token) throws EntityNotFoundException, ParseException, JOSEException, MessagingException {

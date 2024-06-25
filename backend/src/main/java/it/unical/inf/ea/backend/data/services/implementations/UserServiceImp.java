@@ -332,7 +332,6 @@ public class UserServiceImp implements UserService{
         }
     }
 
-
     @Override
     @Transactional
     public void getNewPasswordByEmail(String token) throws ParseException, JOSEException, MessagingException {
