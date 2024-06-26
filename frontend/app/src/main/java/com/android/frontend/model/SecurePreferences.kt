@@ -28,6 +28,7 @@ object SecurePreferences {
     }
 
     fun saveAccessToken(context: Context, accessToken: String) {
+        Log.d("SecurePreferences", "Saving access token")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             putString(ACCESS_TOKEN_KEY, accessToken)
@@ -36,11 +37,13 @@ object SecurePreferences {
     }
 
     fun getAccessToken(context: Context): String? {
+        Log.d("SecurePreferences", "Getting access token")
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getString(ACCESS_TOKEN_KEY, null)
     }
 
     fun saveRefreshToken(context: Context, refreshToken: String) {
+        Log.d("SecurePreferences", "Saving refresh token")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             putString(REFRESH_TOKEN_KEY, refreshToken)
@@ -49,11 +52,13 @@ object SecurePreferences {
     }
 
     fun getRefreshToken(context: Context): String? {
+        Log.d("SecurePreferences", "Getting refresh token")
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getString(REFRESH_TOKEN_KEY, null)
     }
 
     fun saveProvider(context: Context, provider: String) {
+        Log.d("SecurePreferences", "Saving provider $provider")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             putString(PROVIDER, provider)
@@ -62,6 +67,7 @@ object SecurePreferences {
     }
 
     fun getProvider(context: Context): String? {
+        Log.d("SecurePreferences", "Getting provider")
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getString(PROVIDER, null)
     }

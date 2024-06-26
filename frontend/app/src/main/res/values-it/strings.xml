@@ -67,4 +67,8 @@
     <string name="invalid_old_password">Vecchia password non valida</string>
     <string name="unauthorized">Non autorizzato</string>
     <string name="login_with_google_failed">Log in con Google fallito</string>
+    <string name="recover_password">Recover your password</string>
+    <string name="send_email">Send Email</string>
+    <string name="enter_email">Enter the email</string>
+    <string name="recover_password_text">Ti invieremo un\'email con le istruzioni per il recupero della password al tuo indirizzo email.</string>
 </resources>

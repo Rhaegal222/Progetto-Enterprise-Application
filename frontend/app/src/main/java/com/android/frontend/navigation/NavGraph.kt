@@ -19,44 +19,35 @@ import com.android.frontend.view.menu.OtherMenu
 import com.android.frontend.view.menu.ProfileMenu
 import com.android.frontend.view.menu.SecurityMenu
 import com.android.frontend.view.page.AllProductsPage
-import com.android.frontend.view.page.SignUpPage
-import com.android.frontend.view.screen.ForgetPasswordScreen
-import com.android.frontend.view.screen.MainScreen
-import com.android.frontend.view.screen.WelcomeScreen
+import com.android.frontend.view.page.ForgetPasswordPage
+import com.android.frontend.view.page.SignupPage
+import com.android.frontend.view.screen.AuthenticationScreen
 import com.android.frontend.view_models.ProductViewModel
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(
-        navController = navController,
-        startDestination = Graph.start,
-        route = Graph.root
-    ) {
-        startGraph(navController)
+    NavHost(navController = navController, startDestination = Graph.start) {
+        authenticationGraph(navController)
         mainGraph(navController)
     }
 }
 
-@Composable
-fun NavProduct(navController: NavHostController, productid : Int) {
-    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
-        composable(Navigation.ProductDetailsPage.route) {
-            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
-fun NavGraphBuilder.startGraph(navController: NavHostController) {
+fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
     navigation(
-        startDestination = Screen.WelcomeScreen.route,
+        startDestination = Screen.AuthenticationScreen.route,
         route = Graph.start
     ) {
-        composable(Screen.MainScreen.route) { MainScreen() }
-        composable(Screen.WelcomeScreen.route) { WelcomeScreen(navController) }
-        composable(Screen.LoginScreen.route) { LoginPage(navController) }
-        composable(Screen.SignUpScreen.route) { SignUpPage(navController) }
-        composable(Screen.ForgetPassword.route) { ForgetPasswordScreen(navController) }
+        composable(Screen.AuthenticationScreen.route) { AuthenticationScreen(navController) }
+        composable(Navigation.SignupPage.route) {
+            SignupPage(navController)
+        }
+        composable(Navigation.LoginPage.route) {
+            LoginPage(navController)
+        }
+        composable(Navigation.ForgetPasswordPage.route) {
+            ForgetPasswordPage(navController)
+        }
     }
 }
 
@@ -99,10 +90,16 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
     }
 }
 
+@Composable
+fun NavProduct(navController: NavHostController, productid: Int) {
+    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
+        composable(Navigation.ProductDetailsPage.route) {
+            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
+        }
+    }
+}
+
 object Graph {
     const val start = "start"
     const val main = "main"
-    const val root = "root"
 }
-
-

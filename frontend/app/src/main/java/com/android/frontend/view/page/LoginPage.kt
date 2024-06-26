@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.navigation.Screen
 import com.android.frontend.view_models.LoginViewModel
+import com.android.frontend.navigation.Navigation
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -159,7 +160,7 @@ fun LoginPage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(
-                onClick = { navController.navigate(Screen.ForgetPassword.route) },
+                onClick = { navController.navigate(Navigation.ForgetPasswordPage.route) }
             ) {
                 Text(
                     text = stringResource(id = R.string.forgot_password),
@@ -208,7 +209,7 @@ fun LoginPage(navController: NavHostController) {
                     loginViewModel.signInWithGoogle(context) { success, message ->
                         if (success) {
                             navController.navigate(Screen.MainScreen.route) {
-                                popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                                // popUpTo(Screen.LoginScreen.route) { inclusive = true }
                             }
                         } else {
                             // Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -238,7 +239,7 @@ fun LoginPage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(
-                onClick = { navController.navigate(Screen.SignUpScreen.route) },
+                onClick = { navController.navigate(Navigation.SignupPage.route) }
             ) {
                 Text(
                     buildAnnotatedString {

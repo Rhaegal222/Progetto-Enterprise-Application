@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.DpSize
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SignUpPage(navController: NavHostController) {
+fun SignupPage(navController: NavHostController) {
     val viewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
 
@@ -103,7 +103,7 @@ fun SignUpPage(navController: NavHostController) {
             )
 
             TextButton(
-                onClick = { navController.navigate(Screen.LoginScreen.route) }
+                onClick = { navController.popBackStack() }
             ) {
                 Text(
                     buildAnnotatedString {
@@ -205,7 +205,7 @@ fun SignUpPage(navController: NavHostController) {
                                     "Registrazione avvenuta con successo",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                navController.navigate(Screen.LoginScreen.route)
+                                navController.popBackStack()
                             } else {
                                 Toast.makeText(
                                     context,

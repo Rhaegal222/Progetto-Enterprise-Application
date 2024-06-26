@@ -20,11 +20,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.R
 import com.android.frontend.navigation.NavGraph
-import com.android.frontend.navigation.mainGraph
 import com.android.frontend.navigation.Navigation
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavHostController) {
     val navController = rememberNavController()
 
     Scaffold(

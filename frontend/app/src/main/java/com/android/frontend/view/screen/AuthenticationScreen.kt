@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.navigation.Screen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WelcomeScreen(navController: NavHostController) {
+fun AuthenticationScreen(navController: NavHostController) {
     val isDarkMode = isSystemInDarkTheme()
     val textColor = if (isDarkMode) Color.White else Color.Black
 
@@ -81,7 +82,7 @@ fun WelcomeScreen(navController: NavHostController) {
 
                 OutlinedButton(
                     onClick = {
-                        navController.navigate(Screen.LoginScreen.route)
+                        navController.navigate(Navigation.LoginPage.route)
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -100,7 +101,7 @@ fun WelcomeScreen(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(Screen.SignUpScreen.route)
+                        navController.navigate(Navigation.SignupPage.route)
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
