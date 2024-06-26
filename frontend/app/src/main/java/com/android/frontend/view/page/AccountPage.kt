@@ -5,16 +5,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -43,6 +44,13 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
     val phoneNumber by profileViewModel.phoneNumber
     val profileImage by profileViewModel.profileImage
 
+    var firstNameInput by remember { mutableStateOf(firstName) }
+    var lastNameInput by remember { mutableStateOf(lastName) }
+    var emailInput by remember { mutableStateOf(email) }
+    var phoneNumberInput by remember { mutableStateOf(phoneNumber) }
+
+    var isEditMode by remember { mutableStateOf(false) }
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -67,7 +75,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
         }
     ) {
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
@@ -81,38 +89,85 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(50.dp))
+            item { Spacer(modifier = Modifier.height(50.dp)) }
 
-            Image(
-                painter = painterResource(id = profileImage),
-                contentDescription = "Profile Image",
-                modifier = Modifier
-                    .size(140.dp)
-                    .clip(CircleShape)
-            )
+            item {
+                Image(
+                    painter = painterResource(id = profileImage),
+                    contentDescription = "Profile Image",
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clip(CircleShape)
+                )
+            }
 
-            Spacer(modifier = Modifier.height(50.dp))
+            item { Spacer(modifier = Modifier.height(50.dp)) }
 
-            Text(
-                text = "Il tuo profilo",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                fontSize = 25.sp,
-                color = Color.Black
-            )
+            item {
+                Text(
+                    text = "Il tuo profilo",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp,
+                    color = Color.Black
+                )
+            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            item { Spacer(modifier = Modifier.height(20.dp)) }
 
-            ProfileField(label = "Nome", value = firstName)
-            ProfileField(label = "Cognome", value = lastName)
-            ProfileField(label = "Email", value = email)
-            ProfileField(label = "Numero di telefono", value = phoneNumber)
+            if (isEditMode) {
+                item { EditableProfileField(label = "Nome", value = firstNameInput, onValueChange = { firstNameInput = it }) }
+                item { EditableProfileField(label = "Cognome", value = lastNameInput, onValueChange = { lastNameInput = it }) }
+                item { EditableProfileField(label = "Email", value = emailInput, onValueChange = { emailInput = it }) }
+                item { EditableProfileField(label = "Numero di telefono", value = phoneNumberInput, onValueChange = { phoneNumberInput = it }) }
+
+                item { Spacer(modifier = Modifier.height(20.dp)) }
+
+                item {
+                    Button(
+                        onClick = {
+                            profileViewModel.updateUserProfile(
+                                firstNameInput,
+                                lastNameInput,
+                                emailInput,
+                                phoneNumberInput
+                            )
+                            isEditMode = false
+                        },
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(text = "Applica Cambiamenti")
+                    }
+                }
+            } else {
+                item { ReadOnlyProfileField(label = "Nome", value = firstName) }
+                item { ReadOnlyProfileField(label = "Cognome", value = lastName) }
+                item { ReadOnlyProfileField(label = "Email", value = email) }
+                item { ReadOnlyProfileField(label = "Numero di telefono", value = phoneNumber) }
+
+                item { Spacer(modifier = Modifier.height(20.dp)) }
+
+                item {
+                    Button(
+                        onClick = {
+                            firstNameInput = firstName
+                            lastNameInput = lastName
+                            emailInput = email
+                            phoneNumberInput = phoneNumber
+                            isEditMode = true
+                        },
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(text = "Modifica")
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ProfileField(label: String, value: String) {
+fun ReadOnlyProfileField(label: String, value: String) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
@@ -137,6 +192,43 @@ fun ProfileField(label: String, value: String) {
                 text = value,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.Black
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditableProfileField(label: String, value: String, onValueChange: (String) -> Unit) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .padding(start = 15.dp, end = 15.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(5.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = Color.Gray
+            )
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                singleLine = true,
+                colors = outlinedTextFieldColors(
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.LightGray,
+                    cursorColor = Color.Black
+                )
             )
         }
     }

@@ -21,6 +21,7 @@ object CurrentDataUtils {
 
     private var _accessToken: MutableState<String> = mutableStateOf("")
     private var _refreshToken: MutableState<String> = mutableStateOf("")
+    private var _userId: MutableState<String> = mutableStateOf("")
     private var _currentUser: MutableState<UserDTO?> = mutableStateOf(null)
     //val _currentUser = MutableLiveData<UserDTO>()
     private var _currentProductId: MutableState<String> = mutableStateOf("")
@@ -42,6 +43,10 @@ object CurrentDataUtils {
     var accessToken: String
         get() = _accessToken.value
         set(newValue) { _accessToken.value = newValue }
+
+    var userId: String
+        get() = _userId.value
+        set(newValue) { _userId.value = newValue }
 
     val currentUser: UserDTO?
         get() = _currentUser.value
