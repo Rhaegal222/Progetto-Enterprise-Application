@@ -24,6 +24,8 @@ import kotlin.random.Random
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.content.Intent
+import android.provider.Settings
 
 class GoogleAuthentication(private val context: Context) {
 
@@ -80,20 +82,34 @@ class GoogleAuthentication(private val context: Context) {
         )
     }
 
-    private fun createRequest(button: Boolean): GetCredentialRequest {
-        request = if (button) {
-            GetCredentialRequest.Builder().addCredentialOption(getGoogleIdOption()).build()
-        } else {
-            GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
+    private fun userAlreadySignedIn(): Boolean {
+        return accessToken.isNotEmpty() && refreshToken.isNotEmpty()
+    }
+
+    private fun promptAddGoogleAccount() {
+        val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
+        intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
+        context.startActivity(intent)
+    }
+    private fun createRequest(): GetCredentialRequest? {
+        return try {
+            if (userAlreadySignedIn()) {
+                Log.d(TAG, "User already signed in")
+                GetCredentialRequest.Builder().build()
+            } else {
+                Log.d(TAG, "User not signed in")
+                GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
+            }
+        } catch (e: GetCredentialException) {
+            Log.e(TAG, "Error creating request: ${e.message}")
+            promptAddGoogleAccount()
+            return null
         }
-        printRequest(request)
-        return request
     }
 
 
-    suspend fun signIn(button: Boolean, onResult: (Map<String, String>?, String?) -> Unit) {
-        Log.d(TAG, "Initiating sign-in flow" + if (button) " with GoogleIdOption" else " with SignInWithGoogleOption")
-        request = createRequest(button)
+    suspend fun signIn(onResult: (Map<String, String>?, String?) -> Unit) {
+        request = createRequest() ?: return onResult(null, "Errore durante la creazione della richiesta")
         try {
             val result = credentialManager.getCredential(
                 context = context,

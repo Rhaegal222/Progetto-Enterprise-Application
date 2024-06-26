@@ -89,7 +89,7 @@ class LoginViewModel : ViewModel() {
     fun signInWithGoogle(context: Context, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn(false) { success, idToken ->
+            googleAuth.signIn() { success, idToken ->
                 if (success != null) {
                     accessToken = success["accessToken"].toString()
                     refreshToken = success["refreshToken"].toString()
