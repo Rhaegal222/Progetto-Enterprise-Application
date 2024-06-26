@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.controller.models.ProductDTO
-import com.android.frontend.navigation.NavProduct
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.ProductViewModel
 import kotlinx.coroutines.launch
@@ -34,9 +33,8 @@ import kotlinx.coroutines.launch
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel) {
     val products =productViewModel.productsLiveData.observeAsState().value
 
-    LaunchedEffect(key1 = productViewModel) {
         productViewModel.fetchAllProducts()
-    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,20 +60,18 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
 }
 @Composable
 fun ProductsCard(productDTO: ProductDTO, navController: NavController, productViewModel: ProductViewModel) {
-    val coroutineScope = rememberCoroutineScope()
     Card (
 
         modifier = Modifier
             .height(150.dp)
             .fillMaxWidth()
-            .clickable { navController.navigate(Navigation.ProductDetailsPage.route)
-                navController.currentBackStackEntry?.arguments?.putString("productId", productDTO.id)
+            .clickable {
+                navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
+
             }
     ){
         LazyColumn {
-            coroutineScope.launch {
                 productViewModel.setProduct(productDTO)
-            }
             item {
                 Column(
                     modifier = Modifier
@@ -85,7 +81,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                     Text(
                         text = productDTO.title,
                         modifier = Modifier.clickable {
-                            navController.navigate(Navigation.ProductDetailsPage.route)
+                            navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
                         }
                     )
                     Spacer(modifier = Modifier.height(4.dp))

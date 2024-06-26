@@ -4,8 +4,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.android.frontend.ui.ChangePasswordPage
 import com.android.frontend.view.menu.AccountMenu
@@ -37,14 +39,14 @@ fun NavGraph(navController: NavHostController) {
     }
 }
 
-@Composable
-fun NavProduct(navController: NavHostController, productid : Int) {
-    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
-        composable(Navigation.ProductDetailsPage.route) {
-            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
-        }
-    }
-}
+//@Composable
+//fun NavProduct(navController: NavHostController, productid : Int) {
+//    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
+//        composable(Navigation.ProductDetailsPage.route) {
+//            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
+//        }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.startGraph(navController: NavHostController) {
@@ -96,6 +98,18 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
         composable(Navigation.AllProductsPage.route) {
             AllProductsPage(navController, productViewModel = ProductViewModel())
         }
+        composable(
+                route = Navigation.ProductDetailsPage.route,
+                arguments = listOf(navArgument("productid") { type = NavType.StringType })
+        ) {
+        it.arguments?.getString("productid")?.let {
+                productid ->
+            ProductDetailsPage(
+                navController = navController,
+                productViewModel = ProductViewModel(),
+                productId = productid)
+        }
+    }
     }
 }
 

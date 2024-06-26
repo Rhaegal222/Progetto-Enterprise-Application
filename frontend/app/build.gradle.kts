@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation(libs.androidx.runtime.livedata)
     testImplementation("junit:junit:4.12")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // Google Authentification Dependencies
     implementation("androidx.credentials:credentials:1.2.2")
