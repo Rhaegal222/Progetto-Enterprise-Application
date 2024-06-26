@@ -20,6 +20,8 @@ object RetrofitInstance {
 
     val googleAuthApi: GoogleAuthenticationService by lazy {
         retrofit.create(GoogleAuthenticationService::class.java)
+    }
+
     val productApi: ProductService by lazy {
         retrofit.create(ProductService::class.java)
     }
