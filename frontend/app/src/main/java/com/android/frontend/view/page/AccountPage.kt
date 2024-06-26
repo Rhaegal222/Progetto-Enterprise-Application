@@ -27,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.view_models.ProfileViewModel
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import com.android.frontend.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -42,7 +43,6 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
     val lastName by profileViewModel.lastName
     val email by profileViewModel.email
     val phoneNumber by profileViewModel.phoneNumber
-    val profileImage by profileViewModel.profileImage
 
     var firstNameInput by remember { mutableStateOf(firstName) }
     var lastNameInput by remember { mutableStateOf(lastName) }
@@ -93,7 +93,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
 
             item {
                 Image(
-                    painter = painterResource(id = profileImage),
+                    painter = painterResource(id = R.drawable.user_image),
                     contentDescription = "Profile Image",
                     modifier = Modifier
                         .size(140.dp)

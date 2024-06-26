@@ -30,6 +30,7 @@ object CurrentDataUtils {
     private var _showLoadingScreen: MutableState<Boolean> = mutableStateOf(true)
     private var _goToHome: MutableState<Boolean> = mutableStateOf(false)
 
+
     val currentUser: UserDTO?
         get() = _currentUser.value
 

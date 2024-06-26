@@ -7,10 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.UserDTO
-import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
-import com.android.frontend.R
 import com.android.frontend.controller.models.UserUpdateRequest
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -18,11 +16,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-    var firstName = mutableStateOf("")
-    var lastName = mutableStateOf("")
-    var email = mutableStateOf("")
-    var phoneNumber = mutableStateOf("")
-    var profileImage = mutableStateOf(R.drawable.user_image) // Default image
+
+    private var user = mutableStateOf(SecurePreferences.getUser(application))
+
+    private var userId = user.value?.id ?: -1
+    var firstName = mutableStateOf(user.value?.firstName ?: "")
+    var lastName = mutableStateOf(user.value?.lastName ?: "")
+    var email = mutableStateOf(user.value?.email ?: "")
+    var phoneNumber = mutableStateOf(user.value?.phoneNumber ?: "Nessun numero di telefono")
 
     private val userService: UserService = RetrofitInstance.api
 
@@ -35,13 +36,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
                         response.body()?.let { user ->
-                            Log.d("ProfileViewModel", "User profile fetched successfully: $user") // Log user data
-                            CurrentDataUtils.userId = user.id
-                            firstName.value = user.firstName
-                            lastName.value = user.lastName
-                            email.value = user.email
-                            phoneNumber.value = user.phoneNumber ?: "Nessun numero di telefono"
-                            // Set profileImage.value if user has a profile image URL or resource ID
+                            SecurePreferences.saveUser(getApplication(), user)
                         } ?: run {
                             Log.d("ProfileViewModel", "User profile response body is null")
                         }
@@ -59,8 +54,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateUserProfile(firstName: String, lastName: String, email: String, phoneNumber: String) {
         viewModelScope.launch {
-            val accessToken = CurrentDataUtils.accessToken
-            val userId = CurrentDataUtils.userId
+            val accessToken = SecurePreferences.getAccessToken(getApplication())
+            // val userId = CurrentDataUtils.userId
             val updateRequest = UserUpdateRequest(
                 firstName = firstName,
                 lastName = lastName,
@@ -69,7 +64,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 username = email
             )
 
-            val call = userService.updateUser("Bearer $accessToken", userId, updateRequest)
+            if (userId == -1) {
+                Log.e("ProfileViewModel", "User ID is not set")
+                return@launch
+            }
+            val call = userService.updateUser("Bearer $accessToken", userId.toString(), updateRequest)
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
