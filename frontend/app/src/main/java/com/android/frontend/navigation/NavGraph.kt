@@ -17,10 +17,12 @@ import com.android.frontend.view.page.LoginPage
 import com.android.frontend.view.menu.OtherMenu
 import com.android.frontend.view.menu.ProfileMenu
 import com.android.frontend.view.menu.SecurityMenu
+import com.android.frontend.view.page.AllProductsPage
 import com.android.frontend.view.page.SignUpPage
 import com.android.frontend.view.screen.ForgetPasswordScreen
 import com.android.frontend.view.screen.MainScreen
 import com.android.frontend.view.screen.WelcomeScreen
+import com.android.frontend.view_models.ProductViewModel
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -76,6 +78,9 @@ fun MainPageGraph(navController: NavHostController) {
         }
         composable(Navigation.ChangePasswordPage.route) {
             ChangePasswordPage(navController)
+        }
+        composable(Navigation.AllProductsPage.route) {
+            AllProductsPage(navController, productViewModel = ProductViewModel())
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.android.frontend
 
+import com.android.frontend.service.ProductService
 import com.android.frontend.service.UserService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,5 +15,9 @@ object RetrofitInstance {
 
     val api: UserService by lazy {
         retrofit.create(UserService::class.java)
+    }
+
+    val productApi: ProductService by lazy {
+        retrofit.create(ProductService::class.java)
     }
 }

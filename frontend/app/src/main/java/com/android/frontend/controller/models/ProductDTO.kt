@@ -1,29 +1,26 @@
 package com.android.frontend.controller.models
 
+import java.math.BigDecimal
+
 data class ProductDTO (
 
-    val id: kotlin.String,
-    val title: kotlin.String,
-    val description: kotlin.String? = null,
-    val descriptionBrand: kotlin.String? = null,
-    val ingredients: kotlin.String? = null,
-    val nutritionalValues: kotlin.String? = null,
-    val productCost: CustomMoneyDTO,
-    val deliveryCost: CustomMoneyDTO,
-    val brand: kotlin.String? = null,
-    val productSize: ProductSize,
+    val id: String,
+    val title: String,
+    val description: String,
+    val ingredients:String,
+    val nutritionalValues: String,
+    val productPrice: BigDecimal,
+    val deliveryPrice: BigDecimal,
+    val brand:BrandDTO,
+    val productWeight: String,
+    val quantity: Int,
     val availability: Availability,
     val productCategory: ProductCategoryDTO,
-    val usersThatLiked: kotlin.Array<UserBasicDTO>? = null,
-    val productImages: kotlin.Array<ProductImageDTO>? = null,
+    val productImages: List<ProductImageDTO>,
 ) {
-    enum class ProductSize(val value: kotlin.String){ //
-        BIG("BIG"),
-        MEDIUM("MEDIUM"),
-        SMALL("SMALL");
-    }
 
-    enum class Availability(val value: kotlin.String){ //
+
+    enum class Availability(val value:String){
         AVAILABLE("AVAILABLE"),
         PENDING("PENDING"),
         UNAVAILABLE("UNAVAILABLE");

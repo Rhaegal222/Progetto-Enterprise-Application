@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -55,6 +56,13 @@ fun BottomBar(navController: NavHostController) {
                 onClick = { navController.navigate(Navigation.HomePage.route) },
                 icon = {
                     Icon(Icons.Default.Home, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.home))
+                }
+            )
+            NavigationBarItem(
+                selected = currentNavigation.value?.destination?.route == Navigation.AllProductsPage.route,
+                onClick = { navController.navigate(Navigation.AllProductsPage.route) },
+                icon = {
+                    Icon(Icons.Default.Shop, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.profile))
                 }
             )
 
