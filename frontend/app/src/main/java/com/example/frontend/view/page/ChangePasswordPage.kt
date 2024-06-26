@@ -38,8 +38,6 @@ fun ChangePasswordPage(navController: NavHostController) {
     val iconColor = Color.Black
 
     var isObscured by remember { mutableStateOf(true) }
-
-    // Obtain the string resource in a composable context
     val passwordChangedMessage = stringResource(R.string.passwordChangedSucc)
 
     Scaffold(
@@ -64,7 +62,7 @@ fun ChangePasswordPage(navController: NavHostController) {
                     .statusBarsPadding()
             )
         }
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,6 +75,13 @@ fun ChangePasswordPage(navController: NavHostController) {
                 Text(
                     text = stringResource(id = changePasswordViewModel.errorMessage),
                     color = Color.Red,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+            if (changePasswordViewModel.successMessage != 0) {
+                Text(
+                    text = stringResource(id = changePasswordViewModel.successMessage),
+                    color = Color.Green,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
@@ -193,9 +198,11 @@ fun ChangePasswordPage(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    if (changePasswordViewModel.changePassword(context)) {
-                        Toast.makeText(context, passwordChangedMessage, Toast.LENGTH_LONG).show()
-                        navController.popBackStack()
+                    changePasswordViewModel.changePassword(context) { success ->
+                        if (success) {
+                            Toast.makeText(context, passwordChangedMessage, Toast.LENGTH_LONG).show()
+                            navController.popBackStack()
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
