@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.android.frontend.controller.models.ProductDTO
 import com.android.frontend.ui.ChangePasswordPage
 import com.android.frontend.view.menu.AccountMenu
+import com.android.frontend.view.page.ProductDetailsPage
 import com.android.frontend.view.page.AboutPage
 import com.android.frontend.view.page.AccountPage
 import com.android.frontend.view.page.CartPage
@@ -50,6 +52,14 @@ fun NavGraphBuilder.startGraph(navController: NavHostController) {
 }
 
 @Composable
+fun NavProduct(navController: NavHostController, productid : Int) {
+    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
+        composable(Navigation.ProductDetailsPage.route) {
+            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
+        }
+    }
+}
+@Composable
 fun MainPageGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Navigation.HomePage.route) {
         composable(Navigation.HomePage.route) {
@@ -82,7 +92,8 @@ fun MainPageGraph(navController: NavHostController) {
         composable(Navigation.AllProductsPage.route) {
             AllProductsPage(navController, productViewModel = ProductViewModel())
         }
-    }
+
+        }
 }
 
 object Graph {

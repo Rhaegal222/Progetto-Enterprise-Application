@@ -1,7 +1,7 @@
 package com.android.frontend.view.page
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -23,10 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.controller.models.ProductDTO
+import com.android.frontend.navigation.NavProduct
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.ProductViewModel
 import kotlinx.coroutines.launch
 
-//import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +68,9 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
         modifier = Modifier
             .height(150.dp)
             .fillMaxWidth()
+            .clickable { navController.navigate(Navigation.ProductDetailsPage.route)
+                navController.currentBackStackEntry?.arguments?.putString("productId", productDTO.id)
+            }
     ){
         LazyColumn {
             coroutineScope.launch {
@@ -78,29 +82,17 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                         .fillMaxSize()
                         .background(colors.surface)
                 ) {
-                    Text(text = productDTO.title)
+                    Text(
+                        text = productDTO.title,
+                        modifier = Modifier.clickable {
+                            navController.navigate(Navigation.ProductDetailsPage.route)
+                        }
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.description)
+                    Text(text = productDTO.productPrice.toString()+"€")
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.ingredients)
+                    Text(text = productDTO.brand.name)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.nutritionalValues)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.productPrice.toString())
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.deliveryPrice.toString())
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.brand.toString())
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.productWeight)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.quantity.toString())
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.availability.toString())
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = productDTO.productCategory.toString())
-                    Spacer(modifier = Modifier.height(4.dp))
-
                     //productDTO.productImages?.let { Text(text = it.joinToString()) }
                 }
             }
