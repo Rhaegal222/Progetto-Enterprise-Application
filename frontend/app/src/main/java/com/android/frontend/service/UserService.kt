@@ -31,11 +31,6 @@ interface UserService {
         @Query("email") email: String
     ): Call<Void>
 
-    @POST("/api/v1/users/google-auth")
-    fun googleAuth(
-        @Query("idTokenString") idTokenString: String
-    ): Call<Map<String, String>>
-
     @GET("/api/v1/users/me")
     fun me(
         @Header("Authorization") authorization: String

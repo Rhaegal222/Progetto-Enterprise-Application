@@ -35,12 +35,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.MainActivity
 import com.android.frontend.R
-import com.android.frontend.model.GoogleAuthentication
 import com.android.frontend.navigation.Screen
 import com.android.frontend.view_models.LoginViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +56,7 @@ fun LoginPage(navController: NavHostController) {
     var isObscured by remember { mutableStateOf(true) }
 
     val loginErrorString = stringResource(id = R.string.login_failed)
+    val loginWithGoogleErrorString = stringResource(id = R.string.login_with_google_failed)
 
     val inputBorderColor = Color.Gray
     val textColor = Color.Black
@@ -207,8 +204,16 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        GoogleAuthentication(context).signIn(false)
+                    loginViewModel.signInWithGoogle { success, errorMessage ->
+                        if (success) {
+                            navController.navigate(Screen.MainScreen.route)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                errorMessage ?: loginWithGoogleErrorString,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),

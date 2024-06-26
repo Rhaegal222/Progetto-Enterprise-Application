@@ -66,4 +66,5 @@
     <string name="passwordRequirements_line4"> - Al menos 1 carácter especial</string>
     <string name="invalid_old_password">Contraseña antigua no válida</string>
     <string name="unauthorized">No autorizado</string>
+    <string name="login_with_google_failed">Log in con Google fallito</string>
 </resources>

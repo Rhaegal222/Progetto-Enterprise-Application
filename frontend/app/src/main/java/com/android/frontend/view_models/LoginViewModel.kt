@@ -1,6 +1,6 @@
 package com.android.frontend.view_models
 
-import android.util.Log
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.model.GoogleAuthentication
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(val context: Context) : ViewModel() {
     var username by mutableStateOf("")
     var password by mutableStateOf("")
     var accessToken by mutableStateOf("")
@@ -81,6 +82,13 @@ class LoginViewModel : ViewModel() {
                     }
                 })
             }
+        }
+    }
+
+    fun signInWithGoogle(param: (Boolean, String?) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val googleAuth = GoogleAuthentication(context)
+            googleAuth.signIn(true)
         }
     }
 }
