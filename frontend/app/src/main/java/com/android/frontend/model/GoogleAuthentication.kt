@@ -45,10 +45,6 @@ class GoogleAuthentication(private val context: Context) {
         return nonceBytes.joinToString("") { "%02X".format(it) }
     }
 
-    private fun setFilterAuthorizedAccounts(filterAuthorizedAccounts: Boolean) {
-        this.filterAuthorizedAccounts = filterAuthorizedAccounts
-    }
-
     private fun getGoogleIdOption(): GetGoogleIdOption {
         return GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(filterAuthorizedAccounts)
@@ -95,7 +91,7 @@ class GoogleAuthentication(private val context: Context) {
         return try {
             if (userAlreadySignedIn()) {
                 Log.d(TAG, "User already signed in")
-                GetCredentialRequest.Builder().build()
+                GetCredentialRequest.Builder().addCredentialOption(getGoogleIdOption()).build()
             } else {
                 Log.d(TAG, "User not signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
@@ -106,7 +102,6 @@ class GoogleAuthentication(private val context: Context) {
             return null
         }
     }
-
 
     suspend fun signIn(onResult: (Map<String, String>?, String?) -> Unit) {
         request = createRequest() ?: return onResult(null, "Errore durante la creazione della richiesta")
@@ -203,12 +198,12 @@ class GoogleAuthentication(private val context: Context) {
                         CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
                         CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
                     } else {
-
+                        Log.e(TAG, "Failed to refresh access token: ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-
+                    Log.e(TAG, "Failed to refresh access token", t)
                 }
             })
         }

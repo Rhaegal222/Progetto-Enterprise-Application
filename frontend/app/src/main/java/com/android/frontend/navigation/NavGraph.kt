@@ -34,6 +34,16 @@ fun NavGraph(navController: NavHostController) {
         route = Graph.root
     ) {
         startGraph(navController)
+        mainGraph(navController)
+    }
+}
+
+@Composable
+fun NavProduct(navController: NavHostController, productid : Int) {
+    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
+        composable(Navigation.ProductDetailsPage.route) {
+            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
+        }
     }
 }
 
@@ -47,21 +57,16 @@ fun NavGraphBuilder.startGraph(navController: NavHostController) {
         composable(Screen.WelcomeScreen.route) { WelcomeScreen(navController) }
         composable(Screen.LoginScreen.route) { LoginPage(navController) }
         composable(Screen.SignUpScreen.route) { SignUpPage(navController) }
-        composable(Screen.ForgetPassword.route) { ForgetPasswordScreen(navController)}
+        composable(Screen.ForgetPassword.route) { ForgetPasswordScreen(navController) }
     }
 }
 
-@Composable
-fun NavProduct(navController: NavHostController, productid : Int) {
-    NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
-        composable(Navigation.ProductDetailsPage.route) {
-            ProductDetailsPage(productViewModel = ProductViewModel(), productId = productid)
-        }
-    }
-}
-@Composable
-fun MainPageGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Navigation.HomePage.route) {
+@OptIn(ExperimentalMaterial3Api::class)
+fun NavGraphBuilder.mainGraph(navController: NavHostController) {
+    navigation(
+        startDestination = Navigation.HomePage.route,
+        route = Graph.main
+    ) {
         composable(Navigation.HomePage.route) {
             HomePage(navController)
         }
@@ -92,13 +97,13 @@ fun MainPageGraph(navController: NavHostController) {
         composable(Navigation.AllProductsPage.route) {
             AllProductsPage(navController, productViewModel = ProductViewModel())
         }
-
-        }
+    }
 }
 
 object Graph {
-    const val root = "root_graph"
-    const val start = "start_graph"
-    const val main = "main_graph"
+    const val start = "start"
+    const val main = "main"
+    const val root = "root"
 }
+
 

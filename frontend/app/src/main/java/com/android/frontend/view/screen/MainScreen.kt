@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.R
-import com.android.frontend.navigation.MainPageGraph
+import com.android.frontend.navigation.NavGraph
+import com.android.frontend.navigation.mainGraph
 import com.android.frontend.navigation.Navigation
 
 @Composable
@@ -28,11 +29,12 @@ fun MainScreen() {
 
     Scaffold(
         content = { paddingValues ->
-            Box(modifier = Modifier
-                .padding(paddingValues)
-                .padding(top = 0.dp) // Adjust the top padding to the height of the TopBar
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(top = 0.dp) // Adjust the top padding to the height of the TopBar
             ) {
-                MainPageGraph(navController = navController)
+                NavGraph(navController = navController)
                 BackHandler { navController.popBackStack() }
             }
         },

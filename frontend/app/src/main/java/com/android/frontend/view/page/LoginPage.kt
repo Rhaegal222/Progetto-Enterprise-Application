@@ -171,7 +171,7 @@ fun LoginPage(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    loginViewModel.loginUser { success, errorMessage ->
+                    loginViewModel.loginUser(context) { success, errorMessage ->
                         if (success) {
                             navController.navigate(Screen.MainScreen.route)
                         } else {

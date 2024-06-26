@@ -1,6 +1,7 @@
 package com.android.frontend.view_models
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.model.GoogleAuthentication
+import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +31,7 @@ class LoginViewModel : ViewModel() {
         return username.isNotEmpty() && password.isNotEmpty()
     }
 
-    fun loginUser(onResult: (Boolean, String?) -> Unit) {
+    fun loginUser(context: Context, onResult: (Boolean, String?) -> Unit) {
         if (validateForm()) {
             viewModelScope.launch {
                 val call = userService.login(username, password)
@@ -39,10 +41,12 @@ class LoginViewModel : ViewModel() {
                             val tokenMap = response.body()!!
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
-                            CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
-                            CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
+                            SecurePreferences.saveAccessToken(context, accessToken)
+                            SecurePreferences.saveRefreshToken(context, refreshToken)
+                            CurrentDataUtils.accessToken = accessToken
+                            CurrentDataUtils.refreshToken = refreshToken
                             onResult(true, null)
-                            refreshAccessToken()
+                            refreshAccessToken(context)
                         } else {
                             val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
                             onResult(false, errorMessage)
@@ -60,10 +64,11 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun refreshAccessToken() {
+    fun refreshAccessToken(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (refreshToken.isNotEmpty()) {
-                val token = if (refreshToken.startsWith("Bearer ")) refreshToken else "Bearer $refreshToken"
+            val storedRefreshToken = SecurePreferences.getRefreshToken(context)
+            if (!storedRefreshToken.isNullOrEmpty()) {
+                val token = if (storedRefreshToken.startsWith("Bearer ")) storedRefreshToken else "Bearer $storedRefreshToken"
                 val call = userService.refreshToken(token)
                 call.enqueue(object : Callback<Map<String, String>> {
                     override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
@@ -71,15 +76,16 @@ class LoginViewModel : ViewModel() {
                             val tokenMap = response.body()!!
                             accessToken = tokenMap["accessToken"].toString()
                             refreshToken = tokenMap["refreshToken"].toString()
-                            CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
-                            CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
+                            SecurePreferences.saveAccessToken(context, accessToken)
+                            SecurePreferences.saveRefreshToken(context, refreshToken)
+                            CurrentDataUtils.accessToken = accessToken
+                            CurrentDataUtils.refreshToken = refreshToken
                         } else {
-
+                            Log.e("LoginViewModel", "Failed to refresh access token: ${response.code()}")
                         }
                     }
-
                     override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-
+                        Log.e("LoginViewModel", "Failed to refresh access token", t)
                     }
                 })
             }
@@ -89,12 +95,14 @@ class LoginViewModel : ViewModel() {
     fun signInWithGoogle(context: Context, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn() { success, idToken ->
+            googleAuth.signIn { success, idToken ->
                 if (success != null) {
                     accessToken = success["accessToken"].toString()
                     refreshToken = success["refreshToken"].toString()
-                    CurrentDataUtils.accessToken = success["accessToken"].toString()
-                    CurrentDataUtils.refreshToken = success["refreshToken"].toString()
+                    SecurePreferences.saveAccessToken(context, accessToken)
+                    SecurePreferences.saveRefreshToken(context, refreshToken)
+                    CurrentDataUtils.accessToken = accessToken
+                    CurrentDataUtils.refreshToken = refreshToken
                     onResult(true, null)
                 } else {
                     onResult(false, "Errore durante l'autenticazione con Google")

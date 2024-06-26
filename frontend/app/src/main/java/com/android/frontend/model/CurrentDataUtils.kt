@@ -19,29 +19,19 @@ object CurrentDataUtils {
 
     private val userService: UserService = RetrofitInstance.api
 
-    private var _accessToken: MutableState<String> = mutableStateOf("")
-    private var _refreshToken: MutableState<String> = mutableStateOf("")
     private var _currentUser: MutableState<UserDTO?> = mutableStateOf(null)
-    //val _currentUser = MutableLiveData<UserDTO>()
     private var _currentProductId: MutableState<String> = mutableStateOf("")
     private var _visitedUser: MutableState<UserBasicDTO?> = mutableStateOf(null)
     private var _currentAddress: MutableState<AddressDTO?> = mutableStateOf(null)
     private var _Addresses = mutableStateListOf<AddressDTO>()
     private var _PaymentsMethod = mutableStateListOf<PaymentMethodDTO>()
-    private var _currentPaymentMethod: MutableState<PaymentMethodDTO?>  = mutableStateOf(null)
+    private var _currentPaymentMethod: MutableState<PaymentMethodDTO?> = mutableStateOf(null)
     private var _defaultAddress: MutableState<AddressDTO?> = mutableStateOf(null)
     private var _currentAddresses = mutableStateListOf<AddressDTO>()
     private var _defaultPaymentMethod: MutableState<PaymentMethodDTO?> = mutableStateOf(null)
-
-
     private var _showLoadingScreen: MutableState<Boolean> = mutableStateOf(true)
     private var _goToHome: MutableState<Boolean> = mutableStateOf(false)
-
     var _application: Application? = null
-
-    var accessToken: String
-        get() = _accessToken.value
-        set(newValue) { _accessToken.value = newValue }
 
     val currentUser: UserDTO?
         get() = _currentUser.value
@@ -51,17 +41,27 @@ object CurrentDataUtils {
 
     val goToHome: MutableState<Boolean>
         get() = _goToHome
+
+    var accessToken: String
+        get() = SecurePreferences.getAccessToken(_application!!.applicationContext) ?: ""
+        set(newValue) {
+            SecurePreferences.saveAccessToken(_application!!.applicationContext, newValue)
+        }
+
     var refreshToken: String
-        get() = _refreshToken.value
-        set(newValue) { _refreshToken.value = newValue }
+        get() = SecurePreferences.getRefreshToken(_application!!.applicationContext) ?: ""
+        set(newValue) {
+            SecurePreferences.saveRefreshToken(_application!!.applicationContext, newValue)
+        }
 
     fun retrieveCurrentUser() {
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = userService.me("Bearer $accessToken").execute()
                 if (response.isSuccessful) {
-                    _currentUser.value = response.body()
+                    val user = response.body()
+                    _currentUser.value = user
+                    user?.let { SecurePreferences.saveUser(_application!!.applicationContext, it) }
                     retrieveAddresses()
                     retrievePaymentsMethod()
                 } else {
@@ -76,8 +76,7 @@ object CurrentDataUtils {
     fun logout() {
         CoroutineScope(Dispatchers.IO).launch {
             _currentUser.value = null
-            _refreshToken.value = ""
-            _accessToken.value = ""
+            SecurePreferences.clearAll(_application!!.applicationContext)
             _goToHome.value = false
         }
     }
@@ -85,7 +84,7 @@ object CurrentDataUtils {
     fun retrieveAddresses() {
         _Addresses.clear()
         _currentUser.value?.addresses?.let { _Addresses.addAll(it.toList()) }
-        _currentAddresses.forEach { a ->
+        _Addresses.forEach { a ->
             if (a.isDefault)
                 _defaultAddress.value = a
         }
@@ -101,7 +100,7 @@ object CurrentDataUtils {
     }
 
     fun setRefresh(refresh_token: String) {
-        _refreshToken.value = refresh_token
+        refreshToken = refresh_token
         CoroutineScope(Dispatchers.IO).launch {
             val user = com.android.frontend.model.persistence.User(null, refresh_token)
             val refreshToken2 = AppDatabase.getInstance(_application?.applicationContext!!).userDao().getRefreshToken()

@@ -61,11 +61,13 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.moshi:moshi:1.15.1")
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
+    implementation(libs.androidx.runtime.livedata)
+    testImplementation("junit:junit:4.12")
 
     // Google Authentification Dependencies
     implementation("androidx.credentials:credentials:1.2.2")
     implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
-    implementation(libs.androidx.runtime.livedata)
-    testImplementation("junit:junit:4.12")
+
 }
