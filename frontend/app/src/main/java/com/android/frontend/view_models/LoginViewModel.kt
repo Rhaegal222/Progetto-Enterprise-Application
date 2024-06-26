@@ -86,10 +86,20 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun signInWithGoogle(context: Context) {
+    fun signInWithGoogle(context: Context, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn(false)
+            googleAuth.signIn(false) { success, idToken ->
+                if (success != null) {
+                    accessToken = success["accessToken"].toString()
+                    refreshToken = success["refreshToken"].toString()
+                    CurrentDataUtils.accessToken = success["accessToken"].toString()
+                    CurrentDataUtils.refreshToken = success["refreshToken"].toString()
+                    onResult(true, null)
+                } else {
+                    onResult(false, "Errore durante l'autenticazione con Google")
+                }
+            }
         }
     }
 }

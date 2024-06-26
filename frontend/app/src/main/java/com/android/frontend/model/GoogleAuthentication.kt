@@ -91,7 +91,7 @@ class GoogleAuthentication(private val context: Context) {
     }
 
 
-    suspend fun signIn(button: Boolean) {
+    suspend fun signIn(button: Boolean, onResult: (Map<String, String>?, String?) -> Unit) {
         Log.d(TAG, "Initiating sign-in flow" + if (button) " with GoogleIdOption" else " with SignInWithGoogleOption")
         request = createRequest(button)
         try {
@@ -99,9 +99,10 @@ class GoogleAuthentication(private val context: Context) {
                 context = context,
                 request = request,
             )
-            handleSignIn(result)
+            return handleSignIn(result, onResult)
         } catch (e: GetCredentialException) {
             handleFailure(e)
+            return onResult(null, e.message)
         }
     }
 
@@ -112,7 +113,7 @@ class GoogleAuthentication(private val context: Context) {
         Log.e(TAG, "Error getting credential: ${e.message}")
     }
 
-    private fun handleSignIn(result: GetCredentialResponse) {
+    private fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
         Log.d(TAG, "Sign-in flow completed")
 
         when (val credential = result.credential) {
@@ -131,10 +132,12 @@ class GoogleAuthentication(private val context: Context) {
                         val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                         val idToken = googleIdTokenCredential.idToken
                         sendGoogleIdTokenToBackend(idToken) { success, errorMessage ->
-                            if (success) {
+                            if (success != null) {
                                 Log.d(TAG, "Successfully sent google id token to backend")
+                                onResult(success, null)
                             } else {
                                 Log.e(TAG, "Failed to send google id token to backend: $errorMessage")
+                                onResult(null, errorMessage)
                             }
                         }
                     } catch (e: GoogleIdTokenParsingException) {
@@ -151,27 +154,22 @@ class GoogleAuthentication(private val context: Context) {
         }
     }
 
-    private fun sendGoogleIdTokenToBackend(idToken: String, onResult: (Boolean, String?) -> Unit) {
+    private fun sendGoogleIdTokenToBackend(idToken: String, onResult: (Map<String, String>?, String?) -> Unit) {
         val call = googleAuthService.googleAuth(idToken)
         call.enqueue(object : Callback<Map<String, String>> {
             override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                 if (response.isSuccessful) {
                     val tokenMap = response.body()!!
-                    accessToken = tokenMap["accessToken"].toString()
-                    refreshToken = tokenMap["refreshToken"].toString()
-                    CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
-                    CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
-                    onResult(true, null)
+                    onResult(tokenMap, null)
                     refreshAccessToken()
                 } else {
                     val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
-                    onResult(false, errorMessage)
+                    onResult(null, errorMessage)
                 }
             }
-
             override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
                 val failureMessage = t.message ?: "Errore sconosciuto"
-                onResult(false, failureMessage)
+                onResult(null, failureMessage)
             }
         })
     }

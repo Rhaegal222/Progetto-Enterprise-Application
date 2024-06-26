@@ -34,7 +34,6 @@ public interface UserService {
 
     Map<String, String> googleAuth(String code) throws Exception;
 
-    Map<String, String> keycloakAuth(String idTokenString);
 
     Map<String, String> authenticateUser(String username, String password, Provider provider) throws JOSEException;
 

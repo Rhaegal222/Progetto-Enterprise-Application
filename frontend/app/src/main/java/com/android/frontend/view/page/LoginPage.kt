@@ -205,7 +205,17 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    loginViewModel.signInWithGoogle(context)
+                    loginViewModel.signInWithGoogle(context) { success, errorMessage ->
+                        if (success) {
+                            navController.navigate(Screen.MainScreen.route)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                errorMessage ?: loginWithGoogleErrorString,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(

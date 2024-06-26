@@ -152,17 +152,18 @@ public class UserServiceImp implements UserService{
                     .map(this::mapToDto);
     }
 
+    private Pair<Boolean,UserDTO> processOAuthPostGoogleLogin(Map<String, String> userInfo) {
 
-    private Pair<Boolean,UserDTO> processOAuthPostGoogleLogin(String username, String email) {
-
+        String email = userInfo.get("email");
         User existUser = userDao.findByEmail(email);
 
         if (existUser == null) {
+            if (userDao.findByUsername(email) != null)
+                throw new IllegalArgumentException("Username already exists");
             User newUser = new User();
-            findBasicByUsername(username).ifPresentOrElse(
-                    user -> newUser.setUsername(username + "_" + UUID.randomUUID().toString().substring(0, 7)),
-                    () -> newUser.setUsername(username));
-            newUser.setUsername(username);
+            newUser.setUsername(email);
+            newUser.setLastName(userInfo.get("familyName"));
+            newUser.setFirstName(userInfo.get("givenName"));
             newUser.setProvider(Provider.GOOGLE);
             newUser.setPassword(passwordEncoder.encode(Constants.STANDARD_GOOGLE_ACCOUNT_PASSWORD));
             newUser.setEmail(email);
@@ -173,30 +174,12 @@ public class UserServiceImp implements UserService{
         return new Pair<>(true, mapToDto(existUser));
     }
 
-    private Pair<Boolean,UserDTO> processOAuthPostKeycloakLogin(String username, String email) {
-        User existUser = userDao.findByEmail(email);
-
-        if (existUser == null) {
-            User newUser = new User();
-            findBasicByUsername(username).ifPresentOrElse(
-                    user -> newUser.setUsername(username + "_" + UUID.randomUUID().toString().substring(0, 7)),
-                    () -> newUser.setUsername(username));
-            newUser.setUsername(username);
-            newUser.setProvider(Provider.KEYCLOAK);
-            newUser.setPassword(passwordEncoder.encode(Constants.STANDARD_KEYCLOAK_ACCOUNT_PASSWORD));
-            newUser.setEmail(email);
-            newUser.setRole(UserRole.USER);
-            newUser.setEmailVerified(true);
-            return new Pair<>(false, createUser(newUser));
-        }
-        return new Pair<>(true, mapToDto(existUser));
-    }
     @Override
     public Map<String, String> googleAuth(String code) throws Exception {
         try {
 
             Map<String, String> userInfo = oauth2GoogleValidation.validate(code);
-            Pair<Boolean, UserDTO> pair = processOAuthPostGoogleLogin(userInfo.get("name"), userInfo.get("email"));
+            Pair<Boolean, UserDTO> pair = processOAuthPostGoogleLogin(userInfo);
 
             if(!pair.getUserExists()) {
                 UserImage userImage = new UserImage();
@@ -209,27 +192,6 @@ public class UserServiceImp implements UserService{
         catch (Exception e) {
             log.error("Error validating google code: {}", e.getMessage(), e);
             throw new Exception("Error validating google code", e);
-        }
-    }
-
-    @Override
-    public Map<String, String> keycloakAuth(String code) {
-        try {
-
-            Map<String, String> userInfo = oauth2KeycloakValidation.validate(code);
-            Pair<Boolean, UserDTO> pair = processOAuthPostKeycloakLogin(userInfo.get("name"), userInfo.get("email"));
-
-            if(!pair.getUserExists()) {
-                UserImage userImage = new UserImage();
-                userImage.setUrlPhoto(Constants.STANDARD_USER_ACCOUNT_PHOTO_KEYCLOAK);
-                userImage.setUser(mapToEntity(pair.getUser()));
-            }
-
-            return authenticateUser(pair.getUser().getUsername(), Constants.STANDARD_KEYCLOAK_ACCOUNT_PASSWORD, Provider.KEYCLOAK);
-        }
-        catch (Exception e) {
-            log.error("Error validating keycloak token: {}", e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Error validating keycloak token", e);
         }
     }
 
