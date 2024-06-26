@@ -19,13 +19,15 @@ class ProductViewModel : ViewModel() {
     private val _productDetails = MutableLiveData<ProductDTO>()
     val productDetails: LiveData<ProductDTO> get() = _productDetails
 
-    suspend fun setProduct(productDTO: ProductDTO) {
-        RetrofitInstance.productApi.addProduct(productDTO)
+    fun setProduct(productDTO: ProductDTO) {
+        viewModelScope.launch {
+            RetrofitInstance.productApi.addProduct(productDTO)
+        }
     }
 
-    fun getProductDetails(id: Int) {
+    fun getProductDetails(id: String) {
         viewModelScope.launch {
-            val call = productService.getProductById(id.toString())
+            val call = productService.getProductById(id)
             call.enqueue(object : retrofit2.Callback<ProductDTO> {
                 override fun onResponse(
                     call: retrofit2.Call<ProductDTO>,
