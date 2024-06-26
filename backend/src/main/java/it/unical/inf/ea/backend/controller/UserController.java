@@ -69,9 +69,9 @@ public class UserController {
         userService.activateUser(unique_code);
     }
 
-    @PatchMapping(path="/{id}", consumes = "application/json")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") String id, @Valid @RequestBody UserDTO patch) throws IllegalAccessException {
-        return ResponseEntity.ok(userService.updateUser(id,patch));
+    @PatchMapping(path = "/{id}", consumes = "application/json")
+    public ResponseEntity<UserDTO> partialUpdateUser(@PathVariable("id") String id, @RequestBody Map<String, Object> updates) throws IllegalAccessException {
+        return ResponseEntity.ok(userService.partialUpdateUser(id, updates));
     }
 
     @DeleteMapping(path="/{id}")

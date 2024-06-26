@@ -35,6 +35,8 @@ public class UserDTO {
     @NotNull
     private String email;
 
+    private String phoneNumber;
+
     private UserImageDTO photoProfile;
 
     @NotNull

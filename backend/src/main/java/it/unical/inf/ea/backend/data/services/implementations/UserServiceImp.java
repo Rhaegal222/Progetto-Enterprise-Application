@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -63,27 +65,42 @@ public class UserServiceImp implements UserService{
         return mapToDto(user);
     }
 
-    public UserDTO updateUser(String id, UserDTO userDTO) throws IllegalAccessException {
+    @Override
+    public UserDTO partialUpdateUser(String id, Map<String, Object> updates) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        User oldUser = userDao.findById(id).orElseThrow();
+        User user = userDao.findById(id).orElseThrow();
 
-        if(!id.equals(userDTO.getId()))
+        if (!id.equals(loggedUser.getId()) && !loggedUser.isAdministrator()) {
             throw new IllegalAccessException("User cannot change another user");
+        }
 
-        if(!id.equals(loggedUser.getId()) && (!loggedUser.isAdministrator()) )
-            throw new IllegalAccessException("User cannot change another user");
+        // Verifica se l'username è già esistente
+        if (updates.containsKey("username")) {
+            String newUsername = (String) updates.get("username");
+            if (!user.getEmail().equals(newUsername) && userDao.findByEmail(newUsername) != null) {
+                throw new IllegalArgumentException("Username already exists");
+            }
+        }
 
+        // Verifica se l'email è già esistente
+        if (updates.containsKey("email")) {
+            String newEmail = (String) updates.get("email");
+            if (!user.getEmail().equals(newEmail) && userDao.findByEmail(newEmail) != null) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+        }
 
-        if(!oldUser.getUsername().equals(userDTO.getUsername()) && userDao.findByUsername(userDTO.getUsername()) != null)
-            throw new IllegalAccessException("Username already exists");
-        if(!oldUser.getEmail().equals(userDTO.getEmail()) && userDao.findByEmail(userDTO.getEmail()) != null)
-            throw new IllegalAccessException("Email already exists");
+        // Applica gli aggiornamenti alle proprietà dell'utente
+        BeanWrapper beanWrapper = new BeanWrapperImpl(user);
+        updates.forEach((key, value) -> {
+            if (beanWrapper.isWritableProperty(key)) {
+                beanWrapper.setPropertyValue(key, value);
+            }
+        });
 
-        oldUser.setUsername(userDTO.getUsername());
-        oldUser.setEmail(userDTO.getEmail());
-
-        userDao.save(oldUser);
-        return mapToDto(oldUser);
+        // Salva l'utente aggiornato
+        User updatedUser = userDao.save(user);
+        return mapToDto(updatedUser);
     }
 
     @Override

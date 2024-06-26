@@ -14,6 +14,9 @@ object CurrentDataUtils {
 
     private val userService: UserService = RetrofitInstance.api
 
+    private var _accessToken: MutableState<String> = mutableStateOf("")
+    private var _refreshToken: MutableState<String> = mutableStateOf("")
+    private var _userId: MutableState<String> = mutableStateOf("")
     private var _currentUser: MutableState<UserDTO?> = mutableStateOf(null)
     private var _currentProductId: MutableState<String> = mutableStateOf("")
     private var _visitedUser: MutableState<UserBasicDTO?> = mutableStateOf(null)

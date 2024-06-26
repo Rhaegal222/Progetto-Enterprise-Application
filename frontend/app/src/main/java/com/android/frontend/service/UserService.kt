@@ -2,6 +2,7 @@ package com.android.frontend.service
 
 import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.controller.models.UserBasicDTO
+import com.android.frontend.controller.models.UserUpdateRequest
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -48,8 +49,9 @@ interface UserService {
 
     @PATCH("/api/v1/users/{id}")
     fun updateUser(
+        @Header("Authorization") authorization: String,
         @Path("id") id: String,
-        @Body patch: UserDTO
+        @Body patch: UserUpdateRequest
     ): Call<UserDTO>
 
     @DELETE("/api/v1/users/{id}")

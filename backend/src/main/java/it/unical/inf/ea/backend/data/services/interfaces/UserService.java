@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public interface UserService {
     UserDTO createUser(User user);
-    UserDTO updateUser(String id, UserDTO patch) throws IllegalAccessException;
+    UserDTO partialUpdateUser(String id, Map<String, Object> updates) throws IllegalAccessException;
     void deleteUser(String id);
     UserBasicDTO findUserById(String id);
 
