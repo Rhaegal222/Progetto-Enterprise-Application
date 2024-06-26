@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.frontend"
+    namespace = "com.android.frontend"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.frontend"
+        applicationId = "com.android.frontend"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
