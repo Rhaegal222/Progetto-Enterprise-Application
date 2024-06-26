@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +65,7 @@ class ChangePasswordViewModel : ViewModel() {
     fun changePassword(context: Context, onComplete: (Boolean) -> Unit) {
         if (validateForm(context)) {
             viewModelScope.launch(Dispatchers.IO) {
-                val success = changePasswordSuspend()
+                val success = changePasswordSuspend(context)
                 withContext(Dispatchers.Main) {
                     onComplete(success)
                 }
@@ -74,35 +75,37 @@ class ChangePasswordViewModel : ViewModel() {
         }
     }
 
-    private suspend fun changePasswordSuspend(): Boolean = suspendCoroutine { continuation ->
-        val accTok = CurrentDataUtils.accessToken
-        if (accTok.isNotEmpty()) {
-            val token = if (accTok.startsWith("Bearer ")) accTok else "Bearer $accTok"
-            val call = userService.changePassword(token, oldPassword, newPassword)
-            call.enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        successMessage = R.string.passwordChangedSucc
-                        errorMessage = 0
-                        continuation.resume(true)
-                    } else {
-                        errorMessage = when (response.code()) {
-                            500 -> R.string.invalid_old_password
-                            else -> R.string.unknown_error
+    private suspend fun changePasswordSuspend(context: Context): Boolean = suspendCoroutine { continuation ->
+        val accTok = SecurePreferences.getAccessToken(context)
+        if (accTok != null) {
+            if (accTok.isNotEmpty()) {
+                val token = if (accTok.startsWith("Bearer ")) accTok else "Bearer $accTok"
+                val call = userService.changePassword(token, oldPassword, newPassword)
+                call.enqueue(object : Callback<Void> {
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        if (response.isSuccessful) {
+                            successMessage = R.string.passwordChangedSucc
+                            errorMessage = 0
+                            continuation.resume(true)
+                        } else {
+                            errorMessage = when (response.code()) {
+                                500 -> R.string.invalid_old_password
+                                else -> R.string.unknown_error
+                            }
+                            successMessage = 0
+                            continuation.resume(false)
                         }
+                    }
+
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                        errorMessage = R.string.connection_error
                         successMessage = 0
                         continuation.resume(false)
                     }
-                }
-
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    errorMessage = R.string.connection_error
-                    successMessage = 0
-                    continuation.resume(false)
-                }
-            })
-        } else {
-            continuation.resume(false)
+                })
+            } else {
+                continuation.resume(false)
+            }
         }
     }
 }

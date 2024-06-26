@@ -9,6 +9,7 @@ import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -26,7 +27,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun fetchUserProfile() {
         viewModelScope.launch {
-            val accessToken = CurrentDataUtils.accessToken
+            val accessToken = SecurePreferences.getAccessToken(getApplication())
             Log.d("ProfileViewModel", "AccessToken: $accessToken") // Log access token
             val call = userService.me("Bearer $accessToken")
             call.enqueue(object : Callback<UserDTO> {

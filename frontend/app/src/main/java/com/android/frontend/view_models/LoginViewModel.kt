@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.model.GoogleAuthentication
 import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
@@ -43,8 +42,7 @@ class LoginViewModel : ViewModel() {
                             refreshToken = tokenMap["refreshToken"].toString()
                             SecurePreferences.saveAccessToken(context, accessToken)
                             SecurePreferences.saveRefreshToken(context, refreshToken)
-                            CurrentDataUtils.accessToken = accessToken
-                            CurrentDataUtils.refreshToken = refreshToken
+                            SecurePreferences.saveProvider(context, "local")
                             onResult(true, null)
                             refreshAccessToken(context)
                         } else {
@@ -78,8 +76,6 @@ class LoginViewModel : ViewModel() {
                             refreshToken = tokenMap["refreshToken"].toString()
                             SecurePreferences.saveAccessToken(context, accessToken)
                             SecurePreferences.saveRefreshToken(context, refreshToken)
-                            CurrentDataUtils.accessToken = accessToken
-                            CurrentDataUtils.refreshToken = refreshToken
                         } else {
                             Log.e("LoginViewModel", "Failed to refresh access token: ${response.code()}")
                         }
@@ -95,17 +91,16 @@ class LoginViewModel : ViewModel() {
     fun signInWithGoogle(context: Context, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn { success, idToken ->
+            googleAuth.signIn { success, error ->
                 if (success != null) {
                     accessToken = success["accessToken"].toString()
                     refreshToken = success["refreshToken"].toString()
                     SecurePreferences.saveAccessToken(context, accessToken)
                     SecurePreferences.saveRefreshToken(context, refreshToken)
-                    CurrentDataUtils.accessToken = accessToken
-                    CurrentDataUtils.refreshToken = refreshToken
+                    SecurePreferences.saveProvider(context, "google")
                     onResult(true, null)
                 } else {
-                    onResult(false, "Errore durante l'autenticazione con Google")
+                    onResult(false, error)
                 }
             }
         }

@@ -16,13 +16,12 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.model.SecurePreferences
 
 @Composable
 fun OtherMenu(navController: NavHostController) {
@@ -33,7 +32,7 @@ fun OtherMenu(navController: NavHostController) {
     ) {
         MenuItem(navController, Icons.Default.ManageAccounts, R.string.account, false)
         MenuItem(navController, Icons.Default.Info, R.string.about, false)
-        MenuItem(navController, Icons.Default.Logout, R.string.logout, true)
+        MenuItem(navController, Icons.AutoMirrored.Filled.Logout, R.string.logout, true)
     }
 }
 
@@ -46,7 +45,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
             .padding(8.dp)
             .clickable {
                 if (isLogout) {
-                    CurrentDataUtils.logout()
+                    SecurePreferences.clearAll(context)
                     val packageManager: PackageManager = context.packageManager
                     val intent: Intent =
                         packageManager.getLaunchIntentForPackage(context.packageName)!!

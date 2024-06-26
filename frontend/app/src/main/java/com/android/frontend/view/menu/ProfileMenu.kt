@@ -13,19 +13,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.android.frontend.R
-import com.android.frontend.model.CurrentDataUtils
-import com.android.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.android.frontend.model.SecurePreferences
 
 @Composable
-fun ProfileMenu(navController: NavHostController) {
+fun ProfileMenu() {
     val userName = "Nome Utente"
     Column(modifier = Modifier
         .fillMaxSize()
@@ -36,15 +34,15 @@ fun ProfileMenu(navController: NavHostController) {
             modifier = Modifier.padding(16.dp)
         )
 
-        ProfileMenuItem(navController, Icons.Default.LocalShipping, R.string.my_orders)
-        ProfileMenuItem(navController, Icons.Default.Favorite, R.string.wishlist)
-        ProfileMenuItem(navController, Icons.Default.Payment, R.string.payment_methods)
-        ProfileMenuItem(navController, Icons.Default.LocationOn, R.string.shipping_addresses)
+        ProfileMenuItem(Icons.Default.LocalShipping, R.string.my_orders)
+        ProfileMenuItem(Icons.Default.Favorite, R.string.wishlist)
+        ProfileMenuItem(Icons.Default.Payment, R.string.payment_methods)
+        ProfileMenuItem(Icons.Default.LocationOn, R.string.shipping_addresses)
     }
 }
 
 @Composable
-fun ProfileMenuItem(navController: NavHostController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
+fun ProfileMenuItem(icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -52,7 +50,7 @@ fun ProfileMenuItem(navController: NavHostController, icon: ImageVector, textRes
             .padding(8.dp)
             .clickable {
                 if (isLogout) {
-                    CurrentDataUtils.logout()
+                    SecurePreferences.clearAll(context)
                     val packageManager: PackageManager = context.packageManager
                     val intent: Intent =
                         packageManager.getLaunchIntentForPackage(context.packageName)!!

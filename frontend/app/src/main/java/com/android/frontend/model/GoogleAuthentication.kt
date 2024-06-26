@@ -4,9 +4,6 @@ import com.android.frontend.R
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -35,8 +32,9 @@ class GoogleAuthentication(private val context: Context) {
     private val credentialManager = CredentialManager.create(context)
     private val googleAuthService: GoogleAuthenticationService = RetrofitInstance.googleAuthApi
 
-    var accessToken by mutableStateOf("")
-    var refreshToken by mutableStateOf("")
+    private var accessToken = SecurePreferences.getAccessToken(context) ?: ""
+    private var refreshToken = SecurePreferences.getRefreshToken(context) ?: ""
+    private var provider = SecurePreferences.getProvider(context) ?: ""
 
     private fun getNonce(): String {
         val nonceLength = 32
@@ -60,51 +58,41 @@ class GoogleAuthentication(private val context: Context) {
             .build()
     }
 
-    private fun printRequest(request: GetCredentialRequest) {
-        Log.d(TAG, "Request Details:")
-        Log.d(TAG, "Credential Options:")
-        for (option in request.credentialOptions) {
-            Log.d(TAG, option.toString())
-        }
-        Log.d(TAG, "Origin: ${request.origin ?: "null"}")
-        Log.d(TAG, "PreferIdentityDocUI: ${request.preferIdentityDocUi}")
-        Log.d(
-            TAG,
-            "PreferUiBrandingComponentName: ${request.preferUiBrandingComponentName ?: "null"}"
-        )
-        Log.d(
-            TAG,
-            "PreferImmediatelyAvailableCredentials: ${request.preferImmediatelyAvailableCredentials}"
-        )
-    }
-
-    private fun userAlreadySignedIn(): Boolean {
-        return accessToken.isNotEmpty() && refreshToken.isNotEmpty()
-    }
-
     private fun promptAddGoogleAccount() {
+        Log.d(TAG, "Prompting user to add Google account")
         val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
         intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
         context.startActivity(intent)
     }
-    private fun createRequest(): GetCredentialRequest? {
-        return try {
-            if (userAlreadySignedIn()) {
-                Log.d(TAG, "User already signed in")
+
+    private fun userAlreadySignedIn(): Boolean {
+        Log.d(TAG, "Checking if user is already signed in")
+        Log.d(TAG, "Access token: $accessToken")
+        Log.d(TAG, "Refresh token: $refreshToken")
+        Log.d(TAG, "Provider: $provider")
+        return accessToken.isNotEmpty() && refreshToken.isNotEmpty() && provider == "google"
+    }
+
+    private fun createRequest(): GetCredentialRequest {
+        Log.d(TAG, "Creating request")
+        try {
+            return if (userAlreadySignedIn()) {
+                Log.d(TAG, "User is already signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getGoogleIdOption()).build()
-            } else {
-                Log.d(TAG, "User not signed in")
+            } else  {
+                Log.d(TAG, "User is not signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
             }
         } catch (e: GetCredentialException) {
             Log.e(TAG, "Error creating request: ${e.message}")
+            SecurePreferences.clearAll(context)
             promptAddGoogleAccount()
-            return null
+            return GetCredentialRequest.Builder().build()
         }
     }
 
     suspend fun signIn(onResult: (Map<String, String>?, String?) -> Unit) {
-        request = createRequest() ?: return onResult(null, "Errore durante la creazione della richiesta")
+        request = createRequest()
         try {
             val result = credentialManager.getCredential(
                 context = context,
@@ -118,10 +106,8 @@ class GoogleAuthentication(private val context: Context) {
     }
 
     private fun handleFailure(e: GetCredentialException) {
-        Log.i(TAG, "WebClientId: $webClientId")
-        Log.i(TAG, "Origin request: ${request.origin}")
-        Log.i(TAG, "Credential options request: ${request.credentialOptions}")
         Log.e(TAG, "Error getting credential: ${e.message}")
+        SecurePreferences.clearAll(context)
     }
 
     private fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
@@ -195,8 +181,6 @@ class GoogleAuthentication(private val context: Context) {
                         val tokenMap = response.body()!!
                         accessToken = tokenMap["accessToken"].toString()
                         refreshToken = tokenMap["refreshToken"].toString()
-                        CurrentDataUtils.accessToken = tokenMap["accessToken"].toString()
-                        CurrentDataUtils.refreshToken = tokenMap["refreshToken"].toString()
                     } else {
                         Log.e(TAG, "Failed to refresh access token: ${response.code()}")
                     }

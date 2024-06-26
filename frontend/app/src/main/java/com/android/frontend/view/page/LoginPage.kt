@@ -205,15 +205,13 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    loginViewModel.signInWithGoogle(context) { success, errorMessage ->
+                    loginViewModel.signInWithGoogle(context) { success, message ->
                         if (success) {
-                            navController.navigate(Screen.MainScreen.route)
+                            navController.navigate(Screen.MainScreen.route) {
+                                popUpTo(Screen.WelcomeScreen.route) { inclusive = true }
+                            }
                         } else {
-                            Toast.makeText(
-                                context,
-                                errorMessage ?: loginWithGoogleErrorString,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            // Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 },

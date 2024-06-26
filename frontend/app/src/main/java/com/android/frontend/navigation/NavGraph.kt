@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.android.frontend.controller.models.ProductDTO
 import com.android.frontend.ui.ChangePasswordPage
 import com.android.frontend.view.menu.AccountMenu
 import com.android.frontend.view.page.ProductDetailsPage
@@ -71,7 +70,7 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
             HomePage(navController)
         }
         composable(Navigation.ProfileMenu.route) {
-            ProfileMenu(navController)
+            ProfileMenu()
         }
         composable(Navigation.CartPage.route) {
             CartPage()

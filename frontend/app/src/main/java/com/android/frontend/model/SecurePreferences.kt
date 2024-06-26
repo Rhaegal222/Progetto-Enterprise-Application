@@ -2,6 +2,7 @@ package com.android.frontend.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.android.frontend.controller.models.UserDTO
@@ -13,6 +14,7 @@ object SecurePreferences {
     private const val ACCESS_TOKEN_KEY = "access_token"
     private const val REFRESH_TOKEN_KEY = "refresh_token"
     private const val USER_KEY = "user_data"
+    private const val PROVIDER = "user_provider"
 
     private fun getSharedPreferences(context: Context): SharedPreferences {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -51,6 +53,19 @@ object SecurePreferences {
         return sharedPreferences.getString(REFRESH_TOKEN_KEY, null)
     }
 
+    fun saveProvider(context: Context, provider: String) {
+        val sharedPreferences = getSharedPreferences(context)
+        with(sharedPreferences.edit()) {
+            putString(PROVIDER, provider)
+            apply()
+        }
+    }
+
+    fun getProvider(context: Context): String? {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getString(PROVIDER, null)
+    }
+
     fun saveUser(context: Context, user: UserDTO) {
         val sharedPreferences = getSharedPreferences(context)
         val userJson = Gson().toJson(user)
@@ -70,7 +85,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearTokens(context: Context) {
+    private fun clearTokens(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(ACCESS_TOKEN_KEY)
@@ -79,7 +94,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearUser(context: Context) {
+    private fun clearUser(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(USER_KEY)
@@ -87,8 +102,18 @@ object SecurePreferences {
         }
     }
 
+    private fun clearProvider(context: Context) {
+        val sharedPreferences = getSharedPreferences(context)
+        with(sharedPreferences.edit()) {
+            remove(PROVIDER)
+            apply()
+        }
+    }
+
     fun clearAll(context: Context) {
         clearTokens(context)
         clearUser(context)
+        clearProvider(context)
+        Log.d("SecurePreferences", "All secure preferences cleared.")
     }
 }
