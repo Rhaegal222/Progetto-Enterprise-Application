@@ -66,7 +66,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
             .height(150.dp)
             .fillMaxWidth()
             .clickable {
-                navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
+                //navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
 
             }
     ){
@@ -81,7 +81,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                     Text(
                         text = productDTO.title,
                         modifier = Modifier.clickable {
-                            navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
+                            //navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
                         }
                     )
                     Spacer(modifier = Modifier.height(4.dp))

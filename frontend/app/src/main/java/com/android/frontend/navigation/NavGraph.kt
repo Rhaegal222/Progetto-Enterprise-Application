@@ -98,20 +98,12 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
         composable(Navigation.AllProductsPage.route) {
             AllProductsPage(navController, productViewModel = ProductViewModel())
         }
-        composable(
-                route = Navigation.ProductDetailsPage.route,
-                arguments = listOf(navArgument("productid") { type = NavType.StringType })
-        ) {
-        it.arguments?.getString("productid")?.let {
-                productid ->
-            ProductDetailsPage(
-                navController = navController,
-                productViewModel = ProductViewModel(),
-                productId = productid)
+        composable(Navigation.ProductDetailsPage.route) {
+            ProductDetailsPage(navController, productViewModel = ProductViewModel(), productId = "")
         }
     }
-    }
 }
+
 
 object Graph {
     const val start = "start"
