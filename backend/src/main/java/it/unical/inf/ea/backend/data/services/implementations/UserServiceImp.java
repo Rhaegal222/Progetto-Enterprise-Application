@@ -55,7 +55,6 @@ public class UserServiceImp implements UserService{
     private final TokenStore tokenStore;
     private final EmailService emailService;
     private final Oauth2GoogleValidation oauth2GoogleValidation;
-    private final OAuth2KeycloakValidation oauth2KeycloakValidation;
 
 
     public UserDTO createUser(User user) {

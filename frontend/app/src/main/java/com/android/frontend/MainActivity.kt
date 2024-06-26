@@ -1,6 +1,7 @@
 package com.android.frontend
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
@@ -26,23 +27,25 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        /*
         // Verifica se i token di accesso e refresh sono memorizzati e validi
         lifecycleScope.launch {
             checkLoginStatus()
         }
+         */
     }
 
-    private suspend fun checkLoginStatus() {
+    private fun checkLoginStatus() {
         val accessToken = SecurePreferences.getAccessToken(applicationContext)
         val refreshToken = SecurePreferences.getRefreshToken(applicationContext)
 
         if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty()) {
-            // Token trovati, naviga alla schermata principale
+            Log.d("MainActivity", "Access token: $accessToken")
             navController.navigate(Graph.main) {
                 popUpTo(Graph.start) { inclusive = true }
             }
         } else {
-            // Token non trovati o non validi, naviga alla schermata di login
+            Log.d("MainActivity", "No access token or refresh token found")
             navController.navigate(Graph.start) {
                 popUpTo(Graph.main) { inclusive = true }
             }
