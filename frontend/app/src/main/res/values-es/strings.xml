@@ -64,4 +64,6 @@
     <string name="passwordRequirements_line2"> - Al menos 1 número</string>
     <string name="passwordRequirements_line3"> - Al menos 1 letra mayúscula</string>
     <string name="passwordRequirements_line4"> - Al menos 1 carácter especial</string>
+    <string name="invalid_old_password">Contraseña antigua no válida</string>
+    <string name="unauthorized">No autorizado</string>
 </resources>

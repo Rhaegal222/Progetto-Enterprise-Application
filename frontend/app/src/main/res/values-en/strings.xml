@@ -63,4 +63,7 @@
     <string name="passwordRequirements_line1"> - At least 8 characters</string>
     <string name="passwordRequirements_line2"> - At least 1 number</string>
     <string name="passwordRequirements_line3"> - At least 1 uppercase letter</string>
-    <string name="passwordRequirements_line4"> - At least 1 special character</string></resources>
+    <string name="passwordRequirements_line4"> - At least 1 special character</string>
+    <string name="invalid_old_password">Old invalid password</string>
+    <string name="unauthorized">Unauthorized</string>
+</resources>

@@ -141,7 +141,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/changePassword")
+    @PostMapping("/changePassword")
     public ResponseEntity<Void> changePassword(HttpServletRequest request, @RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) throws EntityNotFoundException, ParseException, JOSEException {
         userService.changePassword(request.getHeader(AUTHORIZATION), oldPassword, newPassword);
         return ResponseEntity.ok().build();
