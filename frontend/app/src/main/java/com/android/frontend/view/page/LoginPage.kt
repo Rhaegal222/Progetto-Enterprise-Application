@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.android.frontend.MainActivity
 import com.android.frontend.R
 import com.android.frontend.navigation.Screen
 import com.android.frontend.view_models.LoginViewModel
@@ -42,8 +41,9 @@ import com.android.frontend.view_models.LoginViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage(navController: NavHostController) {
+
     val loginViewModel: LoginViewModel = viewModel()
-    val context = LocalContext.current as MainActivity
+    val context = LocalContext.current
 
     val size = with(LocalDensity.current) {
         DpSize(
@@ -51,6 +51,7 @@ fun LoginPage(navController: NavHostController) {
             height = LocalConfiguration.current.screenHeightDp.dp
         )
     }
+
     val isDarkMode = isSystemInDarkTheme()
 
     var isObscured by remember { mutableStateOf(true) }
@@ -204,17 +205,7 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    loginViewModel.signInWithGoogle { success, errorMessage ->
-                        if (success) {
-                            navController.navigate(Screen.MainScreen.route)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                errorMessage ?: loginWithGoogleErrorString,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
+                    loginViewModel.signInWithGoogle(context)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(

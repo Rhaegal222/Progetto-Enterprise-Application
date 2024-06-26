@@ -14,16 +14,12 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
-import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.service.GoogleAuthenticationService
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 import retrofit2.Call
 import retrofit2.Callback

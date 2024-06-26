@@ -11,7 +11,6 @@ import com.android.frontend.ui.theme.FrontendTheme
 class MainActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

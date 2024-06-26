@@ -16,7 +16,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginViewModel(val context: Context) : ViewModel() {
+class LoginViewModel : ViewModel() {
+
     var username by mutableStateOf("")
     var password by mutableStateOf("")
     var accessToken by mutableStateOf("")
@@ -85,10 +86,10 @@ class LoginViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    fun signInWithGoogle(param: (Boolean, String?) -> Unit) {
+    fun signInWithGoogle(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn(true)
+            googleAuth.signIn(false)
         }
     }
 }
