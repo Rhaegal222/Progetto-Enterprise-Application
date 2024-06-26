@@ -81,7 +81,6 @@ class GoogleAuthentication(private val context: Context) {
                 context = context,
                 request = request,
             )
-            Log.d(TAG, "Sign-in flow completed" + if (button) " with GoogleIdOption" else " with SignInWithGoogleOption" + result.credential)
             handleSignIn(result)
         } catch (e: GetCredentialException) {
             handleFailure(e)
@@ -90,25 +89,29 @@ class GoogleAuthentication(private val context: Context) {
 
     private fun handleSignIn(result: GetCredentialResponse) {
         Log.d(TAG, "Sign-in flow completed")
-        // Handle the successfully returned credential.
-        when (val credential = result.credential) {
 
+        Log.d(TAG, "Credential: ${result.credential}")
+
+        when (val credential = result.credential) {
             // Passkey credential
             is PublicKeyCredential -> {
-                // Share responseJson such as a GetCredentialResponse on your server to
-                // validate and authenticate
                 val responseJson = credential.authenticationResponseJson
+                Log.d(TAG, "Response JSON: $responseJson")
             }
 
             // Password credential
             is PasswordCredential -> {
-                // Send ID and password to your server to validate and authenticate.
                 val username = credential.id
                 val password = credential.password
+                Log.d(TAG, "Username: $username")
+                Log.d(TAG, "Password: $password")
             }
 
             // GoogleIdToken credential
             is CustomCredential -> {
+                Log.d(TAG, "Credential type: ${credential.type}")
+                Log.d(TAG, "Credential data: ${credential.data}")
+
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {
                         // Use googleIdTokenCredential and extract id to validate and
