@@ -19,6 +19,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     private var user = mutableStateOf(SecurePreferences.getUser(application))
 
+    var isLoading = mutableStateOf(true)
+
     private var userId = user.value?.id ?: -1
     var firstName = mutableStateOf(user.value?.firstName ?: "")
     var lastName = mutableStateOf(user.value?.lastName ?: "")
@@ -29,6 +31,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun fetchUserProfile() {
         viewModelScope.launch {
+            isLoading.value = true
             val accessToken = SecurePreferences.getAccessToken(getApplication())
             Log.d("ProfileViewModel", "AccessToken: $accessToken") // Log access token
             val call = userService.me("Bearer $accessToken")
@@ -37,16 +40,22 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     if (response.isSuccessful) {
                         response.body()?.let { user ->
                             SecurePreferences.saveUser(getApplication(), user)
+                            firstName.value = user.firstName
+                            lastName.value = user.lastName
+                            email.value = user.email
+                            phoneNumber.value = user.phoneNumber ?: "Nessun numero di telefono"
                         } ?: run {
                             Log.d("ProfileViewModel", "User profile response body is null")
                         }
                     } else {
                         Log.e("ProfileViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
                     }
+                    isLoading.value = false
                 }
 
                 override fun onFailure(call: Call<UserDTO>, t: Throwable) {
                     Log.e("ProfileViewModel", "Error fetching user profile", t)
+                    isLoading.value = false
                 }
             })
         }

@@ -43,6 +43,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
     val lastName by profileViewModel.lastName
     val email by profileViewModel.email
     val phoneNumber by profileViewModel.phoneNumber
+    val isLoading by profileViewModel.isLoading
 
     var firstNameInput by remember { mutableStateOf(firstName) }
     var lastNameInput by remember { mutableStateOf(lastName) }
@@ -74,97 +75,107 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
             )
         }
     ) {
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFe3f2fd),
-                            Color(0xFFbbdefb),
-                            Color(0xFF90caf9),
-                        )
-                    )
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item { Spacer(modifier = Modifier.height(50.dp)) }
-
-            item {
-                Image(
-                    painter = painterResource(id = R.drawable.user_image),
-                    contentDescription = "Profile Image",
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clip(CircleShape)
-                )
+        if (isLoading) {
+            // Show a loading indicator
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-
-            item { Spacer(modifier = Modifier.height(50.dp)) }
-
-            item {
-                Text(
-                    text = "Il tuo profilo",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    color = Color.Black
-                )
-            }
-
-            item { Spacer(modifier = Modifier.height(20.dp)) }
-
-            if (isEditMode) {
-                item { EditableProfileField(label = "Nome", value = firstNameInput, onValueChange = { firstNameInput = it }) }
-                item { EditableProfileField(label = "Cognome", value = lastNameInput, onValueChange = { lastNameInput = it }) }
-                item { EditableProfileField(label = "Email", value = emailInput, onValueChange = { emailInput = it }) }
-                item { EditableProfileField(label = "Numero di telefono", value = phoneNumberInput, onValueChange = { phoneNumberInput = it }) }
-
-                item { Spacer(modifier = Modifier.height(20.dp)) }
-
-                item {
-                    Button(
-                        onClick = {
-                            profileViewModel.updateUserProfile(
-                                firstNameInput,
-                                lastNameInput,
-                                emailInput,
-                                phoneNumberInput
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFFe3f2fd),
+                                Color(0xFFbbdefb),
+                                Color(0xFF90caf9),
                             )
-                            isEditMode = false
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = "Applica Cambiamenti")
-                    }
+                        )
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item { Spacer(modifier = Modifier.height(50.dp)) }
+
+                item {
+                    Image(
+                        painter = painterResource(id = R.drawable.user_image),
+                        contentDescription = "Profile Image",
+                        modifier = Modifier
+                            .size(140.dp)
+                            .clip(CircleShape)
+                    )
                 }
-            } else {
-                item { ReadOnlyProfileField(label = "Nome", value = firstName) }
-                item { ReadOnlyProfileField(label = "Cognome", value = lastName) }
-                item { ReadOnlyProfileField(label = "Email", value = email) }
-                item { ReadOnlyProfileField(label = "Numero di telefono", value = phoneNumber) }
+
+                item { Spacer(modifier = Modifier.height(50.dp)) }
+
+                item {
+                    Text(
+                        text = "Il tuo profilo",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp,
+                        color = Color.Black
+                    )
+                }
 
                 item { Spacer(modifier = Modifier.height(20.dp)) }
 
-                item {
-                    Button(
-                        onClick = {
-                            firstNameInput = firstName
-                            lastNameInput = lastName
-                            emailInput = email
-                            phoneNumberInput = phoneNumber
-                            isEditMode = true
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = "Modifica")
+                if (isEditMode) {
+                    item { EditableProfileField(label = "Nome", value = firstNameInput, onValueChange = { firstNameInput = it }) }
+                    item { EditableProfileField(label = "Cognome", value = lastNameInput, onValueChange = { lastNameInput = it }) }
+                    item { EditableProfileField(label = "Email", value = emailInput, onValueChange = { emailInput = it }) }
+                    item { EditableProfileField(label = "Numero di telefono", value = phoneNumberInput, onValueChange = { phoneNumberInput = it }) }
+
+                    item { Spacer(modifier = Modifier.height(20.dp)) }
+
+                    item {
+                        Button(
+                            onClick = {
+                                profileViewModel.updateUserProfile(
+                                    firstNameInput,
+                                    lastNameInput,
+                                    emailInput,
+                                    phoneNumberInput
+                                )
+                                isEditMode = false
+                            },
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(text = "Applica Cambiamenti")
+                        }
+                    }
+                } else {
+                    item { ReadOnlyProfileField(label = "Nome", value = firstName) }
+                    item { ReadOnlyProfileField(label = "Cognome", value = lastName) }
+                    item { ReadOnlyProfileField(label = "Email", value = email) }
+                    item { ReadOnlyProfileField(label = "Numero di telefono", value = phoneNumber) }
+
+                    item { Spacer(modifier = Modifier.height(20.dp)) }
+
+                    item {
+                        Button(
+                            onClick = {
+                                firstNameInput = firstName
+                                lastNameInput = lastName
+                                emailInput = email
+                                phoneNumberInput = phoneNumber
+                                isEditMode = true
+                            },
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(text = "Modifica")
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun ReadOnlyProfileField(label: String, value: String) {
