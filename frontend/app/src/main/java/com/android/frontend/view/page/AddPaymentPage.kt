@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.android.frontend.view.page
 
 import android.os.Build
 import android.util.Log
@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -28,8 +27,6 @@ import com.android.frontend.navigation.Navigation
 import com.example.frontend.controller.models.PaymentMethodCreateDTO
 import com.example.frontend.view_models.PaymentViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPaymentPage(navController: NavHostController) {
     val payment = CurrentDataUtils.currentPaymentMethodDTO
@@ -39,7 +36,7 @@ fun AddPaymentPage(navController: NavHostController) {
     val ownerText = remember { mutableStateOf(payment.value?.owner ?: "") }
     val isDefaultBoolean = remember { mutableStateOf(payment.value?.isDefault ?: false) }
 
-    val mContext = LocalContext.current
+    val context = LocalContext.current
     val mText = "paymentUpdated"
     val notUpdated = "paymentNotUpdated"
 
@@ -49,9 +46,9 @@ fun AddPaymentPage(navController: NavHostController) {
     if (localUpdate.value) {
         localUpdate.value = false
         if (updated.value) {
-            Toast.makeText(mContext, mText, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, mText, Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(mContext, notUpdated, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, notUpdated, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -81,10 +78,10 @@ fun AddPaymentPage(navController: NavHostController) {
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = textColor,
                 focusedBorderColor = inputBorderColor,
                 unfocusedBorderColor = inputBorderColor,
-                cursorColor = textColor
             ),
         )
 
@@ -104,10 +101,10 @@ fun AddPaymentPage(navController: NavHostController) {
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = textColor,
                 focusedBorderColor = inputBorderColor,
                 unfocusedBorderColor = inputBorderColor,
-                cursorColor = textColor
             ),
         )
 
@@ -127,10 +124,10 @@ fun AddPaymentPage(navController: NavHostController) {
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = textColor,
                 focusedBorderColor = inputBorderColor,
                 unfocusedBorderColor = inputBorderColor,
-                cursorColor = textColor
             ),
         )
 

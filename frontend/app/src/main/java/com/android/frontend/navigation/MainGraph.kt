@@ -8,6 +8,8 @@ import com.android.frontend.ui.ChangePasswordPage
 import com.android.frontend.view.menu.*
 import com.android.frontend.view.page.*
 import com.android.frontend.view_models.ProductViewModel
+import com.android.frontend.view.page.AddPaymentPage
+import com.example.frontend.view.PaymentsPage
 
 @Composable
 fun MainGraph(navController: NavHostController) {
@@ -23,5 +25,7 @@ fun MainGraph(navController: NavHostController) {
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
         composable(Navigation.AllProductsPage.route) { AllProductsPage(navController, ProductViewModel()) }
         composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), "") }
+        composable(Navigation.PaymentsPage.route) { PaymentsPage(navController) }
+        composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
     }
 }

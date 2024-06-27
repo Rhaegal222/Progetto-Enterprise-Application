@@ -30,9 +30,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.android.frontend.R
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
-import com.example.frontend.R
+import com.android.frontend.view.page.PaymentsMethod
 import com.example.frontend.controller.models.PaymentMethodDTO
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
