@@ -3,16 +3,15 @@ import com.android.frontend.service.GoogleAuthenticationService
 import com.android.frontend.service.ProductService
 import com.android.frontend.service.UserService
 import com.example.frontend.service.PaymentService
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+
 
 object RetrofitInstance {
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080").client(okHttpClient) // Use this for the emulator
+            .baseUrl("http://10.0.2.2:8080") // Use this for the emulator
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -33,13 +32,7 @@ object RetrofitInstance {
         retrofit.create(PaymentService::class.java)
     }
 
-    private val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .addInterceptor(logging)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
+
 
 }
