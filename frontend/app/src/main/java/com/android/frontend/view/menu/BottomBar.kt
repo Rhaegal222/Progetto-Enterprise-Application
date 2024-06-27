@@ -36,6 +36,7 @@ fun BottomBar(navController: NavHostController) {
                     Icon(Icons.Default.Home, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.home))
                 }
             )
+
             NavigationBarItem(
                 selected = currentNavigation.value?.destination?.route == Navigation.AllProductsPage.route,
                 onClick = { navController.navigate(Navigation.AllProductsPage.route) },

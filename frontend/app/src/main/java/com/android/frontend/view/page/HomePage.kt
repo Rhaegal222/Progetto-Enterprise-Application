@@ -15,7 +15,6 @@ import androidx.navigation.NavHostController
 import com.android.frontend.view_models.HomeViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(navController: NavHostController) {
     println("HomePage loaded")

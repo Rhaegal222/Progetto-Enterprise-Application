@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel) {
-    val products =productViewModel.productsLiveData.observeAsState().value
+    val products = productViewModel.productsLiveData.observeAsState().value
 
         productViewModel.fetchAllProducts()
 

@@ -15,12 +15,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.android.frontend.view_models.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailsPage(navController: NavController,productViewModel: ProductViewModel, productId: String) {
+fun ProductDetailsPage(productViewModel: ProductViewModel, productId: String) {
     val productDetails = productViewModel.productDetails.observeAsState()
     LaunchedEffect(key1 = productViewModel) {
         productViewModel.getProductDetails(productId)
