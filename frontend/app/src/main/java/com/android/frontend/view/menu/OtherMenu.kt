@@ -1,8 +1,6 @@
 package com.android.frontend.view.menu
 
-import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -21,6 +19,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import com.android.frontend.MainActivity
 import com.android.frontend.model.SecurePreferences
 
 @Composable
@@ -30,38 +29,30 @@ fun OtherMenu(navController: NavHostController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        MenuItem(navController, Icons.Default.ManageAccounts, R.string.account, false)
-        MenuItem(navController, Icons.Default.Info, R.string.about, false)
-        MenuItem(navController, Icons.AutoMirrored.Filled.Logout, R.string.logout, true)
+        MenuItem(navController, Icons.Default.ManageAccounts, R.string.account)
+        MenuItem(navController, Icons.Default.Info, R.string.about)
+        MenuItem(navController, Icons.AutoMirrored.Filled.Logout, R.string.logout)
     }
 }
 
 @Composable
-fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
+fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                if (isLogout) {
-                    SecurePreferences.clearAll(context)
-                    val packageManager: PackageManager = context.packageManager
-                    val intent: Intent =
-                        packageManager.getLaunchIntentForPackage(context.packageName)!!
-                    val componentName: ComponentName = intent.component!!
-                    val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
-                    context.startActivity(restartIntent)
-                    Runtime
-                        .getRuntime()
-                        .exit(0)
-                } else {
-                    when (textResId) {
-                        R.string.account -> navController.navigate(Navigation.AccountMenu.route)
-                        R.string.about -> navController.navigate(Navigation.AboutPage.route)
+                when (textResId) {
+                    R.string.account -> navController.navigate(Navigation.AccountMenu.route)
+                    R.string.about -> navController.navigate(Navigation.AboutPage.route)
+                    R.string.logout -> {
+                        SecurePreferences.clearAll(context)
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                        }
                     }
                 }
-            }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
