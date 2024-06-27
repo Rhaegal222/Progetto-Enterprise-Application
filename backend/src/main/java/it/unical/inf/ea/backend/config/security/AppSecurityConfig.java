@@ -48,18 +48,23 @@ public class AppSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/v1/admin/**", "/api/v1/reports/close/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/admin/", "/api/v1/reports/close/").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/reports").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/superAdmin/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**", "/api/v1/deliveries/address/{id}").permitAll()
+                        .requestMatchers("/api/v1/superAdmin/").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/", "/api/v1/deliveries/address/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}", "/api/v1/users/find-by-username").permitAll()
-                        .requestMatchers("/api/v1/productCategory/**").permitAll()
-                        .requestMatchers("/api/v1/products/**").permitAll()
-                        .requestMatchers("/api/v1/brand/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products/{id}", "/api/v1/products/filter", "/api/v1/images/**").permitAll()
+                        .requestMatchers("/api/v1/productCategory/").permitAll()
+                        .requestMatchers("/api/v1/products/").permitAll()
+                        .requestMatchers("/api/v1/brand/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/{id}", "/api/v1/products/filter", "/api/v1/images/").permitAll()
                         .requestMatchers("/api/v1/demo", "/api/v1/users/register", "/api/v1/users/authenticate", "/api/v1/users/login-with-google", "api/v1/users/google-auth", "/api/v1/users/login-with-keycloak", "api/v1/users/keycloak-auth",
-                                "/api/v1/users/refreshToken", "/api/v1/users/google_auth", "swagger-ui/**", "/v3/api-docs/**", "/api/v1/products/categories", "/api/v1/products/sizes",
-                                "user_photos/**", "images/**", "api/v1/users/search-by-username").permitAll()
+                                "/api/v1/users/refreshToken", "/api/v1/users/google_auth", "swagger-ui/", "/v3/api-docs/", "/api/v1/products/categories", "/api/v1/products/sizes",
+                                "user_photos/", "images/", "api/v1/users/search-by-username").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/v1/payment-methods").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/payment-methods/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))
@@ -81,7 +86,7 @@ public class AppSecurityConfig {
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/", configuration);
         return source;
     }
 }

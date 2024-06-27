@@ -2,7 +2,10 @@ package it.unical.inf.ea.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
@@ -11,10 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@ToString
 public class PaymentMethodDTO {
 
-    @NotNull
     private String id;
 
     @NotNull
@@ -22,8 +23,9 @@ public class PaymentMethodDTO {
     private String creditCard;
 
     @NotNull
-    @JsonFormat(pattern="dd-MM-yyyy")
-    private LocalDate expiryDate;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //private LocalDate expiryDate;
+    private String expiryDate;
 
     @NotNull
     private Boolean isDefault;
@@ -31,5 +33,4 @@ public class PaymentMethodDTO {
     @NotNull
     @Length(max = 25)
     private String owner;
-
 }
