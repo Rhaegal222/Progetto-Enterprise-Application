@@ -1,5 +1,7 @@
 package com.android.frontend.view.page.product
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,9 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.controller.models.ProductDTO
+import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.ProductViewModel
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel) {
@@ -62,8 +67,10 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
             .height(150.dp)
             .fillMaxWidth()
             .clickable {
-                //navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
 
+                CurrentDataUtils.currentProductId = productDTO.id
+                Log.d("AllProductsPage", "Current product id: ${CurrentDataUtils.currentProductId}")
+                navController.navigate(Navigation.ProductDetailsPage.route)
             }
     ){
         LazyColumn {
@@ -77,7 +84,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                     Text(
                         text = productDTO.title,
                         modifier = Modifier.clickable {
-                            //navController.navigate(Navigation.ProductDetailsPage.route + "/${productDTO.id}")
+                            //navController.navigate("product/${productDTO.id}")
                         }
                     )
                     Spacer(modifier = Modifier.height(4.dp))

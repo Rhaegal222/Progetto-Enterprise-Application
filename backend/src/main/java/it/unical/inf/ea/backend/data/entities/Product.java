@@ -63,6 +63,9 @@ public class Product {
     @Max(1000)
     private int quantity;
 
+    @Column(name = "imgUrl")
+    private String imgUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory productCategory;

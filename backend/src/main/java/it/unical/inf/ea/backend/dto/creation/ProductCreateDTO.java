@@ -49,5 +49,7 @@ public class ProductCreateDTO {
 
     @NotNull
     private ProductCategoryDTO productCategory;
+
+    private String imageUrl;
 }
 

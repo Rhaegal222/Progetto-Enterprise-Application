@@ -28,6 +28,7 @@ class ProductViewModel : ViewModel() {
     fun getProductDetails(id: String) {
         viewModelScope.launch {
             val call = productService.getProductById(id)
+            Log.d("ProductViewModel", "Fetching product details for id riga 31: $id")
             call.enqueue(object : retrofit2.Callback<ProductDTO> {
                 override fun onResponse(
                     call: retrofit2.Call<ProductDTO>,
@@ -40,7 +41,7 @@ class ProductViewModel : ViewModel() {
                     } else {
                         Log.e(
                             "ProductViewModel",
-                            "Failed to fetch product details: ${response.errorBody()?.string()}"
+                            "Failed to fetch products: ${response.errorBody()?.string()}"
                         )
                     }
                 }

@@ -20,7 +20,7 @@ object CurrentDataUtils {
 
     private val userService: UserService = RetrofitInstance.api
 
-    private var _currentProductId: MutableState<String> = mutableStateOf("")
+    private var _currentProductId: String = ""
     private var _visitedUser: MutableState<UserBasicDTO?> = mutableStateOf(null)
     private var _defaultPaymentMethod: MutableState<PaymentMethodDTO?> = mutableStateOf(null)
     private var _showLoadingScreen: MutableState<Boolean> = mutableStateOf(true)
@@ -31,4 +31,10 @@ object CurrentDataUtils {
 
     val goToHome: MutableState<Boolean>
         get() = _goToHome
+
+    var currentProductId: String
+        get() = _currentProductId
+        set(newValue){
+            _currentProductId = newValue
+        }
 }

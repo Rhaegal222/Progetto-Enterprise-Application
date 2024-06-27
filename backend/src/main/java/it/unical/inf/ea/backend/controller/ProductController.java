@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -49,6 +50,11 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/api/v1/products/{id}/upload")
+    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image, @PathVariable String id) {
+        String imageUrl = productService.saveImage(image, id);
+        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
+    }
 
     @DeleteMapping("/deleteProduct/")
     @ResponseStatus(HttpStatus.OK)
@@ -77,7 +83,7 @@ public class ProductController {
 
     @PutMapping("/updateProduct/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ProductDTO> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) {
+    public ResponseEntity<ProductDTO> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) throws IllegalAccessException {
         return ResponseEntity.ok(productService.updateProduct(id, product));
     }
     @GetMapping("/getProductsByCategory/")
@@ -98,9 +104,9 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/getProductById/")
+    @GetMapping("/getProductById/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getProductById(@RequestParam String id) {
+    public ResponseEntity<ProductDTO> getProductById(@RequestParam String id) throws IllegalAccessException {
         ProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }

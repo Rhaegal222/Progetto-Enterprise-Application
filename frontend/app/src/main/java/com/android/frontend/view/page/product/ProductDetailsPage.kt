@@ -1,6 +1,7 @@
 package com.android.frontend.view.page.product
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -15,15 +16,25 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.android.frontend.controller.models.ProductDTO
+import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.navigation.Navigation
+import com.android.frontend.view.page.HomePage
 import com.android.frontend.view_models.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailsPage(productViewModel: ProductViewModel, productId: String) {
-    val productDetails = productViewModel.productDetails.observeAsState()
-    LaunchedEffect(key1 = productViewModel) {
-        productViewModel.getProductDetails(productId)
-    }
+fun ProductDetailsPage(productViewModel: ProductViewModel) {
+    val productId = CurrentDataUtils.currentProductId
+    val productDetails = productViewModel.productDetails.observeAsState().value
+    ProductViewModel().getProductDetails(productId)
+    Log.d("ProductDetailsPage", "Fetching product details for id: $productId")
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -35,7 +46,7 @@ fun ProductDetailsPage(productViewModel: ProductViewModel, productId: String) {
                 modifier = Modifier.consumeWindowInsets(innerPadding),
                 contentPadding = innerPadding
             ) {
-                productDetails.value?.let { product ->
+                productDetails?.let { product ->
                     item {
                         Column {
                             Text(text = product.title)

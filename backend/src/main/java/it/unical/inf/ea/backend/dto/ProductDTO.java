@@ -52,6 +52,6 @@ public class ProductDTO {
     @NotNull
     private ProductCategoryDTO productCategory;
 
-    private List<ProductImageDTO> productImages;
+    private String imageUrl;
 
 }

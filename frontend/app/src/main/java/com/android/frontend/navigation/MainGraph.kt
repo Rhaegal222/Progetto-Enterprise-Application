@@ -33,7 +33,7 @@ fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
         composable(Navigation.AllProductsPage.route) { AllProductsPage(navController, ProductViewModel()) }
-        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), "") }
+        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel()) }
         composable(Navigation.PaymentsPage.route) { PaymentsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
     }
