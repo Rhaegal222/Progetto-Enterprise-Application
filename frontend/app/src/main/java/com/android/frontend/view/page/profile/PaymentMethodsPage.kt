@@ -82,7 +82,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
             ) {
                 for (payment in payments ?: emptyList()) {
                     item {
-                        Log.d("Payment", payment.toString())
+                        Log.d("PaymentMethodsPage", payment.toString())
                         Text(text = payment.creditCard, style = TextStyle(fontSize = 18.sp))
                         Text(text = payment.owner, style = TextStyle(fontSize = 18.sp))
                         Text(text = payment.expiryDate, style = TextStyle(fontSize = 18.sp))

@@ -42,10 +42,8 @@ class ProductViewModel : ViewModel() {
                             productDetails.value = product
                         }
                     } else {
-                        Log.e(
-                            "ProductViewModel",
-                            "Failed to fetch products: ${response.errorBody()?.string()}"
-                        )
+                        Log.e("ProductViewModel",
+                            "Failed to fetch products: ${response.errorBody()?.string()}")
                     }
                 }
 
@@ -74,10 +72,8 @@ class ProductViewModel : ViewModel() {
                             products.value = productsList
                         }
                     } else {
-                        Log.e(
-                            "ProductViewModel",
-                            "Failed to fetch products: ${response.errorBody()?.string()}"
-                        )
+                        Log.e("ProductViewModel",
+                            "Failed to fetch products: ${response.errorBody()?.string()}")
                     }
                 }
 

@@ -37,7 +37,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             isLoading.value = true
             val accessToken = SecurePreferences.getAccessToken(getApplication())
-            Log.d("ProfileViewModel", "AccessToken: $accessToken") // Log access token
             val call = userService.me("Bearer $accessToken")
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
@@ -86,14 +85,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
                         response.body()?.let { user ->
-                            Log.d("ProfileViewModel", "User profile updated successfully: $user")
                             this@ProfileViewModel.firstName.value = user.firstName
                             this@ProfileViewModel.lastName.value = user.lastName
                             this@ProfileViewModel.email.value = user.email
                             this@ProfileViewModel.phoneNumber.value = user.phoneNumber ?: ""
                             // Update profileImage.value if user has a profile image URL or resource ID
                         } ?: run {
-                            Log.d("ProfileViewModel", "User profile update response body is null")
+                            Log.e("ProfileViewModel", "User profile update response body is null")
                         }
                     } else {
                         Log.e("ProfileViewModel", "Failed to update user profile: ${response.errorBody()?.string()}")

@@ -28,7 +28,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun fetchUserProfile() {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(getApplication())
-            Log.d("ProfileViewModel", "AccessToken: $accessToken") // Log access token
             val call = userService.me("Bearer $accessToken")
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
@@ -36,15 +35,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         response.body()?.let { user ->
                             SecurePreferences.saveUser(getApplication(), user)
                         } ?: run {
-                            Log.d("ProfileViewModel", "User profile response body is null")
+                            Log.d("HomeViewModel", "User profile response body is null")
                         }
                     } else {
-                        Log.e("ProfileViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
+                        Log.e("HomeViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: Call<UserDTO>, t: Throwable) {
-                    Log.e("ProfileViewModel", "Error fetching user profile", t)
+                    Log.e("HomeViewModel", "Error fetching user profile", t)
                 }
             })
         }

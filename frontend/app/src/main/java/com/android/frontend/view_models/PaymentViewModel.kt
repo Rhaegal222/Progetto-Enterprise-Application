@@ -54,10 +54,8 @@ class PaymentViewModel : ViewModel() {
                             Log.d("PaymentViewModel", "Added payment method: $paymentMethod")
                         }
                     } else {
-                        Log.e(
-                            "PaymentViewModel",
-                            "Failed to add payment method: ${response.errorBody()?.string()}"
-                        )
+                        Log.e("PaymentViewModel",
+                            "Failed to add payment method: ${response.errorBody()?.string()}")
                     }
                 }
 
@@ -86,10 +84,8 @@ class PaymentViewModel : ViewModel() {
                             paymentMethods.value = paymentMethodsList
                         }
                     } else {
-                        Log.e(
-                            "PaymentViewModel",
-                            "Failed to fetch payment methods: ${response.errorBody()?.string()}"
-                        )
+                        Log.e("PaymentViewModel",
+                            "Failed to fetch payment methods: ${response.errorBody()?.string()}")
                     }
                 }
 
