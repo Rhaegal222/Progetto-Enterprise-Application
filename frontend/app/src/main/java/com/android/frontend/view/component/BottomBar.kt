@@ -1,4 +1,4 @@
-package com.android.frontend.view.menu
+package com.android.frontend.view.component
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons

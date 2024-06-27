@@ -1,4 +1,4 @@
-package com.android.frontend.view.page.profile
+package com.android.frontend.view.component
 
 import android.content.Context
 import android.widget.Toast
@@ -34,7 +34,7 @@ import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Trash
 
 @Composable
-fun PaymentMethodsPage(navController: NavController,payment: MutableState<PaymentMethodDTO?> ){
+fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMethodDTO?> ){
     val paymentViewModel = PaymentViewModel()
 
     val context = LocalContext.current

@@ -33,6 +33,7 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.view.component.PaymentMethods
 import com.example.frontend.controller.models.PaymentMethodDTO
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -76,7 +77,7 @@ fun PaymentsPage(navController: NavHostController) {
         ) {
             items(payments) { item ->
                 val payment: MutableState<PaymentMethodDTO?> = remember { mutableStateOf(item) }
-                PaymentMethodsPage(navController = navController, payment = payment)
+                PaymentMethods(navController = navController, payment = payment)
             }
         }
     }

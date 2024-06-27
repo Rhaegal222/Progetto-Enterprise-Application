@@ -1,6 +1,10 @@
 package com.android.frontend.navigation
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,8 +21,8 @@ import com.android.frontend.view.page.product.ProductDetailsPage
 import com.android.frontend.view.page.profile.PaymentsPage
 
 @Composable
-fun MainGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Navigation.HomePage.route) {
+fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+    NavHost(navController = navController, startDestination = Navigation.HomePage.route, modifier = modifier) {
         composable(Navigation.HomePage.route) { HomePage(navController) }
         composable(Navigation.CartPage.route) { CartPage() }
         composable(Navigation.AccountPage.route) { AccountPage(navController) }
