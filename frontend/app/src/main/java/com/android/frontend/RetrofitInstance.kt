@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitInstance {
     private val retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080").client(okHttpClient) // Use this for the emulator
+            .baseUrl("http://192.168.169.200:8080").client(okHttpClient) // Use this for the emulator
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
