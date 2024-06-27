@@ -176,7 +176,8 @@ fun LoginPage(navController: NavHostController) {
                 onClick = {
                     loginViewModel.loginUser(context) { success, errorMessage ->
                         if (success) {
-                            navController.navigate(Screen.MainScreen.route)
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
                         } else {
                             Toast.makeText(
                                 context,
