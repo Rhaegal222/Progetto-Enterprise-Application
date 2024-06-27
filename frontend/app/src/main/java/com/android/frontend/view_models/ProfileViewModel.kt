@@ -1,6 +1,10 @@
 package com.android.frontend.view_models
 
 import android.app.Application
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -25,7 +29,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var firstName = mutableStateOf(user.value?.firstName ?: "")
     var lastName = mutableStateOf(user.value?.lastName ?: "")
     var email = mutableStateOf(user.value?.email ?: "")
-    var phoneNumber = mutableStateOf(user.value?.phoneNumber ?: "Nessun numero di telefono")
+    var phoneNumber = mutableStateOf(user.value?.phoneNumber ?: "")
 
     private val userService: UserService = RetrofitInstance.api
 
@@ -43,7 +47,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                             firstName.value = user.firstName
                             lastName.value = user.lastName
                             email.value = user.email
-                            phoneNumber.value = user.phoneNumber ?: "Nessun numero di telefono"
+                            phoneNumber.value = user.phoneNumber ?: ""
                         } ?: run {
                             Log.d("ProfileViewModel", "User profile response body is null")
                         }
@@ -86,7 +90,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                             this@ProfileViewModel.firstName.value = user.firstName
                             this@ProfileViewModel.lastName.value = user.lastName
                             this@ProfileViewModel.email.value = user.email
-                            this@ProfileViewModel.phoneNumber.value = user.phoneNumber ?: "Nessun numero di telefono"
+                            this@ProfileViewModel.phoneNumber.value = user.phoneNumber ?: ""
                             // Update profileImage.value if user has a profile image URL or resource ID
                         } ?: run {
                             Log.d("ProfileViewModel", "User profile update response body is null")
@@ -103,4 +107,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun logout(context: Context) {
+        SecurePreferences.clearAll(context)
+        val packageManager: PackageManager = context.packageManager
+        val intent: Intent = packageManager.getLaunchIntentForPackage(context.packageName)!!
+        val componentName: ComponentName = intent.component!!
+        val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
+        context.startActivity(restartIntent)
+        Runtime
+            .getRuntime()
+            .exit(0)
+    }
 }
