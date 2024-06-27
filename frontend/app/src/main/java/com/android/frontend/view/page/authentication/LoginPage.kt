@@ -1,6 +1,7 @@
 package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.android.frontend.MainActivity
 import com.android.frontend.R
 import com.android.frontend.navigation.Screen
 import com.android.frontend.view_models.LoginViewModel
@@ -174,9 +176,7 @@ fun LoginPage(navController: NavHostController) {
                 onClick = {
                     loginViewModel.loginUser(context) { success, errorMessage ->
                         if (success) {
-                            navController.navigate(Screen.MainScreen.route){
-                                popUpTo(Screen.AuthenticationScreen.route) { inclusive = true }
-                            }
+                            navController.navigate(Screen.MainScreen.route)
                         } else {
                             Toast.makeText(
                                 context,
@@ -210,9 +210,8 @@ fun LoginPage(navController: NavHostController) {
                 onClick = {
                     loginViewModel.signInWithGoogle(context) { success, message ->
                         if (success) {
-                            navController.navigate(Screen.MainScreen.route) {
-                                popUpTo(Screen.AuthenticationScreen.route) { inclusive = true }
-                            }
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
                         } else {
                             // Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
