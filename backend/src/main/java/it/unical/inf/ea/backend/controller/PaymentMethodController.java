@@ -27,34 +27,34 @@ public class PaymentMethodController {
 
     private final PaymentMethodService paymentMethodService;
 
-    private final ProductDao productDao;
-
-    @PostMapping(consumes = "application/json")
+    @PostMapping(path="/addPaymentMethod")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PaymentMethodDTO> createPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) throws IllegalAccessException {
-        productDao.findAll();
+    public ResponseEntity<PaymentMethodDTO> addPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) throws IllegalAccessException {
         return ResponseEntity.ok(paymentMethodService.createPaymentMethod(paymentMethodCreateDTO));
     }
 
-    @PutMapping(path = "/{id}", consumes = "application/json")
+    @PutMapping(path = "/updatePaymentMethod/{id}")
     public ResponseEntity<PaymentMethodDTO> updatePaymentMethod(@PathVariable("id") String id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) throws IllegalAccessException {
         return ResponseEntity.ok(paymentMethodService.updatePaymentMethod(id, paymentMethodDTO));
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/deletePaymentMethod/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deletePaymentMethod(@PathVariable("id") String id) throws IllegalAccessException {
         paymentMethodService.deletePaymentMethod(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/getPaymentMethod/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PaymentMethodDTO> getPaymentMethod(@PathVariable("id") String id) throws IllegalAccessException {
         return ResponseEntity.ok(paymentMethodService.getPaymentMethodById(id));
     }
 
-    @GetMapping()
-    public ResponseEntity<Page<PaymentMethodBasicDTO>> getMyPaymentMethods(@RequestParam int page, @RequestParam int size) throws EntityNotFoundException {
-        return ResponseEntity.ok(paymentMethodService.getMyPaymentMethods(page, size));
+    @GetMapping(path = "/getAllPaymentMethods")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getAllPaymentMethods() {
+        return ResponseEntity.ok(paymentMethodService.getAllPaymentMethods());
     }
+
 }

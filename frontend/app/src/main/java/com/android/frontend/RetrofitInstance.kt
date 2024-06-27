@@ -2,7 +2,7 @@ package com.android.frontend
 import com.android.frontend.service.GoogleAuthenticationService
 import com.android.frontend.service.ProductService
 import com.android.frontend.service.UserService
-import com.example.frontend.service.PaymentService
+import com.android.frontend.service.PaymentService
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,7 +1,5 @@
 package com.android.frontend.view.component
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,19 +24,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.frontend.navigation.Navigation
 import com.example.frontend.controller.models.PaymentMethodDTO
-import com.android.frontend.view_models.PaymentViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Trash
 
 @Composable
-fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMethodDTO?> ){
-    val paymentViewModel = PaymentViewModel()
+fun PaymentMethod(navController: NavController, payment: PaymentMethodDTO ) {
 
-    val context = LocalContext.current
-
-
+    val creditCard = payment.creditCard
+    val expiryDate = payment.expiryDate
+    val owner = payment.owner
+    val isDefault = payment.isDefault
 
     Card(
         modifier = Modifier
@@ -53,7 +50,7 @@ fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMe
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = payment.value?.creditCard !!,
+                        text = creditCard,
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     )
                 }
@@ -66,7 +63,7 @@ fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMe
                             },
                         ) {
                             Icon(
-                                imageVector = FontAwesomeIcons.Solid.Edit ,
+                                imageVector = FontAwesomeIcons.Solid.Edit,
                                 contentDescription = "Edit ",
                                 modifier = Modifier
                                     .height(16.dp),
@@ -75,7 +72,6 @@ fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMe
                         }
                         IconButton(
                             onClick = {
-                                payment.value?.id?.let { paymentViewModel.deletePayment(it) }
                                 navController.navigate(Navigation.PaymentsPage.route)
                             }
 
@@ -100,7 +96,7 @@ fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMe
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(end = 8.dp)
                 )
-                Text(text = payment.value?.expiryDate.toString())
+                Text(text = expiryDate)
 
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -109,62 +105,8 @@ fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMe
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(end = 8.dp)
                 )
-                payment.value?.owner?.let { Text(text = it) }
 
             }
-            if(payment.value?.isDefault==true){
-                Text(text = "defaultPaymentMethod", style = TextStyle(color = Green, fontWeight = FontWeight.Bold))
-            }
-            /*else{
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.weight(1f,true))
-                    Button(
-                        onClick = {
-                            changeDefaultPayment(payment = payment.value?.copy(default = true) !!)
-                            mToast(context = mContext, "Address default changed")
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                        ),
-
-                        elevation = ButtonDefaults.buttonElevation(0.dp, 0.dp, 0.dp) ,
-                        shape = MaterialTheme.shapes.small.copy(
-                            topStart = CornerSize(8.dp),
-                            topEnd = CornerSize(8.dp),
-                            bottomStart = CornerSize(8.dp),
-                            bottomEnd = CornerSize(8.dp)
-                        ),
-                        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                        border = BorderStroke(1.dp, Color.Red),
-                        modifier = Modifier.height(33.dp)
-                    )
-
-                    {
-                        Text(
-                            text = stringResource(id = R.string.setAsDefault),
-                            style = TextStyle(
-                                color = Color.Red,
-                                fontStyle = FontStyle.Italic
-                            )
-                        )
-                    }
-                }
-
-            }*/
         }
     }
-
 }
-
-private fun changeDefaultPayment(payment: PaymentMethodDTO){
-    val paymentViewModel = PaymentViewModel()
-    paymentViewModel.updatePayment(payment = payment)
-}
-
-private fun mToast(context: Context, text: String){
-    Toast.makeText(context, text, Toast.LENGTH_LONG).show()
-}
-
-//private fun EditPayment(payment: MutableState<PaymentMethodDTO?>) {
-//    CurrentDataUtils.currentPaymentMethodDTO = payment
-//}

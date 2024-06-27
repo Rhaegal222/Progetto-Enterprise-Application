@@ -49,6 +49,22 @@ public class AppSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
+                        // BRAND
+                        .requestMatchers(HttpMethod.POST, "/api/v1/brand/addBrand").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/brand/deleteBrand").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/brand/allBrands", "api/v1/brand/getBrandById/", "api/v1/brand/getBrandByName/").authenticated()
+
+                        // Richieste dove non è richiesta l'autenticazione
+                        .requestMatchers(HttpMethod.POST, "api/v1/user/register", "api/v1/users/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}", "/api/v1/users/find-by-username").permitAll()
+
+                        // PAYMENT METHOD
+                        .requestMatchers(HttpMethod.POST, "/api/v1/payment-methods/addPaymentMethod").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/updatePaymentMethod/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/payment-methods/deletePaymentMethod/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/getPaymentMethod/{id}", "/api/v1/payment-methods/getAllPaymentMethods").authenticated()
+
+
                         .anyRequest().permitAll())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))

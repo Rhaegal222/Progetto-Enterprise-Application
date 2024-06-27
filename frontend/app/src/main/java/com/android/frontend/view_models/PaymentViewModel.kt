@@ -1,45 +1,110 @@
 package com.android.frontend.view_models
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.MutableState
+import android.view.translation.ViewTranslationResponse
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.PaymentMethodCreateDTO
+import com.android.frontend.controller.models.ProductDTO
+import com.android.frontend.model.SecurePreferences
 import com.example.frontend.controller.models.PaymentMethodDTO
-import com.example.frontend.service.PaymentService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.android.frontend.service.PaymentService
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.awaitResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.net.SocketTimeoutException
 
-class PaymentViewModel {
+class PaymentViewModel : ViewModel() {
+
+    private val paymentMethods = MutableLiveData<List<PaymentMethodDTO>>()
+    val paymentMethodsLiveData: LiveData<List<PaymentMethodDTO>> get() = paymentMethods
+
+    var paymentMethodId by mutableStateOf("")
+    var creditCard by mutableStateOf("")
+    var owner by mutableStateOf("")
+    var expireMonth by mutableStateOf("")
+    var expireYear by mutableStateOf("")
+    var isDefault by mutableStateOf(false) // True or False
 
     private val paymentService: PaymentService = RetrofitInstance.paymentApi
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-    val updated: MutableState<Boolean> = mutableStateOf(false)
-    val localUpdated: MutableState<Boolean> = mutableStateOf(false)
+    fun addPaymentCard(context: Context, creditCard: String, expiryDate: String, owner: String, isDefault: Boolean) {
+        viewModelScope.launch {
+            val accessToken = SecurePreferences.getAccessToken(context)
+            Log.d("PaymentViewModel", "Access Token: $accessToken")
+            val paymentMethod = PaymentMethodCreateDTO(creditCard, expiryDate, owner, isDefault)
+            val call = paymentService.addPaymentMethod("Bearer $accessToken", paymentMethod)
+            call.enqueue(object : Callback<PaymentMethodDTO> {
+                override fun onResponse(
+                    call: Call<PaymentMethodDTO>,
+                    response: Response<PaymentMethodDTO>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { paymentMethod ->
+                            Log.d("PaymentViewModel", "Added payment method: $paymentMethod")
+                        }
+                    } else {
+                        Log.e(
+                            "PaymentViewModel",
+                            "Failed to add payment method: ${response.errorBody()?.string()}"
+                        )
+                    }
+                }
 
-    fun getPaymentMethods() {
-        coroutineScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    paymentService.getPaymentMethods().awaitResponse()
+                override fun onFailure(call: Call<PaymentMethodDTO>, t: Throwable) {
+                    if (t is SocketTimeoutException) {
+                        Log.e("PaymentViewModel", "Timeout error adding payment method", t)
+                    } else {
+                        Log.e("PaymentViewModel", "Error adding payment method", t)
+                    }
                 }
-                if (response.isSuccessful) {
-                    val paymentMethods = response.body()
-                    Log.d("API_CALL", "Payment methods fetched successfully: $paymentMethods")
-                    //MainRouter.changePage(Navigation.PaymentsPage)
-                } else {
-                    Log.d("API_CALL", "Failed to fetch payment methods: ${response.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Log.d("API_CALL", "Exception occurred: ${e.message}")
-            }
+            })
         }
     }
+
+    fun getAllPaymentMethods(context: Context) {
+        viewModelScope.launch {
+            val accessToken = SecurePreferences.getAccessToken(context)
+            val call = paymentService.getAllPaymentMethods("Bearer $accessToken")
+            call.enqueue(object : Callback<List<PaymentMethodDTO>> {
+                override fun onResponse(
+                    call: Call<List<PaymentMethodDTO>>,
+                    response: Response<List<PaymentMethodDTO>>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { paymentMethodsList ->
+                            paymentMethods.value = paymentMethodsList
+                        }
+                    } else {
+                        Log.e(
+                            "PaymentViewModel",
+                            "Failed to fetch payment methods: ${response.errorBody()?.string()}"
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<List<PaymentMethodDTO>>, t: Throwable) {
+                    if (t is SocketTimeoutException) {
+                        Log.e("PaymentViewModel", "Timeout error fetching payment methods", t)
+                    } else {
+                        Log.e("PaymentViewModel", "Error fetching payment methods", t)
+                    }
+                }
+            })
+        }
+    }
+
+    /*
     fun updatePayment(payment: PaymentMethodDTO) {
         coroutineScope.launch {
             try {
@@ -47,7 +112,7 @@ class PaymentViewModel {
                     paymentService.updatePaymentMethod(payment.id, payment).awaitResponse()
                 }
                 updated.value = response.isSuccessful
-                //MainRouter.changePage(Navigation.PaymentsPage)
+                //MainRouter.changePage(Navigation.PaymentMethodsPage)
             } catch (e: Exception) {
                 updated.value = false
                 e.printStackTrace()
@@ -56,29 +121,7 @@ class PaymentViewModel {
         }
     }
 
-    fun createPayment(payment: PaymentMethodCreateDTO) {
-        coroutineScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    Log.d("API_CALL", "Sending request to create payment: $payment")
-                    Log.d("PAYMENT", "expireDate.value: ${payment.expiryDate}")
-                    paymentService.createPaymentMethod(payment).awaitResponse()
-                }
-                if (response.isSuccessful) {
-                    updated.value = true
-                    Log.d("API_CALL", "Payment method created successfully")
-                } else {
-                    updated.value = false
-                    Log.d("API_CALL", "Failed to create payment method: ${response.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                updated.value = false
-                e.printStackTrace()
-                Log.d("API_CALL", "Exception occurred: ${e.message}")
-            }
-            localUpdated.value = true
-        }
-    }
+
 
 
     fun deletePayment(id: String) {
@@ -88,7 +131,7 @@ class PaymentViewModel {
                     paymentService.deletePaymentMethod(id).awaitResponse()
                 }
                 updated.value = response.isSuccessful
-                //MainRouter.changePage(Navigation.PaymentsPage)
+                //MainRouter.changePage(Navigation.PaymentMethodsPage)
             } catch (e: Exception) {
                 updated.value = false
                 e.printStackTrace()
@@ -96,4 +139,5 @@ class PaymentViewModel {
             localUpdated.value = true
         }
     }
+     */
 }

@@ -2,13 +2,10 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.data.dao.PaymentMethodDao;
-import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.PaymentMethod;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.PaymentMethodService;
-import it.unical.inf.ea.backend.data.services.interfaces.UserService;
 import it.unical.inf.ea.backend.dto.PaymentMethodDTO;
-import it.unical.inf.ea.backend.dto.basics.PaymentMethodBasicDTO;
 import it.unical.inf.ea.backend.dto.creation.PaymentMethodCreateDTO;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.exception.IdMismatchException;
@@ -16,10 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,48 +23,36 @@ import java.util.stream.Collectors;
 public class PaymentMethodServiceImp implements PaymentMethodService {
 
     private final PaymentMethodDao paymentMethodDao;
-    private final UserDao userDao;
     private final ModelMapper modelMapper;
-    private final UserService userService;
     private final JwtContextUtils jwtContextUtils;
 
-    @Transactional
+    @Override
     public PaymentMethodDTO createPaymentMethod(PaymentMethodCreateDTO paymentMethodCreateDTO) throws IllegalAccessException {
-        System.out.println("Creating payment method with DTO: {}");
-        System.out.println(paymentMethodCreateDTO);
+        try {
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser == null) {
+                throw new IllegalStateException("Logged user cannot be null");
+            }
 
-        PaymentMethod paymentMethod = modelMapper.map(paymentMethodCreateDTO, PaymentMethod.class);
+            PaymentMethod paymentMethod = modelMapper.map(paymentMethodCreateDTO, PaymentMethod.class);
+            paymentMethod.setOwnerUser(loggedUser);
 
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        if (loggedUser == null) {
-            System.out.println("Logged user is null. Security context: {}");
-            System.out.println(SecurityContextHolder.getContext());
-            throw new IllegalStateException("Logged user cannot be null");
-        }
-
-        System.out.println("Logged user: {}");
-        System.out.println(loggedUser);
-
-        paymentMethod.setOwnerUser(loggedUser);
-
-        if (paymentMethod.isDefault()) {
-            for (PaymentMethod existingMethod : loggedUser.getPaymentMethods()) {
-                if (existingMethod.isDefault()) {
-                    existingMethod.setDefault(false);
-                    paymentMethodDao.save(existingMethod);
+            if (paymentMethod.isDefault()) {
+                for (PaymentMethod existingMethod : loggedUser.getPaymentMethods()) {
+                    if (existingMethod.isDefault()) {
+                        existingMethod.setDefault(false);
+                        paymentMethodDao.save(existingMethod);
+                    }
                 }
             }
+
+            paymentMethod = paymentMethodDao.save(paymentMethod);
+
+            return mapToDTO(paymentMethod);
+        } catch (Exception e) {
+            throw new IllegalAccessException("Cannot create payment method");
         }
-
-        paymentMethod = paymentMethodDao.save(paymentMethod);
-        System.out.println("Payment method created: {}");
-        System.out.println(paymentMethod);
-        return mapToDTO(paymentMethod);
     }
-
-
-
-
 
     @Override
     @Transactional
@@ -115,7 +96,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
                 throw new IllegalAccessException("Cannot delete payment method");
             paymentMethodDao.deleteById(id);
         }catch (Exception e){
-            e.printStackTrace();
+            throw new IllegalAccessException("Cannot delete payment method");
         }
 
     }
@@ -133,12 +114,8 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
-    public Page<PaymentMethodBasicDTO> getMyPaymentMethods(int page, int size) {
-        User user = jwtContextUtils.getUserLoggedFromContext();
-        Page<PaymentMethod> paymentMethods = new PageImpl<PaymentMethod>(user.getPaymentMethods(), PageRequest.of(page,size),user.getPaymentMethods().size());
-        List<PaymentMethodBasicDTO> collect = paymentMethods.stream().map(s->modelMapper.map(s, PaymentMethodBasicDTO.class)).collect(Collectors.toList());
-
-        return new PageImpl<>(collect, PageRequest.of(page,size),paymentMethods.getTotalElements());
+    public List<PaymentMethodDTO> getAllPaymentMethods() {
+        return paymentMethodDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public PaymentMethod mapToEntity(PaymentMethodDTO paymentMethodDTO) {

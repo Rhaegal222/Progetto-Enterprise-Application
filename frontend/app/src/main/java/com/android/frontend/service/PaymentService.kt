@@ -1,4 +1,4 @@
-package com.example.frontend.service
+package com.android.frontend.service
 
 import com.example.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.controller.models.PaymentMethodCreateDTO
@@ -6,11 +6,14 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface PaymentService {
-    @GET("/api/v1/payment-methods")
-    fun getPaymentMethods(): Call<List<PaymentMethodDTO>>
+    @GET("/api/v1/payment-methods/getAllPaymentMethods")
+    fun getAllPaymentMethods(
+        @Header("Authorization") authorization: String
+    ): Call<List<PaymentMethodDTO>>
 
-    @POST("/api/v1/payment-methods")
-    fun createPaymentMethod(
+    @POST("/api/v1/payment-methods/addPaymentMethod")
+    fun addPaymentMethod(
+        @Header("Authorization") authorization: String,
         @Body paymentMethodCreateDTO: PaymentMethodCreateDTO,
     ): Call<PaymentMethodDTO>
 

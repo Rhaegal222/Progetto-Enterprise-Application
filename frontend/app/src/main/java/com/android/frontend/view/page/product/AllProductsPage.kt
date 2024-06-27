@@ -33,8 +33,7 @@ import com.android.frontend.view_models.ProductViewModel
 @Composable
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel) {
     val products = productViewModel.productsLiveData.observeAsState().value
-
-        productViewModel.fetchAllProducts()
+    productViewModel.fetchAllProducts()
 
     Scaffold(
         topBar = {

@@ -1,9 +1,12 @@
 package it.unical.inf.ea.backend.data.services.interfaces;
 
 import it.unical.inf.ea.backend.dto.PaymentMethodDTO;
+import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.basics.PaymentMethodBasicDTO;
 import it.unical.inf.ea.backend.dto.creation.PaymentMethodCreateDTO;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface PaymentMethodService {
 
@@ -11,6 +14,5 @@ public interface PaymentMethodService {
     PaymentMethodDTO updatePaymentMethod(String id, PaymentMethodDTO paymentMethodDTO) throws IllegalAccessException;
     void deletePaymentMethod(String id) throws IllegalAccessException;
     PaymentMethodDTO getPaymentMethodById(String id) throws IllegalAccessException;
-
-    Page<PaymentMethodBasicDTO> getMyPaymentMethods(int page, int size);
+    List<PaymentMethodDTO> getAllPaymentMethods();
 }
