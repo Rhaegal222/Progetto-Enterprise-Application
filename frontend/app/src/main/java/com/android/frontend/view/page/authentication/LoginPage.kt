@@ -174,7 +174,9 @@ fun LoginPage(navController: NavHostController) {
                 onClick = {
                     loginViewModel.loginUser(context) { success, errorMessage ->
                         if (success) {
-                            navController.navigate(Screen.MainScreen.route)
+                            navController.navigate(Screen.MainScreen.route){
+                                popUpTo(Screen.AuthenticationScreen.route) { inclusive = true }
+                            }
                         } else {
                             Toast.makeText(
                                 context,
@@ -209,7 +211,7 @@ fun LoginPage(navController: NavHostController) {
                     loginViewModel.signInWithGoogle(context) { success, message ->
                         if (success) {
                             navController.navigate(Screen.MainScreen.route) {
-                                // popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                                popUpTo(Screen.AuthenticationScreen.route) { inclusive = true }
                             }
                         } else {
                             // Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
