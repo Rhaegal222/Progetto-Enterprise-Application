@@ -1,6 +1,10 @@
 package com.android.frontend.view.page.other
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,13 +16,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.view_models.ProfileViewModel
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import com.android.frontend.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,15 +50,18 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
     var firstNameInput by remember { mutableStateOf(firstName) }
     var lastNameInput by remember { mutableStateOf(lastName) }
     var emailInput by remember { mutableStateOf(email) }
-    var phoneNumberInput by remember { mutableStateOf(phoneNumber) }
+    var phoneNumberInput by remember { mutableStateOf(if (phoneNumber == "Nessun numero di telefono") "" else phoneNumber) }
 
     var isEditMode by remember { mutableStateOf(false) }
+    var showEmailChangeDialog by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Scaffold(
         containerColor = Color.White,
         topBar = {
             TopAppBar(
-                colors = topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
                 title = { },
@@ -135,13 +140,17 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                     item {
                         Button(
                             onClick = {
-                                profileViewModel.updateUserProfile(
-                                    firstNameInput,
-                                    lastNameInput,
-                                    emailInput,
-                                    phoneNumberInput
-                                )
-                                isEditMode = false
+                                if (emailInput != email) {
+                                    showEmailChangeDialog = true
+                                } else {
+                                    profileViewModel.updateUserProfile(
+                                        firstNameInput,
+                                        lastNameInput,
+                                        emailInput,
+                                        phoneNumberInput
+                                    )
+                                    isEditMode = false
+                                }
                             },
                             modifier = Modifier.padding(16.dp)
                         ) {
@@ -162,7 +171,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                                 firstNameInput = firstName
                                 lastNameInput = lastName
                                 emailInput = email
-                                phoneNumberInput = phoneNumber
+                                phoneNumberInput = if (phoneNumber == "Nessun numero di telefono") "" else phoneNumber
                                 isEditMode = true
                             },
                             modifier = Modifier.padding(16.dp)
@@ -173,9 +182,41 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 }
             }
         }
+
+        if (showEmailChangeDialog) {
+            AlertDialog(
+                onDismissRequest = { showEmailChangeDialog = false },
+                title = { Text(text = "Cambio email") },
+                text = { Text("Per poter modificare l'email devi rieffettuare l'accesso.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            profileViewModel.updateUserProfile(
+                                firstNameInput,
+                                lastNameInput,
+                                emailInput,
+                                phoneNumberInput
+                            )
+                            profileViewModel.logout(context)
+                        }
+                    ) {
+                        Text("Continua")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showEmailChangeDialog = false
+                            isEditMode = false
+                        }
+                    ) {
+                        Text("Cancella")
+                    }
+                }
+            )
+        }
     }
 }
-
 
 @Composable
 fun ReadOnlyProfileField(label: String, value: String) {
@@ -235,7 +276,7 @@ fun EditableProfileField(label: String, value: String, onValueChange: (String) -
                 value = value,
                 onValueChange = onValueChange,
                 singleLine = true,
-                colors = outlinedTextFieldColors(
+                colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Gray,
                     unfocusedBorderColor = Color.LightGray,
                     cursorColor = Color.Black

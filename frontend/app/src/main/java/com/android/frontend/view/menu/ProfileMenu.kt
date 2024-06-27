@@ -26,12 +26,13 @@ import com.android.frontend.navigation.Navigation
 
 @Composable
 fun ProfileMenu(navController: NavController) {
-    val userName = "Nome Utente"
+    val hi = stringResource(id = R.string.hello_user)
+    val username = SecurePreferences.getUser(LocalContext.current)?.firstName ?: ""
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
         Text(
-            text = stringResource(id = R.string.hello_user, userName),
+            text = "$hi, $username!",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
