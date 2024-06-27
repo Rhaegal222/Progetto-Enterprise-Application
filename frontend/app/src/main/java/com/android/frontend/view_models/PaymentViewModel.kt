@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.android.frontend.RetrofitInstance
-import com.example.frontend.controller.models.PaymentMethodCreateDTO
+import com.android.frontend.controller.models.PaymentMethodCreateDTO
 import com.example.frontend.controller.models.PaymentMethodDTO
 import com.example.frontend.service.PaymentService
 import kotlinx.coroutines.CoroutineScope

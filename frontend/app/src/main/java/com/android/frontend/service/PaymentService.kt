@@ -1,7 +1,7 @@
 package com.example.frontend.service
 
 import com.example.frontend.controller.models.PaymentMethodDTO
-import com.example.frontend.controller.models.PaymentMethodCreateDTO
+import com.android.frontend.controller.models.PaymentMethodCreateDTO
 import retrofit2.Call
 import retrofit2.http.*
 

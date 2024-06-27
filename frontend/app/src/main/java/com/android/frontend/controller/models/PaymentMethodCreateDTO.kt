@@ -1,4 +1,4 @@
-package com.example.frontend.controller.models
+package com.android.frontend.controller.models
 
 import java.time.LocalDate
 
