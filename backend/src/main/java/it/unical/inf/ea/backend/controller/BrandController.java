@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.entities.Brand;
 import it.unical.inf.ea.backend.data.services.interfaces.BrandService;
 import it.unical.inf.ea.backend.dto.BrandDTO;
+import it.unical.inf.ea.backend.dto.creation.BrandCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class BrandController {
 
     @PostMapping("/addBrand")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> addBrand(@RequestBody BrandDTO brandDTO) {
+    public ResponseEntity<?> addBrand(@RequestBody BrandCreateDTO brandDTO) {
         try {
             brandService.addBrand(brandDTO);
             return ResponseEntity.ok("{\"message\": \"Brand registered successfully\"}");

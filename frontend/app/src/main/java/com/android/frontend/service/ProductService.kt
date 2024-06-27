@@ -24,9 +24,9 @@ interface ProductService {
         @Query("id") id: String
     ): Call<String>
 
-    @GET("/api/v1/products/getProductById/")
+    @GET("/api/v1/products/getProductById/{id}")
     fun getProductById(
-        @Query("id") id: String
+        @Path("id") id: String
     ): Call<ProductDTO>
 
     @GET("/api/v1/products/getAllProducts")

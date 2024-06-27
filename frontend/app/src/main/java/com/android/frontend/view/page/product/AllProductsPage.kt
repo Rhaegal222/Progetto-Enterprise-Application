@@ -41,11 +41,8 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                 title = { Text("All Products") },
             )
         },
-
-
         content = { innerPadding ->
             LazyColumn(
-                // consume insets as scaffold doesn't do it by default
                 modifier = Modifier.consumeWindowInsets(innerPadding),
                 contentPadding = innerPadding
             ) {

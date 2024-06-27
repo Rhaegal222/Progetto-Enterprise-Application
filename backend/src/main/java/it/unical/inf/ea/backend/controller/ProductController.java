@@ -106,7 +106,7 @@ public class ProductController {
 
     @GetMapping("/getProductById/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ProductDTO> getProductById(@RequestParam String id) throws IllegalAccessException {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable String id) throws IllegalAccessException {
         ProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }

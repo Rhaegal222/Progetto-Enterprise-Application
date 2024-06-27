@@ -3,6 +3,7 @@ import it.unical.inf.ea.backend.data.dao.BrandDao;
 import it.unical.inf.ea.backend.data.entities.Brand;
 import it.unical.inf.ea.backend.data.services.interfaces.BrandService;
 import it.unical.inf.ea.backend.dto.BrandDTO;
+import it.unical.inf.ea.backend.dto.creation.BrandCreateDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public void addBrand(BrandDTO brandDTO) {
+    public void addBrand(BrandCreateDTO brandDTO) {
         Brand brand = new Brand();
         brand.setName(brandDTO.getName());
         brand.setDescription(brandDTO.getDescription());

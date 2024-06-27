@@ -121,7 +121,7 @@ fun AddPaymentPage(navController: NavHostController) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    //Checkbox to set as default payment method
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,

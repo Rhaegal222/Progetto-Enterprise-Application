@@ -12,12 +12,15 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
 class ProductViewModel : ViewModel() {
+
+    private val productService = RetrofitInstance.productApi
+
     private val products = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> get() = products
 
-    private val productService = RetrofitInstance.productApi
-    private val _productDetails = MutableLiveData<ProductDTO>()
-    val productDetails: LiveData<ProductDTO> get() = _productDetails
+
+    private val productDetails = MutableLiveData<ProductDTO>()
+    val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
 
     fun setProduct(productDTO: ProductDTO) {
         viewModelScope.launch {
@@ -28,7 +31,6 @@ class ProductViewModel : ViewModel() {
     fun getProductDetails(id: String) {
         viewModelScope.launch {
             val call = productService.getProductById(id)
-            Log.d("ProductViewModel", "Fetching product details for id riga 31: $id")
             call.enqueue(object : retrofit2.Callback<ProductDTO> {
                 override fun onResponse(
                     call: retrofit2.Call<ProductDTO>,
@@ -36,7 +38,8 @@ class ProductViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let { product ->
-                            _productDetails.value = product
+                            Log.d("ProductViewModel", "Product details: $product")
+                            productDetails.value = product
                         }
                     } else {
                         Log.e(
