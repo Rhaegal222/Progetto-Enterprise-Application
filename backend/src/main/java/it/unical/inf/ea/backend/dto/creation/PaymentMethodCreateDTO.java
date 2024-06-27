@@ -21,8 +21,9 @@ public class PaymentMethodCreateDTO {
     private String creditCard;
 
     @NotNull
-    @JsonFormat(pattern="dd-MM-yyyy")
-    private LocalDate expiryDate;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    //private LocalDate expiryDate;
+    private String expiryDate;
 
     @NotNull
     private Boolean isDefault;

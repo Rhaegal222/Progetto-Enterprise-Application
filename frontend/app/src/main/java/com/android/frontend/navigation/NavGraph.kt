@@ -13,6 +13,8 @@ import com.android.frontend.view.page.authentication.*
 import com.android.frontend.view.screen.AuthenticationScreen
 import com.android.frontend.view.screen.MainScreen
 import com.android.frontend.view_models.ProductViewModel
+import com.example.frontend.view.AddPaymentPage
+import com.example.frontend.view.PaymentsPage
 
 object Graph {
     const val start = "authentication"
@@ -61,6 +63,11 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
         // composable(Navigation.CheckoutPage.route) { CheckoutPage(navController) }
         // composable(Navigation.OrderSuccessPage.route) { OrderSuccessPage(navController) }
         // composable(Navigation.OrderHistoryPage.route) { OrderHistoryPage(navController) }
-
+        composable(Navigation.PaymentsPage.route) {
+            PaymentsPage(navController)
+        }
+        composable(Navigation.AddPaymentPage.route) {
+            AddPaymentPage(navController)
+        }
     }
 }

@@ -1,11 +1,12 @@
-package com.android.frontend.controller.models
+package com.example.frontend.controller.models
 
 data class PaymentMethodDTO (
 
     val id: kotlin.String,
     val creditCard: kotlin.String,
-    val expiryDate: java.time.LocalDate,
+    //val expiryDate: java.time.LocalDate,
+    val expiryDate: kotlin.String,
     val owner: kotlin.String,
     val isDefault: kotlin.Boolean
-) {
+){
 }

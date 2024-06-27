@@ -29,4 +29,8 @@ sealed class Navigation(val route: String) {
     object ChangePasswordPage : Navigation(route = "changePassword_page")
     object AllProductsPage : Navigation(route = "products_page")
     object ProductDetailsPage : Navigation(route = "productDetails_page")
+    object PaymentsPage : Navigation(route = "payments_page")
+    object AddPaymentPage : Navigation(route = "addpayment_page")
+    object PaymentsMethodPage : Navigation(route = "paymentsmethod_page")
+    object SelectPaymentMethodPage : Navigation(route = "select_payment_method_page")
 }
