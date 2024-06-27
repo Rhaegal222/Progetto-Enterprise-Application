@@ -6,6 +6,8 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface PaymentService {
+    @GET("/api/v1/payment-methods")
+    fun getPaymentMethods(): Call<List<PaymentMethodDTO>>
 
     @POST("/api/v1/payment-methods")
     fun createPaymentMethod(

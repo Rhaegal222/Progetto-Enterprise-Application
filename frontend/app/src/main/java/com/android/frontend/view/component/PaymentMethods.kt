@@ -24,10 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
 import com.example.frontend.controller.models.PaymentMethodDTO
-import com.example.frontend.view_models.PaymentViewModel
+import com.android.frontend.view_models.PaymentViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Edit
@@ -62,7 +61,7 @@ fun PaymentMethods(navController: NavController, payment: MutableState<PaymentMe
                     Row() {
                         IconButton(
                             onClick = {
-                                EditPayment(payment = payment)
+                                // EditPayment(payment = payment)
                                 navController.navigate(Navigation.AddPaymentPage.route)
                             },
                         ) {
@@ -166,6 +165,6 @@ private fun mToast(context: Context, text: String){
     Toast.makeText(context, text, Toast.LENGTH_LONG).show()
 }
 
-private fun EditPayment(payment: MutableState<PaymentMethodDTO?>) {
-    CurrentDataUtils.currentPaymentMethodDTO = payment
-}
+//private fun EditPayment(payment: MutableState<PaymentMethodDTO?>) {
+//    CurrentDataUtils.currentPaymentMethodDTO = payment
+//}

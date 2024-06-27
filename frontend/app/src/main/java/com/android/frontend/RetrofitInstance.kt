@@ -2,6 +2,7 @@ package com.android.frontend
 import com.android.frontend.service.GoogleAuthenticationService
 import com.android.frontend.service.ProductService
 import com.android.frontend.service.UserService
+import com.example.frontend.service.PaymentService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -27,6 +28,11 @@ object RetrofitInstance {
     val productApi: ProductService by lazy {
         retrofit.create(ProductService::class.java)
     }
+
+    val paymentApi: PaymentService by lazy {
+        retrofit.create(PaymentService::class.java)
+    }
+
     private val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
     private val okHttpClient = OkHttpClient.Builder()

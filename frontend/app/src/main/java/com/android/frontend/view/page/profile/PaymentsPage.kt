@@ -32,8 +32,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.model.SecurePreferences
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.PaymentMethods
+import com.android.frontend.view_models.PaymentViewModel
 import com.example.frontend.controller.models.PaymentMethodDTO
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -41,7 +43,9 @@ import compose.icons.fontawesomeicons.solid.CreditCard
 
 @Composable
 fun PaymentsPage(navController: NavHostController) {
-    val payments = CurrentDataUtils.PaymentMethods
+
+    val paymentViewModel = PaymentViewModel()
+    val payments = paymentViewModel.getPaymentMethods()
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -61,7 +65,7 @@ fun PaymentsPage(navController: NavHostController) {
             )
             TransparentGreenButton(
                 onClick = {
-                    CurrentDataUtils.currentPaymentMethodDTO.value = null
+                    // CurrentDataUtils.currentPaymentMethodDTO.value = null
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
                 modifier = Modifier.height(35.dp),
@@ -75,10 +79,10 @@ fun PaymentsPage(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(30.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(payments) { item ->
-                val payment: MutableState<PaymentMethodDTO?> = remember { mutableStateOf(item) }
-                PaymentMethods(navController = navController, payment = payment)
-            }
+//            items(payments) { item ->
+//                val payment: MutableState<PaymentMethodDTO?> = remember { mutableStateOf(item) }
+//                PaymentMethods(navController = navController, payment = payment)
+//            }
         }
     }
 }

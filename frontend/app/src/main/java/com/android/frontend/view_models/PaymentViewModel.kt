@@ -1,9 +1,9 @@
-package com.example.frontend.view_models
+package com.android.frontend.view_models
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.RetrofitInstance
 import com.example.frontend.controller.models.PaymentMethodCreateDTO
 import com.example.frontend.controller.models.PaymentMethodDTO
 import com.example.frontend.service.PaymentService
@@ -11,43 +11,47 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.awaitResponse
 
 class PaymentViewModel {
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:8080")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val paymentService: PaymentService = retrofit.create(PaymentService::class.java)
+    private val paymentService: PaymentService = RetrofitInstance.paymentApi
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     val updated: MutableState<Boolean> = mutableStateOf(false)
     val localUpdated: MutableState<Boolean> = mutableStateOf(false)
 
+    fun getPaymentMethods() {
+        coroutineScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    paymentService.getPaymentMethods().awaitResponse()
+                }
+                if (response.isSuccessful) {
+                    val paymentMethods = response.body()
+                    Log.d("API_CALL", "Payment methods fetched successfully: $paymentMethods")
+                    //MainRouter.changePage(Navigation.PaymentsPage)
+                } else {
+                    Log.d("API_CALL", "Failed to fetch payment methods: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("API_CALL", "Exception occurred: ${e.message}")
+            }
+        }
+    }
     fun updatePayment(payment: PaymentMethodDTO) {
         coroutineScope.launch {
             try {
-                if (payment.id != null) {
-                    val response = withContext(Dispatchers.IO) {
-                        paymentService.updatePaymentMethod(payment.id, payment).awaitResponse()
-                    }
-                    if (response.isSuccessful) {
-                        updated.value = true
-                    } else {
-                        updated.value = false
-                    }
+                val response = withContext(Dispatchers.IO) {
+                    paymentService.updatePaymentMethod(payment.id, payment).awaitResponse()
                 }
+                updated.value = response.isSuccessful
                 //MainRouter.changePage(Navigation.PaymentsPage)
             } catch (e: Exception) {
                 updated.value = false
                 e.printStackTrace()
             }
-            CurrentDataUtils.retrieveCurrentUser()
-            CurrentDataUtils.retrievePaymentMethods()
             localUpdated.value = true
         }
     }
@@ -72,8 +76,6 @@ class PaymentViewModel {
                 e.printStackTrace()
                 Log.d("API_CALL", "Exception occurred: ${e.message}")
             }
-            CurrentDataUtils.retrieveCurrentUser()
-            CurrentDataUtils.retrievePaymentMethods()
             localUpdated.value = true
         }
     }
@@ -85,18 +87,12 @@ class PaymentViewModel {
                 val response = withContext(Dispatchers.IO) {
                     paymentService.deletePaymentMethod(id).awaitResponse()
                 }
-                if (response.isSuccessful) {
-                    updated.value = true
-                } else {
-                    updated.value = false
-                }
+                updated.value = response.isSuccessful
                 //MainRouter.changePage(Navigation.PaymentsPage)
             } catch (e: Exception) {
                 updated.value = false
                 e.printStackTrace()
             }
-            CurrentDataUtils.retrieveCurrentUser()
-            CurrentDataUtils.retrievePaymentMethods()
             localUpdated.value = true
         }
     }
