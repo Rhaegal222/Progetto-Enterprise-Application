@@ -1,4 +1,4 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.product
 
 
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.other
 
 import android.annotation.SuppressLint
 import com.android.frontend.R

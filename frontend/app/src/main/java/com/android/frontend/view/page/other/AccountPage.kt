@@ -1,4 +1,4 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.other
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

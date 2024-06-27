@@ -63,6 +63,7 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.monitor)
     testImplementation("junit:junit:4.12")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
@@ -70,5 +71,6 @@ dependencies {
     implementation("androidx.credentials:credentials:1.2.2")
     implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+    androidTestImplementation("junit:junit:4.12")
 
 }

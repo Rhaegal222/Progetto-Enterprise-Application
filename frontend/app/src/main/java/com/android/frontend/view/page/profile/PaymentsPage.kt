@@ -1,4 +1,4 @@
-package com.example.frontend.view
+package com.android.frontend.view.page.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,6 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view.page.PaymentsMethod
 import com.example.frontend.controller.models.PaymentMethodDTO
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid

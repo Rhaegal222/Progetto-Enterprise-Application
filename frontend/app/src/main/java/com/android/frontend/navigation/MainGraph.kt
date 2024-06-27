@@ -8,8 +8,13 @@ import com.android.frontend.ui.ChangePasswordPage
 import com.android.frontend.view.menu.*
 import com.android.frontend.view.page.*
 import com.android.frontend.view_models.ProductViewModel
-import com.android.frontend.view.page.AddPaymentPage
-import com.example.frontend.view.PaymentsPage
+import com.android.frontend.view.page.profile.AddPaymentPage
+import com.android.frontend.view.page.other.AboutPage
+import com.android.frontend.view.page.other.AccountPage
+import com.android.frontend.view.page.product.AllProductsPage
+import com.android.frontend.view.page.product.CartPage
+import com.android.frontend.view.page.product.ProductDetailsPage
+import com.android.frontend.view.page.profile.PaymentsPage
 
 @Composable
 fun MainGraph(navController: NavHostController) {

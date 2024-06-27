@@ -1,4 +1,4 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.profile
 
 import android.content.Context
 import android.widget.Toast
