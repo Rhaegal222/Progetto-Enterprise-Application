@@ -28,7 +28,7 @@ object CurrentDataUtils {
     private var _visitedUser: MutableState<UserBasicDTO?> = mutableStateOf(null)
     private var _currentAddress: MutableState<AddressDTO?> = mutableStateOf(null)
     private var _Addresses = mutableStateListOf<AddressDTO>()
-    private var _PaymentsMethod = mutableStateListOf<PaymentMethodDTO>()
+    private var _PaymentMethods = mutableStateListOf<PaymentMethodDTO>()
     private var _currentPaymentMethod: MutableState<PaymentMethodDTO?> = mutableStateOf(null)
     private var _defaultAddress: MutableState<AddressDTO?> = mutableStateOf(null)
     private var _currentAddresses = mutableStateListOf<AddressDTO>()
@@ -46,8 +46,8 @@ object CurrentDataUtils {
     val goToHome: MutableState<Boolean>
         get() = _goToHome
 
-    val PaymentsMethod: SnapshotStateList<PaymentMethodDTO>
-        get() = _PaymentsMethod
+    val PaymentMethods: SnapshotStateList<PaymentMethodDTO>
+        get() = _PaymentMethods
 
     var currentPaymentMethodDTO: MutableState<PaymentMethodDTO?>
         get() = _currentPaymentMethod
@@ -62,10 +62,10 @@ object CurrentDataUtils {
         }
     }
 
-    fun retrievePaymentsMethod() {
-        _PaymentsMethod.clear()
-        _currentUser.value?.paymentMethods?.let { _PaymentsMethod.addAll(it.toList()) }
-        _PaymentsMethod.forEach { p ->
+    fun retrievePaymentMethods() {
+        _PaymentMethods.clear()
+        _currentUser.value?.paymentMethods?.let { _PaymentMethods.addAll(it.toList()) }
+        _PaymentMethods.forEach { p ->
             if (p.isDefault)
                 _defaultPaymentMethod.value = p
         }
@@ -80,7 +80,7 @@ object CurrentDataUtils {
                 if (response.isSuccessful) {
                     _currentUser.value = response.body()
                     retrieveAddresses()
-                    retrievePaymentsMethod()
+                    retrievePaymentMethods()
                 } else {
                     // Handle error response if needed
                     println("Failed to retrieve current user: ${response.errorBody()?.string()}")

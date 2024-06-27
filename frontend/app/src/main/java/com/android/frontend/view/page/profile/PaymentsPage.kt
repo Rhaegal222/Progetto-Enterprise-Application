@@ -40,7 +40,7 @@ import compose.icons.fontawesomeicons.solid.CreditCard
 
 @Composable
 fun PaymentsPage(navController: NavHostController) {
-    val payments = CurrentDataUtils.PaymentsMethod
+    val payments = CurrentDataUtils.PaymentMethods
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -76,7 +76,7 @@ fun PaymentsPage(navController: NavHostController) {
         ) {
             items(payments) { item ->
                 val payment: MutableState<PaymentMethodDTO?> = remember { mutableStateOf(item) }
-                PaymentsMethod(navController = navController,payment = payment)
+                PaymentMethodsPage(navController = navController, payment = payment)
             }
         }
     }

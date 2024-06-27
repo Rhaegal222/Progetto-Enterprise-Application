@@ -20,10 +20,12 @@ import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 import com.android.frontend.model.SecurePreferences
+import com.android.frontend.navigation.Navigation
 
 @Composable
-fun ProfileMenu() {
+fun ProfileMenu(navController: NavController) {
     val userName = "Nome Utente"
     Column(modifier = Modifier
         .fillMaxSize()
@@ -34,15 +36,15 @@ fun ProfileMenu() {
             modifier = Modifier.padding(16.dp)
         )
 
-        ProfileMenuItem(Icons.Default.LocalShipping, R.string.my_orders)
-        ProfileMenuItem(Icons.Default.Favorite, R.string.wishlist)
-        ProfileMenuItem(Icons.Default.Payment, R.string.payment_methods)
-        ProfileMenuItem(Icons.Default.LocationOn, R.string.shipping_addresses)
+        ProfileMenuItem(navController, Icons.Default.LocalShipping, R.string.my_orders)
+        ProfileMenuItem(navController, Icons.Default.Favorite, R.string.wishlist)
+        ProfileMenuItem(navController, Icons.Default.Payment, R.string.payment_methods)
+        ProfileMenuItem(navController, Icons.Default.LocationOn, R.string.shipping_addresses)
     }
 }
 
 @Composable
-fun ProfileMenuItem(icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
+fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -62,9 +64,9 @@ fun ProfileMenuItem(icon: ImageVector, textResId: Int, isLogout: Boolean = false
                         .exit(0)
                 } else {
                     when (textResId) {
-                        // R.string.my_orders -> navController.navigate(Navigation.MyOrdersPage.route)
-                        // R.string.wishlist -> navController.navigate(Navigation.WishlistPage.route)
-                        // R.string.payment_methods -> navController.navigate(Navigation.PaymentMethodsPage.route)
+                        // R.string.my_orders ->
+                        // R.string.wishlist ->
+                        R.string.payment_methods -> navController.navigate(Navigation.PaymentMethodsPage.route)
                         // R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
                     }
                 }

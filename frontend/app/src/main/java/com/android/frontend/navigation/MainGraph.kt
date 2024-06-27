@@ -24,7 +24,7 @@ fun MainGraph(navController: NavHostController) {
         composable(Navigation.AccountPage.route) { AccountPage(navController) }
         composable(Navigation.AboutPage.route) { AboutPage(navController) }
         composable(Navigation.OtherMenu.route) { OtherMenu(navController) }
-        composable(Navigation.ProfileMenu.route) { ProfileMenu() }
+        composable(Navigation.ProfileMenu.route) { ProfileMenu(navController) }
         composable(Navigation.AccountMenu.route) { AccountMenu(navController) }
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }

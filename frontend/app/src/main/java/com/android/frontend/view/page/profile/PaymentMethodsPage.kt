@@ -34,7 +34,7 @@ import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Trash
 
 @Composable
-fun PaymentsMethod(navController: NavController,payment: MutableState<PaymentMethodDTO?> ){
+fun PaymentMethodsPage(navController: NavController,payment: MutableState<PaymentMethodDTO?> ){
     val paymentViewModel = PaymentViewModel()
 
     val context = LocalContext.current

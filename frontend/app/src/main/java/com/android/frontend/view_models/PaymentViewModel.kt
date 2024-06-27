@@ -47,7 +47,7 @@ class PaymentViewModel {
                 e.printStackTrace()
             }
             CurrentDataUtils.retrieveCurrentUser()
-            CurrentDataUtils.retrievePaymentsMethod()
+            CurrentDataUtils.retrievePaymentMethods()
             localUpdated.value = true
         }
     }
@@ -73,7 +73,7 @@ class PaymentViewModel {
                 Log.d("API_CALL", "Exception occurred: ${e.message}")
             }
             CurrentDataUtils.retrieveCurrentUser()
-            CurrentDataUtils.retrievePaymentsMethod()
+            CurrentDataUtils.retrievePaymentMethods()
             localUpdated.value = true
         }
     }
@@ -96,7 +96,7 @@ class PaymentViewModel {
                 e.printStackTrace()
             }
             CurrentDataUtils.retrieveCurrentUser()
-            CurrentDataUtils.retrievePaymentsMethod()
+            CurrentDataUtils.retrievePaymentMethods()
             localUpdated.value = true
         }
     }
