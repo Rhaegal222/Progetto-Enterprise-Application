@@ -1,7 +1,6 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.navigation.Screen
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +80,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.LoginPage.route) }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = if (isDarkMode) Color.White else Color.Black)
                     }
                 }

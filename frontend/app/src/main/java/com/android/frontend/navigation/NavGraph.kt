@@ -16,13 +16,13 @@ import com.android.frontend.view.page.AboutPage
 import com.android.frontend.view.page.AccountPage
 import com.android.frontend.view.page.CartPage
 import com.android.frontend.view.page.HomePage
-import com.android.frontend.view.page.LoginPage
 import com.android.frontend.view.menu.OtherMenu
 import com.android.frontend.view.menu.ProfileMenu
 import com.android.frontend.view.menu.SecurityMenu
 import com.android.frontend.view.page.AllProductsPage
-import com.android.frontend.view.page.ForgetPasswordPage
-import com.android.frontend.view.page.SignupPage
+import com.android.frontend.view.page.authentication.LoginPage
+import com.android.frontend.view.page.authentication.ForgetPasswordPage
+import com.android.frontend.view.page.authentication.SignupPage
 import com.android.frontend.view.screen.AuthenticationScreen
 import com.android.frontend.view_models.ProductViewModel
 
@@ -95,6 +95,7 @@ fun NavGraphBuilder.mainGraph(navController: NavHostController) {
     }
 }
 
+/*
 @Composable
 fun NavProduct(navController: NavHostController, productid: Int) {
     NavHost(navController = navController, startDestination = Navigation.ProductDetailsPage.route) {
@@ -103,6 +104,7 @@ fun NavProduct(navController: NavHostController, productid: Int) {
         }
     }
 }
+ */
 
 object Graph {
     const val start = "start"

@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.view_models.ProductViewModel
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailsPage(navController: NavController,productViewModel: ProductViewModel, productId: String) {

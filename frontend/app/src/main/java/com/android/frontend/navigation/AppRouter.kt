@@ -1,11 +1,20 @@
 package com.android.frontend.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+
+@Composable
+fun AppRouter(navController: NavHostController) {
+    NavGraph(navController)
+}
+
 sealed class Screen(val route: String) {
     object AuthenticationScreen : Screen(route = "authentication_screen")
     object MainScreen : Screen(route = "main_screen")
 }
 
 sealed class Navigation(val route: String) {
+    object WelcomePage : Navigation(route = "welcome_page")
     object SignupPage : Navigation(route = "signup_page")
     object LoginPage : Navigation(route = "login_page")
     object ForgetPasswordPage : Navigation(route = "forgetPassword_page")

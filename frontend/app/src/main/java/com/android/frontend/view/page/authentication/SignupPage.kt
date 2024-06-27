@@ -1,4 +1,4 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
 import android.widget.Toast
@@ -37,13 +37,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.view_models.SignUpViewModel
 import com.android.frontend.R
-import com.android.frontend.navigation.Screen
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
+import com.android.frontend.navigation.Navigation
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +76,7 @@ fun SignupPage(navController: NavHostController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.WelcomePage.route) }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = if (isDarkMode) Color.White else Color.Black)
                     }
                 }
@@ -103,7 +103,7 @@ fun SignupPage(navController: NavHostController) {
             )
 
             TextButton(
-                onClick = { navController.popBackStack() }
+                onClick = { navController.navigate(Navigation.LoginPage.route) }
             ) {
                 Text(
                     buildAnnotatedString {

@@ -1,4 +1,4 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
 import android.widget.Toast
@@ -74,7 +74,7 @@ fun LoginPage(navController: NavHostController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.WelcomePage.route) }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = if (isDarkMode) Color.White else Color.Black)
                     }
                 }
