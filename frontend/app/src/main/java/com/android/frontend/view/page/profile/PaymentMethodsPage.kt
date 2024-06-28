@@ -3,6 +3,8 @@ package com.android.frontend.view.page.profile
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -82,7 +84,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                 modifier = Modifier
                     .padding(0.dp)
 
-                ) {
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Payment Method",
                     modifier = Modifier.width(40.dp).height(40.dp).padding(0.dp)
                 )
@@ -118,27 +120,43 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                         PaymentCard(payment = payments!![page])
                     }
                 }
-            }
 
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(checked = selectedPaymentMethod?.isDefault ?: false,
-                    onCheckedChange = {
-                        selectedPaymentMethod?.let {
-                            // paymentViewModel.updatePayment(it)
-                        }
-                    })
+                Row(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = selectedPaymentMethod?.isDefault ?: false,
+                        onCheckedChange = {
+                            selectedPaymentMethod?.let {
+                                // paymentViewModel.updatePayment(it)
+                            }
+                        })
 
-                Text(
-                    text = stringResource(id = R.string.set_as_default),
-                    color = Color.Black,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+                    Text(
+                        text = stringResource(id = R.string.set_as_default),
+                        color = Color.Black,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Button(
+                        onClick = {
+                            selectedPaymentMethod?.let {
+                                paymentViewModel.deletePayment(context, it.id)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text(text = stringResource(id = R.string.delete))
+                    }
+                }
             }
         }
     }
