@@ -234,33 +234,41 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 Spacer(modifier = Modifier.height(20.dp))
 
                 if (isEditMode) {
-                    Button(
-                        onClick = {
-                            if (email != firstName) {
-                                showEmailChangeDialog = true
-                            } else {
-                                profileViewModel.updateUserProfile(
-                                    context,
-                                    firstName,
-                                    lastName,
-                                    email,
-                                    phoneNumber
-                                )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+
+                        Button(
+                            onClick = {
+                                if (email != firstName) {
+                                    showEmailChangeDialog = true
+                                } else {
+                                    profileViewModel.updateUserProfile(
+                                        context,
+                                        firstName,
+                                        lastName,
+                                        email,
+                                        phoneNumber
+                                    )
+                                    isEditMode = false
+                                }
+                            },
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(text = stringResource(id = R.string.apply))
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = {
                                 isEditMode = false
-                            }
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = stringResource(id = R.string.apply))
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = {
-                            isEditMode = false
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(text = stringResource(id = R.string.cancel))
+                            },
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(text = stringResource(id = R.string.cancel))
+                        }
                     }
                 } else {
                     Button(
