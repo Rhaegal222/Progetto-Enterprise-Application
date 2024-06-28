@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+// import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.view_models.ProfileViewModel
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
@@ -123,7 +123,8 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                     ) {
                         if (profileImageUri != null) {
                             Image(
-                                painter = rememberAsyncImagePainter(model = profileImageUri),
+                                painter = painterResource(id = R.drawable.user_image),
+                                // painter = rememberAsyncImagePainter(model = profileImageUri),
                                 contentDescription = "Profile Image",
                                 modifier = Modifier
                                     .size(160.dp)
