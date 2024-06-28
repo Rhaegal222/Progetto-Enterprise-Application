@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.data.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +27,10 @@ public class PaymentMethod {
     private String cardNumber;
 
     @Column(nullable = false)
-    //private LocalDate expiryDate;  // DD//MM/YYYY
-    private String expiryDate;  // DD//MM/YYYY
+    private String expireMonth;
+
+    @Column(nullable = false)
+    private String expireYear;
 
     @Column(nullable = false)
     private String owner;

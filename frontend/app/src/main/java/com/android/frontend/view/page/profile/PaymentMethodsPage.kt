@@ -98,8 +98,10 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -110,14 +112,15 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                     state = pagerState,
                     count = payments!!.size,
                     contentPadding = PaddingValues(horizontal = 50.dp),
-                    modifier = Modifier.fillMaxWidth()
                 ) { page ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 0.dp)
                     ) {
-                        PaymentCard(payment = payments!![page])
+                        PaymentCard(payment = payments!![page], onRemove = {
+                            paymentViewModel.deletePayment(context, payments!![page].id)
+                        })
                     }
                 }
 
@@ -131,7 +134,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                     Checkbox(checked = selectedPaymentMethod?.isDefault ?: false,
                         onCheckedChange = {
                             selectedPaymentMethod?.let {
-                                // paymentViewModel.updatePayment(it)
+                                paymentViewModel.setDefaultPayment(context, it.id, pagerState)
                             }
                         })
 
@@ -140,22 +143,6 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                         color = Color.Black,
                         modifier = Modifier.padding(start = 8.dp)
                     )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Button(
-                        onClick = {
-                            selectedPaymentMethod?.let {
-                                paymentViewModel.deletePayment(context, it.id)
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red
-                        ),
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Text(text = stringResource(id = R.string.delete))
-                    }
                 }
             }
         }

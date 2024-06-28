@@ -28,6 +28,12 @@ interface PaymentService {
         @Path("id") id: String
     ): Call<PaymentMethodDTO>
 
+    // Set as default payment method
+    @PUT("/api/v1/payment-methods/setDefaultPaymentMethod/{id}")
+    fun setDefaultPaymentMethod(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Call<Void>
 /*
     @PUT("/api/v1/payment-methods/{id}")
     fun updatePaymentMethod(
