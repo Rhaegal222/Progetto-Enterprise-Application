@@ -3,6 +3,7 @@ package com.android.frontend.view.menu
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -28,12 +29,15 @@ import com.android.frontend.navigation.Navigation
 fun ProfileMenu(navController: NavController) {
     val hi = stringResource(id = R.string.hello_user)
     val username = SecurePreferences.getUser(LocalContext.current)?.firstName ?: ""
+    val colors = MaterialTheme.colorScheme
     Column(modifier = Modifier
         .fillMaxSize()
+        .background(colors.background)
         .padding(16.dp)) {
         Text(
             text = "$hi, $username!",
             style = MaterialTheme.typography.titleLarge,
+            color = colors.onBackground,
             modifier = Modifier.padding(16.dp)
         )
 
@@ -47,6 +51,7 @@ fun ProfileMenu(navController: NavController) {
 @Composable
 fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
     val context = LocalContext.current
+    val colors = MaterialTheme.colorScheme
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,11 +82,12 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp))
+            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp), tint = colors.onSurface)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
                 style = MaterialTheme.typography.titleLarge,
+                color = colors.onSurface,
                 fontWeight = FontWeight.Bold
             )
         }

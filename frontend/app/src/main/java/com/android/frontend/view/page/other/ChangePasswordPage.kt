@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
@@ -32,16 +33,15 @@ import com.android.frontend.view_models.ChangePasswordViewModel
 fun ChangePasswordPage(navController: NavHostController) {
     val changePasswordViewModel: ChangePasswordViewModel = viewModel()
     val context = LocalContext.current as MainActivity
-
-    val inputBorderColor = Color.Gray
-    val textColor = Color.Black
-    val iconColor = Color.Black
-
     var isObscured by remember { mutableStateOf(true) }
+    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val iconColor = MaterialTheme.colorScheme.onSurface
     val passwordChangedMessage = stringResource(R.string.passwordChangedSucc)
+    val colors = MaterialTheme.colorScheme
 
     Scaffold(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -57,7 +57,7 @@ fun ChangePasswordPage(navController: NavHostController) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = colors.onBackground
                         )
                     }
                 },
@@ -78,14 +78,14 @@ fun ChangePasswordPage(navController: NavHostController) {
             if (changePasswordViewModel.errorMessage != 0) {
                 Text(
                     text = stringResource(id = changePasswordViewModel.errorMessage),
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
             if (changePasswordViewModel.successMessage != 0) {
                 Text(
                     text = stringResource(id = changePasswordViewModel.successMessage),
-                    color = Color.Green,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
@@ -211,13 +211,12 @@ fun ChangePasswordPage(navController: NavHostController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.apply_changes),
-                    color = Color.White
+                    text = stringResource(id = R.string.apply)
                 )
             }
 
@@ -230,19 +229,19 @@ fun ChangePasswordPage(navController: NavHostController) {
             ) {
                 Text(
                     text = stringResource(R.string.passwordRequirements_line1),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
                 )
                 Text(
                     text = stringResource(R.string.passwordRequirements_line2),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
                 )
                 Text(
                     text = stringResource(R.string.passwordRequirements_line3),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
                 )
                 Text(
                     text = stringResource(R.string.passwordRequirements_line4),
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
                 )
             }
         }

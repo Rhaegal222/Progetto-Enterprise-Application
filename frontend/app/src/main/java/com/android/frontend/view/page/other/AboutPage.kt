@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -43,8 +44,9 @@ import compose.icons.fontawesomeicons.brands.Twitter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutPage(navController: NavController){
+    val colors = MaterialTheme.colorScheme
     Scaffold(
-        containerColor = Color.White,
+        containerColor = colors.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -60,7 +62,7 @@ fun AboutPage(navController: NavController){
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = colors.onBackground
                         )
                     }
                 },
@@ -71,14 +73,17 @@ fun AboutPage(navController: NavController){
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colors.background)
+                .padding(16.dp)
         ) {
             Spacer(modifier = Modifier.height(50.dp))
 
             Row {
                 Text(
                     text = stringResource(R.string.about_description),
-                    style = TextStyle(fontSize = 20.sp),
+                    style = TextStyle(fontSize = 20.sp, color = colors.onBackground),
                     modifier = Modifier.padding(10.dp),
                 )
             }
@@ -95,15 +100,14 @@ fun AboutPage(navController: NavController){
                     onClick = { },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(Color(0xFF9DCEFF))
+                        .background(colors.primary)
                         .padding(10.dp)
                         .size(30.dp)
                 ) {
-                    // Icona di GITHUB
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Github,
                         contentDescription = stringResource(R.string.github),
-                        tint = Color.White
+                        tint = colors.onPrimary
                     )
                 }
 
@@ -111,14 +115,14 @@ fun AboutPage(navController: NavController){
                     onClick = { },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(Color(0xFF9DCEFF))
+                        .background(colors.primary)
                         .padding(10.dp)
                         .size(30.dp)
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Instagram,
                         contentDescription = stringResource(R.string.instagram),
-                        tint = Color.White
+                        tint = colors.onPrimary
                     )
                 }
 
@@ -126,14 +130,14 @@ fun AboutPage(navController: NavController){
                     onClick = { },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(Color(0xFF9DCEFF))
+                        .background(colors.primary)
                         .padding(10.dp)
                         .size(30.dp)
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Twitter,
                         contentDescription = stringResource(R.string.twitter),
-                        tint = Color.White
+                        tint = colors.onPrimary
                     )
                 }
             }

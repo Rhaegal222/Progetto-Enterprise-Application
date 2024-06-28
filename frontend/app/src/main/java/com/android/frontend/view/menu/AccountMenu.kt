@@ -1,6 +1,7 @@
 package com.android.frontend.view.menu
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -24,8 +25,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AccountMenu(navController: NavHostController) {
+    val colors = MaterialTheme.colorScheme
     Scaffold(
-        containerColor = Color.White,
+        containerColor = colors.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -41,7 +43,7 @@ fun AccountMenu(navController: NavHostController) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = colors.onBackground
                         )
                     }
                 },
@@ -53,6 +55,7 @@ fun AccountMenu(navController: NavHostController) {
     ){
         Column(modifier = Modifier
             .fillMaxSize()
+            .background(colors.background)
             .padding(16.dp)) {
             Spacer(modifier = Modifier.height(50.dp))
             AccountItem(navController, Icons.AutoMirrored.Filled.FactCheck, R.string.personal_informations)
@@ -63,6 +66,7 @@ fun AccountMenu(navController: NavHostController) {
 
 @Composable
 fun AccountItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
+    val colors = MaterialTheme.colorScheme
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -78,10 +82,11 @@ fun AccountItem(navController: NavHostController, icon: ImageVector, textResId: 
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp))
+            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp), tint = colors.onSurface)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
+                color = colors.onSurface,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

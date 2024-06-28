@@ -48,6 +48,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
     var selectedPaymentMethod by remember { mutableStateOf<PaymentMethodDTO?>(null) }
     var isDefaultPaymentMethod by remember { mutableStateOf(false) }
 
+    val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(payments) {
         if (!payments.isNullOrEmpty()) {
@@ -66,13 +67,18 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
     }
 
     Scaffold (
+        containerColor = colors.background,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = stringResource(id = R.string.payment_methods),
+                        color = colors.onBackground
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
             )
         },
         floatingActionButton = {
@@ -80,13 +86,19 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
-                colors = ButtonDefaults.buttonColors(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colors.primary,
+                    contentColor = colors.onPrimary
+                ),
                 modifier = Modifier
                     .padding(0.dp)
 
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Payment Method",
-                    modifier = Modifier.width(40.dp).height(40.dp).padding(0.dp)
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .padding(0.dp)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -136,11 +148,16 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                             selectedPaymentMethod?.let {
                                 paymentViewModel.setDefaultPayment(context, it.id, pagerState)
                             }
-                        })
+                        },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = colors.primary,
+                            uncheckedColor = colors.onSurface
+                        )
+                    )
 
                     Text(
                         text = stringResource(id = R.string.set_as_default),
-                        color = Color.Black,
+                        color = colors.onBackground,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
