@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @ToString
 public class AddressDTO {
-    @NotNull
+
     private String id;
 
     @NotNull
@@ -33,9 +33,6 @@ public class AddressDTO {
     @Length(max = 10)
     private String zipCode;
 
-    @NotNull
-    @Length(min=6, max=20)
-    private String phoneNumber;
 
     @NotNull
     private Boolean isDefault;

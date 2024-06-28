@@ -75,9 +75,8 @@
     <string name="set_as_default">Set as Default</string>
     <string name="theme">Thème</string>
     <string name="country_and_language">Pays et langue</string>
-    <string name="add_payment_method">Ajouter un moyen de paiement</string>
-    <string name="set_as_default">Définir par défaut</string>
     <string name="add_payment_method_short">Ajouter paiement</string>
     <string name="delete">Delete</string>
     <string name="add_payment_card">Ajouter carte de paiement</string>
+    <string name="add_address">\"add address\"\n</string>
 </resources>

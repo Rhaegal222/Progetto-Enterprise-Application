@@ -17,7 +17,9 @@ import com.android.frontend.view.page.other.CountryLanguagePage
 import com.android.frontend.view.page.product.AllProductsPage
 import com.android.frontend.view.page.product.CartPage
 import com.android.frontend.view.page.product.ProductDetailsPage
+import com.android.frontend.view.page.profile.AddAddressPage
 import com.android.frontend.view.page.profile.PaymentMethodsPage
+import com.android.frontend.view.page.profile.ShippingAddressesPage
 
 @Composable
 fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -38,5 +40,7 @@ fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
         composable(Navigation.ThemePage.route) { ThemePage(navController) }
         composable(Navigation.CountryLanguagePage.route) { CountryLanguagePage(navController) }
+        composable(Navigation.ShippingAddressesPage.route) { ShippingAddressesPage(navController)  }
+        composable(Navigation.AddAddressPage.route) { AddAddressPage(navController)  }
     }
 }
