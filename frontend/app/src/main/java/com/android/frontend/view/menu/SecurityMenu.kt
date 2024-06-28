@@ -24,8 +24,9 @@ import com.android.frontend.navigation.Navigation
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SecurityMenu(navController: NavHostController) {
+    val colors = MaterialTheme.colorScheme
     Scaffold(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -37,7 +38,7 @@ fun SecurityMenu(navController: NavHostController) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = colors.onBackground
                         )
                     }
                 },
@@ -46,20 +47,21 @@ fun SecurityMenu(navController: NavHostController) {
                     .statusBarsPadding()
             )
         }
-    ){
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
             Spacer(modifier = Modifier.height(50.dp))
             SecurityItem(navController, Icons.Default.Password, R.string.change_password)
         }
     }
-
 }
 
 @Composable
 fun SecurityItem(navController: NavHostController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
-    val context = LocalContext.current
+    val colors = MaterialTheme.colorScheme
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,18 +70,28 @@ fun SecurityItem(navController: NavHostController, icon: ImageVector, textResId:
                 when (textResId) {
                     R.string.change_password -> navController.navigate(Navigation.ChangePasswordPage.route)
                 }
-            }
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp))
+            Icon(
+                icon,
+                contentDescription = stringResource(id = textResId),
+                modifier = Modifier.size(40.dp),
+                tint = colors.onBackground
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

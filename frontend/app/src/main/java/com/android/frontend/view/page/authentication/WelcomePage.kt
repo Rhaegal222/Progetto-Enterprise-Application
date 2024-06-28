@@ -3,7 +3,6 @@ package com.android.frontend.view.page.authentication
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,8 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -39,9 +38,8 @@ import com.android.frontend.navigation.Navigation
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomePage(navController: NavController) {
-    val isDarkMode = isSystemInDarkTheme()
-    val textColor = if (isDarkMode) Color.White else Color.Black
-
+    val colors = MaterialTheme.colorScheme
+    val typography = MaterialTheme.typography
     val size = with(LocalDensity.current) {
         DpSize(
             width = LocalConfiguration.current.screenWidthDp.dp,
@@ -63,7 +61,7 @@ fun WelcomePage(navController: NavController) {
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .height(size.height * 0.5f)
                     .fillMaxWidth()
             )
@@ -72,7 +70,7 @@ fun WelcomePage(navController: NavController) {
                 text = stringResource(id = R.string.welcome),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = textColor,
+                color = colors.primary,
                 textAlign = TextAlign.Center
             )
 
@@ -80,9 +78,9 @@ fun WelcomePage(navController: NavController) {
 
             Text(
                 text = stringResource(id = R.string.welcome_description),
-                style = MaterialTheme.typography.bodyLarge,
+                style = typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = textColor
+                color = colors.onBackground
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -98,13 +96,12 @@ fun WelcomePage(navController: NavController) {
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Color.Black
+                        contentColor = colors.primary
                     ),
-                    border = BorderStroke(1.dp, Color.Black)
+                    border = BorderStroke(1.dp, colors.primary)
                 ) {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
-                        color = Color.Black,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -117,13 +114,12 @@ fun WelcomePage(navController: NavController) {
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Black,
-                        contentColor = Color.White
+                        containerColor = colors.primary,
+                        contentColor = colors.onPrimary
                     )
                 ) {
                     Text(
                         text = stringResource(id = R.string.sign_up).uppercase(),
-                        color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 }

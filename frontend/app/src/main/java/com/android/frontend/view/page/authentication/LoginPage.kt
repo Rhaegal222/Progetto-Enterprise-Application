@@ -8,6 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
@@ -47,6 +48,11 @@ fun LoginPage(navController: NavHostController) {
     val loginViewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
 
+    var isObscured by remember { mutableStateOf(true) }
+    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val iconColor = MaterialTheme.colorScheme.onSurface
+
     val size = with(LocalDensity.current) {
         DpSize(
             width = LocalConfiguration.current.screenWidthDp.dp,
@@ -54,16 +60,10 @@ fun LoginPage(navController: NavHostController) {
         )
     }
 
-    val isDarkMode = isSystemInDarkTheme()
-
-    var isObscured by remember { mutableStateOf(true) }
 
     val loginErrorString = stringResource(id = R.string.login_failed)
     val loginWithGoogleErrorString = stringResource(id = R.string.login_with_google_failed)
 
-    val inputBorderColor = Color.Gray
-    val textColor = Color.Black
-    val iconColor = Color.Black
 
     Scaffold(
         topBar = {
@@ -71,12 +71,12 @@ fun LoginPage(navController: NavHostController) {
                 title = {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
-                        color = if (isDarkMode) Color.White else Color.Black
+                        color = textColor
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.WelcomePage.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = if (isDarkMode) Color.White else Color.Black)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = iconColor)
                     }
                 }
             )
@@ -188,14 +188,12 @@ fun LoginPage(navController: NavHostController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.login).uppercase(),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
+                    text = stringResource(id = R.string.login).uppercase()
                 )
             }
 
@@ -219,21 +217,22 @@ fun LoginPage(navController: NavHostController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.googlelogo),
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
-                    tint = Color.Black
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = stringResource(id = R.string.login_with_google),
-                    color = Color.Black
+                    color = textColor
                 )
             }
 
@@ -253,7 +252,7 @@ fun LoginPage(navController: NavHostController) {
                             )
                         }
                     },
-                    color = Color.Black
+                    color = textColor
                 )
             }
         }

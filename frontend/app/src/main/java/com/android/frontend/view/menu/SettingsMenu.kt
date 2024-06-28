@@ -15,21 +15,20 @@ import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.FactCheck
 import androidx.compose.material.icons.filled.FormatColorFill
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Security
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsMenu(navController: NavHostController) {
+    val colors = MaterialTheme.colorScheme
     Scaffold(
-        containerColor = Color.White,
+        containerColor = colors.background,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -41,7 +40,7 @@ fun SettingsMenu(navController: NavHostController) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = colors.onBackground
                         )
                     }
                 },
@@ -50,7 +49,7 @@ fun SettingsMenu(navController: NavHostController) {
                     .statusBarsPadding()
             )
         }
-    ){
+    ) {
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)) {
@@ -59,12 +58,11 @@ fun SettingsMenu(navController: NavHostController) {
             SettingsItem(navController, Icons.Default.Language, R.string.country_and_language)
         }
     }
-
 }
 
 @Composable
 fun SettingsItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
-    val context = LocalContext.current
+    val colors = MaterialTheme.colorScheme
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,10 +78,11 @@ fun SettingsItem(navController: NavHostController, icon: ImageVector, textResId:
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp))
+            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp), tint = colors.onSurface)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
+                color = colors.onSurface,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

@@ -1,6 +1,7 @@
 package com.android.frontend.view.menu
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -25,9 +26,11 @@ import com.android.frontend.model.SecurePreferences
 
 @Composable
 fun OtherMenu(navController: NavHostController) {
+    val colors = MaterialTheme.colorScheme
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(colors.background)
             .padding(16.dp)
     ) {
         MenuItem(navController, Icons.Default.ManageAccounts, R.string.account)
@@ -39,6 +42,7 @@ fun OtherMenu(navController: NavHostController) {
 
 @Composable
 fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
+    val colors = MaterialTheme.colorScheme
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -53,21 +57,23 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                         SecurePreferences.clearAll(context)
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
-                        }
                     }
                 }
+            }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp))
+            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp), tint = colors.onSurface)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
+                color = colors.onSurface,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 }
+

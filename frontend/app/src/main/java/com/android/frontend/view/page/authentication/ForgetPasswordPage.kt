@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
@@ -62,13 +63,9 @@ fun ForgetPasswordPage(navController: NavHostController) {
 
     val userService: UserService = RetrofitInstance.api
 
-    val context = LocalContext.current
-
-    val inputBorderColor = Color.Gray
-    val textColor = Color.Black
-    val iconColor = Color.Black
-
-    val isDarkMode = isSystemInDarkTheme()
+    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val iconColor = MaterialTheme.colorScheme.onSurface
 
     Scaffold(
         topBar = {
@@ -76,12 +73,12 @@ fun ForgetPasswordPage(navController: NavHostController) {
                 title = {
                     Text(
                         text = stringResource(id = R.string.recover_password).uppercase(),
-                        color = if (isDarkMode) Color.White else Color.Black
+                        color = textColor
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.LoginPage.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = if (isDarkMode) Color.White else Color.Black)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = iconColor)
                     }
                 }
             )
@@ -135,57 +132,19 @@ fun ForgetPasswordPage(navController: NavHostController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(
                     text = stringResource(id = R.string.send_email).uppercase(),
-                    color = Color.White,
+                    color = textColor,
                     fontWeight = FontWeight.Bold,
                 )
             }
         }
     }
 }
-
-        /*
-        if (success.value) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Text("EMAIL INVIATA", fontSize = 22.sp, color = MaterialTheme.colorScheme.onSurface)
-            }
-        } else {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = 50.dp)
-                    .background(Color.Transparent), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Inserisci l'email del tuo account", fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurface)
-
-                OutlinedTextField(
-                    value = email.value,
-                    onValueChange = { email.value = it },
-                    label = { Text("Email", color = textColor) },
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color.Black) },
-                    singleLine = true,
-                    modifier = Modifier
-                        .padding(all = 20.dp)
-                        .fillMaxWidth(),
-                    colors = outlinedTextFieldColors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
-                )
-    if (showToast.value) {
-        showToast.value = false
-        Toast.makeText(context, "Qualcosa è andato storto, riprova", Toast.LENGTH_SHORT).show()
-    }
-
-         */
 
 fun sendEmail(userService: UserService, email: String, success: MutableState<Boolean>, showToast: MutableState<Boolean>) {
     CoroutineScope(Dispatchers.IO).launch {
