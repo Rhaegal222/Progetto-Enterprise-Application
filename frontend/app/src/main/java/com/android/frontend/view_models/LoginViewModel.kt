@@ -24,8 +24,6 @@ class LoginViewModel : ViewModel() {
     var accessToken by mutableStateOf("")
     var refreshToken by mutableStateOf("")
 
-    private val userService: UserService = RetrofitInstance.api
-
     private fun validateForm(): Boolean {
         return username.isNotEmpty() && password.isNotEmpty()
     }
@@ -33,6 +31,7 @@ class LoginViewModel : ViewModel() {
     fun loginUser(context: Context, onResult: (Boolean, String?) -> Unit) {
         if (validateForm()) {
             viewModelScope.launch {
+                val userService: UserService = RetrofitInstance.getUserApi(context)
                 val call = userService.login(username, password)
                 call.enqueue(object : Callback<Map<String, String>> {
                     override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
@@ -67,6 +66,7 @@ class LoginViewModel : ViewModel() {
             val storedRefreshToken = SecurePreferences.getRefreshToken(context)
             if (!storedRefreshToken.isNullOrEmpty()) {
                 val token = if (storedRefreshToken.startsWith("Bearer ")) storedRefreshToken else "Bearer $storedRefreshToken"
+                val userService: UserService = RetrofitInstance.getUserApi(context)
                 val call = userService.refreshToken(token)
                 call.enqueue(object : Callback<Map<String, String>> {
                     override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {

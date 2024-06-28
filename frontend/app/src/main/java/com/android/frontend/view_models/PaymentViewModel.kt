@@ -34,13 +34,11 @@ class PaymentViewModel : ViewModel() {
     var expireYear by mutableStateOf("")
     var isDefault by mutableStateOf(false)
 
-    private val paymentService: PaymentService = RetrofitInstance.paymentApi
-
     fun addPaymentCard(context: Context, cardNumber: String, expireMonth: String, expireYear: String, owner: String, isDefault: Boolean) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
-            Log.d("PaymentViewModel", "Access Token: $accessToken")
             val paymentMethod = PaymentMethodCreateDTO(cardNumber, expireMonth, expireYear, owner, isDefault)
+            val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
             val call = paymentService.addPaymentMethod("Bearer $accessToken", paymentMethod)
             call.enqueue(object : Callback<PaymentMethodDTO> {
                 override fun onResponse(
@@ -71,6 +69,7 @@ class PaymentViewModel : ViewModel() {
     fun getAllPaymentMethods(context: Context) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
+            val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
             val call = paymentService.getAllPaymentMethods("Bearer $accessToken")
             call.enqueue(object : Callback<List<PaymentMethodDTO>> {
                 override fun onResponse(
@@ -122,6 +121,7 @@ class PaymentViewModel : ViewModel() {
     fun setDefaultPayment(context: Context, id: String, pagerState: PagerState){
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
+            val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
             val call = paymentService.setDefaultPaymentMethod("Bearer $accessToken", id)
             call.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
@@ -151,7 +151,7 @@ class PaymentViewModel : ViewModel() {
     fun deletePayment(context: Context, id: String) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
-            Log.d("PaymentViewModel", "Access Token: $accessToken")
+            val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
             val call = paymentService.deletePaymentMethod("Bearer $accessToken", id)
             call.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {

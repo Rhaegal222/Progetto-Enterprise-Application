@@ -41,6 +41,8 @@ public interface UserService {
 
     ResponseEntity<String> sendVerificationEmail(String username) throws MessagingException;
 
+    void rejectToken(String authorizationHeader) throws ParseException;
+
     Map<String, String> refreshToken(String authorizationHeader, HttpServletResponse response) throws IOException;
 
     void createUser(String lastname, String firstname, String email, String password) throws MessagingException;

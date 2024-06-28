@@ -47,8 +47,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Map<String, String>> authenticate( @RequestParam( "username" ) String username, @RequestParam( "password" ) String password, HttpServletResponse
             response) throws JOSEException {
-        System.out.println(username);
-        System.out.println(password);
         return ResponseEntity.ok(userService.authenticateUser(username, password, Provider.LOCAL));
     }
 
@@ -116,6 +114,12 @@ public class UserController {
     @GetMapping("/refreshToken")
     public ResponseEntity<Map<String, String >> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return ResponseEntity.ok(userService.refreshToken(request.getHeader(AUTHORIZATION), response));
+    }
+
+    @GetMapping("/rejectToken")
+    public ResponseEntity<Void> rejectToken(HttpServletRequest request) throws ParseException {
+        userService.rejectToken(request.getHeader(AUTHORIZATION));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout")

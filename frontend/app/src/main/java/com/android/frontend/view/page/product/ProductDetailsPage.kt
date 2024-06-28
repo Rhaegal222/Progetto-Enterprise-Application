@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.view_models.ProductViewModel
@@ -16,9 +17,13 @@ import com.android.frontend.view_models.ProductViewModel
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun ProductDetailsPage(productViewModel: ProductViewModel) {
+
+    val context = LocalContext.current
+
     val productId = CurrentDataUtils.currentProductId
     val productDetails = productViewModel.productDetailsLiveData.observeAsState().value
-    productViewModel.getProductDetails(productId)
+
+    productViewModel.getProductDetails(context, productId)
 
     Scaffold(
         topBar = {

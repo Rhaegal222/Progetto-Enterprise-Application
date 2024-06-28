@@ -51,6 +51,11 @@ object SecurePreferences {
         return sharedPreferences.getString(ACCESS_TOKEN_KEY, null)
     }
 
+    fun getTokens(context: Context): Pair<String?, String?> {
+        val sharedPreferences = getSharedPreferences(context)
+        return Pair(sharedPreferences.getString(ACCESS_TOKEN_KEY, null), sharedPreferences.getString(REFRESH_TOKEN_KEY, null))
+    }
+
     fun clearAccessToken(context: Context) {
         Log.d("SecurePreferences", "Clearing access token")
         val sharedPreferences = getSharedPreferences(context)
@@ -82,6 +87,11 @@ object SecurePreferences {
             remove(REFRESH_TOKEN_KEY)
             apply()
         }
+    }
+
+    fun saveTokens(context: Context, accessToken: String, refreshToken: String) {
+        saveAccessToken(context, accessToken)
+        saveRefreshToken(context, refreshToken)
     }
 
     private fun clearTokens(context: Context) {

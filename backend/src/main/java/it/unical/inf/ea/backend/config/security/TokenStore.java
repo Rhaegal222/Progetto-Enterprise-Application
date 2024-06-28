@@ -27,7 +27,6 @@ public class TokenStore {
 
     private final InvalidTokensDao invalidTokensDao;
     private final JwtContextUtils jwtContextUtils;
-    private final String secretKey = Constants.TOKEN_SECRET_KEY;
 
     public String createAccessToken(Map<String, Object> claims) throws JOSEException {
         Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
@@ -41,6 +40,7 @@ public class TokenStore {
         Payload payload = new Payload(claimsSet.toJSONObject());
 
         JWSObject jwsObject = new JWSObject(new JWSHeader(JWSAlgorithm.HS256), payload);
+        String secretKey = Constants.TOKEN_SECRET_KEY;
         jwsObject.sign(new MACSigner(secretKey.getBytes()));
         return jwsObject.serialize();
     }
@@ -49,10 +49,16 @@ public class TokenStore {
         try {
             jwtContextUtils.getUsernameFromContext().ifPresentOrElse(username -> {
                 try {
-                    if(!username.equals(getUser(token)) || invalidTokensDao.findByToken(token).isPresent())
+                    if (!username.equals(getUser(token)) || invalidTokensDao.findByToken(token).isPresent())
                         throw new RuntimeException("Invalid token");
-                    if(claim != null && !claim.equals(getClaim(token)))
+
+                    String tokenClaim = getClaim(token);
+                    if (claim != null && !claim.equals(tokenClaim))
                         throw new RuntimeException("Invalid token");
+
+                    if ("refresh".equals(tokenClaim) && !"refresh".equals(claim))
+                        throw new RuntimeException("Refresh token cannot be used for this operation");
+
                 } catch (JOSEException | ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -71,6 +77,19 @@ public class TokenStore {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void rejectToken(String token) throws ParseException {
+        InvalidToken invalidToken = new InvalidToken();
+        invalidToken.setToken(token);
+        SignedJWT signedJWT = null;
+        try {
+            signedJWT = SignedJWT.parse(token);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        invalidToken.setExpirationDate(signedJWT.getJWTClaimsSet().getExpirationTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
+        invalidTokensDao.save(invalidToken);
     }
 
     public String getUser(String token) throws JOSEException, ParseException {
@@ -116,8 +135,7 @@ public class TokenStore {
 
             jwsObject.sign(new MACSigner(Constants.TOKEN_SECRET_KEY));
             return jwsObject.serialize();
-        }
-        catch (JOSEException e) {
+        } catch (JOSEException e) {
             throw new RuntimeException("Error to create JWT", e);
         }
     }
@@ -146,39 +164,6 @@ public class TokenStore {
         }
     }
 
-    public String createCapabilityToken(String capability) {
-
-        try {
-            JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                    .claim("id-capability", capability)
-                    .expirationTime(Date.from(Instant.now().plus(Constants.JWT_CAPABILITY_EXPIRATION_TIME, ChronoUnit.HOURS)))
-                    .notBeforeTime(Date.from(Instant.now()))
-                    .issueTime(Date.from(Instant.now()))
-                    .build();
-
-            Payload payload = new Payload(claims.toJSONObject());
-
-            JWSObject jwsObject = new JWSObject(new JWSHeader(JWSAlgorithm.HS256),
-                    payload);
-
-            jwsObject.sign(new MACSigner(Constants.TOKEN_SECRET_KEY));
-            return jwsObject.serialize();
-        }
-        catch (JOSEException e) {
-            throw new RuntimeException("Error to create JWT", e);
-        }
-    }
-
-    public String getIdByCapability(String token) throws JOSEException, ParseException {
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        JWSVerifier jwsVerifier = new MACVerifier(Constants.TOKEN_SECRET_KEY);
-        if(signedJWT.verify(jwsVerifier)) {
-            if(new Date().before(signedJWT.getJWTClaimsSet().getExpirationTime()) && new Date().after(signedJWT.getJWTClaimsSet().getNotBeforeTime()))
-                return (String) signedJWT.getPayload().toJSONObject().get("id-capability");
-        }
-        throw new RuntimeException("Invalid token");
-    }
-
     public void logout(String accessToken, String refreshToken) throws ParseException, JOSEException {
         if( !verifyToken(accessToken, null))
             throw new RuntimeException("Invalid token");
@@ -203,6 +188,4 @@ public class TokenStore {
         List<InvalidToken> invalidTokens = invalidTokensDao.findAllByExpirationDateBefore(now);
         invalidTokensDao.deleteAll(invalidTokens);
     }
-
-
 }

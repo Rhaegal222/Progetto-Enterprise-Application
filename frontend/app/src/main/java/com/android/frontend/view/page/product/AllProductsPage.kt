@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.controller.models.ProductDTO
@@ -32,8 +33,11 @@ import com.android.frontend.view_models.ProductViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel) {
+
+    val context = LocalContext.current
+
     val products = productViewModel.productsLiveData.observeAsState().value
-    productViewModel.fetchAllProducts()
+    productViewModel.fetchAllProducts(context)
 
     val colors = MaterialTheme.colorScheme
 

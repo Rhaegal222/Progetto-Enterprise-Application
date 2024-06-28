@@ -1,6 +1,7 @@
 package com.android.frontend.view_models
 
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,8 +14,6 @@ import java.net.SocketTimeoutException
 
 class ProductViewModel : ViewModel() {
 
-    private val productService = RetrofitInstance.productApi
-
     private val products = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> get() = products
 
@@ -22,14 +21,16 @@ class ProductViewModel : ViewModel() {
     private val productDetails = MutableLiveData<ProductDTO>()
     val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
 
-    fun setProduct(productDTO: ProductDTO) {
+    fun setProduct(context: Context, productDTO: ProductDTO) {
         viewModelScope.launch {
-            RetrofitInstance.productApi.addProduct(productDTO)
+            val productService = RetrofitInstance.getProductApi(context)
+            productService.addProduct(productDTO)
         }
     }
 
-    fun getProductDetails(id: String) {
+    fun getProductDetails(context: Context, id: String) {
         viewModelScope.launch {
+            val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductById(id)
             call.enqueue(object : retrofit2.Callback<ProductDTO> {
                 override fun onResponse(
@@ -58,9 +59,10 @@ class ProductViewModel : ViewModel() {
             )
         }
     }
-    fun fetchAllProducts() {
+    fun fetchAllProducts(context: Context) {
 
         viewModelScope.launch {
+            val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getAllProducts()
             call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
                 override fun onResponse(

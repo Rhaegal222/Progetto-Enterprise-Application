@@ -35,13 +35,12 @@ class AddressViewModel : ViewModel() {
     var zipCode by mutableStateOf("")
     var isDefault by mutableStateOf(false)
 
-    private val shippingService: AddressService = RetrofitInstance.addressApi
-
     fun addShippingAddress(context: Context, header: String, country: String, city: String, street: String, zipCode: String, isDefault: Boolean) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
             val shippingAddress = AddressCreateDTO(header, country, city, street, zipCode, isDefault)
-            val call = shippingService.addShippingAddress("Bearer $accessToken", shippingAddress)
+            val addressService = RetrofitInstance.getAddressApi(context)
+            val call = addressService.addShippingAddress("Bearer $accessToken", shippingAddress)
             call.enqueue(object : Callback<AddressDTO> {
                 override fun onResponse(
                     call: Call<AddressDTO>,
@@ -71,7 +70,8 @@ class AddressViewModel : ViewModel() {
     fun getAllShippingAddresses(context: Context) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
-            val call = shippingService.getAllShippingAddresses("Bearer $accessToken")
+            val addressService = RetrofitInstance.getAddressApi(context)
+            val call = addressService.getAllShippingAddresses("Bearer $accessToken")
             call.enqueue(object : Callback<List<AddressDTO>> {
                 override fun onResponse(
                     call: Call<List<AddressDTO>>,
@@ -102,7 +102,8 @@ class AddressViewModel : ViewModel() {
     fun setDefaultShippingAddress(context: Context, id: String, pagerState: PagerState){
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
-            val call = shippingService.setDefaultShippingAddress("Bearer $accessToken", id)
+            val addressService = RetrofitInstance.getAddressApi(context)
+            val call = addressService.setDefaultShippingAddress("Bearer $accessToken", id)
             call.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
@@ -131,7 +132,8 @@ class AddressViewModel : ViewModel() {
     fun deleteShippingAddress(context: Context, id: String) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
-            val call = shippingService.deleteShippingAddress("Bearer $accessToken", id)
+            val addressService = RetrofitInstance.getAddressApi(context)
+            val call = addressService.deleteShippingAddress("Bearer $accessToken", id)
             call.enqueue(object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {

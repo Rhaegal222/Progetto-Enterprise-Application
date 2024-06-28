@@ -218,10 +218,6 @@ public class UserServiceImp implements UserService{
                 && u.getProvider().equals(Provider.GOOGLE))
             throw new IllegalArgumentException("You cannot login with password with a google linked account");
 
-        if(!provider.equals(Provider.KEYCLOAK) && password.equals(Constants.STANDARD_KEYCLOAK_ACCOUNT_PASSWORD)
-                && u.getProvider().equals(Provider.KEYCLOAK))
-            throw new IllegalArgumentException("You cannot login with password with a keycloak linked account");
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         String accessToken = tokenStore.createAccessToken(Map.of("username", username, "role", u.getAuthorities().toString()));
         String refreshToken = tokenStore.createRefreshToken(username);
@@ -255,6 +251,12 @@ public class UserServiceImp implements UserService{
         String url = Constants.BASE_PATH + "users/activate?token=" + token;
         emailService.sendEmail(user.getEmail(), Constants.VERIFICATION_EMAIL_SUBJECT,Constants.VERIFICATION_EMAIL_TEXT + url);
         return new ResponseEntity<>( "verification email sent" , HttpStatus.OK);
+    }
+
+    @Override
+    public void rejectToken(String authorizationHeader) throws ParseException {
+        String token = authorizationHeader.substring("Bearer ".length());
+        tokenStore.rejectToken(token);
     }
 
     @Override
