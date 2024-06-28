@@ -73,4 +73,5 @@
     <string name="recover_password_text">Te enviaremos un correo electrónico con las instrucciones para recuperar tu contraseña a tu dirección de correo electrónico.</string>
     <string name="add_payment_method">Add payment method</string>
     <string name="set_as_default">Set as Default</string>
+    <string name="delete">\"DELETE\"</string>
 </resources>

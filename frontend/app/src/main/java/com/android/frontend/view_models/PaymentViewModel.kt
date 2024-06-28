@@ -85,14 +85,11 @@ class PaymentViewModel : ViewModel() {
                                     val defaultIndex = paymentMethodsList.indexOf(defaultPaymentMethod)
                                     val firstPaymentMethod = paymentMethodsList[0]
 
-                                    // Creare una copia della lista per modificarla
                                     val modifiedPaymentMethodsList = paymentMethodsList.toMutableList()
 
-                                    // Scambia il primo metodo di pagamento con il metodo di pagamento predefinito
                                     modifiedPaymentMethodsList[0] = defaultPaymentMethod
                                     modifiedPaymentMethodsList[defaultIndex] = firstPaymentMethod
 
-                                    // Aggiorna il valore della LiveData
                                     paymentMethods.value = modifiedPaymentMethodsList
                                 }
                             } else {
@@ -116,40 +113,31 @@ class PaymentViewModel : ViewModel() {
         }
     }
 
-    /*
-    fun updatePayment(payment: PaymentMethodDTO) {
-        coroutineScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    paymentService.updatePaymentMethod(payment.id, payment).awaitResponse()
+    fun deletePayment(context: Context, id: String) {
+        viewModelScope.launch {
+            val accessToken = SecurePreferences.getAccessToken(context)
+            Log.d("PaymentViewModel", "Access Token: $accessToken")
+            val call = paymentService.deletePaymentMethod("Bearer $accessToken", id)
+            call.enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        Log.d("PaymentViewModel", "Deleted payment method with id: $id")
+                        getAllPaymentMethods(context)
+                    } else {
+                        Log.e("PaymentViewModel",
+                            "Failed to delete payment method: ${response.errorBody()?.string()}")
+                    }
                 }
-                updated.value = response.isSuccessful
-                //MainRouter.changePage(Navigation.PaymentMethodsPage)
-            } catch (e: Exception) {
-                updated.value = false
-                e.printStackTrace()
-            }
-            localUpdated.value = true
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    if (t is SocketTimeoutException) {
+                        Log.e("PaymentViewModel", "Timeout error deleting payment method", t)
+                    } else {
+                        Log.e("PaymentViewModel", "Error deleting payment method", t)
+                    }
+                }
+            })
         }
     }
 
-
-
-
-    fun deletePayment(id: String) {
-        coroutineScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    paymentService.deletePaymentMethod(id).awaitResponse()
-                }
-                updated.value = response.isSuccessful
-                //MainRouter.changePage(Navigation.PaymentMethodsPage)
-            } catch (e: Exception) {
-                updated.value = false
-                e.printStackTrace()
-            }
-            localUpdated.value = true
-        }
-    }
-     */
 }
