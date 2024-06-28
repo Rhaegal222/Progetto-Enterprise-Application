@@ -25,10 +25,6 @@ import com.android.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.ui.theme.cardHeight
 import com.android.frontend.ui.theme.cardWidth
 
-
-//val cardWidth = 320.dp
-//val cardHeight = cardWidth / 1.586f
-
 @Composable
 fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
     Box(
