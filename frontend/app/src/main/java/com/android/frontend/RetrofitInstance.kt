@@ -1,4 +1,5 @@
 package com.android.frontend
+import com.android.frontend.service.AddressService
 import com.android.frontend.service.GoogleAuthenticationService
 import com.android.frontend.service.ProductService
 import com.android.frontend.service.UserService
@@ -35,6 +36,10 @@ object RetrofitInstance {
 
     val userImageApi: UserImageService by lazy {
         retrofit.create(UserImageService::class.java)
+    }
+
+    val addressApi: AddressService by lazy {
+        retrofit.create(AddressService::class.java)
     }
 
 }

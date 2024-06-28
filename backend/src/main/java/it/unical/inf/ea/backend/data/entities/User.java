@@ -83,8 +83,15 @@ public class User implements UserDetails {
         return null;
     }
 
-    @OneToMany(mappedBy = "ownerUser",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
     private List<PaymentMethod> paymentMethods;
+
+    @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
+    private List<Address> addresses;
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -113,9 +120,6 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return  password;
+        return password;
     }
-
-
-
 }

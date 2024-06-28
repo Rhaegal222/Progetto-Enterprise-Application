@@ -21,34 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.android.frontend.R
-import com.android.frontend.model.SecurePreferences
-import com.android.frontend.view_models.PaymentViewModel
+import com.android.frontend.view_models.AddressViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddPaymentPage(navController: NavHostController) {
+fun AddAddressPage(navController: NavHostController) {
 
     val context = LocalContext.current
 
-    val paymentViewModel = PaymentViewModel()
+    val addressViewModel = AddressViewModel()
 
-    val mText = "paymentUpdated"
-    val notUpdated = "paymentNotUpdated"
-
-    /*
-    val updated = paymentViewModel.updated
-    val localUpdate = paymentViewModel.localUpdated
-
-    if (localUpdate.value) {
-        localUpdate.value = false
-        if (updated.value) {
-            Toast.makeText(context, mText, Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(context, notUpdated, Toast.LENGTH_LONG).show()
-        }
-    }
-     */
+    val mText = "addressUpdated"
+    val notUpdated = "addressNotUpdated"
 
     Scaffold(
         containerColor = Color.White,
@@ -59,7 +44,7 @@ fun AddPaymentPage(navController: NavHostController) {
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.add_payment_method).uppercase(),
+                        text = stringResource(id = R.string.add_address).uppercase(),
                     )
                 },
                 navigationIcon = {
@@ -88,40 +73,47 @@ fun AddPaymentPage(navController: NavHostController) {
                     Spacer(modifier = Modifier.height(32.dp))
 
                     OutlinedTextField(
-                        value = paymentViewModel.cardNumber,
-                        onValueChange = { paymentViewModel.cardNumber = it},
-                        label = { Text("Card Number") },
+                        value = addressViewModel.header,
+                        onValueChange = { addressViewModel.header = it},
+                        label = { Text("Header") },
                         modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        OutlinedTextField(
-                            value = paymentViewModel.expireMonth,
-                            onValueChange = { paymentViewModel.expireMonth = it},
-                            label = { Text("Month") },
-                            modifier = Modifier.weight(1f)
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        OutlinedTextField(
-                            value = paymentViewModel.expireYear,
-                            onValueChange = { paymentViewModel.expireYear = it},
-                            label = { Text("Year") },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
+                    OutlinedTextField(
+                        value = addressViewModel.street,
+                        onValueChange = { addressViewModel.street = it},
+                        label = { Text("Street") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    //Owner
+
                     OutlinedTextField(
-                        value = paymentViewModel.owner,
-                        onValueChange = { paymentViewModel.owner = it},
-                        label = { Text("Owner") },
+                        value = addressViewModel.city,
+                        onValueChange = { addressViewModel.city = it},
+                        label = { Text("City") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    OutlinedTextField(
+                        value = addressViewModel.country,
+                        onValueChange = { addressViewModel.country = it},
+                        label = { Text("Country") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    OutlinedTextField(
+                        value = addressViewModel.zipCode,
+                        onValueChange = { addressViewModel.zipCode = it},
+                        label = { Text("Zip Code") },
                         modifier = Modifier.fillMaxWidth()
                     )
 
@@ -133,9 +125,9 @@ fun AddPaymentPage(navController: NavHostController) {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Checkbox(checked = paymentViewModel.isDefault,
+                        Checkbox(checked = addressViewModel.isDefault,
                             onCheckedChange = {
-                                paymentViewModel.isDefault = it
+                                addressViewModel.isDefault = it
                             })
 
                         Text(text = stringResource(id = R.string.set_as_default))
@@ -146,13 +138,14 @@ fun AddPaymentPage(navController: NavHostController) {
                     Button(
                         onClick = {
                             try {
-                                paymentViewModel.addPaymentCard(
+                                addressViewModel.addShippingAddress(
                                     context = context,
-                                    cardNumber = paymentViewModel.cardNumber,
-                                    expireMonth = paymentViewModel.expireMonth,
-                                    expireYear = paymentViewModel.expireYear,
-                                    owner = paymentViewModel.owner,
-                                    isDefault = paymentViewModel.isDefault)
+                                    header = addressViewModel.header,
+                                    street = addressViewModel.street,
+                                    city = addressViewModel.city,
+                                    country = addressViewModel.country,
+                                    zipCode = addressViewModel.zipCode,
+                                    isDefault = addressViewModel.isDefault)
                                 navController.popBackStack()
                             } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
@@ -161,12 +154,10 @@ fun AddPaymentPage(navController: NavHostController) {
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(stringResource(id = R.string.add_payment_card))
+                        Text(stringResource(id = R.string.add_address))
                     }
                 }
             }
         }
     }
 }
-
-

@@ -1,8 +1,7 @@
 package com.android.frontend.controller.models
 
-data class AddressDTO (
+data class AddressCreateDTO (
 
-    val id: kotlin.String,
     val header: kotlin.String,
     val country: kotlin.String,
     val city: kotlin.String,

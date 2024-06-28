@@ -72,6 +72,14 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/payment-methods/deletePaymentMethod/{id}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/getPaymentMethod/{id}", "/api/v1/payment-methods/getAllPaymentMethods").authenticated()
 
+                        // ADDRESS METHOD
+                        .requestMatchers(HttpMethod.POST, "/api/v1/shipping-addresses/addShippingAddress").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/shipping-addresses/setDefaultShippingAddress/{id}", "/api/v1/shipping-addresses/updateShippingAddress/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/shipping-addresses/deleteShippingAddress/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/shipping-addresses/getShippingAddress/{id}", "/api/v1/shipping-addresses/getAllShippingAddresses").authenticated()
+
+
+
 
                         .anyRequest().permitAll())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

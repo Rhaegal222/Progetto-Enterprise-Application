@@ -73,7 +73,7 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
                         // R.string.my_orders ->
                         // R.string.wishlist ->
                         R.string.payment_methods -> navController.navigate(Navigation.PaymentsPage.route)
-                        // R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
+                        R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
                     }
                 }
             }
