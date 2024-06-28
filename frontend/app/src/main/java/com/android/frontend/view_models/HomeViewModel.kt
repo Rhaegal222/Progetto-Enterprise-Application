@@ -24,13 +24,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         _searchQuery.value = newQuery
     }
 
-    private val userService: UserService = RetrofitInstance.api
-
     fun fetchUserProfile(context: Context) {
         viewModelScope.launch {
-            val accessToken = SecurePreferences.getAccessToken(context)
-            Log.d("RootScreen", "Access token: $accessToken")
-            val call = userService.me("Bearer $accessToken")
+            // get pair tokens
+            val tokens = SecurePreferences.getTokens(context)
+            Log.d("HomeViewModel", "Access token: ${tokens.first}\nRefresh token: ${tokens.second}")
+            val userService: UserService = RetrofitInstance.getUserApi(context)
+            val call = userService.me("Bearer ${tokens.first}")
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {

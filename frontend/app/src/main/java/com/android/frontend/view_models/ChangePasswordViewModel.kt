@@ -27,8 +27,6 @@ class ChangePasswordViewModel : ViewModel() {
     var errorMessage by mutableStateOf(0)
     var successMessage by mutableStateOf(0)
 
-    private val userService: UserService = RetrofitInstance.api
-
     private fun validateForm(context: Context): Boolean {
         return when {
             oldPassword.isEmpty() || newPassword.isEmpty() || repeatNewPassword.isEmpty() -> {
@@ -80,6 +78,7 @@ class ChangePasswordViewModel : ViewModel() {
         if (accTok != null) {
             if (accTok.isNotEmpty()) {
                 val token = if (accTok.startsWith("Bearer ")) accTok else "Bearer $accTok"
+                val userService = RetrofitInstance.getUserApi(context)
                 val call = userService.changePassword(token, oldPassword, newPassword)
                 call.enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {

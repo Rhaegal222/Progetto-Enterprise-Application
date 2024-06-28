@@ -57,11 +57,13 @@ import retrofit2.Response
 @Composable
 fun ForgetPasswordPage(navController: NavHostController) {
 
+    val context = LocalContext.current
+
     val success = rememberSaveable { mutableStateOf(false) }
     val email = rememberSaveable { mutableStateOf("") }
     val showToast = remember { mutableStateOf(false) }
 
-    val userService: UserService = RetrofitInstance.api
+    val userService: UserService = RetrofitInstance.getUserApi(context)
 
     val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
     val textColor = MaterialTheme.colorScheme.onSurface

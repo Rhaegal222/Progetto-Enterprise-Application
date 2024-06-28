@@ -188,7 +188,7 @@ fun SignupPage(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        viewModel.registerUser { success, errorMessage ->
+                        viewModel.registerUser(context) { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(
                                     context,

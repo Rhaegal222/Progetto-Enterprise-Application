@@ -30,7 +30,7 @@ class GoogleAuthentication(private val context: Context) {
     private var filterAuthorizedAccounts = true
     private val webClientId = context.getString(R.string.web_client_id)
     private val credentialManager = CredentialManager.create(context)
-    private val googleAuthService: GoogleAuthenticationService = RetrofitInstance.googleAuthApi
+    private val googleAuthService: GoogleAuthenticationService = RetrofitInstance.getGoogleAuthApi(context)
 
     private var accessToken = SecurePreferences.getAccessToken(context) ?: ""
     private var refreshToken = SecurePreferences.getRefreshToken(context) ?: ""

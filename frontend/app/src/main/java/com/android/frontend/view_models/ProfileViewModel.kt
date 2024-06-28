@@ -36,10 +36,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val userService: UserService = RetrofitInstance.api
-    private val userImageService = RetrofitInstance.userImageApi
-
     private val _user = MutableLiveData<UserDTO>()
     val userLiveData: LiveData<UserDTO> get() = _user
 
@@ -60,6 +56,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private suspend fun fetchUserProfile(context: Context) {
         withContext(Dispatchers.IO) {
             val accessToken = SecurePreferences.getAccessToken(context)
+            val userService = RetrofitInstance.getUserApi(context)
             val call = userService.me("Bearer $accessToken")
             val response = call.execute()
             if (response.isSuccessful) {
@@ -91,6 +88,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 Log.e("ProfileViewModel", "User ID is not set")
                 return@launch
             }
+            val userService = RetrofitInstance.getUserApi(context)
             val call = userService.updateUser("Bearer $accessToken", _user.value?.id ?: "", updateRequest)
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
@@ -140,6 +138,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val description = "Profile Image".toRequestBody("text/plain".toMediaTypeOrNull())
 
         val accessToken = SecurePreferences.getAccessToken(context)
+        val userImageService = RetrofitInstance.getUserImageApi(context)
         val call = userImageService.savePhotoUser("Bearer $accessToken", body, description)
 
         call.enqueue(object : Callback<UserImageDTO> {
@@ -167,6 +166,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val photoProfileId = SecurePreferences.getUser(context)?.photoProfile?.id ?: ""
         val accessToken = SecurePreferences.getAccessToken(context)
 
+        val userImageService = RetrofitInstance.getUserImageApi(context)
         val call = userImageService.deletePhotoUser("Bearer $accessToken", photoProfileId)
 
         call.enqueue(object : Callback<Void> {
@@ -204,6 +204,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private suspend fun fetchImage(type: String, folderName: String, fileName: String): ResponseBody? {
         return withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
+                val userImageService = RetrofitInstance.getUserImageApi(getApplication())
                 val call = userImageService.getImage(type, folderName, fileName)
                 call.enqueue(object : Callback<ResponseBody> {
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

@@ -3,6 +3,7 @@ package it.unical.inf.ea.backend.config.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.nimbusds.jose.JOSEException;
 import it.unical.inf.ea.backend.data.dao.InvalidTokensDao;
 import it.unical.inf.ea.backend.data.services.implementations.CustomUserDetailsService;
 import it.unical.inf.ea.backend.exception.TokenExpiredException;
@@ -24,6 +25,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 
 @Component
 @RequiredArgsConstructor
@@ -45,9 +47,11 @@ public class RequestFilter extends OncePerRequestFilter {
         String loggedUser = "";
 
         String token = tokenStore.getToken(request);
+
         if(!token.equals("invalid") && invalidTokensDao.findByToken(token).isPresent()) {
             throw new ServletException("Invalid token");
         }
+
         if(!"invalid".equals(token)) {
             try {
                 String username = tokenStore.getUser(token);

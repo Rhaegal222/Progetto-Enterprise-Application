@@ -1,5 +1,6 @@
 package com.android.frontend.view_models
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,10 +23,11 @@ class SignUpViewModel : ViewModel() {
         return lastname.isNotEmpty() && firstname.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
     }
 
-    fun registerUser(onResult: (Boolean, String) -> Unit) {
+    fun registerUser(context: Context, onResult: (Boolean, String) -> Unit) {
         if (validateForm()) {
             viewModelScope.launch {
-                val call = RetrofitInstance.api.register(firstname, lastname, email, password)
+                val userService = RetrofitInstance.getUserApi(context)
+                val call = userService.register(firstname, lastname, email, password)
                 call.enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if (response.isSuccessful) {
