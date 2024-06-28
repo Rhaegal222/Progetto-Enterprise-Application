@@ -32,8 +32,8 @@
     <string name="hello_user">Hi</string>
     <string name="app_name">Frontend</string>
     <string name="account">Account</string>
-    <string name="github">github</string>
-    <string name="instagram">instagram</string>
+    <string name="github">Github</string>
+    <string name="instagram">Instagram</string>
     <string name="twitter">X</string>
     <string name="web_client_id" >728974789925-lkuichek7r4npl50kkb1i1r61ho9hifb.apps.googleusercontent.com</string>
     <string name="login_success">Log in successful</string>
@@ -52,7 +52,7 @@
     <string name="repeatNewPassword">Repeat the new password</string>
     <string name="passwordMissmatch">Passwords do not match</string>
     <string name="passwordTooShort">The password must be at least 8 characters</string>
-    <string name="apply">Apply changes</string>
+    <string name="apply_changes">Apply changes</string>
     <string name="password1UpChar">The password must contain at least one capital letter</string>
     <string name="password1Numb">The password must contain at least one number</string>
     <string name="password1SpecChar">The password must contain at least one special character</string>
@@ -66,9 +66,9 @@
     <string name="passwordRequirements_line4"> - At least 1 special character</string>
     <string name="invalid_old_password">Old invalid password</string>
     <string name="unauthorized">Unauthorized</string>
-    <string name="login_with_google_failed">Log in con Google fallito</string>
+    <string name="login_with_google_failed">Google login failed</string>
     <string name="recover_password">Recover your password</string>
-    <string name="send_email">Send Email</string>
+    <string name="send_email">Send email</string>
     <string name="enter_email">Enter the email</string>
     <string name="recover_password_text">We will send you an email with instructions to recover your password to your email address.</string>
     <string name="add_payment_method">Add a payment method</string>
@@ -83,5 +83,6 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="edit">Edit</string>
-    <string name="security">Sicurezza</string>
+    <string name="security">Security</string>
+    <string name="apply">Apply</string>
 </resources>

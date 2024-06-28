@@ -216,7 +216,7 @@ fun ChangePasswordPage(navController: NavHostController) {
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.apply),
+                    text = stringResource(id = R.string.apply_changes),
                     color = Color.White
                 )
             }

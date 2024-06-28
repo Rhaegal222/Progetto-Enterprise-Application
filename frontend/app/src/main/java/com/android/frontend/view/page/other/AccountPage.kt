@@ -85,9 +85,13 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.White
                 ),
-                title = { },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.personal_informations).uppercase(),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -158,14 +162,6 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 }
 
                 Spacer(modifier = Modifier.height(50.dp))
-
-                Text(
-                    text = "Il tuo profilo",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    color = Color.Black
-                )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -256,7 +252,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                             },
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text(text = stringResource(id = R.string.apply))
+                            Text(text = stringResource(id = R.string.apply_changes))
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
