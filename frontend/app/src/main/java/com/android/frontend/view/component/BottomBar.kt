@@ -3,8 +3,10 @@ package com.android.frontend.view.component
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ManageSearch
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.BottomAppBar
@@ -41,7 +43,7 @@ fun BottomBar(navController: NavHostController) {
                 selected = currentNavigation.value?.destination?.route == Navigation.AllProductsPage.route,
                 onClick = { navController.navigate(Navigation.AllProductsPage.route) },
                 icon = {
-                    Icon(Icons.Default.Shop, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.profile))
+                    Icon(Icons.Default.ManageSearch, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.profile))
                 }
             )
 

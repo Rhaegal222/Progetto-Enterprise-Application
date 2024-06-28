@@ -50,15 +50,16 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/api/v1/products/{id}/upload")
+    @PostMapping("/uploadImage/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image, @PathVariable String id) {
         String imageUrl = productService.saveImage(image, id);
         return new ResponseEntity<>(imageUrl, HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteProduct/")
+    @DeleteMapping("/deleteProduct/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteProduct(@RequestParam String id) {
+    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
         try {
             productService.deleteProduct(productService.getProductById(id).getId());
             return ResponseEntity.ok("{\"message\": \"Product deleted successfully\"}");
@@ -81,9 +82,9 @@ public class ProductController {
 //    }
 
 
-    @PutMapping("/updateProduct/")
+    @PutMapping("/updateProduct/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ProductDTO> updateProduct(@RequestParam String id, @RequestBody ProductDTO product) throws IllegalAccessException {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable String id, @RequestBody ProductDTO product) throws IllegalAccessException {
         return ResponseEntity.ok(productService.updateProduct(id, product));
     }
     @GetMapping("/getProductsByCategory/")
