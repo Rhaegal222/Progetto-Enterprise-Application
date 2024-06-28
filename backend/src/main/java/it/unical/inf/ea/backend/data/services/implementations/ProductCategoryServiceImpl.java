@@ -3,6 +3,7 @@ import it.unical.inf.ea.backend.data.services.interfaces.ProductCategoryService;
 import  it.unical.inf.ea.backend.dto.ProductCategoryDTO;
 import it.unical.inf.ea.backend.data.dao.ProductCategoryDao;
 import it.unical.inf.ea.backend.data.entities.ProductCategory;
+import it.unical.inf.ea.backend.dto.creation.ProductCategoryCreateDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public void addCategory(ProductCategoryDTO productCategoryDto) {
+    public void addCategory(ProductCategoryCreateDTO productCategoryDTO) {
 
         ProductCategory productCategory = new ProductCategory();
-        productCategory.setCategoryName(productCategoryDto.getCategoryName());
+        productCategory.setCategoryName(productCategoryDTO.getCategoryName());
 
         ProductCategory newProductCategory = productCategoryDao.save(productCategory);
         modelMapper.map(newProductCategory, ProductCategoryDTO.class);

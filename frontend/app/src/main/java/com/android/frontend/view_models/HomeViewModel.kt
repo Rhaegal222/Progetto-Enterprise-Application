@@ -1,6 +1,7 @@
 package com.android.frontend.view_models
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,15 +26,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val userService: UserService = RetrofitInstance.api
 
-    fun fetchUserProfile() {
+    fun fetchUserProfile(context : Context) {
         viewModelScope.launch {
-            val accessToken = SecurePreferences.getAccessToken(getApplication())
+            val accessToken = SecurePreferences.getAccessToken(context)
+            Log.d("RootScreen", "Access token: $accessToken")
             val call = userService.me("Bearer $accessToken")
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
                         response.body()?.let { user ->
-                            SecurePreferences.saveUser(getApplication(), user)
+                            SecurePreferences.saveUser(context, user)
                         } ?: run {
                             Log.d("HomeViewModel", "User profile response body is null")
                         }

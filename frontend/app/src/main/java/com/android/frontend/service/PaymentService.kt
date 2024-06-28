@@ -17,14 +17,9 @@ interface PaymentService {
         @Body paymentMethodCreateDTO: PaymentMethodCreateDTO,
     ): Call<PaymentMethodDTO>
 
-    @PUT("/api/v1/payment-methods/{id}")
-    fun updatePaymentMethod(
-        @Path("id") id: String,
-        @Body paymentMethodDTO: PaymentMethodDTO
-    ): Call<PaymentMethodDTO>
-
-    @DELETE("/api/v1/payment-methods/{id}")
+    @DELETE("/api/v1/payment-methods/deletePaymentMethod/{id}")
     fun deletePaymentMethod(
+        @Header("Authorization") authorization: String,
         @Path("id") id: String
     ): Call<Void>
 
@@ -33,12 +28,11 @@ interface PaymentService {
         @Path("id") id: String
     ): Call<PaymentMethodDTO>
 
-
-    /*
-    @GET("/api/v1/payment-methods")
-    fun getMyPaymentMethods(
-        @Query("page") page: Int,
-        @Query("size") size: Int
-    ): Call<Page<PaymentMethodBasicDTO>>
-     */
+/*
+    @PUT("/api/v1/payment-methods/{id}")
+    fun updatePaymentMethod(
+        @Path("id") id: String,
+        @Body paymentMethodDTO: PaymentMethodDTO
+    ): Call<PaymentMethodDTO>
+ */
 }

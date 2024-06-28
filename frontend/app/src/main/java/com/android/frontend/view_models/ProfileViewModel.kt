@@ -5,24 +5,39 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.UserDTO
+import com.android.frontend.controller.models.UserImageDTO
 import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
 import com.android.frontend.controller.models.UserUpdateRequest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var user = mutableStateOf(SecurePreferences.getUser(application))
+    val photoId = SecurePreferences.getUser(application)?.photoProfile?.id ?: ""
 
+    private var user = mutableStateOf(SecurePreferences.getUser(application))
+    var profileImageUri = mutableStateOf<Uri?>(null)
     var isLoading = mutableStateOf(true)
 
     private var userId = user.value?.id ?: -1
@@ -32,6 +47,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var phoneNumber = mutableStateOf(user.value?.phoneNumber ?: "")
 
     private val userService: UserService = RetrofitInstance.api
+    val userImageService = RetrofitInstance.userImageApi
 
     fun fetchUserProfile() {
         viewModelScope.launch {
@@ -115,5 +131,135 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         Runtime
             .getRuntime()
             .exit(0)
+    }
+
+    fun updatePhotoUser(imageUri: Uri) {
+        viewModelScope.launch {
+            val photoProfileId = SecurePreferences.getUser(getApplication())?.photoProfile?.id ?: ""
+            if (photoProfileId.isNotEmpty()) {
+                deletePhotoUser()
+            }
+            uploadImage(imageUri)
+        }
+    }
+
+    private fun uploadImage(imageUri: Uri) {
+        val file = getFileFromUri(getApplication(), imageUri) ?: return
+
+        val requestFile = RequestBody.create(
+            "image/*".toMediaTypeOrNull(),
+            file
+        )
+
+        val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        val description = RequestBody.create("text/plain".toMediaTypeOrNull(), "Profile Image")
+
+        val accessToken = SecurePreferences.getAccessToken(getApplication())
+        val call = userImageService.savePhotoUser("Bearer $accessToken", body, description)
+
+        call.enqueue(object : Callback<UserImageDTO> {
+            override fun onResponse(call: Call<UserImageDTO>, response: Response<UserImageDTO>) {
+                if (response.isSuccessful) {
+                    response.body()?.let { userImageDTO ->
+                        profileImageUri.value = Uri.parse(userImageDTO.urlPhoto)
+                        SecurePreferences.saveUser(getApplication(), user.value!!.copy(photoProfile = userImageDTO))
+                    }
+                } else {
+                    Log.e("ProfileViewModel", "Image upload failed: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<UserImageDTO>, t: Throwable) {
+                Log.e("ProfileViewModel", "Image upload error: ${t.message}")
+            }
+        })
+    }
+
+    private fun deletePhotoUser() {
+        val photoProfileId = SecurePreferences.getUser(getApplication())?.photoProfile?.id ?: ""
+        val accessToken = SecurePreferences.getAccessToken(getApplication())
+
+        val call = userImageService.deletePhotoUser("Bearer $accessToken", photoProfileId)
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (!response.isSuccessful) {
+                    Log.e("ProfileViewModel", "Image delete failed: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("ProfileViewModel", "Image delete error: ${t.message}")
+            }
+        })
+    }
+
+    fun fetchUserProfileImage() {
+        viewModelScope.launch {
+            try {
+                val type = "user_photos"
+                val folderName = SecurePreferences.getUser(getApplication())?.id ?: ""
+                val fileName = "photoProfile.png"
+                val responseBody = fetchImage(type, folderName, fileName)
+                responseBody?.let {
+                    val tempFile = saveImageToFile(responseBody)
+                    profileImageUri.value = Uri.fromFile(tempFile)
+                } ?: run {
+                    println("Image retrieval failed")
+                }
+            } catch (e: Exception) {
+                println("Image retrieval error: ${e.message}")
+            }
+        }
+    }
+
+    private suspend fun fetchImage(type: String, folderName: String, fileName: String): ResponseBody? {
+        return withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                val call = userImageService.getImage(type, folderName, fileName)
+                call.enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        if (response.isSuccessful) {
+                            continuation.resume(response.body())
+                        } else {
+                            continuation.resume(null)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        continuation.resume(null)
+                    }
+                })
+            }
+        }
+    }
+
+    private suspend fun saveImageToFile(responseBody: ResponseBody): File {
+        return withContext(Dispatchers.IO) {
+            val tempFile = File.createTempFile("profile", "jpg", getApplication<Application>().cacheDir)
+            val inputStream = responseBody.byteStream()
+            val outputStream = FileOutputStream(tempFile)
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+            outputStream.close()
+            tempFile
+        }
+    }
+
+
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        val fileName = "photoProfile.png"
+        val tempFile = File(context.cacheDir, fileName)
+        try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(tempFile)
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+        return tempFile
     }
 }

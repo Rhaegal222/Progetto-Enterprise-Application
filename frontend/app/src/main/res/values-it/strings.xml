@@ -74,4 +74,7 @@
     <string name="add_payment_method">Aggiungi un metodo si pagamento</string>
     <string name="set_as_default">Imposta come predefinito</string>
     <string name="add_payment_method_short">Aggiungi pagamento</string>
+    <string name="add_payment_method">Add payment method</string>
+    <string name="set_as_default">Set as Default</string>
+    <string name="delete">Delete</string>
 </resources>

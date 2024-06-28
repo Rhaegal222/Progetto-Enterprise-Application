@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,20 +43,18 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
             )
         },
         content = { innerPadding ->
-        LazyColumn(
-                modifier = Modifier.consumeWindowInsets(innerPadding)
-                    .fillMaxSize(),
+            LazyColumn(
+                modifier = Modifier.consumeWindowInsets(innerPadding),
                 contentPadding = innerPadding
             ) {
-                for (productDTO in products ?: emptyList()) {
-                    item {
-                        ProductsCard(productDTO, navController, productViewModel)
-                    }
+                items(products ?: emptyList()) { productDTO ->
+                    ProductsCard(productDTO , navController, productViewModel)
                 }
             }
         }
     )
 }
+
 @Composable
 fun ProductsCard(productDTO: ProductDTO, navController: NavController, productViewModel: ProductViewModel) {
     Card (

@@ -52,7 +52,15 @@ public class AppSecurityConfig {
                         // BRAND
                         .requestMatchers(HttpMethod.POST, "/api/v1/brand/addBrand").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/brand/deleteBrand").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/brand/allBrands", "api/v1/brand/getBrandById/", "api/v1/brand/getBrandByName/").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/brand/allBrands", "api/v1/brand/getBrandById", "api/v1/brand/getBrandByName").authenticated()
+
+                        // PRODUCT
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/addProduct", "/api/v1/products/uploadImage").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/updateProduct").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/deleteProduct").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/getProductById/","/api/v1/products/getProductsByCategory/" ,
+                                "/api/v1/products/getProductsByCategory/", "/api/v1/products/getAllProducts",
+                                "/api/v1/products/getProductsByBrand/","/api/v1/products/getProductsByPriceRange/").authenticated()
 
                         // Richieste dove non è richiesta l'autenticazione
                         .requestMatchers(HttpMethod.POST, "api/v1/user/register", "api/v1/users/authenticate").permitAll()

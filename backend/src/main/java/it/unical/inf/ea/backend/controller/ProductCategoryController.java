@@ -3,6 +3,7 @@ package it.unical.inf.ea.backend.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductCategoryService;
+import it.unical.inf.ea.backend.dto.creation.ProductCategoryCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class ProductCategoryController {
 
     @PostMapping("/addCategory")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> addCategory(@RequestBody ProductCategoryDTO productCategory) {
+    public ResponseEntity<?> addCategory(@RequestBody ProductCategoryCreateDTO productCategory) {
         try {
             productCategoryService.addCategory(productCategory);
             return ResponseEntity.ok("{\"message\": \"productCategory registered successfully\"}");
