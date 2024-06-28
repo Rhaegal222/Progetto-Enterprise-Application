@@ -1,20 +1,11 @@
 package com.android.frontend.model
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.models.AddressDTO
 import com.android.frontend.controller.models.UserBasicDTO
-import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.service.UserService
-import com.example.frontend.controller.models.PaymentMethodDTO
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.awaitResponse
+import com.android.frontend.controller.models.PaymentMethodDTO
 
 object CurrentDataUtils {
 

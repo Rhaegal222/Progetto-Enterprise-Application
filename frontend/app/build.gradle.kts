@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.monitor)
     testImplementation("junit:junit:4.12")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("com.google.accompanist:accompanist-pager:0.24.13-rc")
 
     // Google Authentification Dependencies
     implementation("androidx.credentials:credentials:1.2.2")

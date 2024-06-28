@@ -1,9 +1,9 @@
-package com.example.frontend.controller.models
+package com.android.frontend.controller.models
 
 data class PaymentMethodBasicDTO (
 
     val id: kotlin.String,
-    val creditCard: kotlin.String,
+    val cardNumber: kotlin.String,
     val isDefault: kotlin.Boolean? = null
 ) {
 }

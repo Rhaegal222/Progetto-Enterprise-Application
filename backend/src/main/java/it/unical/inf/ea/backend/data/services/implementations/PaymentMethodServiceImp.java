@@ -65,7 +65,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
             throw new IllegalAccessException("User cannot update payment method");
         }
 
-        paymentMethod.setCreditCard(patch.getCreditCard());
+        paymentMethod.setCardNumber(patch.getCardNumber());
 
         paymentMethod.setExpiryDate(patch.getExpiryDate());
 

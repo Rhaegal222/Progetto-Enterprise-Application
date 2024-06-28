@@ -27,7 +27,6 @@ import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.ProductViewModel
 
-
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,15 +41,16 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
             )
         },
         content = { innerPadding ->
-            LazyColumn(
-                modifier = Modifier.consumeWindowInsets(innerPadding),
+        LazyColumn(
+                modifier = Modifier.consumeWindowInsets(innerPadding)
+                    .fillMaxSize(),
                 contentPadding = innerPadding
             ) {
-                for (productDTO in products ?: emptyList())
+                for (productDTO in products ?: emptyList()) {
                     item {
-                        ProductsCard(productDTO , navController, productViewModel)
+                        ProductsCard(productDTO, navController, productViewModel)
                     }
-
+                }
             }
         }
     )

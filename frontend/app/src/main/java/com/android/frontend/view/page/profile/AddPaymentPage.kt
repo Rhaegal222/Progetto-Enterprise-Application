@@ -82,8 +82,8 @@ fun AddPaymentPage(navController: NavHostController) {
                     Spacer(modifier = Modifier.height(32.dp))
 
                     OutlinedTextField(
-                        value = paymentViewModel.creditCard,
-                        onValueChange = { paymentViewModel.creditCard = it},
+                        value = paymentViewModel.cardNumber,
+                        onValueChange = { paymentViewModel.cardNumber = it},
                         label = { Text("Card Number") },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -141,7 +141,7 @@ fun AddPaymentPage(navController: NavHostController) {
                         onClick = {
                             paymentViewModel.addPaymentCard(
                                 context = context,
-                                creditCard = paymentViewModel.creditCard,
+                                cardNumber = paymentViewModel.cardNumber,
                                 expiryDate = paymentViewModel.expireMonth + "/" + paymentViewModel.expireYear,
                                 owner = paymentViewModel.owner,
                                 isDefault = paymentViewModel.isDefault

@@ -1,22 +1,18 @@
 package com.android.frontend.view_models
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.view.translation.ViewTranslationResponse
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.PaymentMethodCreateDTO
-import com.android.frontend.controller.models.ProductDTO
 import com.android.frontend.model.SecurePreferences
-import com.example.frontend.controller.models.PaymentMethodDTO
+import com.android.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.service.PaymentService
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -30,19 +26,19 @@ class PaymentViewModel : ViewModel() {
     val paymentMethodsLiveData: LiveData<List<PaymentMethodDTO>> get() = paymentMethods
 
     var paymentMethodId by mutableStateOf("")
-    var creditCard by mutableStateOf("")
+    var cardNumber by mutableStateOf("")
     var owner by mutableStateOf("")
     var expireMonth by mutableStateOf("")
     var expireYear by mutableStateOf("")
-    var isDefault by mutableStateOf(false) // True or False
+    var isDefault by mutableStateOf(false)
 
     private val paymentService: PaymentService = RetrofitInstance.paymentApi
 
-    fun addPaymentCard(context: Context, creditCard: String, expiryDate: String, owner: String, isDefault: Boolean) {
+    fun addPaymentCard(context: Context, cardNumber: String, expiryDate: String, owner: String, isDefault: Boolean) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
             Log.d("PaymentViewModel", "Access Token: $accessToken")
-            val paymentMethod = PaymentMethodCreateDTO(creditCard, expiryDate, owner, isDefault)
+            val paymentMethod = PaymentMethodCreateDTO(cardNumber, expiryDate, owner, isDefault)
             val call = paymentService.addPaymentMethod("Bearer $accessToken", paymentMethod)
             call.enqueue(object : Callback<PaymentMethodDTO> {
                 override fun onResponse(
@@ -80,8 +76,28 @@ class PaymentViewModel : ViewModel() {
                     response: Response<List<PaymentMethodDTO>>
                 ) {
                     if (response.isSuccessful) {
-                        response.body()?.let { paymentMethodsList ->
-                            paymentMethods.value = paymentMethodsList
+                        response.body()?.let { it ->
+
+                            val paymentMethodsList = it
+                            if (paymentMethodsList.isNotEmpty() && !paymentMethodsList[0].isDefault) {
+                                val defaultPaymentMethod = paymentMethodsList.find { it.isDefault }
+                                if (defaultPaymentMethod != null) {
+                                    val defaultIndex = paymentMethodsList.indexOf(defaultPaymentMethod)
+                                    val firstPaymentMethod = paymentMethodsList[0]
+
+                                    // Creare una copia della lista per modificarla
+                                    val modifiedPaymentMethodsList = paymentMethodsList.toMutableList()
+
+                                    // Scambia il primo metodo di pagamento con il metodo di pagamento predefinito
+                                    modifiedPaymentMethodsList[0] = defaultPaymentMethod
+                                    modifiedPaymentMethodsList[defaultIndex] = firstPaymentMethod
+
+                                    // Aggiorna il valore della LiveData
+                                    paymentMethods.value = modifiedPaymentMethodsList
+                                }
+                            } else {
+                                paymentMethods.value = it
+                            }
                         }
                     } else {
                         Log.e("PaymentViewModel",

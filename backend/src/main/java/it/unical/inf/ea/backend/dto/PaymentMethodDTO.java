@@ -20,7 +20,7 @@ public class PaymentMethodDTO {
 
     @NotNull
     @Length(min = 19, max = 19)
-    private String creditCard;
+    private String cardNumber;
 
     @NotNull
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

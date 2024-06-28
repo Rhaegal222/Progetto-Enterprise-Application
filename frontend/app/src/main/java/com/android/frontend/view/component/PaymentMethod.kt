@@ -12,27 +12,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.frontend.navigation.Navigation
-import com.example.frontend.controller.models.PaymentMethodDTO
+import com.android.frontend.controller.models.PaymentMethodDTO
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Edit
 import compose.icons.fontawesomeicons.solid.Trash
 
 @Composable
-fun PaymentMethod(navController: NavController, payment: PaymentMethodDTO ) {
+fun PaymentMethod(navController: NavController, payment: PaymentMethodDTO) {
 
-    val creditCard = payment.creditCard
+    val cardNumber = payment.cardNumber
     val expiryDate = payment.expiryDate
     val owner = payment.owner
     val isDefault = payment.isDefault
@@ -50,7 +47,7 @@ fun PaymentMethod(navController: NavController, payment: PaymentMethodDTO ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = creditCard,
+                        text = cardNumber,
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     )
                 }

@@ -7,7 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.android.frontend.controller.models.AddressDTO
 import com.android.frontend.controller.models.UserDTO
-import com.example.frontend.controller.models.PaymentMethodDTO
+import com.android.frontend.controller.models.PaymentMethodDTO
 import com.google.gson.Gson
 
 object SecurePreferences {

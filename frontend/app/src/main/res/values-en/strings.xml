@@ -71,4 +71,6 @@
     <string name="send_email">Send Email</string>
     <string name="enter_email">Enter the email</string>
     <string name="recover_password_text">We will send you an email with instructions to recover your password to your email address.</string>
+    <string name="add_payment_method">Add payment method</string>
+    <string name="set_as_default">Set as Default</string>
 </resources>

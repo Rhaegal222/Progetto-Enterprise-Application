@@ -23,7 +23,7 @@ public class PaymentMethod {
     private String id;
 
     @Column(nullable = false)
-    private String creditCard;
+    private String cardNumber;
 
     @Column(nullable = false)
     //private LocalDate expiryDate;  // DD//MM/YYYY

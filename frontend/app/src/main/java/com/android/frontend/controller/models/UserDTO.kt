@@ -1,7 +1,5 @@
 package com.android.frontend.controller.models
 
-import com.example.frontend.controller.models.PaymentMethodDTO
-
 data class UserDTO (
 
     val id: kotlin.String, //
