@@ -26,7 +26,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val userService: UserService = RetrofitInstance.api
 
-    fun fetchUserProfile(context : Context) {
+    fun fetchUserProfile(context: Context) {
         viewModelScope.launch {
             val accessToken = SecurePreferences.getAccessToken(context)
             Log.d("RootScreen", "Access token: $accessToken")
@@ -34,18 +34,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
-                        response.body()?.let { user ->
-                            SecurePreferences.saveUser(context, user)
-                        } ?: run {
+                        val responseBody = response.body()
+                        if (responseBody != null) {
+                            Log.d("HomeViewModel", "User profile fetched successfully: $responseBody")
+                            SecurePreferences.saveUser(context, responseBody)
+                        } else {
                             Log.d("HomeViewModel", "User profile response body is null")
                         }
                     } else {
-                        Log.e("HomeViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
+                        Log.e("HomeViewModel", "Failed to fetch user profile: ${response.code()} ${response.message()}")
+                        response.errorBody()?.let {
+                            Log.e("HomeViewModel", "Error body: ${it.string()}")
+                        }
                     }
                 }
 
                 override fun onFailure(call: Call<UserDTO>, t: Throwable) {
-                    Log.e("HomeViewModel", "Error fetching user profile", t)
+                    Log.e("HomeViewModel", "Error fetching user profile: ${t.message}", t)
                 }
             })
         }
