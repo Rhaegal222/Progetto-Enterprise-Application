@@ -9,6 +9,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.UserDTO
@@ -34,35 +36,28 @@ import kotlin.coroutines.suspendCoroutine
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    val photoId = SecurePreferences.getUser(application)?.photoProfile?.id ?: ""
+    private val userService: UserService = RetrofitInstance.api
+    private val userImageService = RetrofitInstance.userImageApi
 
-    private var user = mutableStateOf(SecurePreferences.getUser(application))
-    var profileImageUri = mutableStateOf<Uri?>(null)
+    private val user = MutableLiveData<UserDTO>()
+    val userLiveData: LiveData<UserDTO> get() = user
+
+    val profileImage = MutableLiveData<Uri?>(null)
+    val profileImageLiveData : LiveData<Uri?> get() = profileImage
+
     var isLoading = mutableStateOf(true)
 
-    private var userId = user.value?.id ?: -1
-    var firstName = mutableStateOf(user.value?.firstName ?: "")
-    var lastName = mutableStateOf(user.value?.lastName ?: "")
-    var email = mutableStateOf(user.value?.email ?: "")
-    var phoneNumber = mutableStateOf(user.value?.phoneNumber ?: "")
-
-    private val userService: UserService = RetrofitInstance.api
-    val userImageService = RetrofitInstance.userImageApi
-
-    fun fetchUserProfile() {
+    fun fetchUserProfile(context: Context) {
         viewModelScope.launch {
             isLoading.value = true
-            val accessToken = SecurePreferences.getAccessToken(getApplication())
+            val accessToken = SecurePreferences.getAccessToken(context)
             val call = userService.me("Bearer $accessToken")
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
-                        response.body()?.let { user ->
-                            SecurePreferences.saveUser(getApplication(), user)
-                            firstName.value = user.firstName
-                            lastName.value = user.lastName
-                            email.value = user.email
-                            phoneNumber.value = user.phoneNumber ?: ""
+                        response.body()?.let { fetchedUser ->
+                            Log.d("ProfileViewModel", "User profile response: ${response.body()}")
+                            user.value = fetchedUser
                         } ?: run {
                             Log.d("ProfileViewModel", "User profile response body is null")
                         }
@@ -80,10 +75,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun updateUserProfile(firstName: String, lastName: String, email: String, phoneNumber: String) {
+    fun updateUserProfile(context: Context, firstName: String, lastName: String, email: String, phoneNumber: String) {
         viewModelScope.launch {
-            val accessToken = SecurePreferences.getAccessToken(getApplication())
-            // val userId = CurrentDataUtils.userId
+            val accessToken = SecurePreferences.getAccessToken(context)
+
             val updateRequest = UserUpdateRequest(
                 firstName = firstName,
                 lastName = lastName,
@@ -92,23 +87,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 username = email
             )
 
-            if (userId == -1) {
+            if (user.value?.id == "-1" || user.value?.id == null || user.value?.id == "" || user.value?.id == "null") {
                 Log.e("ProfileViewModel", "User ID is not set")
                 return@launch
             }
-            val call = userService.updateUser("Bearer $accessToken", userId.toString(), updateRequest)
+            val call = userService.updateUser("Bearer $accessToken", user.value?.id ?: "", updateRequest)
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
-                        response.body()?.let { user ->
-                            this@ProfileViewModel.firstName.value = user.firstName
-                            this@ProfileViewModel.lastName.value = user.lastName
-                            this@ProfileViewModel.email.value = user.email
-                            this@ProfileViewModel.phoneNumber.value = user.phoneNumber ?: ""
-                            // Update profileImage.value if user has a profile image URL or resource ID
-                        } ?: run {
-                            Log.e("ProfileViewModel", "User profile update response body is null")
-                        }
+                        fetchUserProfile(context)
                     } else {
                         Log.e("ProfileViewModel", "Failed to update user profile: ${response.errorBody()?.string()}")
                     }
@@ -128,23 +115,21 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val componentName: ComponentName = intent.component!!
         val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
         context.startActivity(restartIntent)
-        Runtime
-            .getRuntime()
-            .exit(0)
+        Runtime.getRuntime().exit(0)
     }
 
-    fun updatePhotoUser(imageUri: Uri) {
+    fun updatePhotoUser(context: Context, imageUri: Uri) {
         viewModelScope.launch {
             val photoProfileId = SecurePreferences.getUser(getApplication())?.photoProfile?.id ?: ""
             if (photoProfileId.isNotEmpty()) {
-                deletePhotoUser()
+                deletePhotoUser(context)
             }
-            uploadImage(imageUri)
+            uploadImage(context, imageUri)
         }
     }
 
-    private fun uploadImage(imageUri: Uri) {
-        val file = getFileFromUri(getApplication(), imageUri) ?: return
+    private fun uploadImage(context: Context, imageUri: Uri) {
+        val file = getFileFromUri(context, imageUri) ?: return
 
         val requestFile = RequestBody.create(
             "image/*".toMediaTypeOrNull(),
@@ -154,15 +139,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
         val description = RequestBody.create("text/plain".toMediaTypeOrNull(), "Profile Image")
 
-        val accessToken = SecurePreferences.getAccessToken(getApplication())
+        val accessToken = SecurePreferences.getAccessToken(context)
         val call = userImageService.savePhotoUser("Bearer $accessToken", body, description)
 
         call.enqueue(object : Callback<UserImageDTO> {
             override fun onResponse(call: Call<UserImageDTO>, response: Response<UserImageDTO>) {
                 if (response.isSuccessful) {
                     response.body()?.let { userImageDTO ->
-                        profileImageUri.value = Uri.parse(userImageDTO.urlPhoto)
-                        SecurePreferences.saveUser(getApplication(), user.value!!.copy(photoProfile = userImageDTO))
+                        profileImage.value = Uri.parse(userImageDTO.urlPhoto)
+                        SecurePreferences.saveUser(context, user.value!!.copy(photoProfile = userImageDTO))
+                        fetchUserProfileImage(context)
                     }
                 } else {
                     Log.e("ProfileViewModel", "Image upload failed: ${response.errorBody()?.string()}")
@@ -175,9 +161,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         })
     }
 
-    private fun deletePhotoUser() {
-        val photoProfileId = SecurePreferences.getUser(getApplication())?.photoProfile?.id ?: ""
-        val accessToken = SecurePreferences.getAccessToken(getApplication())
+    private fun deletePhotoUser(context: Context) {
+        val photoProfileId = SecurePreferences.getUser(context)?.photoProfile?.id ?: ""
+        val accessToken = SecurePreferences.getAccessToken(context)
 
         val call = userImageService.deletePhotoUser("Bearer $accessToken", photoProfileId)
 
@@ -194,16 +180,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         })
     }
 
-    fun fetchUserProfileImage() {
+    fun fetchUserProfileImage(context: Context) {
         viewModelScope.launch {
             try {
                 val type = "user_photos"
-                val folderName = SecurePreferences.getUser(getApplication())?.id ?: ""
+                val folderName = SecurePreferences.getUser(context)?.id ?: ""
                 val fileName = "photoProfile.png"
                 val responseBody = fetchImage(type, folderName, fileName)
                 responseBody?.let {
-                    val tempFile = saveImageToFile(responseBody)
-                    profileImageUri.value = Uri.fromFile(tempFile)
+                    val tempFile = saveImageToFile(context, responseBody)
+                    profileImage.value = Uri.fromFile(tempFile)
                 } ?: run {
                     println("Image retrieval failed")
                 }
@@ -234,9 +220,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    private suspend fun saveImageToFile(responseBody: ResponseBody): File {
+    private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {
-            val tempFile = File.createTempFile("profile", "jpg", getApplication<Application>().cacheDir)
+            val tempFile = File.createTempFile("profile", "jpg", context.cacheDir)
             val inputStream = responseBody.byteStream()
             val outputStream = FileOutputStream(tempFile)
             inputStream.copyTo(outputStream)
@@ -246,8 +232,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-
-    fun getFileFromUri(context: Context, uri: Uri): File? {
+    private fun getFileFromUri(context: Context, uri: Uri): File? {
         val fileName = "photoProfile.png"
         val tempFile = File(context.cacheDir, fileName)
         try {

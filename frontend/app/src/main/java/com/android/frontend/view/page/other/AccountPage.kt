@@ -2,6 +2,7 @@ package com.android.frontend.view.page.other
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,34 +39,41 @@ import coil.compose.rememberAsyncImagePainter
 @Composable
 fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
 
-    LaunchedEffect(Unit) {
-        profileViewModel.fetchUserProfile()
-        profileViewModel.fetchUserProfileImage()
-    }
-    val photoid = profileViewModel.photoId
+    val context = LocalContext.current
 
     val isDarkMode = isSystemInDarkTheme()
 
-    val firstName by profileViewModel.firstName
-    val lastName by profileViewModel.lastName
-    val email by profileViewModel.email
-    val phoneNumber by profileViewModel.phoneNumber
-    val isLoading by profileViewModel.isLoading
-    val profileImageUri by profileViewModel.profileImageUri
+    val profileImage by profileViewModel.profileImageLiveData.observeAsState()
+    profileViewModel.fetchUserProfileImage(context)
 
-    var firstNameInput by remember { mutableStateOf(firstName) }
-    var lastNameInput by remember { mutableStateOf(lastName) }
-    var emailInput by remember { mutableStateOf(email) }
-    var phoneNumberInput by remember { mutableStateOf(if (phoneNumber == "Nessun numero di telefono") "" else phoneNumber) }
+    val user by profileViewModel.userLiveData.observeAsState()
+    profileViewModel.fetchUserProfile(context)
+
+    var firstName = user?.firstName ?: ""
+    var lastName = user?.lastName ?: ""
+    var email = user?.email ?: ""
+    var phoneNumber = user?.phoneNumber ?: "Nessun numero di telefono"
+
+    val previusFirstName = user?.firstName ?: ""
+    val previusLastName = user?.lastName ?: ""
+    val previusEmail = user?.email ?: ""
+    val previusPhoneNumber = user?.phoneNumber ?: "Nessun numero di telefono"
+
+    var InputFirstName = user?.firstName ?: ""
+    var InputLastName = user?.lastName ?: ""
+    var InputEmail = user?.email ?: ""
+    var InputPhoneNumber = ""
+
+    val isLoading by profileViewModel.isLoading
 
     var isEditMode by remember { mutableStateOf(false) }
     var showEmailChangeDialog by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
         uri?.let {
-            profileViewModel.updatePhotoUser(it)
+            profileViewModel.updatePhotoUser(context, it)
         }
     }
 
@@ -92,7 +101,6 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
         }
     ) {
         if (isLoading) {
-            // Show a loading indicator
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -120,9 +128,9 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                     Box(
                         modifier = Modifier.size(160.dp)
                     ) {
-                        if (profileImageUri != null) {
+                        if (profileImage != null) {
                             Image(
-                                painter = rememberAsyncImagePainter(model = profileImageUri),
+                                painter = rememberAsyncImagePainter(model = profileImage),
                                 contentDescription = "Profile Image",
                                 modifier = Modifier
                                     .size(160.dp)
@@ -139,7 +147,8 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                         }
                         IconButton(
                             onClick = {
-                                launcher.launch("image/*") },
+                                imagePickerLauncher.launch("image/*")
+                            },
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .size(40.dp)
@@ -170,24 +179,25 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 item { Spacer(modifier = Modifier.height(20.dp)) }
 
                 if (isEditMode) {
-                    item { EditableProfileField(label = "Nome", value = firstNameInput, onValueChange = { firstNameInput = it }) }
-                    item { EditableProfileField(label = "Cognome", value = lastNameInput, onValueChange = { lastNameInput = it }) }
-                    item { EditableProfileField(label = "Email", value = emailInput, onValueChange = { emailInput = it }) }
-                    item { EditableProfileField(label = "Numero di telefono", value = phoneNumberInput, onValueChange = { phoneNumberInput = it }) }
+                    item { EditableProfileField(label = "Nome", value = InputFirstName, onValueChange = { InputFirstName = it }) }
+                    item { EditableProfileField(label = "Cognome", value = InputLastName, onValueChange = { InputLastName = it }) }
+                    item { EditableProfileField(label = "Email", value = InputEmail, onValueChange = { InputEmail = it }) }
+                    item { EditableProfileField(label = "Numero di telefono", value = InputPhoneNumber, onValueChange = { InputPhoneNumber = it }) }
 
                     item { Spacer(modifier = Modifier.height(20.dp)) }
 
                     item {
                         Button(
                             onClick = {
-                                if (emailInput != email) {
+                                if (email != InputEmail) {
                                     showEmailChangeDialog = true
                                 } else {
                                     profileViewModel.updateUserProfile(
-                                        firstNameInput,
-                                        lastNameInput,
-                                        emailInput,
-                                        phoneNumberInput
+                                        context,
+                                        InputFirstName,
+                                        InputLastName,
+                                        InputEmail,
+                                        InputPhoneNumber
                                     )
                                     isEditMode = false
                                 }
@@ -208,10 +218,6 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                     item {
                         Button(
                             onClick = {
-                                firstNameInput = firstName
-                                lastNameInput = lastName
-                                emailInput = email
-                                phoneNumberInput = if (phoneNumber == "Nessun numero di telefono") "" else phoneNumber
                                 isEditMode = true
                             },
                             modifier = Modifier.padding(16.dp)
@@ -232,10 +238,11 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                     TextButton(
                         onClick = {
                             profileViewModel.updateUserProfile(
-                                firstNameInput,
-                                lastNameInput,
-                                emailInput,
-                                phoneNumberInput
+                                context,
+                                InputFirstName,
+                                InputLastName,
+                                InputEmail,
+                                InputPhoneNumber
                             )
                             profileViewModel.logout(context)
                         }
@@ -257,7 +264,6 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
         }
     }
 }
-
 
 @Composable
 fun ReadOnlyProfileField(label: String, value: String) {
@@ -326,3 +332,4 @@ fun EditableProfileField(label: String, value: String, onValueChange: (String) -
         }
     }
 }
+
