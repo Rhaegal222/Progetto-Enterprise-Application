@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ManageAccounts
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.android.frontend.MainActivity
@@ -31,6 +32,7 @@ fun OtherMenu(navController: NavHostController) {
     ) {
         MenuItem(navController, Icons.Default.ManageAccounts, R.string.account)
         MenuItem(navController, Icons.Default.Info, R.string.about)
+        MenuItem(navController, Icons.Default.Settings, R.string.settings)
         MenuItem(navController, Icons.AutoMirrored.Filled.Logout, R.string.logout)
     }
 }
@@ -46,6 +48,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                 when (textResId) {
                     R.string.account -> navController.navigate(Navigation.AccountMenu.route)
                     R.string.about -> navController.navigate(Navigation.AboutPage.route)
+                    R.string.settings -> navController.navigate(Navigation.SettingsMenu.route)
                     R.string.logout -> {
                         SecurePreferences.clearAll(context)
                         val intent = Intent(context, MainActivity::class.java)

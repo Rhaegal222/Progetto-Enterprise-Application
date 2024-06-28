@@ -12,6 +12,8 @@ import com.android.frontend.view_models.ProductViewModel
 import com.android.frontend.view.page.profile.AddPaymentPage
 import com.android.frontend.view.page.other.AboutPage
 import com.android.frontend.view.page.other.AccountPage
+import com.android.frontend.view.page.other.ThemePage
+import com.android.frontend.view.page.other.CountryLanguagePage
 import com.android.frontend.view.page.product.AllProductsPage
 import com.android.frontend.view.page.product.CartPage
 import com.android.frontend.view.page.product.ProductDetailsPage
@@ -33,5 +35,8 @@ fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel()) }
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
+        composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
+        composable(Navigation.ThemePage.route) { ThemePage(navController) }
+        composable(Navigation.CountryLanguagePage.route) { CountryLanguagePage(navController) }
     }
 }

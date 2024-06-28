@@ -74,4 +74,6 @@
     <string name="add_payment_method">Add payment method</string>
     <string name="set_as_default">Set as Default</string>
     <string name="delete">\"DELETE\"</string>
+    <string name="theme">Tema</string>
+    <string name="country_and_language">País e idioma</string>
 </resources>
