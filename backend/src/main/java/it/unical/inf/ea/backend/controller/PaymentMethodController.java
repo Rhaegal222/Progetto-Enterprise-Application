@@ -33,6 +33,13 @@ public class PaymentMethodController {
         return ResponseEntity.ok(paymentMethodService.createPaymentMethod(paymentMethodCreateDTO));
     }
 
+    @PutMapping(path = "/setDefaultPaymentMethod/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<PaymentMethodDTO> setDefaultPaymentMethod(@PathVariable("id") String id) throws IllegalAccessException {
+        paymentMethodService.setDefaultPaymentMethod(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping(path = "/updatePaymentMethod/{id}")
     public ResponseEntity<PaymentMethodDTO> updatePaymentMethod(@PathVariable("id") String id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) throws IllegalAccessException {
         return ResponseEntity.ok(paymentMethodService.updatePaymentMethod(id, paymentMethodDTO));

@@ -73,7 +73,9 @@
     <string name="recover_password_text">We will send you an email with instructions to recover your password to your email address.</string>
     <string name="add_payment_method">Add payment method</string>
     <string name="set_as_default">Set as Default</string>
-    <string name="delete">\"DELETE\"</string>
     <string name="theme">Theme</string>
     <string name="country_and_language">Country and language</string>
+    <string name="add_payment_method_short">Add payment</string>
+    <string name="delete">Delete</string>
+    <string name="add_payment_card">Add payment card</string>
 </resources>

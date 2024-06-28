@@ -19,6 +19,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.android.frontend.R
 import com.android.frontend.model.SecurePreferences
 import com.android.frontend.view_models.PaymentViewModel
 
@@ -132,25 +134,30 @@ fun AddPaymentPage(navController: NavHostController) {
                                 paymentViewModel.isDefault = it
                             })
 
-                        Text("Set as default payment method")
+                        Text(text = stringResource(id = R.string.set_as_default))
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
                         onClick = {
-                            paymentViewModel.addPaymentCard(
-                                context = context,
-                                cardNumber = paymentViewModel.cardNumber,
-                                expiryDate = paymentViewModel.expireMonth + "/" + paymentViewModel.expireYear,
-                                owner = paymentViewModel.owner,
-                                isDefault = paymentViewModel.isDefault
-                            )
-                            navController.popBackStack()
+                            try {
+                                paymentViewModel.addPaymentCard(
+                                    context = context,
+                                    cardNumber = paymentViewModel.cardNumber,
+                                    expireMonth = paymentViewModel.expireMonth,
+                                    expireYear = paymentViewModel.expireYear,
+                                    owner = paymentViewModel.owner,
+                                    isDefault = paymentViewModel.isDefault)
+                                navController.popBackStack()
+                            } catch (e: Exception) {
+                                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                            }
+
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Add Payment Card")
+                        Text(stringResource(id = R.string.add_payment_card))
                     }
                 }
             }

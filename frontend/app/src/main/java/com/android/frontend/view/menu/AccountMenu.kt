@@ -55,7 +55,6 @@ fun AccountMenu(navController: NavHostController) {
             AccountItem(navController, Icons.Default.Security, R.string.access_and_security)
         }
     }
-
 }
 
 @Composable
