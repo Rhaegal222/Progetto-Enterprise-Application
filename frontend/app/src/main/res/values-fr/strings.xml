@@ -76,7 +76,7 @@
     <string name="add_payment_method_short">Ajouter paiement</string>
     <string name="delete">Supprimer</string>
     <string name="add_payment_card">Ajouter carte de paiement</string>
-    <string name="add_address">\"add address\"\n</string>
+    <string name="add_address">Add address</string>
     <string name="phone_number">Numero di cellulare</string>
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
