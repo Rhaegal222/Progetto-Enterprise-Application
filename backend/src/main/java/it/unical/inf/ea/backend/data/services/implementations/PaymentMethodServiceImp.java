@@ -67,7 +67,8 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
 
         paymentMethod.setCardNumber(patch.getCardNumber());
 
-        paymentMethod.setExpiryDate(patch.getExpiryDate());
+        paymentMethod.setExpireMonth(patch.getExpireMonth());
+        paymentMethod.setExpireYear(patch.getExpireYear());
 
         paymentMethod.setOwner(patch.getOwner());
 
@@ -85,6 +86,26 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
 
         paymentMethodDao.save(paymentMethod);
         return mapToDTO(paymentMethod);
+    }
+
+    @Override
+    public void setDefaultPaymentMethod(String id) throws IllegalAccessException {
+        PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+
+        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getOwnerUser().getId().equals(loggedUser.getId())) {
+            throw new IllegalAccessException("User cannot set default payment method");
+        }
+
+        for (PaymentMethod existingMethod : loggedUser.getPaymentMethods()) {
+            if (existingMethod.isDefault()) {
+                existingMethod.setDefault(false);
+                paymentMethodDao.save(existingMethod);
+            }
+        }
+
+        paymentMethod.setDefault(true);
+        paymentMethodDao.save(paymentMethod);
     }
 
     @Override

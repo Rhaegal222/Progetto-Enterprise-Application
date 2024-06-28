@@ -4,8 +4,8 @@ data class PaymentMethodDTO (
 
     val id: kotlin.String,
     val cardNumber: kotlin.String,
-    //val expiryDate: java.time.LocalDate,
-    val expiryDate: kotlin.String,
+    val expireMonth: kotlin.String,
+    val expireYear: kotlin.String,
     val owner: kotlin.String,
     val isDefault: kotlin.Boolean
 ){

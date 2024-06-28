@@ -23,9 +23,10 @@ public class PaymentMethodDTO {
     private String cardNumber;
 
     @NotNull
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    //private LocalDate expiryDate;
-    private String expiryDate;
+    private String expireMonth;
+
+    @NotNull
+    private String expireYear;
 
     @NotNull
     private Boolean isDefault;
