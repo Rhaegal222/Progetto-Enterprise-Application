@@ -3,6 +3,7 @@ import com.android.frontend.service.GoogleAuthenticationService
 import com.android.frontend.service.ProductService
 import com.android.frontend.service.UserService
 import com.android.frontend.service.PaymentService
+import com.android.frontend.service.UserImageService
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,7 +33,8 @@ object RetrofitInstance {
         retrofit.create(PaymentService::class.java)
     }
 
-
-
+    val userImageApi: UserImageService by lazy {
+        retrofit.create(UserImageService::class.java)
+    }
 
 }

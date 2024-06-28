@@ -29,12 +29,14 @@ interface UserImageService {
     @Multipart
     @PUT("api/v1/images/users/photo-profile/{id}")
     fun replacePhotoUser(
+        @Header("Authorization") authHeader: String,
         @Path("id") id: String,
         @Part file: MultipartBody.Part
     ): Call<Void>
 
     @DELETE("api/v1/images/users/photo-profile/{id}")
     fun deletePhotoUser(
+        @Header("Authorization") authHeader: String,
         @Path("id") id: String
     ): Call<Void>
 }

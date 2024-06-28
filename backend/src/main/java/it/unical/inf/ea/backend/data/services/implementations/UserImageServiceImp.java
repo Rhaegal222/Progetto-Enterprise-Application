@@ -18,8 +18,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Objects;
 
 @Service
@@ -55,10 +57,10 @@ public class UserImageServiceImp implements UserImageService {
         }
 
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename())).replace(":", "");
-        String localStorageDir = userDir + loggedUser.getUsername();
+        String localStorageDir = userDir + loggedUser.getId();
         UserImage userImage = new UserImage();
         userImage.setDescription(description);
-        userImage.setUrlPhoto("images/user_photos/" + loggedUser.getUsername() + "/" + fileName);
+        userImage.setUrlPhoto("images/user_photos/" + loggedUser.getId() + "/" + fileName);
         userImage.setUser(loggedUser);
         loggedUser.setPhotoProfile(userImage);
 
@@ -67,33 +69,45 @@ public class UserImageServiceImp implements UserImageService {
 
         return modelMapper.map(userImage, UserImageDTO.class);
     }
-    @Override
-    public void replacePhotoUser(String id, MultipartFile multipartFile) throws IOException {
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename()).replace(":", "");
-
-        UserImage userImage = userImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
-
-        String uploadDir = userDir + loggedUser.getUsername();
-
-
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-
-        userImage.setUrlPhoto(uploadDir+"/"+fileName);
-        userImageDao.save(userImage);
-    }
 
     @Override
     public void deletePhotoUser(String id) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         UserImage userImage = userImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
-        if(loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getPhotoProfile().getId().equals(userImage.getId()))
+
+        // Check if the logged user has permissions to delete the image
+        if(loggedUser.getRole().equals(UserRole.USER) &&
+                !loggedUser.getPhotoProfile().getId().equals(userImage.getId())) {
             throw new IllegalAccessException("Cannot delete image of others");
+        }
+
+        // Unlink user and photo
         userImage.setUser(null);
         loggedUser.setPhotoProfile(null);
 
+        Path userDirPath = Paths.get(userDir + loggedUser.getId());
+        try {
+            // Delete all files in the directory
+            Files.walk(userDirPath)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(file -> {
+                        if (!file.delete()) {
+                            System.err.println("Failed to delete " + file);
+                        }
+                    });
+
+            // Finally, delete the directory itself if it's empty
+            Files.deleteIfExists(userDirPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalAccessException("Failed to delete user's photo directory");
+        }
+
+        // Remove the image record from the database
         userImageDao.delete(userImage);
     }
+
 
 
     @Override

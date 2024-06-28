@@ -13,8 +13,6 @@ public interface UserImageService {
 
     UserImageDTO savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException;
 
-    void replacePhotoUser(String id, MultipartFile multipartFile) throws IOException;
-
     void deletePhotoUser(String id) throws IllegalAccessException;
 
 

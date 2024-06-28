@@ -1,10 +1,9 @@
 package com.android.frontend.view.page.other
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,16 +28,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.view_models.ProfileViewModel
 import com.android.frontend.R
+import com.android.frontend.navigation.Navigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
+
     LaunchedEffect(Unit) {
         profileViewModel.fetchUserProfile()
+        profileViewModel.fetchUserProfileImage()
     }
+    val photoid = profileViewModel.photoId
 
     val isDarkMode = isSystemInDarkTheme()
 
@@ -46,6 +51,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
     val email by profileViewModel.email
     val phoneNumber by profileViewModel.phoneNumber
     val isLoading by profileViewModel.isLoading
+    val profileImageUri by profileViewModel.profileImageUri
 
     var firstNameInput by remember { mutableStateOf(firstName) }
     var lastNameInput by remember { mutableStateOf(lastName) }
@@ -56,6 +62,12 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
     var showEmailChangeDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            profileViewModel.updatePhotoUser(it)
+        }
+    }
 
     Scaffold(
         containerColor = Color.White,
@@ -106,13 +118,42 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 item { Spacer(modifier = Modifier.height(50.dp)) }
 
                 item {
-                    Image(
-                        painter = painterResource(id = R.drawable.user_image),
-                        contentDescription = "Profile Image",
-                        modifier = Modifier
-                            .size(140.dp)
-                            .clip(CircleShape)
-                    )
+                    Box(
+                        modifier = Modifier.size(160.dp)
+                    ) {
+                        if (profileImageUri != null) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = profileImageUri),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(160.dp)
+                                    .clip(CircleShape)
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.user_image),
+                                contentDescription = "Profile Image",
+                                modifier = Modifier
+                                    .size(160.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                launcher.launch("image/*") },
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.Gray)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Profile Image",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
 
                 item { Spacer(modifier = Modifier.height(50.dp)) }
@@ -217,6 +258,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
         }
     }
 }
+
 
 @Composable
 fun ReadOnlyProfileField(label: String, value: String) {

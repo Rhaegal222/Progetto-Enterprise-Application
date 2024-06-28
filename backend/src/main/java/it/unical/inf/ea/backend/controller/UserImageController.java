@@ -41,12 +41,6 @@ public class UserImageController {
     }
 
 
-    @PutMapping("/users/photo-profile/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void replacePhotoUser(@PathVariable("id")String id,@RequestBody MultipartFile multipartFile) throws IOException {
-        userImageService.replacePhotoUser(id,multipartFile);
-    }
-
     @DeleteMapping("/users/photo-profile/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePhotoUser(@PathVariable("id") String id) throws IllegalAccessException {
