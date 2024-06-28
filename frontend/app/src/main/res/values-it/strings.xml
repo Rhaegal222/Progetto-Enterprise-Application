@@ -76,6 +76,10 @@
     <string name="add_payment_method">Aggiungi un metodo si pagamento</string>
     <string name="set_as_default">Imposta come predefinito</string>
     <string name="add_payment_method_short">Aggiungi pagamento</string>
-    <string name="delete">Delete</string>
+    <string name="delete">Cancella</string>
     <string name="add_payment_card">Aggiungi carta di pagamento</string>
+    <string name="phone_number">Numero di cellulare</string>
+    <string name="confirm">Conferma</string>
+    <string name="cancel">Annulla</string>
+    <string name="edit">Modifica</string>
 </resources>

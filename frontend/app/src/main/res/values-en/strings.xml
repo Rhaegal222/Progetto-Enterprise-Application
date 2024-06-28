@@ -78,4 +78,8 @@
     <string name="add_payment_method_short">Add payment</string>
     <string name="delete">Delete</string>
     <string name="add_payment_card">Add payment card</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
 </resources>

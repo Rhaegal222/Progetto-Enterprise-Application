@@ -23,7 +23,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,39 +40,38 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val userService: UserService = RetrofitInstance.api
     private val userImageService = RetrofitInstance.userImageApi
 
-    private val user = MutableLiveData<UserDTO>()
-    val userLiveData: LiveData<UserDTO> get() = user
+    private val _user = MutableLiveData<UserDTO>()
+    val userLiveData: LiveData<UserDTO> get() = _user
 
     val profileImage = MutableLiveData<Uri?>(null)
     val profileImageLiveData : LiveData<Uri?> get() = profileImage
 
     var isLoading = mutableStateOf(true)
 
-    fun fetchUserProfile(context: Context) {
+    fun fetchData(context: Context) {
         viewModelScope.launch {
             isLoading.value = true
+            fetchUserProfile(context)
+            fetchUserProfileImage(context)
+            isLoading.value = false
+        }
+    }
+
+    private suspend fun fetchUserProfile(context: Context) {
+        withContext(Dispatchers.IO) {
             val accessToken = SecurePreferences.getAccessToken(context)
             val call = userService.me("Bearer $accessToken")
-            call.enqueue(object : Callback<UserDTO> {
-                override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { fetchedUser ->
-                            Log.d("ProfileViewModel", "User profile response: ${response.body()}")
-                            user.value = fetchedUser
-                        } ?: run {
-                            Log.d("ProfileViewModel", "User profile response body is null")
-                        }
-                    } else {
-                        Log.e("ProfileViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
-                    }
-                    isLoading.value = false
+            val response = call.execute()
+            if (response.isSuccessful) {
+                response.body()?.let { fetchedUser ->
+                    Log.d("ProfileViewModel", "User profile response: ${response.body()}")
+                    _user.postValue(fetchedUser)
+                } ?: run {
+                    Log.d("ProfileViewModel", "User profile response body is null")
                 }
-
-                override fun onFailure(call: Call<UserDTO>, t: Throwable) {
-                    Log.e("ProfileViewModel", "Error fetching user profile", t)
-                    isLoading.value = false
-                }
-            })
+            } else {
+                Log.e("ProfileViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
+            }
         }
     }
 
@@ -87,15 +87,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 username = email
             )
 
-            if (user.value?.id == "-1" || user.value?.id == null || user.value?.id == "" || user.value?.id == "null") {
+            if (_user.value?.id == "-1" || _user.value?.id == null || _user.value?.id == "" || _user.value?.id == "null") {
                 Log.e("ProfileViewModel", "User ID is not set")
                 return@launch
             }
-            val call = userService.updateUser("Bearer $accessToken", user.value?.id ?: "", updateRequest)
+            val call = userService.updateUser("Bearer $accessToken", _user.value?.id ?: "", updateRequest)
             call.enqueue(object : Callback<UserDTO> {
                 override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
                     if (response.isSuccessful) {
-                        fetchUserProfile(context)
+                        viewModelScope.launch {
+                            fetchUserProfile(context)
+                        }
                     } else {
                         Log.e("ProfileViewModel", "Failed to update user profile: ${response.errorBody()?.string()}")
                     }
@@ -131,13 +133,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private fun uploadImage(context: Context, imageUri: Uri) {
         val file = getFileFromUri(context, imageUri) ?: return
 
-        val requestFile = RequestBody.create(
-            "image/*".toMediaTypeOrNull(),
-            file
-        )
+        val requestFile = file
+            .asRequestBody("image/*".toMediaTypeOrNull())
 
         val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
-        val description = RequestBody.create("text/plain".toMediaTypeOrNull(), "Profile Image")
+        val description = "Profile Image".toRequestBody("text/plain".toMediaTypeOrNull())
 
         val accessToken = SecurePreferences.getAccessToken(context)
         val call = userImageService.savePhotoUser("Bearer $accessToken", body, description)
@@ -147,8 +147,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 if (response.isSuccessful) {
                     response.body()?.let { userImageDTO ->
                         profileImage.value = Uri.parse(userImageDTO.urlPhoto)
-                        SecurePreferences.saveUser(context, user.value!!.copy(photoProfile = userImageDTO))
-                        fetchUserProfileImage(context)
+                        SecurePreferences.saveUser(context, _user.value!!.copy(photoProfile = userImageDTO))
+                        viewModelScope.launch {
+                            fetchUserProfile(context)
+                        }
                     }
                 } else {
                     Log.e("ProfileViewModel", "Image upload failed: ${response.errorBody()?.string()}")
@@ -180,8 +182,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         })
     }
 
-    fun fetchUserProfileImage(context: Context) {
-        viewModelScope.launch {
+    private suspend fun fetchUserProfileImage(context: Context) {
+        withContext(Dispatchers.IO) {
             try {
                 val type = "user_photos"
                 val folderName = SecurePreferences.getUser(context)?.id ?: ""
@@ -189,12 +191,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 val responseBody = fetchImage(type, folderName, fileName)
                 responseBody?.let {
                     val tempFile = saveImageToFile(context, responseBody)
-                    profileImage.value = Uri.fromFile(tempFile)
+                    profileImage.postValue(Uri.fromFile(tempFile))
                 } ?: run {
-                    println("Image retrieval failed")
+                    Log.e("ProfileViewModel", "Image retrieval failed")
                 }
             } catch (e: Exception) {
-                println("Image retrieval error: ${e.message}")
+                Log.e("ProfileViewModel", "Image retrieval error: ${e.message}")
             }
         }
     }
