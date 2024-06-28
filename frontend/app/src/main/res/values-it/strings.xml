@@ -34,7 +34,7 @@
     <string name="account">Account</string>
     <string name="github">github</string>
     <string name="instagram">instagram</string>
-    <string name="twitter">instagram</string>
+    <string name="twitter">X</string>
     <string name="web_client_id">728974789925-lkuichek7r4npl50kkb1i1r61ho9hifb.apps.googleusercontent.com</string>
     <string name="login_success">Accesso riuscito</string>
     <string name="or">oppure</string>
@@ -71,6 +71,7 @@
     <string name="send_email">Send Email</string>
     <string name="enter_email">Enter the email</string>
     <string name="recover_password_text">Ti invieremo un\'email con le istruzioni per il recupero della password al tuo indirizzo email.</string>
-    <string name="add_payment_method">Add payment method</string>
-    <string name="set_as_default">Set as Default</string>
+    <string name="add_payment_method">Aggiungi un metodo si pagamento</string>
+    <string name="set_as_default">Imposta come predefinito</string>
+    <string name="add_payment_method_short">Aggiungi pagamento</string>
 </resources>
