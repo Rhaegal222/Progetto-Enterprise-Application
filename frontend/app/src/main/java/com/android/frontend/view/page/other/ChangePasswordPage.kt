@@ -47,7 +47,11 @@ fun ChangePasswordPage(navController: NavHostController) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
-                title = { },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.change_password).uppercase(),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

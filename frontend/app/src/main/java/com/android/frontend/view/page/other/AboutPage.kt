@@ -50,7 +50,11 @@ fun AboutPage(navController: NavController){
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
-                title = { },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.about).uppercase(),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

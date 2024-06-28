@@ -57,7 +57,11 @@ fun AddPaymentPage(navController: NavHostController) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
-                title = { },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.add_payment_method).uppercase(),
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(

@@ -81,4 +81,7 @@
     <string name="confirm">Confirmer</string>
     <string name="cancel">Annuler</string>
     <string name="edit">Modifier</string>
+    <string name="security">Sicurezza</string>
+    <string name="add_payment_method">Add a payment method</string>
+    <string name="set_as_default">Définir par défaut</string>
 </resources>
