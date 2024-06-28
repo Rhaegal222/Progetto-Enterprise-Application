@@ -71,12 +71,14 @@
     <string name="send_email">Send Email</string>
     <string name="enter_email">Enter the email</string>
     <string name="recover_password_text">Te enviaremos un correo electrónico con las instrucciones para recuperar tu contraseña a tu dirección de correo electrónico.</string>
-    <string name="add_payment_method">Add payment method</string>
-    <string name="set_as_default">Set as Default</string>
     <string name="theme">Tema</string>
     <string name="country_and_language">País e idioma</string>
     <string name="add_payment_method_short">Añadir pago</string>
-    <string name="delete">Delete</string>
+    <string name="delete">Eliminar</string>
     <string name="add_payment_card">Añadir tarjeta de pago</string>
     <string name="add_address">\"add address\"\n</string>
+    <string name="phone_number">Numero di cellulare</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="edit">Editar</string>
 </resources>

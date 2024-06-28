@@ -2,27 +2,28 @@ package com.android.frontend.view.page.other
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,36 +37,47 @@ import coil.compose.rememberAsyncImagePainter
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        profileViewModel.fetchUserProfile()
-        profileViewModel.fetchUserProfileImage()
-    }
-    val photoid = profileViewModel.photoId
+    val inputBorderColor = Color.Gray
+    val textColor = Color.Black
+    val iconColor = Color.Black
+    var isObscured by remember { mutableStateOf(true) }
 
-    val isDarkMode = isSystemInDarkTheme()
+    val profileImage by profileViewModel.profileImageLiveData.observeAsState()
+    val user by profileViewModel.userLiveData.observeAsState()
 
-    val firstName by profileViewModel.firstName
-    val lastName by profileViewModel.lastName
-    val email by profileViewModel.email
-    val phoneNumber by profileViewModel.phoneNumber
+    var firstName by remember { mutableStateOf(user?.firstName ?: "") }
+    var lastName by remember { mutableStateOf(user?.lastName ?: "") }
+    var email by remember { mutableStateOf(user?.email ?: "") }
+    var phoneNumber by remember { mutableStateOf(user?.phoneNumber ?: "Nessun numero di telefono") }
+
     val isLoading by profileViewModel.isLoading
-    val profileImageUri by profileViewModel.profileImageUri
-
-    var firstNameInput by remember { mutableStateOf(firstName) }
-    var lastNameInput by remember { mutableStateOf(lastName) }
-    var emailInput by remember { mutableStateOf(email) }
-    var phoneNumberInput by remember { mutableStateOf(if (phoneNumber == "Nessun numero di telefono") "" else phoneNumber) }
 
     var isEditMode by remember { mutableStateOf(false) }
     var showEmailChangeDialog by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
         uri?.let {
-            profileViewModel.updatePhotoUser(it)
+            profileViewModel.updatePhotoUser(context, it)
         }
+    }
+
+    LaunchedEffect(user) {
+        user?.let {
+            firstName = it.firstName
+            lastName = it.lastName
+            email = it.email
+            phoneNumber = if (!it.phoneNumber.isNullOrEmpty()) it.phoneNumber else "Nessun numero di telefono"
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchData(context)
+        Log.d("AccountPage", "User: $user")
+        Log.d("AccountPage", "Profile Image: $profileImage")
     }
 
     Scaffold(
@@ -79,7 +91,7 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
                             tint = Color.Black
                         )
@@ -92,7 +104,6 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
         }
     ) {
         if (isLoading) {
-            // Show a loading indicator
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -100,229 +111,210 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
                 CircularProgressIndicator()
             }
         } else {
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFFe3f2fd),
-                                Color(0xFFbbdefb),
-                                Color(0xFF90caf9),
-                            )
-                        )
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 16.dp, horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                item { Spacer(modifier = Modifier.height(50.dp)) }
+                Spacer(modifier = Modifier.height(50.dp))
 
-                item {
-                    Box(
-                        modifier = Modifier.size(160.dp)
-                    ) {
-                        if (profileImageUri != null) {
-                            Image(
-                                painter = rememberAsyncImagePainter(model = profileImageUri),
-                                contentDescription = "Profile Image",
-                                modifier = Modifier
-                                    .size(160.dp)
-                                    .clip(CircleShape)
-                            )
-                        } else {
-                            Image(
-                                painter = painterResource(id = R.drawable.user_image),
-                                contentDescription = "Profile Image",
-                                modifier = Modifier
-                                    .size(160.dp)
-                                    .clip(CircleShape)
-                            )
-                        }
-                        IconButton(
-                            onClick = {
-                                launcher.launch("image/*") },
+                Box(modifier = Modifier.size(160.dp)) {
+                    if (profileImage != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(model = profileImage),
+                            contentDescription = "Profile Image",
                             modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .size(40.dp)
+                                .size(160.dp)
                                 .clip(CircleShape)
-                                .background(Color.Gray)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit Profile Image",
-                                tint = Color.White
-                            )
-                        }
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.user_image),
+                            contentDescription = "Profile Image",
+                            modifier = Modifier
+                                .size(160.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            imagePickerLauncher.launch("image/*")
+                        },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit Profile Image",
+                            tint = Color.White
+                        )
                     }
                 }
 
-                item { Spacer(modifier = Modifier.height(50.dp)) }
+                Spacer(modifier = Modifier.height(50.dp))
 
-                item {
-                    Text(
-                        text = "Il tuo profilo",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 25.sp,
-                        color = Color.Black
-                    )
-                }
+                Text(
+                    text = "Il tuo profilo",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp,
+                    color = Color.Black
+                )
 
-                item { Spacer(modifier = Modifier.height(20.dp)) }
+                Spacer(modifier = Modifier.height(20.dp))
+
+                OutlinedTextField(
+                    value = firstName,
+                    onValueChange = { firstName = it },
+                    label = { Text(stringResource(id = R.string.firstname), color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                    readOnly = !isEditMode
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = { Text(stringResource(id = R.string.lastname), color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                    readOnly = !isEditMode
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(stringResource(id = R.string.email), color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                    readOnly = !isEditMode
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = { phoneNumber = it },
+                    label = { Text(stringResource(id = R.string.phone_number), color = textColor) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = inputBorderColor,
+                        unfocusedBorderColor = inputBorderColor,
+                        cursorColor = textColor
+                    ),
+                    readOnly = !isEditMode
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 if (isEditMode) {
-                    item { EditableProfileField(label = "Nome", value = firstNameInput, onValueChange = { firstNameInput = it }) }
-                    item { EditableProfileField(label = "Cognome", value = lastNameInput, onValueChange = { lastNameInput = it }) }
-                    item { EditableProfileField(label = "Email", value = emailInput, onValueChange = { emailInput = it }) }
-                    item { EditableProfileField(label = "Numero di telefono", value = phoneNumberInput, onValueChange = { phoneNumberInput = it }) }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
 
-                    item { Spacer(modifier = Modifier.height(20.dp)) }
-
-                    item {
                         Button(
                             onClick = {
-                                if (emailInput != email) {
+                                if (email != firstName) {
                                     showEmailChangeDialog = true
                                 } else {
                                     profileViewModel.updateUserProfile(
-                                        firstNameInput,
-                                        lastNameInput,
-                                        emailInput,
-                                        phoneNumberInput
+                                        context,
+                                        firstName,
+                                        lastName,
+                                        email,
+                                        phoneNumber
                                     )
                                     isEditMode = false
                                 }
                             },
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text(text = "Applica Cambiamenti")
+                            Text(text = stringResource(id = R.string.apply))
                         }
-                    }
-                } else {
-                    item { ReadOnlyProfileField(label = "Nome", value = firstName) }
-                    item { ReadOnlyProfileField(label = "Cognome", value = lastName) }
-                    item { ReadOnlyProfileField(label = "Email", value = email) }
-                    item { ReadOnlyProfileField(label = "Numero di telefono", value = phoneNumber) }
 
-                    item { Spacer(modifier = Modifier.height(20.dp)) }
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    item {
                         Button(
                             onClick = {
-                                firstNameInput = firstName
-                                lastNameInput = lastName
-                                emailInput = email
-                                phoneNumberInput = if (phoneNumber == "Nessun numero di telefono") "" else phoneNumber
-                                isEditMode = true
+                                isEditMode = false
                             },
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text(text = "Modifica")
+                            Text(text = stringResource(id = R.string.cancel))
                         }
                     }
+                } else {
+                    Button(
+                        onClick = {
+                            isEditMode = true
+                        },
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(text = stringResource(id = R.string.edit))
+                    }
+                }
+
+                if (showEmailChangeDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showEmailChangeDialog = false },
+                        title = { Text(text = "Cambio email") },
+                        text = { Text("Per poter modificare l'email devi rieffettuare l'accesso.") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    profileViewModel.updateUserProfile(
+                                        context,
+                                        firstName,
+                                        lastName,
+                                        email,
+                                        phoneNumber
+                                    )
+                                    profileViewModel.logout(context)
+                                }
+                            ) {
+                                Text("Continua")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    showEmailChangeDialog = false
+                                    isEditMode = false
+                                }
+                            ) {
+                                Text("Cancella")
+                            }
+                        }
+                    )
                 }
             }
-        }
-
-        if (showEmailChangeDialog) {
-            AlertDialog(
-                onDismissRequest = { showEmailChangeDialog = false },
-                title = { Text(text = "Cambio email") },
-                text = { Text("Per poter modificare l'email devi rieffettuare l'accesso.") },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            profileViewModel.updateUserProfile(
-                                firstNameInput,
-                                lastNameInput,
-                                emailInput,
-                                phoneNumberInput
-                            )
-                            profileViewModel.logout(context)
-                        }
-                    ) {
-                        Text("Continua")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            showEmailChangeDialog = false
-                            isEditMode = false
-                        }
-                    ) {
-                        Text("Cancella")
-                    }
-                }
-            )
-        }
-    }
-}
-
-
-@Composable
-fun ReadOnlyProfileField(label: String, value: String) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .padding(start = 15.dp, end = 15.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = CardDefaults.cardElevation(5.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.Gray
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.Black
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EditableProfileField(label: String, value: String, onValueChange: (String) -> Unit) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .padding(start = 15.dp, end = 15.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = CardDefaults.cardElevation(5.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.Gray
-            )
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Gray,
-                    unfocusedBorderColor = Color.LightGray,
-                    cursorColor = Color.Black
-                )
-            )
         }
     }
 }
