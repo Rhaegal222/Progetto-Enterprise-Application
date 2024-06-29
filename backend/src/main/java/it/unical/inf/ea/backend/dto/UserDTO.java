@@ -52,4 +52,5 @@ public class UserDTO {
     @NotNull
     private UserRole role;
 
+    private CartDTO cart;
 }

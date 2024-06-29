@@ -89,6 +89,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
     private List<Address> addresses;
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
+
     public List<Address> getAddresses() {
         return addresses;
     }

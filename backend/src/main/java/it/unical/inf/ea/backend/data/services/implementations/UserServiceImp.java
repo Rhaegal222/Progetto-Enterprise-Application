@@ -3,6 +3,7 @@ package it.unical.inf.ea.backend.data.services.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import it.unical.inf.ea.backend.config.security.*;
+import it.unical.inf.ea.backend.data.dao.CartDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.*;
 import it.unical.inf.ea.backend.data.services.interfaces.EmailService;
@@ -51,6 +52,7 @@ public class UserServiceImp implements UserService{
     // private final ProductService productService;
     private final ModelMapper modelMapper;
     private final JwtContextUtils jwtContextUtils;
+    private final CartDao cartDao;
     // private final ProductDao productDao;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -62,6 +64,9 @@ public class UserServiceImp implements UserService{
     public UserDTO createUser(User user) {
         user.setStatus(UserStatus.ACTIVE);
         user = userDao.save(user);
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cartDao.save(cart);
         return mapToDto(user);
     }
 
