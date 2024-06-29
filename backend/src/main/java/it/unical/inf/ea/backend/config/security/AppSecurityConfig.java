@@ -74,10 +74,17 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/shipping-addresses/deleteShippingAddress/{id}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/shipping-addresses/getShippingAddress/{id}", "/api/v1/shipping-addresses/getAllShippingAddresses").authenticated()
 
+                        // CART
+                        .requestMatchers(HttpMethod.POST, "/api/v1/cart/addCartItem").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/cart/updateCartItem/{cartId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cart/deleteCartItem/{cartId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/getCartItemsByUserId/user/{userId}").authenticated()
+
                         // USER
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/logout", "api/v1/users/changePassword").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/user/getUserById", "/api/v1/user/getUserByUsername", "/api/v1/user/getUserByEmail",
                                 "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken").authenticated()
+
 
                         // Richieste dove non è richiesta l'autenticazione
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/register", "/api/v1/users/authenticate").permitAll()
