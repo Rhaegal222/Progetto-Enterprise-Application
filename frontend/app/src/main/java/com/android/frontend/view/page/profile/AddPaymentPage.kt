@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.android.frontend.R
-import com.android.frontend.model.SecurePreferences
 import com.android.frontend.view_models.PaymentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

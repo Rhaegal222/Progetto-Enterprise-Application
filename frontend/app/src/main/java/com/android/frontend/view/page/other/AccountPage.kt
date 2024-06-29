@@ -74,8 +74,8 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchData(context)
-        Log.d("AccountPage", "User: $user")
-        Log.d("AccountPage", "Profile Image: $profileImage")
+        Log.d("DEBUG AccountPage", "User: $user")
+        Log.d("DEBUG AccountPage", "Profile Image: $profileImage")
     }
 
     Scaffold(

@@ -23,7 +23,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.android.frontend.MainActivity
-import com.android.frontend.model.SecurePreferences
+import com.android.frontend.controller.infrastructure.TokenManager
 
 @Composable
 fun OtherMenu(navController: NavHostController) {
@@ -56,7 +56,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                     R.string.about -> navController.navigate(Navigation.AboutPage.route)
                     R.string.settings -> navController.navigate(Navigation.SettingsMenu.route)
                     R.string.logout -> {
-                        SecurePreferences.clearAll(context)
+                        TokenManager.getInstance().clearTokens(context)
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     }

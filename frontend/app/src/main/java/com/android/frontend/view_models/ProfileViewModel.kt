@@ -13,10 +13,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.controller.infrastructure.TokenManager
 import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.controller.models.UserImageDTO
 import com.android.frontend.model.SecurePreferences
-import com.android.frontend.service.UserService
 import com.android.frontend.controller.models.UserUpdateRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private suspend fun fetchUserProfile(context: Context) {
         withContext(Dispatchers.IO) {
             try {
-                val accessToken = SecurePreferences.getAccessToken(context)
+                val accessToken = TokenManager.getInstance().getAccessToken(context)
                 val userService = RetrofitInstance.getUserApi(context)
                 val call = userService.me("Bearer $accessToken")
                 val response = call.execute()
@@ -76,7 +76,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateUserProfile(context: Context, firstName: String, lastName: String, email: String, phoneNumber: String) {
         viewModelScope.launch {
-            val accessToken = SecurePreferences.getAccessToken(context)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
 
             val updateRequest = UserUpdateRequest(
                 firstName = firstName,
@@ -111,7 +111,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun logout(context: Context) {
-        SecurePreferences.clearAll(context)
+        TokenManager.getInstance().clearTokens(context)
         val packageManager: PackageManager = context.packageManager
         val intent: Intent = packageManager.getLaunchIntentForPackage(context.packageName)!!
         val componentName: ComponentName = intent.component!!
@@ -139,7 +139,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
         val description = "Profile Image".toRequestBody("text/plain".toMediaTypeOrNull())
 
-        val accessToken = SecurePreferences.getAccessToken(context)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
         val userImageService = RetrofitInstance.getUserImageApi(context)
         val call = userImageService.savePhotoUser("Bearer $accessToken", body, description)
 
@@ -166,7 +166,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     private fun deletePhotoUser(context: Context) {
         val photoProfileId = SecurePreferences.getUser(context)?.photoProfile?.id ?: ""
-        val accessToken = SecurePreferences.getAccessToken(context)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
 
         val userImageService = RetrofitInstance.getUserImageApi(context)
         val call = userImageService.deletePhotoUser("Bearer $accessToken", photoProfileId)

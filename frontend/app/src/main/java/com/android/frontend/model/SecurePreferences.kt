@@ -37,7 +37,6 @@ object SecurePreferences {
     }
 
     fun saveAccessToken(context: Context, accessToken: String) {
-        Log.d("SecurePreferences", "Saving access token")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             putString(ACCESS_TOKEN_KEY, accessToken)
@@ -46,7 +45,6 @@ object SecurePreferences {
     }
 
     fun getAccessToken(context: Context): String? {
-        Log.d("SecurePreferences", "Getting access token")
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getString(ACCESS_TOKEN_KEY, null)
     }
@@ -57,7 +55,6 @@ object SecurePreferences {
     }
 
     fun clearAccessToken(context: Context) {
-        Log.d("SecurePreferences", "Clearing access token")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(ACCESS_TOKEN_KEY)
@@ -66,7 +63,6 @@ object SecurePreferences {
     }
 
     fun saveRefreshToken(context: Context, refreshToken: String) {
-        Log.d("SecurePreferences", "Saving refresh token")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             putString(REFRESH_TOKEN_KEY, refreshToken)
@@ -75,13 +71,11 @@ object SecurePreferences {
     }
 
     fun getRefreshToken(context: Context): String? {
-        Log.d("SecurePreferences", "Getting refresh token")
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getString(REFRESH_TOKEN_KEY, null)
     }
 
     fun clearRefreshToken(context: Context) {
-        Log.d("SecurePreferences", "Clearing refresh token")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(REFRESH_TOKEN_KEY)
@@ -131,7 +125,6 @@ object SecurePreferences {
     }
 
     fun saveProvider(context: Context, provider: String) {
-        Log.d("SecurePreferences", "Saving provider $provider")
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             putString(PROVIDER, provider)
@@ -140,7 +133,6 @@ object SecurePreferences {
     }
 
     fun getProvider(context: Context): String? {
-        Log.d("SecurePreferences", "Getting provider")
         val sharedPreferences = getSharedPreferences(context)
         return sharedPreferences.getString(PROVIDER, null)
     }
@@ -154,7 +146,6 @@ object SecurePreferences {
     }
 
     fun saveAddress(context: Context, address: AddressDTO) {
-        Log.d("SecurePreferences", "Saving address $address")
         val sharedPreferences = getSharedPreferences(context)
         val addressJson = Gson().toJson(address)
         with(sharedPreferences.edit()) {
@@ -164,7 +155,6 @@ object SecurePreferences {
     }
 
     fun getAddress(context: Context): AddressDTO? {
-        Log.d("SecurePreferences", "Getting address")
         val sharedPreferences = getSharedPreferences(context)
         val addressJson = sharedPreferences.getString(ADDRESS_KEY, null)
         return if (addressJson != null) {
@@ -174,8 +164,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearAddress(context: Context) {
-        Log.d("SecurePreferences", "Clearing address")
+    private fun clearAddress(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(ADDRESS_KEY)
@@ -184,7 +173,6 @@ object SecurePreferences {
     }
 
     fun saveDefaultAddress(context: Context, address: AddressDTO) {
-        Log.d("SecurePreferences", "Saving default address $address")
         val sharedPreferences = getSharedPreferences(context)
         val addressJson = Gson().toJson(address)
         with(sharedPreferences.edit()) {
@@ -194,7 +182,6 @@ object SecurePreferences {
     }
 
     fun getDefaultAddress(context: Context): AddressDTO? {
-        Log.d("SecurePreferences", "Getting default address")
         val sharedPreferences = getSharedPreferences(context)
         val addressJson = sharedPreferences.getString(DEFAULT_ADDRESS_KEY, null)
         return if (addressJson != null) {
@@ -204,8 +191,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearDefaultAddress(context: Context) {
-        Log.d("SecurePreferences", "Clearing default address")
+    private fun clearDefaultAddress(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(DEFAULT_ADDRESS_KEY)
@@ -214,7 +200,6 @@ object SecurePreferences {
     }
 
     fun saveCurrentAddress(context: Context, address: AddressDTO) {
-        Log.d("SecurePreferences", "Saving current address $address")
         val sharedPreferences = getSharedPreferences(context)
         val addressJson = Gson().toJson(address)
         with(sharedPreferences.edit()) {
@@ -224,7 +209,6 @@ object SecurePreferences {
     }
 
     fun getCurrentAddress(context: Context): AddressDTO? {
-        Log.d("SecurePreferences", "Getting current address")
         val sharedPreferences = getSharedPreferences(context)
         val addressJson = sharedPreferences.getString(CURRENT_ADDRESS_KEY, null)
         return if (addressJson != null) {
@@ -234,8 +218,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearCurrentAddress(context: Context) {
-        Log.d("SecurePreferences", "Clearing current address")
+    private fun clearCurrentAddress(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(CURRENT_ADDRESS_KEY)
@@ -244,7 +227,6 @@ object SecurePreferences {
     }
 
     fun savePaymentMethod(context: Context, paymentMethod: PaymentMethodDTO) {
-        Log.d("SecurePreferences", "Saving payment method $paymentMethod")
         val sharedPreferences = getSharedPreferences(context)
         val paymentMethodJson = Gson().toJson(paymentMethod)
         with(sharedPreferences.edit()) {
@@ -254,7 +236,6 @@ object SecurePreferences {
     }
 
     fun getPaymentMethod(context: Context): PaymentMethodDTO? {
-        Log.d("SecurePreferences", "Getting payment method")
         val sharedPreferences = getSharedPreferences(context)
         val paymentMethodJson = sharedPreferences.getString(PAYMENT_METHOD_KEY, null)
         return if (paymentMethodJson != null) {
@@ -264,8 +245,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearPaymentMethod(context: Context) {
-        Log.d("SecurePreferences", "Clearing payment method")
+    private fun clearPaymentMethod(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(PAYMENT_METHOD_KEY)
@@ -274,7 +254,6 @@ object SecurePreferences {
     }
 
     fun saveDefaultPaymentMethod(context: Context, paymentMethod: PaymentMethodDTO) {
-        Log.d("SecurePreferences", "Saving default payment method $paymentMethod")
         val sharedPreferences = getSharedPreferences(context)
         val paymentMethodJson = Gson().toJson(paymentMethod)
         with(sharedPreferences.edit()) {
@@ -284,7 +263,6 @@ object SecurePreferences {
     }
 
     fun getDefaultPaymentMethod(context: Context): PaymentMethodDTO? {
-        Log.d("SecurePreferences", "Getting default payment method")
         val sharedPreferences = getSharedPreferences(context)
         val paymentMethodJson = sharedPreferences.getString(DEFAULT_PAYMENT_METHOD_KEY, null)
         return if (paymentMethodJson != null) {
@@ -294,8 +272,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearDefaultPaymentMethod(context: Context) {
-        Log.d("SecurePreferences", "Clearing default payment method")
+    private fun clearDefaultPaymentMethod(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(DEFAULT_PAYMENT_METHOD_KEY)
@@ -305,7 +282,6 @@ object SecurePreferences {
 
 
     fun saveCurrentPaymentMethod(context: Context, paymentMethod: PaymentMethodDTO) {
-        Log.d("SecurePreferences", "Saving current payment method $paymentMethod")
         val sharedPreferences = getSharedPreferences(context)
         val paymentMethodJson = Gson().toJson(paymentMethod)
         with(sharedPreferences.edit()) {
@@ -315,7 +291,6 @@ object SecurePreferences {
     }
 
     fun getCurrentPaymentMethod(context: Context): PaymentMethodDTO? {
-        Log.d("SecurePreferences", "Getting current payment method")
         val sharedPreferences = getSharedPreferences(context)
         val paymentMethodJson = sharedPreferences.getString(CURRENT_PAYMENT_METHOD_KEY, null)
         return if (paymentMethodJson != null) {
@@ -325,8 +300,7 @@ object SecurePreferences {
         }
     }
 
-    fun clearCurrentPaymentMethod(context: Context) {
-        Log.d("SecurePreferences", "Clearing current payment method")
+    private fun clearCurrentPaymentMethod(context: Context) {
         val sharedPreferences = getSharedPreferences(context)
         with(sharedPreferences.edit()) {
             remove(CURRENT_PAYMENT_METHOD_KEY)

@@ -1,20 +1,17 @@
 package com.android.frontend.view.page.profile
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,39 +26,59 @@ import com.android.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.PaymentCard
 import com.android.frontend.view_models.PaymentViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: PaymentViewModel = viewModel()) {
-
     val context = LocalContext.current
-    val payments by paymentViewModel.paymentMethodsLiveData.observeAsState()
+    val payments by paymentViewModel.paymentMethodsLiveData.observeAsState(emptyList())
+    val isLoading by paymentViewModel.isLoading.observeAsState(false)
+    val hasError by paymentViewModel.hasError.observeAsState(false)
 
-    // Chiamare getAllPaymentMethods solo una volta quando la composable viene inizializzata
     LaunchedEffect(Unit) {
+        Log.d("DEBUG PaymentMethodsPage", "Loading payment methods")
         paymentViewModel.getAllPaymentMethods(context)
     }
 
-    val pagerState = rememberPagerState()
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        if (hasError) {
+            Log.d("DEBUG PaymentMethodsPage", "Failed to load payment methods")
+            Toast.makeText(context, "Failed to load payment methods", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        } else {
+            PaymentMethodsContent(navController, payments, paymentViewModel, context)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PaymentMethodsContent(
+    navController: NavHostController,
+    payments: List<PaymentMethodDTO>,
+    paymentViewModel: PaymentViewModel,
+    context: Context
+) {
+    val pagerState = rememberPagerState(pageCount = { payments.size })
     var selectedPaymentMethod by remember { mutableStateOf<PaymentMethodDTO?>(null) }
     var isDefaultPaymentMethod by remember { mutableStateOf(false) }
     val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(payments) {
-        if (!payments.isNullOrEmpty()) {
-            selectedPaymentMethod = payments!![0]
+        if (payments.isNotEmpty()) {
+            selectedPaymentMethod = payments[0]
             isDefaultPaymentMethod = selectedPaymentMethod?.isDefault ?: false
         }
     }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            if (payments != null && page in payments!!.indices) {
-                selectedPaymentMethod = payments!![page]
+            if (page in payments.indices) {
+                selectedPaymentMethod = payments[page]
                 isDefaultPaymentMethod = selectedPaymentMethod?.isDefault ?: false
             }
         }
@@ -114,10 +131,9 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(30.dp))
-            if (!payments.isNullOrEmpty()) {
+            if (payments.isNotEmpty()) {
                 HorizontalPager(
                     state = pagerState,
-                    count = payments!!.size,
                     contentPadding = PaddingValues(horizontal = 50.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) { page ->
@@ -126,8 +142,8 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                             .fillMaxWidth()
                             .padding(horizontal = 10.dp)
                     ) {
-                        PaymentCard(payment = payments!![page], onRemove = {
-                            paymentViewModel.deletePayment(context, payments!![page].id)
+                        PaymentCard(payment = payments[page], onRemove = {
+                            paymentViewModel.deletePayment(context, payments[page].id)
                         })
                     }
                 }
@@ -160,4 +176,3 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
         }
     }
 }
-

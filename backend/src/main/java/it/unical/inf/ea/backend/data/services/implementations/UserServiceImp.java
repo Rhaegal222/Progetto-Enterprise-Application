@@ -266,18 +266,17 @@ public class UserServiceImp implements UserService{
 
     @Override
     public Map<String, String> refreshToken(String authorizationHeader, HttpServletResponse response) throws IOException {
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
                 String username = tokenStore.getUser(refreshToken);
-                UserDTO user = findByUsername(username).orElseThrow(()->new RuntimeException("user not found"));
+                UserDTO user = findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
                 User userDetails = mapToEntity(user);
                 String accessToken = tokenStore.createAccessToken(Map.of("username", userDetails.getUsername(), "role", userDetails.getAuthorities().toString()));
 
-                return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
-            }
-            catch (Exception e) {
+                return Map.of("accessToken", "Bearer "+accessToken, "refreshToken", "Bearer "+refreshToken);
+            } catch (Exception e) {
                 log.error(String.format("Error refresh token: %s", authorizationHeader));
                 response.setStatus(FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();

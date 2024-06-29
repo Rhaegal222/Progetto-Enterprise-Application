@@ -3,16 +3,18 @@ package com.android.frontend.controller.infrastructure
 import android.content.Context
 import android.util.Log
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.model.SecurePreferences
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Response
-import retrofit2.awaitResponse
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlin.math.pow
 
 class TokenManager {
+    private var refreshAttempts = 0
+    private val maxRefreshAttempts = 2
+    private var refreshTokenJob: Deferred<Boolean>? = null
+    private val mutex = Mutex()
+
     companion object {
         private var instance: TokenManager? = null
         fun getInstance(): TokenManager {
@@ -20,65 +22,6 @@ class TokenManager {
                 instance = TokenManager()
             }
             return instance!!
-        }
-    }
-
-    fun isLoggedIn(context: Context, callback: (Boolean) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val userService = RetrofitInstance.getUserApi(context)
-            try {
-                val response = userService.me("Bearer ${getAccessToken(context)}").awaitResponse()
-
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        SecurePreferences.saveUser(context, it)
-                        withContext(Dispatchers.Main) {
-                            callback(true)
-                        }
-                    } ?: run {
-                        handleResponseError(context, response)
-                        withContext(Dispatchers.Main) {
-                            callback(false)
-                        }
-                    }
-                } else {
-                    handleResponseError(context, response)
-                    withContext(Dispatchers.Main) {
-                        callback(false)
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("TokenManager", "Error fetching user profile: ${e.message}", e)
-                clearTokens(context)
-                withContext(Dispatchers.Main) {
-                    callback(false)
-                }
-            }
-        }
-    }
-
-    private fun handleResponseError(context: Context, response: Response<UserDTO>) {
-        when (response.code()) {
-            401 -> Log.e("TokenManager", "Unauthorized: ${response.message()}")
-            403 -> Log.e("TokenManager", "Forbidden: ${response.message()}")
-            else -> Log.e("TokenManager", "Error fetching user profile: ${response.message()}")
-        }
-
-        val refreshToken = getRefreshToken(context)
-        clearTokens(context)
-
-        try {
-            if (refreshToken != null) {
-                if (tryRefreshToken(context)) {
-                    Log.e("TokenManager", "Refreshed token")
-                } else {
-                    Log.e("TokenManager", "Failed to refresh token")
-                }
-            } else {
-                Log.e("TokenManager", "No refresh token found")
-            }
-        } catch (e: Exception) {
-            Log.e("TokenManager", "Error refreshing token: ${e.message}", e)
         }
     }
 
@@ -99,21 +42,62 @@ class TokenManager {
         SecurePreferences.clearAll(context)
     }
 
-    fun tryRefreshToken(context: Context): Boolean {
-        val userService = RetrofitInstance.getUserApi(context)
-        val refreshToken = getRefreshToken(context) ?: return false
-        val response = userService.refreshToken("Bearer $refreshToken").execute()
-        if (response.isSuccessful) {
-            val tokenMap = response.body()
-            val newAccessToken = tokenMap?.get("accessToken")
-            val newRefreshToken = tokenMap?.get("refreshToken")
-            if (newAccessToken != null && newRefreshToken != null) {
-                saveTokens(context, newAccessToken, newRefreshToken)
-                return true
-            }
-        } else {
+    suspend fun tryRefreshToken(context: Context): Boolean {
+        if (refreshAttempts >= maxRefreshAttempts) {
+            Log.w("DEBUG TokenManager", "Max refresh attempts reached")
             return false
         }
-        return false
+
+        return mutex.withLock {
+            if (refreshTokenJob?.isActive == true) {
+                // If a refresh is already in progress, wait for its completion
+                refreshTokenJob!!.await()
+            } else {
+                // Start a new refresh
+                refreshTokenJob = CoroutineScope(Dispatchers.IO).async {
+                    refreshToken(context)
+                }
+                refreshTokenJob!!.await()
+            }
+        }
+    }
+
+    private suspend fun refreshToken(context: Context): Boolean {
+        val userService = RetrofitInstance.getUserApi(context)
+        val refreshToken = getRefreshToken(context) ?: return false
+
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                userService.refreshToken(refreshToken).execute()
+            }
+
+            if (response.isSuccessful) {
+                val tokenMap = response.body()
+                val newAccessToken = tokenMap?.get("accessToken")
+                val newRefreshToken = tokenMap?.get("refreshToken")
+                if (newAccessToken != null && newRefreshToken != null) {
+                    Log.d("DEBUG TokenManager", "New access token: $newAccessToken")
+                    Log.d("DEBUG TokenManager", "New refresh token: $newRefreshToken")
+                    saveTokens(context, newAccessToken, newRefreshToken)
+                    refreshAttempts = 0
+                    true
+                } else {
+                    handleRefreshFailure()
+                    false
+                }
+            } else {
+                handleRefreshFailure()
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("DEBUG TokenManager", "Error refreshing token", e)
+            handleRefreshFailure()
+            false
+        }
+    }
+
+    private suspend fun handleRefreshFailure() {
+        refreshAttempts++
+        delay(1000L * (2.0.pow(refreshAttempts.toDouble()).toLong())) // Exponential backoff
     }
 }

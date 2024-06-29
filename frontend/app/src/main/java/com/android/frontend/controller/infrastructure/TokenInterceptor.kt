@@ -6,59 +6,48 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.android.frontend.MainActivity
-import com.android.frontend.model.CurrentDataUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import okhttp3.Request
+import java.io.IOException
 
 class TokenInterceptor(private val context: Context) : Interceptor {
 
-    private val requestQueue = mutableListOf<Interceptor.Chain>()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
     private fun buildRequest(request: Request, token: String?): Request {
         return request.newBuilder()
-            .addHeader("Authorization", "Bearer $token")
+            .addHeader("Authorization", token ?: "")
             .build()
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = TokenManager.getInstance().getAccessToken(context)
-        val request = buildRequest(chain.request(), accessToken)
-        val response = chain.proceed(request)
+        var accessToken = TokenManager.getInstance().getAccessToken(context)
+        val originalRequest = chain.request()
 
-        Log.d("TokenInterceptor", "HTTP request: ${request.url}")
-        Log.d("TokenInterceptor", "HTTP response: ${response.code}")
+        var request = buildRequest(originalRequest, accessToken)
+        var response = chain.proceed(request)
 
-        return handleResponse(chain, response)
-    }
+        Log.d("DEBUG TokenInterceptor", "Access token: $accessToken")
+        Log.d("DEBUG TokenInterceptor", "HTTP request: ${request.url}")
+        Log.d("DEBUG TokenInterceptor", "HTTP response: ${response.code}")
 
-    private fun handleResponse(chain: Interceptor.Chain, response: Response): Response {
         if (response.code == 401 || response.code == 403) {
+            response.close()
+
             synchronized(this) {
-                if (!CurrentDataUtils.tokenExpired) {
-                    CurrentDataUtils.tokenExpired = true
-                    if (requestQueue.isEmpty())
-                        requestQueue.add(chain)
-                    coroutineScope.launch {
-                        if (TokenManager.getInstance().tryRefreshToken(context)) {
-                            if (requestQueue.isNotEmpty()) {
-                                requestQueue.forEach {
-                                    val newRequest = buildRequest(it.request(), TokenManager.getInstance().getAccessToken(context))
-                                    val newResponse = it.proceed(newRequest)
-                                    if (newResponse.code != 200) {
-                                        withContext(Dispatchers.Main) { logout() }
-                                        return@forEach
-                                    }
-                                }
-                                requestQueue.clear()
-                                CurrentDataUtils.tokenExpired = false
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) { logout() }
-                        }
+                val tokenManager = TokenManager.getInstance()
+                val newAccessToken = runBlocking {
+                    if (tokenManager.tryRefreshToken(context)) {
+                        tokenManager.getAccessToken(context)
+                    } else {
+                        null
                     }
+                }
+
+                if (newAccessToken != null) {
+                    request = buildRequest(originalRequest, newAccessToken)
+                    response = chain.proceed(request)
                 } else {
-                    requestQueue.add(chain)
+                    logout()
+                    throw IOException("Token refresh failed")
                 }
             }
         }
@@ -66,7 +55,6 @@ class TokenInterceptor(private val context: Context) : Interceptor {
     }
 
     private fun logout() {
-        requestQueue.clear()
         TokenManager.getInstance().clearTokens(context)
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -8,9 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.model.CurrentDataUtils
-import com.android.frontend.model.SecurePreferences
-import com.android.frontend.service.UserService
+import com.android.frontend.controller.infrastructure.TokenManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -74,7 +72,7 @@ class ChangePasswordViewModel : ViewModel() {
     }
 
     private suspend fun changePasswordSuspend(context: Context): Boolean = suspendCoroutine { continuation ->
-        val accTok = SecurePreferences.getAccessToken(context)
+        val accTok = TokenManager.getInstance().getAccessToken(context)
         if (accTok != null) {
             if (accTok.isNotEmpty()) {
                 val token = if (accTok.startsWith("Bearer ")) accTok else "Bearer $accTok"

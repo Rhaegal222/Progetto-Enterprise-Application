@@ -23,6 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.content.Intent
 import android.provider.Settings
+import com.android.frontend.controller.infrastructure.TokenManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -34,8 +35,8 @@ class GoogleAuthentication(private val context: Context) {
     private val credentialManager = CredentialManager.create(context)
     private val googleAuthService: GoogleAuthenticationService = RetrofitInstance.getGoogleAuthApi(context)
 
-    private var accessToken = SecurePreferences.getAccessToken(context) ?: ""
-    private var refreshToken = SecurePreferences.getRefreshToken(context) ?: ""
+    private var accessToken = TokenManager.getInstance().getAccessToken(context) ?: ""
+    private var refreshToken = TokenManager.getInstance().getRefreshToken(context) ?: ""
     private var provider = SecurePreferences.getProvider(context) ?: ""
 
     private fun getNonce(): String {
@@ -61,30 +62,30 @@ class GoogleAuthentication(private val context: Context) {
     }
 
     private fun promptAddGoogleAccount() {
-        Log.d("GoogleAuthentication", "Prompting user to add Google account")
+        Log.d("DEBUG GoogleAuthentication", "Prompting user to add Google account")
         val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
         intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
         context.startActivity(intent)
     }
 
     private fun userAlreadySignedIn(): Boolean {
-        Log.d("GoogleAuthentication", "Checking if user is already signed in")
+        Log.d("DEBUG GoogleAuthentication", "Checking if user is already signed in")
         return accessToken.isNotEmpty() && refreshToken.isNotEmpty() && provider == "google"
     }
 
     private fun createRequest(): GetCredentialRequest {
-        Log.d("GoogleAuthentication", "Creating request")
+        Log.d("DEBUG GoogleAuthentication", "Creating request")
         try {
             return if (userAlreadySignedIn()) {
-                Log.d("GoogleAuthentication", "User is already signed in")
+                Log.d("DEBUG GoogleAuthentication", "User is already signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getGoogleIdOption()).build()
             } else  {
-                Log.d("GoogleAuthentication", "User is not signed in")
+                Log.d("DEBUG GoogleAuthentication", "User is not signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
             }
         } catch (e: GetCredentialException) {
-            Log.e("GoogleAuthentication", "Error creating request: ${e.message}")
-            SecurePreferences.clearAll(context)
+            Log.e("DEBUG GoogleAuthentication", "Error creating request: ${e.message}")
+            TokenManager.getInstance().clearTokens(context)
             promptAddGoogleAccount()
             return GetCredentialRequest.Builder().build()
         }
@@ -107,12 +108,12 @@ class GoogleAuthentication(private val context: Context) {
     }
 
     private fun handleFailure(e: GetCredentialException) {
-        Log.e("GoogleAuthentication", "Error getting credential: ${e.message}")
-        SecurePreferences.clearAll(context)
+        Log.e("DEBUG GoogleAuthentication", "Error getting credential: ${e.message}")
+        TokenManager.getInstance().clearTokens(context)
     }
 
     private suspend fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
-        Log.d("GoogleAuthentication", "Sign-in flow completed")
+        Log.d("DEBUG GoogleAuthentication", "Sign-in flow completed")
 
         when (val credential = result.credential) {
 
@@ -123,15 +124,15 @@ class GoogleAuthentication(private val context: Context) {
                         val idToken = googleIdTokenCredential.idToken
                         sendGoogleIdTokenToBackend(idToken) { success ->
                             if (success != null) {
-                                Log.d("GoogleAuthentication", "Successfully sent google id token to backend")
+                                Log.d("DEBUG GoogleAuthentication", "Successfully sent google id token to backend")
                                 onResult(success, null)
                             } else {
-                                Log.e("GoogleAuthentication", "Failed to send google id token to backend: null response")
+                                Log.e("DEBUG GoogleAuthentication", "Failed to send google id token to backend: null response")
                                 onResult(null, context.getString(R.string.server_communication_error))
                             }
                         }
                     } catch (e: GoogleIdTokenParsingException) {
-                        Log.e("GoogleAuthentication", "Received an invalid google id token response", e)
+                        Log.e("DEBUG GoogleAuthentication", "Received an invalid google id token response", e)
                         withContext(Dispatchers.Main) {
                             onResult(null, context.getString(R.string.google_auth_communication_error))
                         }
@@ -144,7 +145,7 @@ class GoogleAuthentication(private val context: Context) {
             }
             else -> {
                 withContext(Dispatchers.Main) {
-                    Log.e("GoogleAuthentication", "Received an invalid credential type")
+                    Log.e("DEBUG GoogleAuthentication", "Received an invalid credential type")
                     onResult(null, context.getString(R.string.google_auth_communication_error))
                 }
             }
@@ -161,12 +162,12 @@ class GoogleAuthentication(private val context: Context) {
                     onResult(tokenMap)
                     refreshAccessToken()
                 } else {
-                    Log.e("GoogleAuthentication", "Failed to send google id token to backend: ${response.code()}")
+                    Log.e("DEBUG GoogleAuthentication", "Failed to send google id token to backend: ${response.code()}")
                     onResult(null)
                 }
             }
             override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                Log.e("GoogleAuthentication", "Failed to send google id token to backend", t)
+                Log.e("DEBUG GoogleAuthentication", "Failed to send google id token to backend", t)
                 onResult(null)
             }
         })
@@ -183,12 +184,12 @@ class GoogleAuthentication(private val context: Context) {
                         accessToken = tokenMap["accessToken"].toString()
                         refreshToken = tokenMap["refreshToken"].toString()
                     } else {
-                        Log.e("GoogleAuthentication", "Failed to refresh access token: ${response.code()}")
+                        Log.e("DEBUG GoogleAuthentication", "Failed to refresh access token: ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                    Log.e("GoogleAuthentication", "Failed to refresh access token", t)
+                    Log.e("DEBUG GoogleAuthentication", "Failed to refresh access token", t)
                 }
             })
         }

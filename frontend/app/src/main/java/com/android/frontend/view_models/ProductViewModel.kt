@@ -39,20 +39,20 @@ class ProductViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let { product ->
-                            Log.d("ProductViewModel", "Product details: $product")
+                            Log.d("DEBUG ProductViewModel", "Product details: $product")
                             productDetails.value = product
                         }
                     } else {
-                        Log.e("ProductViewModel",
+                        Log.e("DEBUG ProductViewModel",
                             "Failed to fetch products: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
                     if (t is SocketTimeoutException) {
-                        Log.e("ProductViewModel", "Timeout error fetching product details", t)
+                        Log.e("DEBUG ProductViewModel", "Timeout error fetching product details", t)
                     } else {
-                        Log.e("ProductViewModel", "Error fetching product details", t)
+                        Log.e("DEBUG ProductViewModel", "Error fetching product details", t)
                     }
                 }
             }
@@ -74,16 +74,16 @@ class ProductViewModel : ViewModel() {
                             products.value = productsList
                         }
                     } else {
-                        Log.e("ProductViewModel",
+                        Log.e("DEBUG ProductViewModel",
                             "Failed to fetch products: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
                     if (t is SocketTimeoutException) {
-                        Log.e("ProductViewModel", "Timeout error fetching products", t)
+                        Log.e("DEBUG ProductViewModel", "Timeout error fetching products", t)
                     } else {
-                        Log.e("ProductViewModel", "Error fetching products", t)
+                        Log.e("DEBUG ProductViewModel", "Error fetching products", t)
                     }
                 }
             }

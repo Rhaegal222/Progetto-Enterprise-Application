@@ -48,7 +48,7 @@ fun ProductDetailsPage(productViewModel: ProductViewModel) {
                 item {
                     if (productDetails != null) {
                         Text(text = "${productDetails.title}", style = MaterialTheme.typography.h4)
-                        Log.d("ProductDetailsPage", "Product details: $productDetails")
+                        Log.d("DEBUG ProductDetailsPage", "Product details: $productDetails")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     if (productDetails != null) {
