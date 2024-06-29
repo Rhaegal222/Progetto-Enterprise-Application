@@ -13,6 +13,16 @@ import retrofit2.Response
 import retrofit2.awaitResponse
 
 class TokenManager {
+    companion object {
+        private var instance: TokenManager? = null
+        fun getInstance(): TokenManager {
+            if (instance == null) {
+                instance = TokenManager()
+            }
+            return instance!!
+        }
+    }
+
     fun isLoggedIn(context: Context, callback: (Boolean) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             val userService = RetrofitInstance.getUserApi(context)
@@ -39,6 +49,7 @@ class TokenManager {
                 }
             } catch (e: Exception) {
                 Log.e("TokenManager", "Error fetching user profile: ${e.message}", e)
+                clearTokens(context)
                 withContext(Dispatchers.Main) {
                     callback(false)
                 }
@@ -47,8 +58,16 @@ class TokenManager {
     }
 
     private fun handleResponseError(context: Context, response: Response<UserDTO>) {
+
+        when (response.code()) {
+            401 -> Log.e("TokenManager", "Unauthorized: ${response.message()}")
+            403 -> Log.e("TokenManager", "Forbidden: ${response.message()}")
+            else -> Log.e("TokenManager", "Error fetching user profile: ${response.message()}")
+        }
+
         val refreshToken = getRefreshToken(context)
         clearTokens(context)
+
         try {
             if (refreshToken != null) {
                 if (tryRefreshToken(context)) {
@@ -61,12 +80,6 @@ class TokenManager {
             }
         } catch (e: Exception) {
             Log.e("TokenManager", "Error refreshing token: ${e.message}", e)
-        }
-
-        when (response.code()) {
-            401 -> Log.e("TokenManager", "Unauthorized: ${response.message()}")
-            403 -> Log.e("TokenManager", "Forbidden: ${response.message()}")
-            else -> Log.e("TokenManager", "Error fetching user profile: ${response.message()}")
         }
     }
 
@@ -92,9 +105,9 @@ class TokenManager {
         val refreshToken = getRefreshToken(context) ?: return false
         val response = userService.refreshToken("Bearer $refreshToken").execute()
         if (response.isSuccessful) {
-            val responseBody = response.body()
-            val newAccessToken = responseBody?.get("accessToken")
-            val newRefreshToken = responseBody?.get("refreshToken")
+            val tokenMap = response.body()
+            val newAccessToken = tokenMap?.get("accessToken")
+            val newRefreshToken = tokenMap?.get("refreshToken")
             if (newAccessToken != null && newRefreshToken != null) {
                 saveTokens(context, newAccessToken, newRefreshToken)
                 return true

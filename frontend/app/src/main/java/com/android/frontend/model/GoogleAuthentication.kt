@@ -23,6 +23,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.content.Intent
 import android.provider.Settings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class GoogleAuthentication(private val context: Context) {
 
@@ -88,17 +90,19 @@ class GoogleAuthentication(private val context: Context) {
         }
     }
 
-    suspend fun signIn(onResult: (Map<String, String>?, String?) -> Unit) {
+    suspend fun signIn(onResult: (Map<String, String>?) -> Unit) {
         request = createRequest()
         try {
             val result = credentialManager.getCredential(
                 context = context,
                 request = request,
             )
-            return handleSignIn(result, onResult)
+            handleSignIn(result, onResult)
         } catch (e: GetCredentialException) {
-            handleFailure(e)
-            return onResult(null, e.message)
+            withContext(Dispatchers.Main) {
+                handleFailure(e)
+                onResult(null)
+            }
         }
     }
 
@@ -107,63 +111,62 @@ class GoogleAuthentication(private val context: Context) {
         SecurePreferences.clearAll(context)
     }
 
-    private fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
+    private suspend fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?) -> Unit) {
         Log.d("GoogleAuthentication", "Sign-in flow completed")
 
         when (val credential = result.credential) {
-            is PublicKeyCredential -> {
-                val responseJson = credential.authenticationResponseJson
-            }
-
-            is PasswordCredential -> {
-                val username = credential.id
-                val password = credential.password
-            }
 
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {
                         val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                         val idToken = googleIdTokenCredential.idToken
-                        sendGoogleIdTokenToBackend(idToken) { success, errorMessage ->
+                        sendGoogleIdTokenToBackend(idToken) { success ->
                             if (success != null) {
                                 Log.d("GoogleAuthentication", "Successfully sent google id token to backend")
-                                onResult(success, null)
+                                onResult(success)
                             } else {
-                                Log.e("GoogleAuthentication", "Failed to send google id token to backend: $errorMessage")
-                                onResult(null, errorMessage)
+                                Log.e("GoogleAuthentication", "Failed to send google id token to backend: null response")
+                                onResult(null)
                             }
                         }
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e("GoogleAuthentication", "Received an invalid google id token response", e)
+                        withContext(Dispatchers.Main) {
+                            onResult(null)
+                        }
                     }
                 } else {
-                    Log.e("GoogleAuthentication", "Unexpected type of credential")
+                    withContext(Dispatchers.Main) {
+                        onResult(null)
+                    }
                 }
             }
-
             else -> {
-                Log.e("GoogleAuthentication", "Unexpected type of credential")
+                withContext(Dispatchers.Main) {
+                    onResult(null)
+                }
             }
         }
     }
 
-    private fun sendGoogleIdTokenToBackend(idToken: String, onResult: (Map<String, String>?, String?) -> Unit) {
+
+    private fun sendGoogleIdTokenToBackend(idToken: String, onResult: (Map<String, String>?) -> Unit) {
         val call = googleAuthService.googleAuth(idToken)
         call.enqueue(object : Callback<Map<String, String>> {
             override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                 if (response.isSuccessful) {
                     val tokenMap = response.body()!!
-                    onResult(tokenMap, null)
+                    onResult(tokenMap)
                     refreshAccessToken()
                 } else {
-                    val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
-                    onResult(null, errorMessage)
+                    Log.e("GoogleAuthentication", "Failed to send google id token to backend: ${response.code()}")
+                    onResult(null)
                 }
             }
             override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                val failureMessage = t.message ?: "Errore sconosciuto"
-                onResult(null, failureMessage)
+                Log.e("GoogleAuthentication", "Failed to send google id token to backend", t)
+                onResult(null)
             }
         })
     }

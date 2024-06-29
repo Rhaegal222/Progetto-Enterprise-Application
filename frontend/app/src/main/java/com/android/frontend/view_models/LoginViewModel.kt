@@ -8,11 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.controller.infrastructure.TokenManager
 import com.android.frontend.model.GoogleAuthentication
 import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,8 +23,8 @@ class LoginViewModel : ViewModel() {
 
     var username by mutableStateOf("")
     var password by mutableStateOf("")
-    var accessToken by mutableStateOf("")
-    var refreshToken by mutableStateOf("")
+    private var accessToken by mutableStateOf("")
+    private var refreshToken by mutableStateOf("")
 
     private fun validateForm(): Boolean {
         return username.isNotEmpty() && password.isNotEmpty()
@@ -36,14 +38,17 @@ class LoginViewModel : ViewModel() {
                 call.enqueue(object : Callback<Map<String, String>> {
                     override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                         if (response.isSuccessful) {
-                            val tokenMap = response.body()!!
-                            accessToken = tokenMap["accessToken"].toString()
-                            refreshToken = tokenMap["refreshToken"].toString()
-                            SecurePreferences.saveAccessToken(context, accessToken)
-                            SecurePreferences.saveRefreshToken(context, refreshToken)
-                            SecurePreferences.saveProvider(context, "local")
-                            onResult(true, null)
-                            refreshAccessToken(context)
+                            val tokenMap = response.body()
+                            val accessToken = tokenMap?.get("accessToken")
+                            val refreshToken = tokenMap?.get("refreshToken")
+                            if (accessToken != null && refreshToken != null) {
+                                TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
+                                SecurePreferences.saveProvider(context, "local")
+                                onResult(true, null)
+                            } else {
+                                val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
+                                onResult(false, errorMessage)
+                            }
                         } else {
                             val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
                             onResult(false, errorMessage)
@@ -61,46 +66,24 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun refreshAccessToken(context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val storedRefreshToken = SecurePreferences.getRefreshToken(context)
-            if (!storedRefreshToken.isNullOrEmpty()) {
-                val token = if (storedRefreshToken.startsWith("Bearer ")) storedRefreshToken else "Bearer $storedRefreshToken"
-                val userService: UserService = RetrofitInstance.getUserApi(context)
-                val call = userService.refreshToken(token)
-                call.enqueue(object : Callback<Map<String, String>> {
-                    override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
-                        if (response.isSuccessful) {
-                            val tokenMap = response.body()!!
-                            accessToken = tokenMap["accessToken"].toString()
-                            refreshToken = tokenMap["refreshToken"].toString()
-                            SecurePreferences.saveAccessToken(context, accessToken)
-                            SecurePreferences.saveRefreshToken(context, refreshToken)
-                        } else {
-                            Log.e("LoginViewModel", "Failed to refresh access token: ${response.code()}")
-                        }
-                    }
-                    override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                        Log.e("LoginViewModel", "Failed to refresh access token", t)
-                    }
-                })
-            }
-        }
-    }
-
-    fun signInWithGoogle(context: Context, onResult: (Boolean, String?) -> Unit) {
+    fun signInWithGoogle(context: Context, onResult: (Boolean) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn { success, error ->
-                if (success != null) {
-                    accessToken = success["accessToken"].toString()
-                    refreshToken = success["refreshToken"].toString()
-                    SecurePreferences.saveAccessToken(context, accessToken)
-                    SecurePreferences.saveRefreshToken(context, refreshToken)
-                    SecurePreferences.saveProvider(context, "google")
-                    onResult(true, null)
-                } else {
-                    onResult(false, error)
+            googleAuth.signIn { success ->
+                viewModelScope.launch(Dispatchers.Main) {
+                    if (success != null) {
+                        val accessToken = success["accessToken"]
+                        val refreshToken = success["refreshToken"]
+                        if (accessToken != null && refreshToken != null) {
+                            TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
+                            SecurePreferences.saveProvider(context, "google")
+                            onResult(true)
+                        } else {
+                            onResult(false)
+                        }
+                    } else {
+                        onResult(false)
+                    }
                 }
             }
         }

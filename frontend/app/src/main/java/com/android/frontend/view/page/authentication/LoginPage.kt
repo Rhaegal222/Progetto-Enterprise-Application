@@ -206,12 +206,12 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    loginViewModel.signInWithGoogle(context) { success, message ->
+                    loginViewModel.signInWithGoogle(context) { success ->
                         if (success) {
                             val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
                         } else {
-                            // Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, loginWithGoogleErrorString, Toast.LENGTH_SHORT).show()
                         }
                     }
                 },
