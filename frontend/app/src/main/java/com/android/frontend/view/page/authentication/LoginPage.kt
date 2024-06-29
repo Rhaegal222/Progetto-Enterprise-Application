@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -59,7 +57,6 @@ fun LoginPage(navController: NavHostController) {
             height = LocalConfiguration.current.screenHeightDp.dp
         )
     }
-
 
     val loginErrorString = stringResource(id = R.string.login_failed)
 
@@ -97,6 +94,8 @@ fun LoginPage(navController: NavHostController) {
                     .height(size.height * 0.25f)
                     .fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = loginViewModel.username,
@@ -194,6 +193,8 @@ fun LoginPage(navController: NavHostController) {
                     text = stringResource(id = R.string.login).uppercase()
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(id = R.string.or).uppercase(),

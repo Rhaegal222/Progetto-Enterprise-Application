@@ -254,8 +254,8 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public void rejectToken(String authorizationHeader) throws ParseException {
-        String token = authorizationHeader.substring("Bearer ".length());
+    public void rejectToken(HttpServletRequest request) throws ParseException {
+        String token = tokenStore.getToken(request);
         tokenStore.rejectToken(token);
     }
 

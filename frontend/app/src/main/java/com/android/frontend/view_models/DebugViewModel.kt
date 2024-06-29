@@ -6,26 +6,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.model.SecurePreferences
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Callback
 
 class DebugViewModel : ViewModel() {
     fun rejectToken(context: Context) {
         viewModelScope.launch {
             val userService = RetrofitInstance.getUserApi(context)
-            val accessToken = SecurePreferences.getRefreshToken(context)
+            val accessToken = SecurePreferences.getAccessToken(context)
             val call = userService.rejectToken("Bearer $accessToken")
-            call.enqueue(object : Callback<Void> {
-                override fun onResponse(call: retrofit2.Call<Void>, response: retrofit2.Response<Void>) {
-                    if (response.isSuccessful) {
-                        // SecurePreferences.clearAll(context)
-                    }
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    call.execute()
                 }
-
-                override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
-                    // Do nothing
+                if (response.isSuccessful) {
+                    Log.d("DebugViewModel", "Token rejected")
+                } else {
+                    Log.d("DebugViewModel", "Token rejection failed")
                 }
-            })
+            } catch (e: Exception) {
+                Log.e("DebugViewModel", "Error rejecting token", e)
+            }
         }
     }
 

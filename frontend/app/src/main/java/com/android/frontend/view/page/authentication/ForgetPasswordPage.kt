@@ -1,39 +1,17 @@
 package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,18 +34,28 @@ import retrofit2.Response
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgetPasswordPage(navController: NavHostController) {
-
     val context = LocalContext.current
 
-    val success = rememberSaveable { mutableStateOf(false) }
-    val email = rememberSaveable { mutableStateOf("") }
-    val showToast = remember { mutableStateOf(false) }
-
-    val userService: UserService = RetrofitInstance.getUserApi(context)
-
+    val email = remember { mutableStateOf("") }
+    val showDialog = remember { mutableStateOf(false) }
     val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
     val textColor = MaterialTheme.colorScheme.onSurface
     val iconColor = MaterialTheme.colorScheme.onSurface
+
+    val userService: UserService = RetrofitInstance.getUserApi(context)
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            confirmButton = {
+                TextButton(onClick = { showDialog.value = false }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Email Inviata") },
+            text = { Text("Controlla la tua email per recuperare la password.") }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -98,7 +86,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
                 text = stringResource(id = R.string.enter_email),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = textColor
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -107,7 +95,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
                 text = stringResource(id = R.string.recover_password_text),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Justify,
-                color = MaterialTheme.colorScheme.onSurface
+                color = textColor
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -130,7 +118,9 @@ fun ForgetPasswordPage(navController: NavHostController) {
 
             Button(
                 onClick = {
-                    sendEmail(userService, email.value, success, showToast)
+                    sendEmail(userService, email.value) {
+                        showDialog.value = true
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -140,32 +130,25 @@ fun ForgetPasswordPage(navController: NavHostController) {
             ) {
                 Text(
                     text = stringResource(id = R.string.send_email).uppercase(),
-                    color = textColor,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
     }
 }
 
-fun sendEmail(userService: UserService, email: String, success: MutableState<Boolean>, showToast: MutableState<Boolean>) {
+fun sendEmail(userService: UserService, email: String, onSuccess: () -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
-        try {
-            userService.resetPassword(email).enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        success.value = true
-                    } else {
-                        showToast.value = true
-                    }
+        userService.resetPassword(email).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    onSuccess()
                 }
+            }
 
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    showToast.value = true
-                }
-            })
-        } catch (e: Exception) {
-            showToast.value = true
-        }
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                // Gestisci l'errore come preferisci
+            }
+        })
     }
 }

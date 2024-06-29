@@ -155,7 +155,7 @@ public class UserController {
     @GetMapping("/rejectToken")
     public ResponseEntity<Void> rejectToken(HttpServletRequest request) {
         try {
-            userService.rejectToken(request.getHeader(AUTHORIZATION));
+            userService.rejectToken(request);
             return ResponseEntity.ok().build();
         } catch (ParseException e) {
             return ResponseEntity.badRequest().body(null);
