@@ -86,7 +86,7 @@ fun SecurityItem(navController: NavHostController, icon: ImageVector, textResId:
         ) {
             Icon(
                 icon,
-                contentDescription = stringResource(id = textResId),
+                contentDescription = null,
                 modifier = Modifier.size(40.dp),
                 tint = colors.onBackground
             )

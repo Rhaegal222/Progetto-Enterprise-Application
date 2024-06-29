@@ -42,5 +42,6 @@ fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
         composable(Navigation.CountryLanguagePage.route) { CountryLanguagePage(navController) }
         composable(Navigation.ShippingAddressesPage.route) { ShippingAddressesPage(navController)  }
         composable(Navigation.AddAddressPage.route) { AddAddressPage(navController)  }
+        composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
     }
 }

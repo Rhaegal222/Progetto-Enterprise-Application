@@ -6,35 +6,59 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.android.frontend.MainActivity
-import com.android.frontend.RetrofitInstance
-import com.android.frontend.model.SecurePreferences
-import com.android.frontend.model.SecurePreferences.getRefreshToken
+import com.android.frontend.model.CurrentDataUtils
+import kotlinx.coroutines.*
+import okhttp3.Request
 
 class TokenInterceptor(private val context: Context) : Interceptor {
 
-    private val userService = RetrofitInstance.getSimpleUserApi()
+    private val requestQueue = mutableListOf<Interceptor.Chain>()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private fun buildRequest(request: Request, token: String?): Request {
+        return request.newBuilder()
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+    }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        Log.d("TokenInterceptor", "Intercepting request...")
-        val accessToken = SecurePreferences.getAccessToken(context)
-        val request = chain.request().newBuilder()
-            .addHeader("Authorization", "Bearer $accessToken")
-            .build()
-
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
+        val request = buildRequest(chain.request(), accessToken)
         val response = chain.proceed(request)
-        Log.d("TokenInterceptor", "Response code: ${response.code}")
+
+        Log.d("TokenInterceptor", "HTTP request: ${request.url}")
+        Log.d("TokenInterceptor", "HTTP response: ${response.code}")
+
+        return handleResponse(chain, response)
+    }
+
+    private fun handleResponse(chain: Interceptor.Chain, response: Response): Response {
         if (response.code == 401 || response.code == 403) {
             synchronized(this) {
-                val newAccessToken = refreshToken()
-
-                if (newAccessToken != null) {
-                    val newRequest = chain.request().newBuilder()
-                        .removeHeader("Authorization")
-                        .addHeader("Authorization", "Bearer $newAccessToken")
-                        .build()
-                    return chain.proceed(newRequest)
+                if (!CurrentDataUtils.tokenExpired) {
+                    CurrentDataUtils.tokenExpired = true
+                    if (requestQueue.isEmpty())
+                        requestQueue.add(chain)
+                    coroutineScope.launch {
+                        if (TokenManager.getInstance().tryRefreshToken(context)) {
+                            if (requestQueue.isNotEmpty()) {
+                                requestQueue.forEach {
+                                    val newRequest = buildRequest(it.request(), TokenManager.getInstance().getAccessToken(context))
+                                    val newResponse = it.proceed(newRequest)
+                                    if (newResponse.code != 200) {
+                                        withContext(Dispatchers.Main) { logout() }
+                                        return@forEach
+                                    }
+                                }
+                                requestQueue.clear()
+                                CurrentDataUtils.tokenExpired = false
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) { logout() }
+                        }
+                    }
                 } else {
-                    return response
+                    requestQueue.add(chain)
                 }
             }
         }
@@ -42,37 +66,11 @@ class TokenInterceptor(private val context: Context) : Interceptor {
     }
 
     private fun logout() {
-        SecurePreferences.clearAll(context)
-        val intent = Intent(context, MainActivity::class.java)
-        context.startActivity(intent)
-    }
-
-    private fun refreshToken(): String? {
-        Log.d("TokenInterceptor", "Refreshing token...")
-        val refreshToken = getRefreshToken(context) ?: return null
-
-        val response = userService.refreshToken("Bearer $refreshToken").execute()
-
-        return if (response.isSuccessful) {
-            val responseBody = response.body()
-            val newAccessToken = responseBody?.get("accessToken")
-            val newRefreshToken = responseBody?.get("refreshToken")
-            if (newAccessToken != null && newRefreshToken != null) {
-                Log.d("TokenInterceptor", "New access token: $newAccessToken\nNew refresh token: $newRefreshToken")
-                saveTokens(newAccessToken, newRefreshToken)
-                newAccessToken
-            } else {
-                logout()
-                null
-            }
-        } else {
-            logout()
-            null
+        requestQueue.clear()
+        TokenManager.getInstance().clearTokens(context)
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-    }
-
-    private fun saveTokens(accessToken: String, refreshToken: String) {
-        SecurePreferences.saveAccessToken(context, accessToken)
-        SecurePreferences.saveRefreshToken(context, refreshToken)
+        context.startActivity(intent)
     }
 }

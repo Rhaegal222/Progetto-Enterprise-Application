@@ -58,7 +58,6 @@ class TokenManager {
     }
 
     private fun handleResponseError(context: Context, response: Response<UserDTO>) {
-
         when (response.code()) {
             401 -> Log.e("TokenManager", "Unauthorized: ${response.message()}")
             403 -> Log.e("TokenManager", "Forbidden: ${response.message()}")

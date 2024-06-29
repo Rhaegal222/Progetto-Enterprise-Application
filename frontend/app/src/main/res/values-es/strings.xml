@@ -85,4 +85,9 @@
     <string name="add_payment_method">Agregar un método de pago</string>
     <string name="set_as_default">Establecer como predeterminado</string>
     <string name="apply">Aplicar</string>
+    <string name="server_communication_error">Error de comunicación con el servidor. Por favor intenta de nuevo más tarde.</string>
+    <string name="google_auth_communication_error">Autenticación con Google fallida. Error de comunicación con los servidores de Google. Por favor intenta de nuevo más tarde.</string>
+    <string name="debug">Debug</string>
+    <string name="reject_access_token">Reject access token</string>
+    <string name="show_tokens">Show tokens</string>
 </resources>

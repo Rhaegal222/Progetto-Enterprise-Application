@@ -16,6 +16,7 @@ import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Settings
@@ -36,6 +37,7 @@ fun OtherMenu(navController: NavHostController) {
         MenuItem(navController, Icons.Default.ManageAccounts, R.string.account)
         MenuItem(navController, Icons.Default.Info, R.string.about)
         MenuItem(navController, Icons.Default.Settings, R.string.settings)
+        MenuItem(navController, Icons.Default.BugReport, R.string.debug)
         MenuItem(navController, Icons.AutoMirrored.Filled.Logout, R.string.logout)
     }
 }
@@ -58,6 +60,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     }
+                    R.string.debug -> navController.navigate(Navigation.DebugMenu.route)
                 }
             }
     ) {
@@ -65,7 +68,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp), tint = colors.onSurface)
+            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp), tint = colors.onSurface)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),

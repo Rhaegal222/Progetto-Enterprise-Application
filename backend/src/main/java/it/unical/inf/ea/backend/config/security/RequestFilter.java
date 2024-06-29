@@ -52,7 +52,7 @@ public class RequestFilter extends OncePerRequestFilter {
         }
 
         try {
-            if("refresh".equals(tokenStore.getClaim(token)) && !request.getRequestURI().equals("/api/v1/users/refresh-token")) {
+            if("refresh".equals(tokenStore.getClaim(token)) && !request.getRequestURI().equals("/api/v1/users/refreshToken")) {
                 token = "invalid";
                 response.addHeader("invalid_token", "true");
             }

@@ -39,15 +39,16 @@ import com.google.accompanist.pager.rememberPagerState
 fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: PaymentViewModel = viewModel()) {
 
     val context = LocalContext.current
-
     val payments by paymentViewModel.paymentMethodsLiveData.observeAsState()
-    paymentViewModel.getAllPaymentMethods(context)
+
+    // Chiamare getAllPaymentMethods solo una volta quando la composable viene inizializzata
+    LaunchedEffect(Unit) {
+        paymentViewModel.getAllPaymentMethods(context)
+    }
 
     val pagerState = rememberPagerState()
-
     var selectedPaymentMethod by remember { mutableStateOf<PaymentMethodDTO?>(null) }
     var isDefaultPaymentMethod by remember { mutableStateOf(false) }
-
     val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(payments) {
@@ -66,7 +67,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
         }
     }
 
-    Scaffold (
+    Scaffold(
         containerColor = colors.background,
         topBar = {
             TopAppBar(
@@ -92,7 +93,6 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                 ),
                 modifier = Modifier
                     .padding(0.dp)
-
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Payment Method",
                     modifier = Modifier
@@ -100,13 +100,11 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                         .height(40.dp)
                         .padding(0.dp)
                 )
-
                 Spacer(modifier = Modifier.width(8.dp))
-
                 Text(text = stringResource(id = R.string.add_payment_method))
             }
         }
-    )  { innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,17 +113,13 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
             Spacer(modifier = Modifier.height(30.dp))
-
             if (!payments.isNullOrEmpty()) {
-
                 HorizontalPager(
                     state = pagerState,
                     count = payments!!.size,
                     contentPadding = PaddingValues(horizontal = 50.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 ) { page ->
                     Box(
                         modifier = Modifier
@@ -137,7 +131,6 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                         })
                     }
                 }
-
                 Row(
                     modifier = Modifier
                         .padding(16.dp)
@@ -145,7 +138,8 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(checked = selectedPaymentMethod?.isDefault ?: false,
+                    Checkbox(
+                        checked = selectedPaymentMethod?.isDefault ?: false,
                         onCheckedChange = {
                             selectedPaymentMethod?.let {
                                 paymentViewModel.setDefaultPayment(context, it.id, pagerState)
@@ -156,7 +150,6 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                             uncheckedColor = colors.onSurface
                         )
                     )
-
                     Text(
                         text = stringResource(id = R.string.set_as_default),
                         color = colors.onBackground,
@@ -167,3 +160,4 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
         }
     }
 }
+

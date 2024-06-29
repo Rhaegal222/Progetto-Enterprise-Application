@@ -90,7 +90,7 @@ class GoogleAuthentication(private val context: Context) {
         }
     }
 
-    suspend fun signIn(onResult: (Map<String, String>?) -> Unit) {
+    suspend fun signIn(onResult: (Map<String, String>?, String?) -> Unit) {
         request = createRequest()
         try {
             val result = credentialManager.getCredential(
@@ -101,7 +101,7 @@ class GoogleAuthentication(private val context: Context) {
         } catch (e: GetCredentialException) {
             withContext(Dispatchers.Main) {
                 handleFailure(e)
-                onResult(null)
+                onResult(null, e.message)
             }
         }
     }
@@ -111,7 +111,7 @@ class GoogleAuthentication(private val context: Context) {
         SecurePreferences.clearAll(context)
     }
 
-    private suspend fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?) -> Unit) {
+    private suspend fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
         Log.d("GoogleAuthentication", "Sign-in flow completed")
 
         when (val credential = result.credential) {
@@ -124,27 +124,28 @@ class GoogleAuthentication(private val context: Context) {
                         sendGoogleIdTokenToBackend(idToken) { success ->
                             if (success != null) {
                                 Log.d("GoogleAuthentication", "Successfully sent google id token to backend")
-                                onResult(success)
+                                onResult(success, null)
                             } else {
                                 Log.e("GoogleAuthentication", "Failed to send google id token to backend: null response")
-                                onResult(null)
+                                onResult(null, context.getString(R.string.server_communication_error))
                             }
                         }
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e("GoogleAuthentication", "Received an invalid google id token response", e)
                         withContext(Dispatchers.Main) {
-                            onResult(null)
+                            onResult(null, context.getString(R.string.google_auth_communication_error))
                         }
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        onResult(null)
+                        onResult(null, context.getString(R.string.google_auth_communication_error))
                     }
                 }
             }
             else -> {
                 withContext(Dispatchers.Main) {
-                    onResult(null)
+                    Log.e("GoogleAuthentication", "Received an invalid credential type")
+                    onResult(null, context.getString(R.string.google_auth_communication_error))
                 }
             }
         }

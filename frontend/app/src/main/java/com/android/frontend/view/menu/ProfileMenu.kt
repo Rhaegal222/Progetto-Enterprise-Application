@@ -82,7 +82,7 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = stringResource(id = textResId), modifier = Modifier.size(40.dp), tint = colors.onSurface)
+            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp), tint = colors.onSurface)
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
