@@ -124,11 +124,13 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
                     state = pagerState,
                     count = payments!!.size,
                     contentPadding = PaddingValues(horizontal = 50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) { page ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 0.dp)
+                            .padding(horizontal = 10.dp)
                     ) {
                         PaymentCard(payment = payments!![page], onRemove = {
                             paymentViewModel.deletePayment(context, payments!![page].id)

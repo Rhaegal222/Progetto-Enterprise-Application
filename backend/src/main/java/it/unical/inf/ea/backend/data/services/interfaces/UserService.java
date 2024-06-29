@@ -8,6 +8,7 @@ import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
@@ -43,7 +44,7 @@ public interface UserService {
 
     void rejectToken(String authorizationHeader) throws ParseException;
 
-    Map<String, String> refreshToken(String authorizationHeader, HttpServletResponse response) throws IOException;
+    Map<String, String> refreshToken(String authorizationHeader, HttpServletResponse response) throws IOException, ParseException, JOSEException;
 
     void createUser(String lastname, String firstname, String email, String password) throws MessagingException;
 
@@ -65,6 +66,6 @@ public interface UserService {
 
     void resetPassword(String email) throws MessagingException;
 
-    UserDTO findMyProfile();
+    UserDTO findMyProfile() throws EntityNotFoundException;
 
 }

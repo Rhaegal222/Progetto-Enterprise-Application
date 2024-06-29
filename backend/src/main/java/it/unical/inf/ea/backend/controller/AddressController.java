@@ -24,40 +24,59 @@ public class AddressController {
     private final AddressService addressService;
 
     @PostMapping(path="/addShippingAddress")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AddressDTO> addShippingAddress(@Valid @RequestBody AddressCreateDTO addressCreateDTO) throws IllegalAccessException {
-        return ResponseEntity.ok(addressService.createAddress(addressCreateDTO));
+    public ResponseEntity<Void> addShippingAddress(@Valid @RequestBody AddressCreateDTO addressCreateDTO) throws IllegalAccessException {
+        try {
+            addressService.createAddress(addressCreateDTO);
+            return ResponseEntity.ok().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping(path = "/setDefaultShippingAddress/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> setDefaultShippingAddress(@PathVariable("id") String id) throws IllegalAccessException {
-        addressService.setDefaultAddress(id);
-        return ResponseEntity.noContent().build();
+        try {
+            addressService.setDefaultAddress(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping(path = "/updateShippingAddress/{id}")
     public ResponseEntity<AddressDTO> updateShippingAddress(@PathVariable("id") String id, @Valid @RequestBody AddressDTO addressDTO) throws IllegalAccessException {
-        return ResponseEntity.ok(addressService.updateAddress(id, addressDTO));
+        try {
+            return ResponseEntity.ok(addressService.updateAddress(id, addressDTO));
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping(path = "/deleteShippingAddress/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteShippingAddress(@PathVariable("id") String id) throws IllegalAccessException {
-        addressService.deleteAddress(id);
-        return ResponseEntity.noContent().build();
+        try {
+            addressService.deleteAddress(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(path = "/getShippingAddress/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AddressDTO> getShippingAddress(@PathVariable("id") String id) throws IllegalAccessException {
-        return ResponseEntity.ok(addressService.getAddressById(id));
+        try {
+            return ResponseEntity.ok(addressService.getAddressById(id));
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(path = "/getAllShippingAddresses")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getAllShippingAddresses() {
-        return ResponseEntity.ok(addressService.getAllAddresses());
+        try {
+            return ResponseEntity.ok(addressService.getAllAddresses());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
 }

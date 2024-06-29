@@ -3,7 +3,6 @@ package it.unical.inf.ea.backend.config.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.nimbusds.jose.JOSEException;
 import it.unical.inf.ea.backend.data.dao.InvalidTokensDao;
 import it.unical.inf.ea.backend.data.services.implementations.CustomUserDetailsService;
 import it.unical.inf.ea.backend.exception.TokenExpiredException;
@@ -25,7 +24,6 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 
 @Component
 @RequiredArgsConstructor
@@ -49,7 +47,18 @@ public class RequestFilter extends OncePerRequestFilter {
         String token = tokenStore.getToken(request);
 
         if(!token.equals("invalid") && invalidTokensDao.findByToken(token).isPresent()) {
-            throw new ServletException("Invalid token");
+            token = "invalid";
+            response.addHeader("invalid_token", "true");
+        }
+
+        try {
+            if("refresh".equals(tokenStore.getClaim(token)) && !request.getRequestURI().equals("/api/v1/users/refresh-token")) {
+                token = "invalid";
+                response.addHeader("invalid_token", "true");
+            }
+        } catch (Exception e) {
+            token = "invalid";
+            response.addHeader("invalid_token", "true");
         }
 
         if(!"invalid".equals(token)) {
@@ -61,10 +70,10 @@ public class RequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 loggedUser = user.getUsername();
             } catch (Exception e) {
-                if (e  instanceof TokenExpiredException)
+                if (e instanceof TokenExpiredException)
                     response.addHeader("token_expired", "true");
                 else
-                    e.printStackTrace();
+                    response.addHeader("invalid_token", "true");
             }
         }
 

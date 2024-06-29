@@ -23,10 +23,6 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
     val viewModel: HomeViewModel = viewModel()
     val searchQuery = viewModel.searchQuery.collectAsState().value
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-
-        homeViewModel.fetchUserProfile(context)
-    }
 
     Column(
         modifier = Modifier

@@ -19,7 +19,7 @@ class TokenInterceptor(private val context: Context) : Interceptor {
 
         val response = chain.proceed(request)
 
-        if (response.code == 401) {
+        if (response.code == 401 || response.code == 403) {
             synchronized(this) {
                 val newAccessToken = refreshToken()
 

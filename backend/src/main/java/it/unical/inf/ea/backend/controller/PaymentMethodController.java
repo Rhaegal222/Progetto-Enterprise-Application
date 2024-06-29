@@ -1,16 +1,12 @@
 package it.unical.inf.ea.backend.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.services.interfaces.PaymentMethodService;
 import it.unical.inf.ea.backend.dto.PaymentMethodDTO;
-import it.unical.inf.ea.backend.dto.basics.PaymentMethodBasicDTO;
 import it.unical.inf.ea.backend.dto.creation.PaymentMethodCreateDTO;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,40 +24,61 @@ public class PaymentMethodController {
     private final PaymentMethodService paymentMethodService;
 
     @PostMapping(path="/addPaymentMethod")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PaymentMethodDTO> addPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) throws IllegalAccessException {
-        return ResponseEntity.ok(paymentMethodService.createPaymentMethod(paymentMethodCreateDTO));
+    public ResponseEntity<?> addPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) {
+        try {
+            PaymentMethodDTO createdPaymentMethod = paymentMethodService.createPaymentMethod(paymentMethodCreateDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPaymentMethod);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @PutMapping(path = "/setDefaultPaymentMethod/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PaymentMethodDTO> setDefaultPaymentMethod(@PathVariable("id") String id) throws IllegalAccessException {
-        paymentMethodService.setDefaultPaymentMethod(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> setDefaultPaymentMethod(@PathVariable("id") String id) {
+        try {
+            paymentMethodService.setDefaultPaymentMethod(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @PutMapping(path = "/updatePaymentMethod/{id}")
-    public ResponseEntity<PaymentMethodDTO> updatePaymentMethod(@PathVariable("id") String id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) throws IllegalAccessException {
-        return ResponseEntity.ok(paymentMethodService.updatePaymentMethod(id, paymentMethodDTO));
+    public ResponseEntity<?> updatePaymentMethod(@PathVariable("id") String id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) {
+        try {
+            PaymentMethodDTO updatedPaymentMethod = paymentMethodService.updatePaymentMethod(id, paymentMethodDTO);
+            return ResponseEntity.ok(updatedPaymentMethod);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @DeleteMapping(path = "/deletePaymentMethod/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deletePaymentMethod(@PathVariable("id") String id) throws IllegalAccessException {
-        paymentMethodService.deletePaymentMethod(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deletePaymentMethod(@PathVariable("id") String id) {
+        try {
+            paymentMethodService.deletePaymentMethod(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @GetMapping(path = "/getPaymentMethod/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PaymentMethodDTO> getPaymentMethod(@PathVariable("id") String id) throws IllegalAccessException {
-        return ResponseEntity.ok(paymentMethodService.getPaymentMethodById(id));
+    public ResponseEntity<?> getPaymentMethod(@PathVariable("id") String id) {
+        try {
+            PaymentMethodDTO paymentMethod = paymentMethodService.getPaymentMethodById(id);
+            return ResponseEntity.ok(paymentMethod);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @GetMapping(path = "/getAllPaymentMethods")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getAllPaymentMethods() {
-        return ResponseEntity.ok(paymentMethodService.getAllPaymentMethods());
+        try {
+            return ResponseEntity.ok(paymentMethodService.getAllPaymentMethods());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
-
 }

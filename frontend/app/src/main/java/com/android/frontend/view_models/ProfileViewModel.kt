@@ -55,19 +55,21 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     private suspend fun fetchUserProfile(context: Context) {
         withContext(Dispatchers.IO) {
-            val accessToken = SecurePreferences.getAccessToken(context)
-            val userService = RetrofitInstance.getUserApi(context)
-            val call = userService.me("Bearer $accessToken")
-            val response = call.execute()
-            if (response.isSuccessful) {
-                response.body()?.let { fetchedUser ->
-                    Log.d("ProfileViewModel", "User profile response: ${response.body()}")
-                    _user.postValue(fetchedUser)
-                } ?: run {
-                    Log.d("ProfileViewModel", "User profile response body is null")
+            try {
+                val accessToken = SecurePreferences.getAccessToken(context)
+                val userService = RetrofitInstance.getUserApi(context)
+                val call = userService.me("Bearer $accessToken")
+                val response = call.execute()
+
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _user.postValue(it)
+                    }
+                } else {
+                    Log.e("ProfileViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
                 }
-            } else {
-                Log.e("ProfileViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Error fetching user profile", e)
             }
         }
     }

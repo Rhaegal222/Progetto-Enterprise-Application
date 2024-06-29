@@ -46,7 +46,7 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
                         // Colora il banner di nero
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(80.dp)
+                            .height(60.dp)
                             .background(Color.Black)
                     )
 

@@ -62,10 +62,6 @@ public class AppSecurityConfig {
                                 "/api/v1/products/getProductsByCategory/", "/api/v1/products/getAllProducts",
                                 "/api/v1/products/getProductsByBrand/","/api/v1/products/getProductsByPriceRange/").authenticated()
 
-                        // Richieste dove non è richiesta l'autenticazione
-                        .requestMatchers(HttpMethod.POST, "api/v1/user/register", "api/v1/users/authenticate").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}", "/api/v1/users/find-by-username").permitAll()
-
                         // PAYMENT METHOD
                         .requestMatchers(HttpMethod.POST, "/api/v1/payment-methods/addPaymentMethod").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/updatePaymentMethod/{id}").authenticated()
@@ -78,35 +74,19 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/shipping-addresses/deleteShippingAddress/{id}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/shipping-addresses/getShippingAddress/{id}", "/api/v1/shipping-addresses/getAllShippingAddresses").authenticated()
 
+                        // USER
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/logout", "api/v1/users/changePassword").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/user/getUserById", "/api/v1/user/getUserByUsername", "/api/v1/user/getUserByEmail",
+                                "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken").authenticated()
 
-
+                        // Richieste dove non è richiesta l'autenticazione
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/register", "/api/v1/users/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}", "/api/v1/users/find-by-username").permitAll()
 
                         .anyRequest().permitAll())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))
                 .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
-//        http
-//                .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers("/api/v1/admin/", "/api/v1/reports/close/").hasAnyAuthority("ROLE_ADMIN")
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/reports").hasAnyAuthority("ROLE_ADMIN")
-//                        .requestMatchers("/api/v1/superAdmin/").hasAuthority("ROLE_ADMIN")
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/products/", "/api/v1/deliveries/address/{id}").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}", "/api/v1/users/find-by-username").permitAll()
-//                        .requestMatchers("/api/v1/productCategory/").permitAll()
-//                        .requestMatchers("/api/v1/products/").permitAll()
-//                        .requestMatchers("/api/v1/brand/").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/products/{id}", "/api/v1/products/filter", "/api/v1/images/").permitAll()
-//                        .requestMatchers("/api/v1/demo", "/api/v1/users/register", "/api/v1/users/authenticate", "/api/v1/users/login-with-google", "api/v1/users/google-auth", "/api/v1/users/login-with-keycloak", "api/v1/users/keycloak-auth",
-//                                "/api/v1/users/refreshToken", "/api/v1/users/google_auth", "swagger-ui/**", "/v3/api-docs/", "/api/v1/products/categories", "/api/v1/products/sizes",
-//                                "user_photos/", "images/", "api/v1/users/search-by-username").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/api/v1/payment-methods").permitAll()
-//                        .requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/").permitAll()
-//                        .requestMatchers(HttpMethod.DELETE, "/api/v1/payment-methods/").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/").permitAll()
-//                        .anyRequest().authenticated())
-//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))
-//                .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
 
         // Configurazione CORS
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));

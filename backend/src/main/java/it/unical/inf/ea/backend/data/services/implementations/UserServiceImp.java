@@ -270,10 +270,10 @@ public class UserServiceImp implements UserService{
                 User userDetails = mapToEntity(user);
                 String accessToken = tokenStore.createAccessToken(Map.of("username", userDetails.getUsername(), "role", userDetails.getAuthorities().toString()));
 
-                return Map.of("accessToken", "Bearer "+accessToken, "refreshToken", "Bearer "+refreshToken);
+                return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
             }
             catch (Exception e) {
-                log.error(String.format("Error refresh token: %s", authorizationHeader), e);
+                log.error(String.format("Error refresh token: %s", authorizationHeader));
                 response.setStatus(FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();
                 error.put("errorMessage", e.getMessage());
@@ -348,14 +348,14 @@ public class UserServiceImp implements UserService{
 
     @Override
     public UserDTO findMyProfile() {
-        try {
-            User user = jwtContextUtils.getUserLoggedFromContext();
-            if (user == null)
-                return null;
-            return modelMapper.map(user,UserDTO.class);
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized Request", e);
+        User user = jwtContextUtils.getUserLoggedFromContext();
+        if (user == null ||
+                user.getStatus() == UserStatus.BANNED ||
+                user.getStatus() == UserStatus.CANCELLED ||
+                user.getStatus() == UserStatus.HIDDEN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not allowed to access the profile");
         }
+        return modelMapper.map(user, UserDTO.class);
     }
 
     public void throwOnIdMismatch(String id, UserDTO userDTO){

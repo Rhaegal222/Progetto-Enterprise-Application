@@ -27,6 +27,7 @@ public class TokenStore {
 
     private final InvalidTokensDao invalidTokensDao;
     private final JwtContextUtils jwtContextUtils;
+    private final String secretKey = Constants.TOKEN_SECRET_KEY;
 
     public String createAccessToken(Map<String, Object> claims) throws JOSEException {
         Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
@@ -40,7 +41,6 @@ public class TokenStore {
         Payload payload = new Payload(claimsSet.toJSONObject());
 
         JWSObject jwsObject = new JWSObject(new JWSHeader(JWSAlgorithm.HS256), payload);
-        String secretKey = Constants.TOKEN_SECRET_KEY;
         jwsObject.sign(new MACSigner(secretKey.getBytes()));
         return jwsObject.serialize();
     }
@@ -49,16 +49,10 @@ public class TokenStore {
         try {
             jwtContextUtils.getUsernameFromContext().ifPresentOrElse(username -> {
                 try {
-                    if (!username.equals(getUser(token)) || invalidTokensDao.findByToken(token).isPresent())
+                    if(!username.equals(getUser(token)) || invalidTokensDao.findByToken(token).isPresent())
                         throw new RuntimeException("Invalid token");
-
-                    String tokenClaim = getClaim(token);
-                    if (claim != null && !claim.equals(tokenClaim))
+                    if(claim != null && !claim.equals(getClaim(token)))
                         throw new RuntimeException("Invalid token");
-
-                    if ("refresh".equals(tokenClaim) && !"refresh".equals(claim))
-                        throw new RuntimeException("Refresh token cannot be used for this operation");
-
                 } catch (JOSEException | ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -73,23 +67,11 @@ public class TokenStore {
 
     public String getClaim(String token) {
         try {
-            return SignedJWT.parse(token).getJWTClaimsSet().getClaim("claim").toString();
+            Object claim = SignedJWT.parse(token).getJWTClaimsSet().getClaim("claim");
+            return claim == null ? null : claim.toString();
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void rejectToken(String token) throws ParseException {
-        InvalidToken invalidToken = new InvalidToken();
-        invalidToken.setToken(token);
-        SignedJWT signedJWT = null;
-        try {
-            signedJWT = SignedJWT.parse(token);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        invalidToken.setExpirationDate(signedJWT.getJWTClaimsSet().getExpirationTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
-        invalidTokensDao.save(invalidToken);
     }
 
     public String getUser(String token) throws JOSEException, ParseException {
@@ -117,6 +99,19 @@ public class TokenStore {
         return "invalid";
     }
 
+    public void rejectToken(String token) throws ParseException {
+        InvalidToken invalidToken = new InvalidToken();
+        invalidToken.setToken(token);
+        SignedJWT signedJWT = null;
+        try {
+            signedJWT = SignedJWT.parse(token);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        invalidToken.setExpirationDate(signedJWT.getJWTClaimsSet().getExpirationTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().truncatedTo(ChronoUnit.SECONDS));
+        invalidTokensDao.save(invalidToken);
+    }
+
     public String createRefreshToken(String username) {
         flushInvalidTokens();
         try {
@@ -135,7 +130,8 @@ public class TokenStore {
 
             jwsObject.sign(new MACSigner(Constants.TOKEN_SECRET_KEY));
             return jwsObject.serialize();
-        } catch (JOSEException e) {
+        }
+        catch (JOSEException e) {
             throw new RuntimeException("Error to create JWT", e);
         }
     }
@@ -188,4 +184,6 @@ public class TokenStore {
         List<InvalidToken> invalidTokens = invalidTokensDao.findAllByExpirationDateBefore(now);
         invalidTokensDao.deleteAll(invalidTokens);
     }
+
+
 }

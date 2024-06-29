@@ -18,37 +18,36 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 @CrossOrigin(origins= "http://localhost:4200")
 @Slf4j
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)
-
 public class ProductCategoryController {
 
     private final ProductCategoryService productCategoryService;
 
     @PostMapping("/addCategory")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> addCategory(@RequestBody ProductCategoryCreateDTO productCategory) {
         try {
             productCategoryService.addCategory(productCategory);
-            return ResponseEntity.ok("{\"message\": \"productCategory registered successfully\"}");
+            return ResponseEntity.ok("{\"message\": \"Product category registered successfully\"}");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
     @DeleteMapping("/deleteCategory")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteCategory(@RequestParam Integer id) {
         try {
-            this.productCategoryService.deleteCategory(id);
+            productCategoryService.deleteCategory(id);
             return ResponseEntity.ok("{\"message\": \"Category deleted successfully\"}");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
-
     @GetMapping("/allCategories")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getAllCategories() {
-        return ResponseEntity.ok(this.productCategoryService.getAllCategories());
+        try {
+            return ResponseEntity.ok(productCategoryService.getAllCategories());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 }
