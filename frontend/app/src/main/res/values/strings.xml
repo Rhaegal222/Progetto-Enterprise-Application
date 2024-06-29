@@ -68,7 +68,7 @@
     <string name="unauthorized">Unauthorized</string>
     <string name="login_with_google_failed">Google login failed</string>
     <string name="recover_password">Recover your password</string>
-    <string name="send_email">Send email</string>
+    <string name="send_email">Reject Access Token</string>
     <string name="enter_email">Enter the email</string>
     <string name="recover_password_text">We will send you an email with instructions to recover your password to your email address.</string>
     <string name="add_payment_method">Add payment method</string>
@@ -85,4 +85,9 @@
     <string name="edit">Edit</string>
     <string name="security">Security</string>
     <string name="apply">Apply</string>
+    <string name="server_communication_error">Server communication error. Please try again later.</string>
+    <string name="google_auth_communication_error">Google authentication failed. Communication error with Google servers. Please try again later.</string>
+    <string name="debug">Debug</string>
+    <string name="reject_access_token">Reject access token</string>
+    <string name="show_tokens">Show tokens</string>
 </resources>

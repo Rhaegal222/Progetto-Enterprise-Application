@@ -85,4 +85,9 @@
     <string name="edit">Edit</string>
     <string name="security">Security</string>
     <string name="apply">Apply</string>
+    <string name="server_communication_error">Server communication error. Please try again later.</string>
+    <string name="google_auth_communication_error">Google authentication failed. Communication error with Google servers. Please try again later.</string>
+    <string name="debug">Debug</string>
+    <string name="reject_access_token">Reject access token</string>
+    <string name="show_tokens">Show tokens</string>
 </resources>

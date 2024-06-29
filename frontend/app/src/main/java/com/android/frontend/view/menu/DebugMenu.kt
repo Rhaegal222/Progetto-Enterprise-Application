@@ -1,31 +1,51 @@
 package com.android.frontend.view.menu
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
-import com.android.frontend.navigation.Navigation
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.FormatColorFill
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Security
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.graphics.Color
+import com.android.frontend.view_models.DebugViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsMenu(navController: NavHostController) {
+
+fun DebugMenu(navController: NavHostController) {
+
+    val context = LocalContext.current
+
     val colors = MaterialTheme.colorScheme
     Scaffold(
         containerColor = colors.background,
@@ -36,7 +56,7 @@ fun SettingsMenu(navController: NavHostController) {
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.settings).uppercase(),
+                        text = "DEBUG".uppercase(),
                     )
                 },
                 navigationIcon = {
@@ -58,14 +78,14 @@ fun SettingsMenu(navController: NavHostController) {
             .fillMaxSize()
             .padding(16.dp)) {
             Spacer(modifier = Modifier.height(50.dp))
-            SettingsItem(navController, Icons.Default.FormatColorFill, R.string.theme)
-            SettingsItem(navController, Icons.Default.Language, R.string.country_and_language)
+            DebugItem(context, Icons.Default.BugReport, R.string.reject_access_token)
+            DebugItem(context, Icons.Default.BugReport, R.string.show_tokens)
         }
     }
 }
 
 @Composable
-fun SettingsItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
+fun DebugItem(context: Context, icon: ImageVector, textResId: Int) {
     val colors = MaterialTheme.colorScheme
     Card(
         modifier = Modifier
@@ -73,8 +93,8 @@ fun SettingsItem(navController: NavHostController, icon: ImageVector, textResId:
             .padding(8.dp)
             .clickable {
                 when (textResId) {
-                    R.string.theme -> navController.navigate(Navigation.ThemePage.route)
-                    R.string.country_and_language -> navController.navigate(Navigation.CountryLanguagePage.route)
+                    R.string.reject_access_token -> DebugViewModel().rejectToken(context)
+                    R.string.show_tokens -> DebugViewModel().showToken(context)
                 }
             }
     ) {

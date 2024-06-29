@@ -27,6 +27,11 @@ interface UserService {
         @Header("Authorization") authorization: String
     ): Call<Map<String, String>>
 
+    @GET("/api/v1/users/rejectToken")
+    fun rejectToken(
+        @Header("Authorization") authorization: String
+    ): Call<Void>
+
     @GET("/api/v1/users/resetPassword")
     fun resetPassword(
         @Query("email") email: String

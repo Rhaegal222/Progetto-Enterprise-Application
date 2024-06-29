@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.model.GoogleAuthentication
 import com.android.frontend.model.SecurePreferences
 import com.android.frontend.service.UserService
@@ -44,6 +45,7 @@ class LoginViewModel : ViewModel() {
                             if (accessToken != null && refreshToken != null) {
                                 TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
                                 SecurePreferences.saveProvider(context, "local")
+                                CurrentDataUtils.tokenExpired = false
                                 onResult(true, null)
                             } else {
                                 val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
@@ -66,10 +68,10 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun signInWithGoogle(context: Context, onResult: (Boolean) -> Unit) {
+    fun signInWithGoogle(context: Context, onResult: (Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val googleAuth = GoogleAuthentication(context)
-            googleAuth.signIn { success ->
+            googleAuth.signIn { success, error ->
                 viewModelScope.launch(Dispatchers.Main) {
                     if (success != null) {
                         val accessToken = success["accessToken"]
@@ -77,12 +79,13 @@ class LoginViewModel : ViewModel() {
                         if (accessToken != null && refreshToken != null) {
                             TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
                             SecurePreferences.saveProvider(context, "google")
-                            onResult(true)
+                            CurrentDataUtils.tokenExpired = false
+                            onResult(true, null)
                         } else {
-                            onResult(false)
+                            onResult(false, error)
                         }
                     } else {
-                        onResult(false)
+                        onResult(false, error)
                     }
                 }
             }

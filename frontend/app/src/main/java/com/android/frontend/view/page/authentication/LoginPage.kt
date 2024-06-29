@@ -62,8 +62,6 @@ fun LoginPage(navController: NavHostController) {
 
 
     val loginErrorString = stringResource(id = R.string.login_failed)
-    val loginWithGoogleErrorString = stringResource(id = R.string.login_with_google_failed)
-
 
     Scaffold(
         topBar = {
@@ -206,12 +204,12 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    loginViewModel.signInWithGoogle(context) { success ->
+                    loginViewModel.signInWithGoogle(context) { success, errorMessage ->
                         if (success) {
                             val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
                         } else {
-                            Toast.makeText(context, loginWithGoogleErrorString, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                         }
                     }
                 },
