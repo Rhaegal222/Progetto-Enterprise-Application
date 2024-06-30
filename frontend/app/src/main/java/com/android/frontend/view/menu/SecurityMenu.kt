@@ -34,7 +34,7 @@ fun SecurityMenu(navController: NavHostController) {
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.security).uppercase(),
+                        text = stringResource(id = R.string.access_and_security).uppercase(),
                     )
                 },
                 navigationIcon = {

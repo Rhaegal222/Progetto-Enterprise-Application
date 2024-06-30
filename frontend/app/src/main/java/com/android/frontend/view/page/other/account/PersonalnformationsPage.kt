@@ -1,4 +1,4 @@
-package com.android.frontend.view.page.other
+package com.android.frontend.view.page.other.account
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -34,7 +34,7 @@ import coil.compose.rememberAsyncImagePainter
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
+fun PersonalInformationPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
     val context = LocalContext.current
 
     val inputBorderColor = Color.Gray
@@ -74,8 +74,8 @@ fun AccountPage(navController: NavController, profileViewModel: ProfileViewModel
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchData(context)
-        Log.d("DEBUG AccountPage", "User: $user")
-        Log.d("DEBUG AccountPage", "Profile Image: $profileImage")
+        Log.d("DEBUG PersonalInformationPage", "User: $user")
+        Log.d("DEBUG PersonalInformationPage", "Profile Image: $profileImage")
     }
 
     Scaffold(

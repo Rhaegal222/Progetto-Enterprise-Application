@@ -11,7 +11,7 @@ import com.android.frontend.view.page.*
 import com.android.frontend.view_models.ProductViewModel
 import com.android.frontend.view.page.profile.AddPaymentPage
 import com.android.frontend.view.page.other.AboutPage
-import com.android.frontend.view.page.other.AccountPage
+import com.android.frontend.view.page.other.account.PersonalInformationPage
 import com.android.frontend.view.page.other.ThemePage
 import com.android.frontend.view.page.other.CountryLanguagePage
 import com.android.frontend.view.page.product.AllProductsPage
@@ -26,7 +26,7 @@ fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Navigation.HomePage.route, modifier = modifier) {
         composable(Navigation.HomePage.route) { HomePage(navController) }
         composable(Navigation.CartPage.route) { CartPage() }
-        composable(Navigation.AccountPage.route) { AccountPage(navController) }
+        composable(Navigation.AccountPage.route) { PersonalInformationPage(navController) }
         composable(Navigation.AboutPage.route) { AboutPage(navController) }
         composable(Navigation.OtherMenu.route) { OtherMenu(navController) }
         composable(Navigation.ProfileMenu.route) { ProfileMenu(navController) }

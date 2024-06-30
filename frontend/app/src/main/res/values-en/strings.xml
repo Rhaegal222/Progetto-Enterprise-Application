@@ -45,7 +45,7 @@
     <string name="login_failed">Log in unsuccessful</string>
     <string name="personal_informations">Personal informations</string>
     <string name="access_and_security">Access and security</string>
-    <string name="change_password">Change Password</string>
+    <string name="change_password">Change password</string>
     <string name="unknown_error">Unknown error</string>
     <string name="oldPassword">Old Password</string>
     <string name="newPassword">New Password</string>
