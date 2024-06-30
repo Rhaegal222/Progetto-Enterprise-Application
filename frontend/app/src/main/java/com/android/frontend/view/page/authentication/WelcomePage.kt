@@ -26,12 +26,9 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun WelcomePage(navController: NavController) {
-
-    var baseUrl = remember { CurrentDataUtils.baseUrl }
-    val checkedState = remember { mutableStateOf(baseUrl == "http://http://10.0.2.2:8080/") }
 
     val colors = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
@@ -52,44 +49,7 @@ fun WelcomePage(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Switch(
-                    checked = checkedState.value,
-                    onCheckedChange = {
-                        if (checkedState.value) {
-                            checkedState.value = false
-                            baseUrl = "https://192.168.160.200:8080/"
-                            CurrentDataUtils.baseUrl = baseUrl
-                        } else {
-                            checkedState.value = true
-                            baseUrl = "http://10.0.2.2:8080/"
-                            CurrentDataUtils.baseUrl = baseUrl
-                        }
-                    }
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                if (checkedState.value) {
-                    Text(
-                        text = "Gaetano",
-                        style = typography.bodyMedium,
-                        color = colors.onBackground
-                    )
-                } else {
-                    Text(
-                        text = "Localhost",
-                        style = typography.bodyMedium,
-                        color = colors.onBackground
-                    )
-                }
-            }
-
+            ServerSwitch()
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
