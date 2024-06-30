@@ -7,7 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -15,7 +15,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,19 +33,13 @@ fun ChangePasswordPage(navController: NavHostController) {
     val changePasswordViewModel: ChangePasswordViewModel = viewModel()
     val context = LocalContext.current as MainActivity
     var isObscured by remember { mutableStateOf(true) }
-    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
-    val textColor = MaterialTheme.colorScheme.onSurface
-    val iconColor = MaterialTheme.colorScheme.onSurface
-    val passwordChangedMessage = stringResource(R.string.passwordChangedSucc)
-    val colors = MaterialTheme.colorScheme
 
-    Scaffold(
+    val passwordChangedMessage = stringResource(R.string.passwordChangedSucc)
+
+    Scaffold (
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.change_password).uppercase(),
@@ -55,9 +48,8 @@ fun ChangePasswordPage(navController: NavHostController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = colors.onBackground
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null
                         )
                     }
                 },
@@ -92,36 +84,24 @@ fun ChangePasswordPage(navController: NavHostController) {
             OutlinedTextField(
                 value = changePasswordViewModel.oldPassword,
                 onValueChange = { changePasswordViewModel.oldPassword = it },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.oldPassword),
-                        color = textColor
-                    )
-                },
+                label = { Text(text = stringResource(id = R.string.oldPassword)) },
                 leadingIcon = {
                     Icon(
                         Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = iconColor
+                        contentDescription = null
                     )
                 },
                 trailingIcon = {
                     IconButton(onClick = { isObscured = !isObscured }) {
                         Icon(
                             imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = null,
-                            tint = iconColor
+                            contentDescription = null
                         )
                     }
                 },
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = textColor,
-                    focusedBorderColor = inputBorderColor,
-                    unfocusedBorderColor = inputBorderColor,
-                ),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -130,35 +110,25 @@ fun ChangePasswordPage(navController: NavHostController) {
                 value = changePasswordViewModel.newPassword,
                 onValueChange = { changePasswordViewModel.newPassword = it },
                 label = {
-                    Text(
-                        text = stringResource(id = R.string.newPassword),
-                        color = textColor
-                    )
+                    Text(text = stringResource(id = R.string.newPassword))
                 },
                 leadingIcon = {
                     Icon(
                         Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = iconColor
+                        contentDescription = null
                     )
                 },
                 trailingIcon = {
                     IconButton(onClick = { isObscured = !isObscured }) {
                         Icon(
                             imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = null,
-                            tint = iconColor
+                            contentDescription = null
                         )
                     }
                 },
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = textColor,
-                    focusedBorderColor = inputBorderColor,
-                    unfocusedBorderColor = inputBorderColor,
-                ),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -166,36 +136,24 @@ fun ChangePasswordPage(navController: NavHostController) {
             OutlinedTextField(
                 value = changePasswordViewModel.repeatNewPassword,
                 onValueChange = { changePasswordViewModel.repeatNewPassword = it },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.repeatNewPassword),
-                        color = textColor
-                    )
-                },
+                label = { Text(text = stringResource(id = R.string.repeatNewPassword))},
                 leadingIcon = {
                     Icon(
                         Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = iconColor
+                        contentDescription = null
                     )
                 },
                 trailingIcon = {
                     IconButton(onClick = { isObscured = !isObscured }) {
                         Icon(
                             imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = null,
-                            tint = iconColor
+                            contentDescription = null
                         )
                     }
                 },
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = textColor,
-                    focusedBorderColor = inputBorderColor,
-                    unfocusedBorderColor = inputBorderColor,
-                ),
             )
 
             Spacer(modifier = Modifier.height(16.dp))

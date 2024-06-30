@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -37,23 +36,17 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
                 .width(cardWidth)
                 .height(cardHeight)
         ) {
-            Box(modifier = Modifier.background(Color(0xFF00A35D))) {
+            Box {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    Box(
-                        // Colora il banner di nero
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .background(Color.Black)
-                    )
+                    Box(modifier = Modifier.fillMaxWidth().height(60.dp))
 
                     val cardNumber = payment.cardNumber
                     Text(
                         text = "**** **** **** ${cardNumber.takeLast(4)}",
-                        style = TextStyle(color = Color.White, fontSize = 22.sp, letterSpacing = 3.sp, textAlign = TextAlign.Center),
+                        style = TextStyle(fontSize = 22.sp, letterSpacing = 3.sp, textAlign = TextAlign.Center),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Row(
@@ -68,18 +61,18 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
 
                                 Text(
                                     text = "VALID THRU",
-                                    style = TextStyle(color = Color.White, fontSize = 10.sp)
+                                    style = TextStyle(fontSize = 10.sp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = "${payment.expireMonth}/${payment.expireYear}",
-                                    style = TextStyle(color = Color.White, fontSize = 16.sp)
+                                    style = TextStyle(fontSize = 16.sp)
                                 )
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = payment.owner,
-                                style = TextStyle(color = Color.White, fontSize = 16.sp)
+                                style = TextStyle(fontSize = 16.sp)
                             )
                         }
                         Column(
@@ -113,14 +106,12 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
                 .align(Alignment.TopEnd)
                 .offset(x = 10.dp, y = -10.dp) // Sposta il bottone fuori dall'angolo
                 .clip(CircleShape)
-                .background(Color.Red)
                 .size(30.dp) // Aumenta la dimensione del cerchio
                 .padding(4.dp) // Aggiunge padding intorno all'icona
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                tint = Color.White,
                 modifier = Modifier.size(20.dp) // Dimensione dell'icona
             )
         }

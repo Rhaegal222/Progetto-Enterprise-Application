@@ -1,7 +1,6 @@
 package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -25,8 +24,6 @@ import com.android.frontend.navigation.Navigation
 @Composable
 fun WelcomePage(navController: NavController) {
 
-    val colors = MaterialTheme.colorScheme
-    val typography = MaterialTheme.typography
     val size = with(LocalDensity.current) {
         DpSize(
             width = LocalConfiguration.current.screenWidthDp.dp,
@@ -34,9 +31,8 @@ fun WelcomePage(navController: NavController) {
         )
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = colors.background // Colore di sfondo della schermata
+    Scaffold (
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -61,7 +57,6 @@ fun WelcomePage(navController: NavController) {
                 text = stringResource(id = R.string.welcome),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = colors.onBackground, // Usa un colore scuro per il testo "Welcome"
                 textAlign = TextAlign.Center
             )
 
@@ -69,9 +64,7 @@ fun WelcomePage(navController: NavController) {
 
             Text(
                 text = stringResource(id = R.string.welcome_description),
-                style = typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = colors.onBackground, // Colore del testo della descrizione
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -86,12 +79,7 @@ fun WelcomePage(navController: NavController) {
                     onClick = {
                         navController.navigate(Navigation.LoginPage.route)
                     },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = colors.background, // Sfondo bianco o nero a seconda del tema
-                        contentColor = colors.onBackground // Testo nero o bianco a seconda del tema
-                    ),
-                    border = BorderStroke(1.dp, colors.onBackground) // Contorno nero o bianco a seconda del tema
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
@@ -105,12 +93,7 @@ fun WelcomePage(navController: NavController) {
                     onClick = {
                         navController.navigate(Navigation.SignupPage.route)
                     },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.onBackground, // Sfondo nero o bianco a seconda del tema
-                        contentColor = colors.background // Testo bianco o nero a seconda del tema
-                    ),
-                    border = BorderStroke(1.dp, colors.onBackground) // Bordo nero o bianco a seconda del tema
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.sign_up).uppercase(),

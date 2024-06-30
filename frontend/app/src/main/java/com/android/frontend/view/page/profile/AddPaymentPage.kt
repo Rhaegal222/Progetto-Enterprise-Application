@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -56,12 +55,8 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
     }
 
     Scaffold (
-        containerColor = Color.White,
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.add_payment_card).uppercase(),
@@ -71,8 +66,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.Black
+                            contentDescription = null
                         )
                     }
                 },

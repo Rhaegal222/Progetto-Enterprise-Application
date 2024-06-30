@@ -20,7 +20,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,9 +37,6 @@ import com.android.frontend.config.getCurrentStackTrace
 fun PersonalInformationPage(navController: NavController, userViewModel: UserViewModel = viewModel()) {
     val context = LocalContext.current
 
-    val inputBorderColor = Color.Gray
-    val textColor = Color.Black
-    val iconColor = Color.Black
     var isObscured by remember { mutableStateOf(true) }
 
     val profileImage by userViewModel.profileImageLiveData.observeAsState()
@@ -79,13 +75,9 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
         Log.d("DEBUG", "${getCurrentStackTrace()} Profile Image: $profileImage")
     }
 
-    Scaffold(
-        containerColor = Color.White,
+    Scaffold (
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.personal_informations).uppercase(),
@@ -95,8 +87,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.Black
+                            contentDescription = null
                         )
                     }
                 },
@@ -150,12 +141,10 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                             .align(Alignment.BottomEnd)
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(Color.Gray)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Profile Image",
-                            tint = Color.White
+                            contentDescription = "Edit Profile Image"
                         )
                     }
                 }
@@ -167,14 +156,9 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 OutlinedTextField(
                     value = firstName,
                     onValueChange = { firstName = it },
-                    label = { Text(stringResource(id = R.string.firstname), color = textColor) },
+                    label = { Text(stringResource(id = R.string.firstname)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
                     readOnly = !isEditMode
                 )
 
@@ -183,14 +167,9 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 OutlinedTextField(
                     value = lastName,
                     onValueChange = { lastName = it },
-                    label = { Text(stringResource(id = R.string.lastname), color = textColor) },
+                    label = { Text(stringResource(id = R.string.lastname)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
                     readOnly = !isEditMode
                 )
 
@@ -199,14 +178,9 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text(stringResource(id = R.string.email), color = textColor) },
+                    label = { Text(stringResource(id = R.string.email)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
                     readOnly = !isEditMode
                 )
 
@@ -215,14 +189,9 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 OutlinedTextField(
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
-                    label = { Text(stringResource(id = R.string.phone_number), color = textColor) },
+                    label = { Text(stringResource(id = R.string.phone_number)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
                     readOnly = !isEditMode
                 )
 

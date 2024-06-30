@@ -16,7 +16,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -77,7 +76,6 @@ fun DetailContentImageHeader(
 ) {
     Card(
         shape = RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Gray),
         modifier = Modifier
             .blur(1.dp)
             .fillMaxWidth(),
@@ -111,7 +109,6 @@ fun DetailContentDescription(
                 Text(
                     text = productItem.title,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
                     fontSize = 24.sp
                 )
 
@@ -120,7 +117,6 @@ fun DetailContentDescription(
                 Text(
                     text = productItem.brand.name,
                     fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
                     fontSize = 12.sp
                 )
             }
@@ -136,17 +132,13 @@ fun DetailContentDescription(
         Text(
             text = "${productItem.productPrice}€",
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
             modifier = Modifier.align(Alignment.End),
             fontSize = 18.sp
         )
 
-        Divider(color = Color.Gray, thickness = 1.dp)
-
         Text(
             text = "Description",
             fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
             fontSize = 16.sp,
         )
 
@@ -155,12 +147,10 @@ fun DetailContentDescription(
         Text(
             text = productItem.description,
             fontWeight = FontWeight.Medium,
-            color = Color.Gray,
             fontSize = 12.sp,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Divider(color = Color.Gray, thickness = 1.dp)
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -168,7 +158,6 @@ fun DetailContentDescription(
             Text(
                 text = "Ingredients",
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
                 fontSize = 16.sp,
                 modifier = Modifier
                     .weight(1f)
@@ -177,23 +166,17 @@ fun DetailContentDescription(
 
             Card(
                 shape = RoundedCornerShape(6.dp),
-                modifier = Modifier
-                    .background(color = Color.Transparent)
-                    .align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically
+                )
             ) {
                 Text(
                     text = productItem.ingredients,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Gray,
                     fontSize = 10.sp,
-                    modifier = Modifier
-                        .background(color = Color.LightGray)
-                        .padding(4.dp)
+                    modifier = Modifier.padding(4.dp)
                 )
             }
         }
-
-        Divider(color = Color.Gray, thickness = 1.dp)
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -201,7 +184,6 @@ fun DetailContentDescription(
             Text(
                 text = "Quantità",
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
                 fontSize = 16.sp,
                 modifier = Modifier
                     .weight(1f)
@@ -209,18 +191,13 @@ fun DetailContentDescription(
             )
             Card(
                 shape = RoundedCornerShape(6.dp),
-                modifier = Modifier
-                    .background(color = Color.Transparent)
-                    .align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
                 Text(
                     text = productItem.quantity.toString(),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Gray,
                     fontSize = 10.sp,
-                    modifier = Modifier
-                        .background(color = Color.LightGray)
-                        .padding(4.dp)
+                    modifier = Modifier.padding(4.dp)
                 )
             }
         }
@@ -235,7 +212,6 @@ fun DetailButtonAddCart(
 ) {
     Button(
         shape = RoundedCornerShape(24.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -245,7 +221,6 @@ fun DetailButtonAddCart(
             text = "Add to Cart",
             fontWeight = FontWeight.SemiBold,
             fontSize = 18.sp,
-            color = Color.White,
             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
         )
     }

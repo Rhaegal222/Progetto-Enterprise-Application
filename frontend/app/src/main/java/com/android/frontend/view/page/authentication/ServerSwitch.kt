@@ -23,7 +23,6 @@ import com.android.frontend.persistence.CurrentDataUtils
 
 @Composable
 fun ServerSwitch() {
-    val colors = MaterialTheme.colorScheme
     val isDevelopment = remember { mutableStateOf(CurrentDataUtils.baseUrl == "http://10.0.2.2:8080/") }
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -41,20 +40,13 @@ fun ServerSwitch() {
                     "https://192.168.160.200:8080/"
                 }
                 Log.d("DEBUG", "BaseUrl changed to: ${CurrentDataUtils.baseUrl}")
-            },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = colors.onSurface,
-                checkedTrackColor = colors.onSurface.copy(alpha = 0.5f),
-                uncheckedThumbColor = colors.onSecondary.copy(alpha = 0.5f),
-                uncheckedTrackColor = colors.onSecondary
-            ),
+            }
         )
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = if (isDevelopment.value) "Localhost" else "Gaetano",
-            color = colors.onBackground,
             modifier = Modifier.width(100.dp),
             textAlign = TextAlign.Center,
             fontSize = 20.sp

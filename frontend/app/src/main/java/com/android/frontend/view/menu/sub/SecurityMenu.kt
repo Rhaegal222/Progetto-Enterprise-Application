@@ -14,12 +14,10 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.android.frontend.navigation.Navigation
@@ -30,14 +28,10 @@ import com.android.frontend.persistence.SecurePreferences
 @Composable
 fun SecurityMenu(navController: NavHostController) {
     val context = LocalContext.current
-    val colors = MaterialTheme.colorScheme
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+
+    Scaffold (
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.access_and_security).uppercase(),
@@ -47,8 +41,7 @@ fun SecurityMenu(navController: NavHostController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = colors.onBackground
+                            contentDescription = null
                         )
                     }
                 },
@@ -84,7 +77,6 @@ fun SecurityItem(
     icon: Any,
     textResId: Int
 ) {
-    val colors = MaterialTheme.colorScheme
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,11 +85,7 @@ fun SecurityItem(
                 when (textResId) {
                     R.string.change_password -> navController.navigate(Navigation.ChangePasswordPage.route)
                 }
-            },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        )
+            }
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -107,22 +95,19 @@ fun SecurityItem(
                 is ImageVector -> Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(40.dp),
-                    tint = colors.onBackground
+                    modifier = Modifier.size(40.dp)
                 )
                 is Painter -> Image(
                     painter = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(40.dp),
-                    colorFilter = ColorFilter.tint(colors.onBackground)
+                    modifier = Modifier.size(40.dp)
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                fontWeight = FontWeight.Bold
             )
         }
     }

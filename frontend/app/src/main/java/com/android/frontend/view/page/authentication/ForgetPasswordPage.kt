@@ -38,9 +38,6 @@ fun ForgetPasswordPage(navController: NavHostController) {
 
     val email = remember { mutableStateOf("") }
     val showDialog = remember { mutableStateOf(false) }
-    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
-    val textColor = MaterialTheme.colorScheme.onSurface
-    val iconColor = MaterialTheme.colorScheme.onSurface
 
     val userService: UserService = RetrofitInstance.getUserApi(context)
 
@@ -57,18 +54,17 @@ fun ForgetPasswordPage(navController: NavHostController) {
         )
     }
 
-    Scaffold(
+    Scaffold (
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.recover_password).uppercase(),
-                        color = textColor
+                        text = stringResource(id = R.string.recover_password).uppercase()
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.LoginPage.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = iconColor)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 }
             )
@@ -85,8 +81,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
             Text(
                 text = stringResource(id = R.string.enter_email),
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -94,8 +89,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
             Text(
                 text = stringResource(id = R.string.recover_password_text),
                 fontSize = 16.sp,
-                textAlign = TextAlign.Justify,
-                color = textColor
+                textAlign = TextAlign.Justify
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -103,30 +97,20 @@ fun ForgetPasswordPage(navController: NavHostController) {
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { Text("Email", color = textColor) },
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = iconColor) },
+                label = { Text("Email") },
+                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = textColor,
-                    focusedBorderColor = inputBorderColor,
-                    unfocusedBorderColor = inputBorderColor,
-                ),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
+            OutlinedButton(
                 onClick = {
                     sendEmail(userService, email.value) {
                         showDialog.value = true
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
             ) {
                 Text(
                     text = stringResource(id = R.string.send_email).uppercase(),

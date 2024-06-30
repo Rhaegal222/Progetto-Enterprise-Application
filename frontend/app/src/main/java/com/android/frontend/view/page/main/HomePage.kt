@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -30,11 +31,11 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {
-    val colors = MaterialTheme.colorScheme
+
     var searchQuery by remember { mutableStateOf("") }
     var focusOnTextField by remember { mutableStateOf(false) }
 
@@ -47,7 +48,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
         }
     }
 
-    Scaffold(
+    Scaffold (
         topBar = {
             OutlinedTextField(
                 value = searchQuery,
@@ -96,7 +97,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                         }
                 },
                 singleLine = true,
-                placeholder = { Text(stringResource(id = R.string.search)) },
+                placeholder = { stringResource(id = R.string.search) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
@@ -118,7 +119,6 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(colors.background)
         ) {
             // Se la search bar ha il focus
             if (focusOnTextField) {

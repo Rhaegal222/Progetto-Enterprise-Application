@@ -3,7 +3,6 @@ package com.android.frontend.view.menu.main
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -29,15 +28,12 @@ import com.android.frontend.navigation.Navigation
 fun ProfileMenu(navController: NavController) {
 
     val username = SecurePreferences.getUser(LocalContext.current)?.firstName ?: ""
-    val colors = MaterialTheme.colorScheme
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .background(colors.background)) {
+        .fillMaxSize()) {
         Text(
             text = "${stringResource(id = R.string.hello_user)} $username!",
             style = MaterialTheme.typography.titleLarge,
-            color = colors.onBackground,
             modifier = Modifier.padding(16.dp)
         )
 
@@ -51,7 +47,7 @@ fun ProfileMenu(navController: NavController) {
 @Composable
 fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
     val context = LocalContext.current
-    val colors = MaterialTheme.colorScheme
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,12 +78,11 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp), tint = colors.onSurface)
+            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp))
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
                 style = MaterialTheme.typography.titleLarge,
-                color = colors.onSurface,
                 fontWeight = FontWeight.Bold
             )
         }

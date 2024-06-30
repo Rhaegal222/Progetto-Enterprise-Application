@@ -17,7 +17,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -50,13 +49,9 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                 addressViewModel.zipCode.isNotEmpty()
     }
 
-    Scaffold(
-        containerColor = Color.White,
+    Scaffold (
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.add_address).uppercase(),
@@ -66,8 +61,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.Black
+                            contentDescription = null
                         )
                     }
                 },

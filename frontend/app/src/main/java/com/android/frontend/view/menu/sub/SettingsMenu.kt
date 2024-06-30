@@ -19,21 +19,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FormatColorFill
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsMenu(navController: NavHostController) {
 
-    val colors = MaterialTheme.colorScheme
-
     Scaffold (
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.app_settings).uppercase(),
@@ -43,8 +37,7 @@ fun SettingsMenu(navController: NavHostController) {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = colors.onBackground
+                            contentDescription = null
                         )
                     }
                 },
@@ -66,7 +59,7 @@ fun SettingsMenu(navController: NavHostController) {
 
 @Composable
 fun SettingsItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
-    val colors = MaterialTheme.colorScheme
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,11 +75,10 @@ fun SettingsItem(navController: NavHostController, icon: ImageVector, textResId:
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp), tint = colors.onSurface)
+            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp))
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
-                color = colors.onSurface,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

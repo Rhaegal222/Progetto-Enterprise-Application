@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
@@ -18,7 +17,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -43,13 +41,11 @@ import com.android.frontend.navigation.Navigation
 @Composable
 fun LoginPage(navController: NavHostController) {
 
+
     val loginViewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
 
     var isObscured by remember { mutableStateOf(true) }
-    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
-    val textColor = MaterialTheme.colorScheme.onSurface
-    val iconColor = MaterialTheme.colorScheme.onSurface
 
     val size = with(LocalDensity.current) {
         DpSize(
@@ -60,32 +56,29 @@ fun LoginPage(navController: NavHostController) {
 
     val loginErrorString = stringResource(id = R.string.login_failed)
 
-    Scaffold(
+    Scaffold (
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
-                        color = textColor
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.WelcomePage.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = iconColor)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 }
             )
         }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 16.dp, horizontal = 16.dp),
+                .padding(paddingValues).padding(8.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
-            Spacer(modifier = Modifier.height(28.dp))
 
             Image(
                 painter = painterResource(R.drawable.logo),
@@ -95,27 +88,19 @@ fun LoginPage(navController: NavHostController) {
                     .fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             OutlinedTextField(
                 value = loginViewModel.username,
                 onValueChange = { loginViewModel.username = it },
                 label = {
                     Text(
-                        text = stringResource(id = R.string.email),
-                        color = textColor
+                        text = stringResource(id = R.string.email)
                     )
                 },
                 leadingIcon = {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = iconColor)
+                    Icon(Icons.Default.Person, contentDescription = null)
                 },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = textColor,
-                    focusedBorderColor = inputBorderColor,
-                    unfocusedBorderColor = inputBorderColor,
-                ),
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -125,34 +110,26 @@ fun LoginPage(navController: NavHostController) {
                 onValueChange = { loginViewModel.password = it },
                 label = {
                     Text(
-                        text = stringResource(id = R.string.password),
-                        color = textColor
+                        text = stringResource(id = R.string.password)
                     )
                 },
                 leadingIcon = {
                     Icon(
                         Icons.Default.Lock,
-                        contentDescription = null,
-                        tint = iconColor
+                        contentDescription = null
                     )
                 },
                 trailingIcon = {
                     IconButton(onClick = { isObscured = !isObscured }) {
                         Icon(
                             imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = null,
-                            tint = iconColor
+                            contentDescription = null
                         )
                     }
                 },
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = textColor,
-                    focusedBorderColor = inputBorderColor,
-                    unfocusedBorderColor = inputBorderColor,
-                ),
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -161,8 +138,7 @@ fun LoginPage(navController: NavHostController) {
                 onClick = { navController.navigate(Navigation.ForgetPasswordPage.route) }
             ) {
                 Text(
-                    text = stringResource(id = R.string.forgot_password),
-                    color = textColor
+                    text = stringResource(id = R.string.forgot_password)
                 )
             }
 
@@ -183,11 +159,7 @@ fun LoginPage(navController: NavHostController) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(id = R.string.login).uppercase()
@@ -196,10 +168,7 @@ fun LoginPage(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = stringResource(id = R.string.or).uppercase(),
-                color = textColor
-            )
+            Text( text = stringResource(id = R.string.or).uppercase() )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -215,24 +184,16 @@ fun LoginPage(navController: NavHostController) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.google_logo),
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
+                    modifier = Modifier.size(16.dp)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text(
-                    text = stringResource(id = R.string.login_with_google),
-                    color = textColor
-                )
+                Text( text = stringResource(id = R.string.login_with_google) )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -242,16 +203,9 @@ fun LoginPage(navController: NavHostController) {
             ) {
                 Text(
                     buildAnnotatedString {
-                        append(
-                            text = stringResource(id = R.string.not_registered_yet) + " "
-                        )
-                        withStyle(style = SpanStyle(color = Color.Blue)) {
-                            append(
-                                text = stringResource(id = R.string.sign_up_now)
-                            )
-                        }
-                    },
-                    color = textColor
+                        append( text = stringResource(id = R.string.not_registered_yet) + " " )
+                        append( text = stringResource(id = R.string.sign_up_now) )
+                    }
                 )
             }
         }

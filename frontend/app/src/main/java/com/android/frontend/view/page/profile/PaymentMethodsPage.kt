@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -16,7 +15,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -70,7 +68,6 @@ fun PaymentMethodsContent(
     val pagerState = rememberPagerState(pageCount = { payments.size })
     var selectedPaymentMethod by remember { mutableStateOf<PaymentMethodDTO?>(null) }
     var isDefaultPaymentMethod by remember { mutableStateOf(false) }
-    val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(payments) {
         if (payments.isNotEmpty()) {
@@ -88,19 +85,14 @@ fun PaymentMethodsContent(
         }
     }
 
-    Scaffold(
-        containerColor = colors.background,
+    Scaffold (
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.payment_methods),
-                        color = colors.onBackground
+                        text = stringResource(id = R.string.payment_methods)
                     )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
+                }
             )
         },
         floatingActionButton = {
@@ -108,10 +100,6 @@ fun PaymentMethodsContent(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colors.primary,
-                    contentColor = colors.onPrimary
-                ),
                 modifier = Modifier
                     .padding(0.dp)
             ) {
@@ -139,8 +127,7 @@ fun PaymentMethodsContent(
                 PaymentMethodsPagePreview(pagerState, payments, paymentViewModel, context, selectedPaymentMethod)
             } else {
                 Text(
-                    text = stringResource(id = R.string.no_payment_methods),
-                    color = colors.onBackground
+                    text = stringResource(id = R.string.no_payment_methods)
                 )
             }
         }
@@ -183,15 +170,10 @@ fun PaymentMethodsPagePreview(
                 selectedPaymentMethod?.let {
                     paymentViewModel.setDefaultPayment(context, it.id, pagerState)
                 }
-            },
-            colors = CheckboxDefaults.colors(
-                checkedColor = colors.primary,
-                uncheckedColor = colors.onSurface
-            )
+            }
         )
         Text(
             text = stringResource(id = R.string.set_as_default),
-            color = colors.onBackground,
             modifier = Modifier.padding(start = 8.dp)
         )
     }

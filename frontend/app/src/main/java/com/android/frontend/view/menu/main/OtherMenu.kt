@@ -27,11 +27,9 @@ import com.android.frontend.config.TokenManager
 
 @Composable
 fun OtherMenu(navController: NavHostController) {
-    val colors = MaterialTheme.colorScheme
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(colors.background)
     ) {
         MenuItem(navController, Icons.Default.ManageAccounts, R.string.account)
         MenuItem(navController, Icons.Default.Settings, R.string.app_settings)
@@ -43,7 +41,7 @@ fun OtherMenu(navController: NavHostController) {
 
 @Composable
 fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int) {
-    val colors = MaterialTheme.colorScheme
+
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -67,11 +65,10 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp), tint = colors.onSurface)
+            Icon(icon, contentDescription = null, modifier = Modifier.size(40.dp))
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
-                color = colors.onSurface,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )

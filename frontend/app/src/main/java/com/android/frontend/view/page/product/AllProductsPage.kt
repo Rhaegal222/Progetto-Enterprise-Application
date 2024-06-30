@@ -1,9 +1,7 @@
 package com.android.frontend.view.page.product
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,23 +43,16 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
         productViewModel.fetchAllProducts(context)
     }
 
-    val colors = MaterialTheme.colorScheme
-
-    Scaffold(
-        containerColor = colors.background,
+    Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text("All Products", color = colors.onBackground) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
+                title = { Text("All Products") },
             )
         },
         content = { innerPadding ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colors.background)
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
@@ -80,7 +70,6 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
 
     Card(
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = Color.Gray),
         modifier = Modifier
             .padding(12.dp)
             .width(174.dp)
@@ -109,7 +98,6 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
             Text(
                 text = productDTO.title,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
                 fontSize = 16.sp
             )
 
@@ -118,7 +106,6 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
             Text(
                 text = productDTO.brand.name,
                 fontWeight = FontWeight.Medium,
-                color = Color.Gray,
                 fontSize = 12.sp
             )
 
@@ -131,14 +118,12 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                 Text(
                     text = "${productDTO.productPrice}€",
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
                     modifier = Modifier.align(Alignment.CenterVertically),
                     fontSize = 18.sp
                 )
 
                 Button(
                     modifier = Modifier.size(46.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues(10.dp),
                     onClick = {
@@ -148,7 +133,6 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                     Icon(
                         modifier = Modifier.fillMaxSize(),
                         imageVector = Icons.Default.Add,
-                        tint = Color.White,
                         contentDescription = "Add"
                     )
                 }

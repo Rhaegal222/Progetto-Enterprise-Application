@@ -48,8 +48,4 @@ fun Suggestion() {
         }
 
     }
-    Divider(
-        color = androidx.compose.ui.graphics.Color.Gray,
-        thickness = 2.dp
-    )
 }

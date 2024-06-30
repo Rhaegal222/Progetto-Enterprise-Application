@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -110,7 +109,6 @@ fun ShippingAddressesContent(
                 onClick = {
                     navController.navigate(Navigation.AddAddressPage.route)
                 },
-                colors = ButtonDefaults.buttonColors(),
                 modifier = Modifier
                     .padding(0.dp)
 
@@ -140,8 +138,7 @@ fun ShippingAddressesContent(
                 AddressPagePreview(pagerState, addresses, addressViewModel, context, selectedAddress)
             } else {
                 Text(
-                    text = stringResource(id = R.string.no_shipping_addresses),
-                    color = Color.Black
+                    text = stringResource(id = R.string.no_shipping_addresses)
                 )
             }
         }
@@ -188,7 +185,6 @@ fun AddressPagePreview(
 
         Text(
             text = stringResource(id = R.string.set_as_default),
-            color = Color.Black,
             modifier = Modifier.padding(start = 8.dp)
         )
     }

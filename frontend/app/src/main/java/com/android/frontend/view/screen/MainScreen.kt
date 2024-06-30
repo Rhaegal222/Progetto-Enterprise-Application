@@ -17,7 +17,7 @@ fun MainScreen() {
     val mainNavController = rememberNavController()
     val cartViewModel: CartViewModel = viewModel()
 
-    Scaffold(
+    Scaffold (
         bottomBar = {
             BottomBar(navController = mainNavController, cartViewModel = cartViewModel)
         }

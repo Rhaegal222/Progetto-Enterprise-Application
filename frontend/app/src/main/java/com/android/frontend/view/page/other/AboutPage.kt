@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -45,13 +44,9 @@ import compose.icons.fontawesomeicons.brands.Twitter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutPage(navController: NavController){
-    val colors = MaterialTheme.colorScheme
     Scaffold (
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.account).uppercase(),
@@ -61,8 +56,7 @@ fun AboutPage(navController: NavController){
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = colors.onBackground
+                            contentDescription = null
                         )
                     }
                 },
@@ -74,12 +68,11 @@ fun AboutPage(navController: NavController){
     ) { paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .background(colors.background)
             .padding(paddingValues)) {
             Row {
                 Text(
                     text = stringResource(R.string.about_description),
-                    style = TextStyle(fontSize = 20.sp, color = colors.onBackground),
+                    style = TextStyle(fontSize = 20.sp),
                     modifier = Modifier.padding(10.dp),
                 )
             }
@@ -96,14 +89,12 @@ fun AboutPage(navController: NavController){
                     onClick = { },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(colors.primary)
                         .padding(10.dp)
                         .size(30.dp)
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Github,
-                        contentDescription = stringResource(R.string.github),
-                        tint = colors.onPrimary
+                        contentDescription = stringResource(R.string.github)
                     )
                 }
 
@@ -111,14 +102,12 @@ fun AboutPage(navController: NavController){
                     onClick = { },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(colors.primary)
                         .padding(10.dp)
                         .size(30.dp)
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Instagram,
-                        contentDescription = stringResource(R.string.instagram),
-                        tint = colors.onPrimary
+                        contentDescription = stringResource(R.string.instagram)
                     )
                 }
 
@@ -126,14 +115,12 @@ fun AboutPage(navController: NavController){
                     onClick = { },
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(colors.primary)
                         .padding(10.dp)
                         .size(30.dp)
                 ) {
                     Icon(
                         imageVector = FontAwesomeIcons.Brands.Twitter,
-                        contentDescription = stringResource(R.string.twitter),
-                        tint = colors.onPrimary
+                        contentDescription = stringResource(R.string.twitter)
                     )
                 }
             }

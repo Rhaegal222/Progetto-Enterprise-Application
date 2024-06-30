@@ -7,8 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
@@ -48,9 +46,6 @@ fun SignupPage(navController: NavHostController) {
     val context = LocalContext.current
 
     var isObscured by remember { mutableStateOf(true) }
-    val inputBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium)
-    val textColor = MaterialTheme.colorScheme.onSurface
-    val iconColor = MaterialTheme.colorScheme.onSurface
 
     val size = with(LocalDensity.current) {
         DpSize(
@@ -59,33 +54,29 @@ fun SignupPage(navController: NavHostController) {
         )
     }
 
-    Scaffold(
+    Scaffold (
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.sign_up).uppercase(),
-                        color = MaterialTheme.colorScheme.onSurface
+                        text = stringResource(id = R.string.sign_up).uppercase()
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.WelcomePage.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = iconColor)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 }
             )
         }
-    ) {
-
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 16.dp, horizontal = 16.dp),
+                .padding(paddingValues).padding(8.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
-            Spacer(modifier = Modifier.height(28.dp))
 
             Image(
                 painter = painterResource(R.drawable.logo),
@@ -100,14 +91,9 @@ fun SignupPage(navController: NavHostController) {
             ) {
                 Text(
                     buildAnnotatedString {
-                        append(
-                            text = stringResource(id = R.string.already_have_account) + " "
-                        )
-                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                            append(text = stringResource(id = R.string.login))
-                        }
-                    },
-                    color = textColor
+                        append( text = stringResource(id = R.string.already_have_account) + " ")
+                        append(text = stringResource(id = R.string.login))
+                    }
                 )
             }
 
@@ -122,14 +108,9 @@ fun SignupPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = signUpViewModel.firstname,
                     onValueChange = { signUpViewModel.firstname = it },
-                    label = { Text(stringResource(id = R.string.firstname), color = textColor) },
+                    label = { Text(stringResource(id = R.string.firstname)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -137,14 +118,9 @@ fun SignupPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = signUpViewModel.lastname,
                     onValueChange = { signUpViewModel.lastname = it },
-                    label = { Text(stringResource(id = R.string.lastname), color = textColor) },
+                    label = { Text(stringResource(id = R.string.lastname)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -152,14 +128,9 @@ fun SignupPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = signUpViewModel.email,
                     onValueChange = { signUpViewModel.email = it },
-                    label = { Text(stringResource(id = R.string.email), color = textColor) },
+                    label = { Text(stringResource(id = R.string.email)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -167,24 +138,18 @@ fun SignupPage(navController: NavHostController) {
                 OutlinedTextField(
                     value = signUpViewModel.password,
                     onValueChange = { signUpViewModel.password = it },
-                    label = { Text(stringResource(id = R.string.password), color = textColor) },
+                    label = { Text(stringResource(id = R.string.password)) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
                             Icon(
                                 imageVector = if (isObscured) Icons.Default.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = null,
-                                tint = iconColor
+                                contentDescription = null
                             )
                         }
                     },
                     singleLine = true,
                     visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = inputBorderColor,
-                        unfocusedBorderColor = inputBorderColor,
-                        cursorColor = textColor
-                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -208,11 +173,7 @@ fun SignupPage(navController: NavHostController) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(id = R.string.sign_up).uppercase())
                 }
@@ -221,7 +182,7 @@ fun SignupPage(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(stringResource(id = R.string.or).uppercase(), color = textColor)
+            Text(stringResource(id = R.string.or).uppercase())
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -237,24 +198,16 @@ fun SignupPage(navController: NavHostController) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.google_logo),
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
+                    modifier = Modifier.size(16.dp)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text(
-                    text = stringResource(id = R.string.sign_up_with_google),
-                    color = textColor
-                )
+                Text( text = stringResource(id = R.string.sign_up_with_google) )
             }
         }
     }
