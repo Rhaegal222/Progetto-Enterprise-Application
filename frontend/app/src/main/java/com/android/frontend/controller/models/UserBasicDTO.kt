@@ -2,9 +2,10 @@ package com.android.frontend.controller.models
 
 data class UserBasicDTO (
 
-    var id: kotlin.String,
-    val username: kotlin.String,
-    val bio: kotlin.String? = null,
+    val id: kotlin.String,
+    val lastName: kotlin.String,
+    val firstName: kotlin.String,
     val photoProfile: UserImageDTO? = null,
+    val status: kotlin.String? = null,
 ) {
 }
