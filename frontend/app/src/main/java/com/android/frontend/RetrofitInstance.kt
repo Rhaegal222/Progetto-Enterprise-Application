@@ -2,6 +2,7 @@ package com.android.frontend
 
 import android.content.Context
 import com.android.frontend.config.TokenInterceptor
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.service.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -9,8 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
-//    private const val BASE_URL = "http://10.0.2.2:8080"
-    private const val BASE_URL = "http://192.168.169.200:8080" //GAETANO
+    private val BASE_URL = CurrentDataUtils.baseUrl
 
     private fun getSimpleRetrofit(): Retrofit {
         return Retrofit.Builder()

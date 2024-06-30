@@ -1,11 +1,14 @@
 package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -19,11 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.frontend.R
+import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.persistence.CurrentDataUtils
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomePage(navController: NavController) {
+
+    var baseUrl = remember { CurrentDataUtils.baseUrl }
+    val checkedState = remember { mutableStateOf(baseUrl == "http://http://10.0.2.2:8080/") }
+
     val colors = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
     val size = with(LocalDensity.current) {
@@ -43,6 +52,43 @@ fun WelcomePage(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Switch(
+                    checked = checkedState.value,
+                    onCheckedChange = {
+                        if (checkedState.value) {
+                            checkedState.value = false
+                            baseUrl = "https://192.168.160.200:8080/"
+                            CurrentDataUtils.baseUrl = baseUrl
+                        } else {
+                            checkedState.value = true
+                            baseUrl = "http://10.0.2.2:8080/"
+                            CurrentDataUtils.baseUrl = baseUrl
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                if (checkedState.value) {
+                    Text(
+                        text = "Gaetano",
+                        style = typography.bodyMedium,
+                        color = colors.onBackground
+                    )
+                } else {
+                    Text(
+                        text = "Localhost",
+                        style = typography.bodyMedium,
+                        color = colors.onBackground
+                    )
+                }
+            }
 
             Image(
                 painter = painterResource(R.drawable.logo),
