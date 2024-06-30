@@ -23,7 +23,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.android.frontend.MainActivity
-import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.config.TokenManager
 
 @Composable
 fun OtherMenu(navController: NavHostController) {

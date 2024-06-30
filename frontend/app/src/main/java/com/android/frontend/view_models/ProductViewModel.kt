@@ -9,9 +9,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.infrastructure.getCurrentStackTrace
-import com.android.frontend.controller.models.CartCreateDTO
-import com.android.frontend.controller.models.CartDTO
-import com.android.frontend.controller.models.ProductDTO
+import com.android.frontend.dto.CartCreateDTO
+import com.android.frontend.dto.CartDTO
+import com.android.frontend.dto.ProductDTO
+import com.android.frontend.config.getCurrentStackTrace
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 

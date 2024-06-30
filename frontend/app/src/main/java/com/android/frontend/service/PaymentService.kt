@@ -1,7 +1,7 @@
 package com.android.frontend.service
 
-import com.android.frontend.controller.models.PaymentMethodDTO
-import com.android.frontend.controller.models.PaymentMethodCreateDTO
+import com.android.frontend.dto.PaymentMethodDTO
+import com.android.frontend.dto.PaymentMethodCreateDTO
 import retrofit2.Call
 import retrofit2.http.*
 

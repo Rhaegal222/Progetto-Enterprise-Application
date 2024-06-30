@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.infrastructure.TokenManager
-import com.android.frontend.controller.infrastructure.getCurrentStackTrace
+import com.android.frontend.config.TokenManager
+import com.android.frontend.config.getCurrentStackTrace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

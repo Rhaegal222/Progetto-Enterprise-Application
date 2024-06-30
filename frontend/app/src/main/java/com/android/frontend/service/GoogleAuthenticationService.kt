@@ -1,6 +1,5 @@
 package com.android.frontend.service
 
-import com.android.frontend.controller.models.UserDTO
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header

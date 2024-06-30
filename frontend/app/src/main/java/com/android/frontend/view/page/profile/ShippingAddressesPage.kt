@@ -25,14 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
-import com.android.frontend.controller.models.AddressDTO
+import com.android.frontend.dto.AddressDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.AddressCard
 import com.android.frontend.view_models.AddressViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import com.android.frontend.controller.infrastructure.getCurrentStackTrace
+import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

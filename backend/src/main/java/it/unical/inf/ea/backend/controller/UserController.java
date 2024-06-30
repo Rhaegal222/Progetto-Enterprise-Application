@@ -130,14 +130,24 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> me() {
+    public ResponseEntity<UserBasicDTO> me() {
         try {
-            return ResponseEntity.ok(userService.findMyProfile());
+            return ResponseEntity.ok(userService.getUserBasicDTO());
         } catch (EntityNotFoundException e) {
             // NOT AUTHORIZED
             return ResponseEntity.status(403).body(null);
         }
     }
+
+    @GetMapping("/retrieveUserProfile")
+    public ResponseEntity<UserDTO> retrieveUserProfile() {
+        try {
+            return ResponseEntity.ok(userService.getUserDTO());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 
     @GetMapping("/refreshToken")
     public ResponseEntity<Map<String, String>> refreshToken(HttpServletRequest request, HttpServletResponse response) {

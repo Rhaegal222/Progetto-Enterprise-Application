@@ -22,7 +22,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
-import com.android.frontend.model.SecurePreferences
+import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.navigation.Navigation
 
 @Composable

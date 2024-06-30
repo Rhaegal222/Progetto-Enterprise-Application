@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.frontend.R
-import com.android.frontend.controller.models.ProductDTO
-import com.android.frontend.model.CurrentDataUtils
-import com.android.frontend.model.SecurePreferences
+import com.android.frontend.persistence.SecurePreferences
+import com.android.frontend.dto.ProductDTO
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.CartViewModel
 import com.android.frontend.view_models.ProductViewModel

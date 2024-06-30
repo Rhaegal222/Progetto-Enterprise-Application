@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
-import com.android.frontend.controller.infrastructure.getCurrentStackTrace
-import com.android.frontend.controller.models.PaymentMethodDTO
+import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.PaymentCard
 import com.android.frontend.view_models.PaymentViewModel

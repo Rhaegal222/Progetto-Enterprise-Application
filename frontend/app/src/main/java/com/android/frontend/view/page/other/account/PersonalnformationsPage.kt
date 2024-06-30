@@ -27,15 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.android.frontend.view_models.ProfileViewModel
+import com.android.frontend.view_models.UserViewModel
 import com.android.frontend.R
 import coil.compose.rememberAsyncImagePainter
-import com.android.frontend.controller.infrastructure.getCurrentStackTrace
+import com.android.frontend.config.getCurrentStackTrace
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PersonalInformationPage(navController: NavController, profileViewModel: ProfileViewModel = viewModel()) {
+fun PersonalInformationPage(navController: NavController, userViewModel: UserViewModel = viewModel()) {
     val context = LocalContext.current
 
     val inputBorderColor = Color.Gray
@@ -43,15 +43,15 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
     val iconColor = Color.Black
     var isObscured by remember { mutableStateOf(true) }
 
-    val profileImage by profileViewModel.profileImageLiveData.observeAsState()
-    val user by profileViewModel.userLiveData.observeAsState()
+    val profileImage by userViewModel.profileImageLiveData.observeAsState()
+    val profile by userViewModel.profileLiveData.observeAsState()
 
-    var firstName by remember { mutableStateOf(user?.firstName ?: "") }
-    var lastName by remember { mutableStateOf(user?.lastName ?: "") }
-    var email by remember { mutableStateOf(user?.email ?: "") }
-    var phoneNumber by remember { mutableStateOf(user?.phoneNumber ?: "Nessun numero di telefono") }
+    var firstName by remember { mutableStateOf(profile?.firstName ?: "") }
+    var lastName by remember { mutableStateOf(profile?.lastName ?: "") }
+    var email by remember { mutableStateOf(profile?.email ?: "") }
+    var phoneNumber by remember { mutableStateOf(profile?.phoneNumber ?: "Nessun numero di telefono") }
 
-    val isLoading by profileViewModel.isLoading
+    val isLoading by userViewModel.isLoading
 
     var isEditMode by remember { mutableStateOf(false) }
     var showEmailChangeDialog by remember { mutableStateOf(false) }
@@ -60,12 +60,12 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            profileViewModel.updatePhotoUser(context, it)
+            userViewModel.updatePhotoUser(context, it)
         }
     }
 
-    LaunchedEffect(user) {
-        user?.let {
+    LaunchedEffect(profile) {
+        profile?.let {
             firstName = it.firstName
             lastName = it.lastName
             email = it.email
@@ -74,8 +74,8 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
     }
 
     LaunchedEffect(Unit) {
-        profileViewModel.fetchData(context)
-        Log.d("DEBUG", "${getCurrentStackTrace()}, User: $user")
+        userViewModel.fetchData(context)
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Profile: $profile")
         Log.d("DEBUG", "${getCurrentStackTrace()}, Profile Image: $profileImage")
     }
 
@@ -239,7 +239,7 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
                                 if (email != firstName) {
                                     showEmailChangeDialog = true
                                 } else {
-                                    profileViewModel.updateUserProfile(
+                                    userViewModel.updateUserProfile(
                                         context,
                                         firstName,
                                         lastName,
@@ -284,14 +284,14 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
                         confirmButton = {
                             TextButton(
                                 onClick = {
-                                    profileViewModel.updateUserProfile(
+                                    userViewModel.updateUserProfile(
                                         context,
                                         firstName,
                                         lastName,
                                         email,
                                         phoneNumber
                                     )
-                                    profileViewModel.logout(context)
+                                    userViewModel.logout(context)
                                 }
                             ) {
                                 Text("Continua")

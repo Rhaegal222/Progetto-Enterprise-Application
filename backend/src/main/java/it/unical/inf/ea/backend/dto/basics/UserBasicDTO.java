@@ -16,12 +16,11 @@ public class UserBasicDTO {
     @NotNull
     private String id;
 
-    @Length(min = 3, max = 25)
     @NotNull
-    private String username;
+    private String lastName;
 
-    @Length(max = 500)
-    private String bio;
+    @NotNull
+    private String firstName;
 
     private UserImageDTO photoProfile;
 

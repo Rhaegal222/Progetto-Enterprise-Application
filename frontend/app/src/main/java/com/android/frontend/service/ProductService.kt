@@ -1,9 +1,8 @@
 package com.android.frontend.service
 
 
-import com.android.frontend.controller.models.ProductDTO
+import com.android.frontend.dto.ProductDTO
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.android.frontend.controller.infrastructure.TokenManager
-import com.android.frontend.controller.infrastructure.getCurrentStackTrace
+import com.android.frontend.config.TokenManager
+import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Screen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")

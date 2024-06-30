@@ -1,9 +1,8 @@
 package com.android.frontend.service
 
-import com.android.frontend.controller.models.UserDTO
-import com.android.frontend.controller.models.UserBasicDTO
-import com.android.frontend.controller.models.UserUpdateRequest
-import okhttp3.RequestBody
+import com.android.frontend.dto.UserDTO
+import com.android.frontend.dto.UserBasicDTO
+import com.android.frontend.dto.UserUpdateRequest
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -38,14 +37,19 @@ interface UserService {
     ): Call<Void>
 
     @GET("/api/v1/users/me")
-    fun me(
+    fun userBasicDTOCall(
+        @Header("Authorization") authorization: String
+    ): Call<UserBasicDTO>
+
+    @GET("/api/v1/users/retrieveUserProfile")
+    fun userDTOCall(
         @Header("Authorization") authorization: String
     ): Call<UserDTO>
 
     @GET("/api/v1/users/{id}")
     fun userById(
         @Path("id") id: String
-    ): Call<UserBasicDTO>
+    ): Call<UserDTO>
 
     @GET("/api/v1/users/find-by-username")
     fun findByUsername(
