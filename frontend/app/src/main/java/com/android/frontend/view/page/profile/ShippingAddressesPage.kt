@@ -46,7 +46,7 @@ fun ShippingAddressesPage(navController: NavController, addressViewModel: Addres
     val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Loading shipping addresses")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Loading shipping addresses")
         addressViewModel.getAllShippingAddresses(context)
     }
 

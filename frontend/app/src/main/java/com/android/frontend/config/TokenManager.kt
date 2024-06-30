@@ -29,36 +29,36 @@ class TokenManager {
     }
 
     suspend fun isUserLoggedIn(context: Context): Boolean {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Checking if user is logged in")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Checking if user is logged in")
 
         val accessToken = getAccessToken(context)
         val refreshToken = getRefreshToken(context)
 
         if (accessToken == null && refreshToken == null) {
-            Log.d("DEBUG", "${getCurrentStackTrace()}, Tokens are null, user is not logged in")
+            Log.d("DEBUG", "${getCurrentStackTrace()} Tokens are null, user is not logged in")
             return false
         }
 
         if (accessToken != null && refreshToken != null) {
-            Log.d("DEBUG", "${getCurrentStackTrace()}, Tokens are not null, user is logged in")
+            Log.d("DEBUG", "${getCurrentStackTrace()} Tokens are not null, user is logged in")
             val userService = RetrofitInstance.getUserApi(context)
             try {
                 val response = withContext(Dispatchers.IO) {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Verifying token with access token: $accessToken")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Verifying token with access token: $accessToken")
                     userService.userBasicDTOCall("Bearer $accessToken").execute()
                 }
                 if (response.isSuccessful) {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, User is logged in")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} User is logged in")
                     if (response.body() != null && response.body() is UserBasicDTO) {
                         SecurePreferences.saveUser(context, response.body()!!)
                     }
                     return true
                 } else {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, User is not logged in")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} User is not logged in")
                     return false
                 }
             } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Error verifying token", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error verifying token", e)
                 return false
             }
         }
@@ -83,22 +83,22 @@ class TokenManager {
     }
 
     suspend fun tryRefreshToken(context: Context): Boolean {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Trying to refresh token (attempt ${CurrentDataUtils.refreshAttempts.get()})")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Trying to refresh token (attempt ${CurrentDataUtils.refreshAttempts.get()})")
 
         CurrentDataUtils.refreshAttempts.incrementAndGet()
 
         if (CurrentDataUtils.refreshAttempts.get() >= maxRefreshAttempts) {
-            Log.w("DEBUG", "${getCurrentStackTrace()}, Max refresh attempts reached")
+            Log.w("DEBUG", "${getCurrentStackTrace()} Max refresh attempts reached")
             clearTokens(context)
             return false
         }
 
         return mutex.withLock {
             if (refreshTokenJob?.isActive == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, Waiting for ongoing refresh token job")
+                Log.d("DEBUG", "${getCurrentStackTrace()} Waiting for ongoing refresh token job")
                 refreshTokenJob!!.await()
             } else {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, Starting new refresh token job")
+                Log.d("DEBUG", "${getCurrentStackTrace()} Starting new refresh token job")
                 refreshTokenJob = CoroutineScope(Dispatchers.IO).async {
                     refreshToken(context)
                 }
@@ -118,26 +118,26 @@ class TokenManager {
         }
 
         try {
-            Log.d("DEBUG", "${getCurrentStackTrace()}, Attempt: ${CurrentDataUtils.refreshAttempts.get()} Refreshing token with refresh token: $refreshToken")
+            Log.d("DEBUG", "${getCurrentStackTrace()} Attempt: ${CurrentDataUtils.refreshAttempts.get()} Refreshing token with refresh token: $refreshToken")
 
             val response = withContext(Dispatchers.IO) {
                 userService.refreshToken(refreshToken).execute()
             }
 
             if (response.isSuccessful) {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, Token refreshed")
+                Log.d("DEBUG", "${getCurrentStackTrace()} Token refreshed")
                 val tokenMap = response.body()
                 val newAccessToken = tokenMap?.get("accessToken")
                 val newRefreshToken = tokenMap?.get("refreshToken")
                 if (newAccessToken != null && newRefreshToken != null) {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, New access token: $newAccessToken")
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, New refresh token: $newRefreshToken")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} New access token: $newAccessToken")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} New refresh token: $newRefreshToken")
                     saveTokens(context, newAccessToken, newRefreshToken)
                     CurrentDataUtils.refreshAttempts.set(0)
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Reset refresh attempts to 0")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Reset refresh attempts to 0")
                     return true
                 } else {
-                    Log.e("DEBUG", "${getCurrentStackTrace()}, Tokens are null")
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Tokens are null")
                     handleRefreshFailure()
                     return false
                 }
@@ -146,7 +146,7 @@ class TokenManager {
                 return false
             }
         } catch (e: Exception) {
-            Log.e("DEBUG", "${getCurrentStackTrace()}, Error refreshing token", e)
+            Log.e("DEBUG", "${getCurrentStackTrace()} Error refreshing token", e)
             handleRefreshFailure()
             return false
         }
@@ -154,7 +154,7 @@ class TokenManager {
 
     private suspend fun handleRefreshFailure() {
         val attempts = CurrentDataUtils.refreshAttempts.incrementAndGet()
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Incrementing refresh attempts to $attempts")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Incrementing refresh attempts to $attempts")
         delay(1000L * (2.0.pow(attempts.toDouble()).toLong())) // Exponential backoff
     }
 

@@ -22,12 +22,12 @@ class DebugViewModel : ViewModel() {
                     call.execute()
                 }
                 if (response.isSuccessful) {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Token rejected")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Token rejected")
                 } else {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Token rejection failed")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Token rejection failed")
                 }
             } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Error rejecting token", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error rejecting token", e)
             }
         }
     }
@@ -35,7 +35,7 @@ class DebugViewModel : ViewModel() {
     fun showToken(context: Context) {
         val accessToken = TokenManager.getInstance().getAccessToken(context)
         val refreshToken = TokenManager.getInstance().getRefreshToken(context)
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Access token: $accessToken")
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Refresh token: $refreshToken")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Access token: $accessToken")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Refresh token: $refreshToken")
     }
 }

@@ -75,29 +75,29 @@ class GoogleAuthentication(private val context: Context) {
     }
 
     private fun promptAddGoogleAccount() {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Prompting user to add Google account")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Prompting user to add Google account")
         val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
         intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
         context.startActivity(intent)
     }
 
     private fun userAlreadySignedIn(): Boolean {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Checking if user is already signed in")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Checking if user is already signed in")
         return accessToken.isNotEmpty() && refreshToken.isNotEmpty() && provider == "google"
     }
 
     private fun createRequest(): GetCredentialRequest {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Creating request")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Creating request")
         try {
             return if (userAlreadySignedIn()) {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, User is already signed in")
+                Log.d("DEBUG", "${getCurrentStackTrace()} User is already signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getGoogleIdOption()).build()
             } else  {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, User is not signed in")
+                Log.d("DEBUG", "${getCurrentStackTrace()} User is not signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
             }
         } catch (e: GetCredentialException) {
-            Log.e("DEBUG", "${getCurrentStackTrace()}, Error creating request: ${e.message}")
+            Log.e("DEBUG", "${getCurrentStackTrace()} Error creating request: ${e.message}")
             TokenManager.getInstance().clearTokens(context)
             promptAddGoogleAccount()
             return GetCredentialRequest.Builder().build()
@@ -105,12 +105,12 @@ class GoogleAuthentication(private val context: Context) {
     }
 
     private fun handleFailure(e: GetCredentialException) {
-        Log.e("DEBUG", "${getCurrentStackTrace()}, Error getting credential: ${e.message}")
+        Log.e("DEBUG", "${getCurrentStackTrace()} Error getting credential: ${e.message}")
         TokenManager.getInstance().clearTokens(context)
     }
 
     private suspend fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Sign-in flow completed")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Sign-in flow completed")
 
         when (val credential = result.credential) {
 
@@ -121,15 +121,15 @@ class GoogleAuthentication(private val context: Context) {
                         val idToken = googleIdTokenCredential.idToken
                         sendGoogleIdTokenToBackend(idToken) { success ->
                             if (success != null) {
-                                Log.d("DEBUG", "${getCurrentStackTrace()}, Successfully sent google id token to backend")
+                                Log.d("DEBUG", "${getCurrentStackTrace()} Successfully sent google id token to backend")
                                 onResult(success, null)
                             } else {
-                                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to send google id token to backend: null response")
+                                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to send google id token to backend: null response")
                                 onResult(null, context.getString(R.string.server_communication_error))
                             }
                         }
                     } catch (e: GoogleIdTokenParsingException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()}, Received an invalid google id token response", e)
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Received an invalid google id token response", e)
                         withContext(Dispatchers.Main) {
                             onResult(null, context.getString(R.string.google_auth_communication_error))
                         }
@@ -142,7 +142,7 @@ class GoogleAuthentication(private val context: Context) {
             }
             else -> {
                 withContext(Dispatchers.Main) {
-                    Log.e("DEBUG", "${getCurrentStackTrace()}, Received an invalid credential type")
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Received an invalid credential type")
                     onResult(null, context.getString(R.string.google_auth_communication_error))
                 }
             }
@@ -159,12 +159,12 @@ class GoogleAuthentication(private val context: Context) {
                     onResult(tokenMap)
                     refreshAccessToken()
                 } else {
-                    Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to send google id token to backend: ${response.code()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to send google id token to backend: ${response.code()}")
                     onResult(null)
                 }
             }
             override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to send google id token to backend", t)
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to send google id token to backend", t)
                 onResult(null)
             }
         })
@@ -181,12 +181,12 @@ class GoogleAuthentication(private val context: Context) {
                         accessToken = tokenMap["accessToken"].toString()
                         refreshToken = tokenMap["refreshToken"].toString()
                     } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to refresh access token: ${response.code()}")
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to refresh access token: ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                    Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to refresh access token", t)
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to refresh access token", t)
                 }
             })
         }

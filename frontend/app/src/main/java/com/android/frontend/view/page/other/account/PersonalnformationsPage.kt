@@ -75,8 +75,8 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
 
     LaunchedEffect(Unit) {
         userViewModel.fetchData(context)
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Profile: $profile")
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Profile Image: $profileImage")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Profile: $profile")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Profile Image: $profileImage")
     }
 
     Scaffold(
