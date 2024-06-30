@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 import com.android.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.PaymentCard
@@ -38,7 +39,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
     val hasError by paymentViewModel.hasError.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        Log.d("DEBUG PaymentMethodsPage", "Loading payment methods")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Loading payment methods")
         paymentViewModel.getAllPaymentMethods(context)
     }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,12 +22,12 @@ class DebugViewModel : ViewModel() {
                     call.execute()
                 }
                 if (response.isSuccessful) {
-                    Log.d("DEBUG DebugViewModel", "Token rejected")
+                    Log.d("DEBUG", "${getCurrentStackTrace()}, Token rejected")
                 } else {
-                    Log.d("DEBUG DebugViewModel", "Token rejection failed")
+                    Log.d("DEBUG", "${getCurrentStackTrace()}, Token rejection failed")
                 }
             } catch (e: Exception) {
-                Log.e("DEBUG DebugViewModel", "Error rejecting token", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Error rejecting token", e)
             }
         }
     }
@@ -34,7 +35,7 @@ class DebugViewModel : ViewModel() {
     fun showToken(context: Context) {
         val accessToken = TokenManager.getInstance().getAccessToken(context)
         val refreshToken = TokenManager.getInstance().getRefreshToken(context)
-        Log.d("DEBUG DebugViewModel", "Access token: $accessToken")
-        Log.d("DEBUG DebugViewModel", "Refresh token: $refreshToken")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Access token: $accessToken")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Refresh token: $refreshToken")
     }
 }

@@ -44,7 +44,6 @@ class LoginViewModel : ViewModel() {
                             if (accessToken != null && refreshToken != null) {
                                 TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
                                 SecurePreferences.saveProvider(context, "local")
-                                CurrentDataUtils.tokenExpired = false
                                 onResult(true, null)
                             } else {
                                 val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
@@ -78,7 +77,6 @@ class LoginViewModel : ViewModel() {
                         if (accessToken != null && refreshToken != null) {
                             TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
                             SecurePreferences.saveProvider(context, "google")
-                            CurrentDataUtils.tokenExpired = false
                             onResult(true, null)
                         } else {
                             onResult(false, error)

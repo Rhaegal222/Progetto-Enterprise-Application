@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 import com.android.frontend.navigation.Screen
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -16,10 +17,10 @@ fun RootScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         if (TokenManager.getInstance().isUserLoggedIn(context)) {
-            Log.d("DEBUG RootScreen", "User is authenticated. Navigating to MainScreen")
+            Log.d("DEBUG", "${getCurrentStackTrace()}, User is authenticated. Navigating to MainScreen")
             navController.navigate(Screen.MainScreen.route)
         } else {
-            Log.d("DEBUG RootScreen", "User is not authenticated. Navigating to AuthenticationScreen")
+            Log.d("DEBUG", "${getCurrentStackTrace()}, User is not authenticated. Navigating to AuthenticationScreen")
             navController.navigate(Screen.AuthenticationScreen.route)
         }
     }

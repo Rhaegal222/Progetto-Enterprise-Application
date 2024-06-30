@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.view_models.ProductViewModel
 
@@ -48,7 +49,7 @@ fun ProductDetailsPage(productViewModel: ProductViewModel) {
                 item {
                     if (productDetails != null) {
                         Text(text = "${productDetails.title}", style = MaterialTheme.typography.h4)
-                        Log.d("DEBUG ProductDetailsPage", "Product details: $productDetails")
+                        Log.d("DEBUG", "${getCurrentStackTrace()}, Product details: $productDetails")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     if (productDetails != null) {

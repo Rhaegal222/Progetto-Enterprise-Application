@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 import com.android.frontend.controller.models.ProductDTO
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
@@ -39,20 +40,19 @@ class ProductViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let { product ->
-                            Log.d("DEBUG ProductViewModel", "Product details: $product")
+                            Log.d("DEBUG", "${getCurrentStackTrace()}, Product details: $product")
                             productDetails.value = product
                         }
                     } else {
-                        Log.e("DEBUG ProductViewModel",
-                            "Failed to fetch products: ${response.errorBody()?.string()}")
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
                     if (t is SocketTimeoutException) {
-                        Log.e("DEBUG ProductViewModel", "Timeout error fetching product details", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()}, Timeout error fetching product details", t)
                     } else {
-                        Log.e("DEBUG ProductViewModel", "Error fetching product details", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()}, Error fetching product details", t)
                     }
                 }
             }
@@ -74,16 +74,15 @@ class ProductViewModel : ViewModel() {
                             products.value = productsList
                         }
                     } else {
-                        Log.e("DEBUG ProductViewModel",
-                            "Failed to fetch products: ${response.errorBody()?.string()}")
+                        Log.e("DEBUG", " ${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
                     if (t is SocketTimeoutException) {
-                        Log.e("DEBUG ProductViewModel", "Timeout error fetching products", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()}, Timeout error fetching products", t)
                     } else {
-                        Log.e("DEBUG ProductViewModel", "Error fetching products", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()}, Error fetching products", t)
                     }
                 }
             }
