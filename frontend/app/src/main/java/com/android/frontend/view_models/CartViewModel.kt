@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.controller.models.CartCreateDTO
 import com.android.frontend.controller.models.CartDTO
 import com.android.frontend.model.SecurePreferences
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,18 @@ class CartViewModel : ViewModel() {
             }
         }
     }
+
+    fun addProductToCart(userId: String, productId: String, quantity: Int, context: Context) {
+        val cartService = RetrofitInstance.getCartApi(context)
+        val cartCreateDTO = CartCreateDTO(userId, productId, quantity)
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = cartService.addProductToCart(cartCreateDTO).execute()
+            if (response.isSuccessful) {
+                loadCart(context)  // Aggiorna il carrello dopo aver aggiunto l'elemento
+            }
+        }
+    }
+
 
     fun removeCartItem(cartItemId: String, context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)

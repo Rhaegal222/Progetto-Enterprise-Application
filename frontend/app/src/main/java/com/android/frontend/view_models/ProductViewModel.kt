@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.infrastructure.getCurrentStackTrace
+import com.android.frontend.controller.models.CartCreateDTO
+import com.android.frontend.controller.models.CartDTO
 import com.android.frontend.controller.models.ProductDTO
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
@@ -28,6 +30,35 @@ class ProductViewModel : ViewModel() {
             productService.addProduct(productDTO)
         }
     }
+
+    fun addProductToCart(context: Context, userId: String, productId: String, quantity: Int) {
+        viewModelScope.launch {
+            val cartService = RetrofitInstance.getCartApi(context)
+            val cartCreateDTO = CartCreateDTO(userId, productId, quantity)
+            val call = cartService.addProductToCart(cartCreateDTO)
+            call.enqueue(object : retrofit2.Callback<CartDTO> {
+                override fun onResponse(call: retrofit2.Call<CartDTO>, response: retrofit2.Response<CartDTO>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { cart ->
+                            // aggiornare il conteggio degli articoli nel carrello
+                            CartViewModel().loadCart(context)
+                        }
+                    } else {
+                        Log.e("DEBUG", "Failed to add product to cart: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<CartDTO>, t: Throwable) {
+                    if (t is SocketTimeoutException) {
+                        Log.e("DEBUG", "Timeout error adding product to cart", t)
+                    } else {
+                        Log.e("DEBUG", "Error adding product to cart", t)
+                    }
+                }
+            })
+        }
+    }
+
 
     fun getProductDetails(context: Context, id: String) {
         viewModelScope.launch {
