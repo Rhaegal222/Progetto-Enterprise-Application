@@ -1,17 +1,15 @@
 package com.android.frontend.view_models
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.infrastructure.TokenManager
-import com.android.frontend.model.CurrentDataUtils
-import com.android.frontend.model.GoogleAuthentication
-import com.android.frontend.model.SecurePreferences
+import com.android.frontend.config.TokenManager
+import com.android.frontend.config.GoogleAuthentication
+import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

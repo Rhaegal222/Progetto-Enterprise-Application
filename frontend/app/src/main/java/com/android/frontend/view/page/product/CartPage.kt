@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.frontend.controller.models.CartItemDTO
+import com.android.frontend.dto.CartItemDTO
 import com.android.frontend.view_models.CartViewModel
 import java.math.BigDecimal
 

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.config.TokenManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

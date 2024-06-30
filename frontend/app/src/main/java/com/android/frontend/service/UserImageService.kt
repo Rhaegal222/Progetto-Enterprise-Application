@@ -1,6 +1,6 @@
 package com.android.frontend.service
 
-import com.android.frontend.controller.models.UserImageDTO
+import com.android.frontend.dto.UserImageDTO
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody

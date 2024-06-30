@@ -1,7 +1,7 @@
 package com.android.frontend
 
 import android.content.Context
-import com.android.frontend.controller.infrastructure.TokenInterceptor
+import com.android.frontend.config.TokenInterceptor
 import com.android.frontend.service.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

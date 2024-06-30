@@ -351,7 +351,19 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserBasicDTO findMyProfile() {
+    public UserDTO getUserDTO() {
+        User user = jwtContextUtils.getUserLoggedFromContext();
+        if (user == null ||
+                user.getStatus() == UserStatus.BANNED ||
+                user.getStatus() == UserStatus.CANCELLED ||
+                user.getStatus() == UserStatus.HIDDEN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not allowed to access the profile");
+        }
+        return mapToDto(user);
+    }
+
+    @Override
+    public UserBasicDTO getUserBasicDTO() {
         User user = jwtContextUtils.getUserLoggedFromContext();
         if (user == null ||
                 user.getStatus() == UserStatus.BANNED ||

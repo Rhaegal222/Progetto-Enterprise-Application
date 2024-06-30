@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.controller.models.PaymentMethodCreateDTO
-import com.android.frontend.controller.models.PaymentMethodDTO
-import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.dto.PaymentMethodCreateDTO
+import com.android.frontend.dto.PaymentMethodDTO
+import com.android.frontend.config.TokenManager
 import com.android.frontend.service.PaymentService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.awaitResponse
 import androidx.compose.foundation.pager.PagerState
-import com.android.frontend.controller.infrastructure.getCurrentStackTrace
+import com.android.frontend.config.getCurrentStackTrace
 
 class PaymentViewModel : ViewModel() {
 

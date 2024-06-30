@@ -1,7 +1,7 @@
 package com.android.frontend.service
 
-import com.android.frontend.controller.models.CartCreateDTO
-import com.android.frontend.controller.models.CartDTO
+import com.android.frontend.dto.CartCreateDTO
+import com.android.frontend.dto.CartDTO
 import retrofit2.Call
 import retrofit2.http.*
 

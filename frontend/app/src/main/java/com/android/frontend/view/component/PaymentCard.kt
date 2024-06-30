@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import com.android.frontend.R
-import com.android.frontend.controller.models.PaymentMethodDTO
+import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.ui.theme.cardHeight
 import com.android.frontend.ui.theme.cardWidth
 

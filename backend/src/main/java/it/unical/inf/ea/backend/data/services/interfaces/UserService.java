@@ -2,7 +2,6 @@ package it.unical.inf.ea.backend.data.services.interfaces;
 
 import com.nimbusds.jose.JOSEException;
 import it.unical.inf.ea.backend.data.entities.User;
-import it.unical.inf.ea.backend.dto.AddressDTO;
 import it.unical.inf.ea.backend.dto.UserDTO;
 import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
@@ -66,6 +65,9 @@ public interface UserService {
 
     void resetPassword(String email) throws MessagingException;
 
-    UserBasicDTO findMyProfile() throws EntityNotFoundException;
+    UserDTO getUserDTO() throws EntityNotFoundException;
+
+    UserBasicDTO getUserBasicDTO() throws EntityNotFoundException;
+
 
 }

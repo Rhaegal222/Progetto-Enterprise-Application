@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.android.frontend.controller.models.ProductDTO
-import com.android.frontend.model.CurrentDataUtils
+import com.android.frontend.dto.ProductDTO
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.ProductViewModel
 
