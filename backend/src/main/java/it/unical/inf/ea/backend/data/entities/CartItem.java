@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -28,4 +30,13 @@ public class CartItem {
 
     @Column(nullable = false)
     private int quantity;
+
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+
+    @Column(name = "product_price", nullable = false)
+    private BigDecimal productPrice;
+
+    @Column(name = "delivery_price", nullable = false)
+    private BigDecimal deliveryPrice;
 }

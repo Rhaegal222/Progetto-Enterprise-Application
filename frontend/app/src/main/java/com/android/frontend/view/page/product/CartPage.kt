@@ -1,37 +1,101 @@
 package com.android.frontend.view.page.product
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.content.Context
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.frontend.R
+import com.android.frontend.controller.models.CartItemDTO
+import com.android.frontend.view_models.CartViewModel
+import java.math.BigDecimal
 
 @Composable
-fun CartPage() {
-    println("CartPage loaded")
+fun CartPage(cartViewModel: CartViewModel) {
+    val context = LocalContext.current
+    val cart by cartViewModel.cart.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .background(Color.Gray)
-            .padding(16.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Cart Screen Content")
+    LaunchedEffect(Unit) {
+        cartViewModel.loadCart(context)
     }
 
+    cart?.let {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(it.cartItems) { cartItem ->
+                    CartItemCard(cartItem, cartViewModel, context)
+                }
+            }
+            CartSummary(cartItems = it.cartItems)
+        }
+    }
 }
 
+@Composable
+fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: Context) {
+    var quantity by remember { mutableStateOf(cartItem.quantity) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Product: ${cartItem.productName}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Text(text = "Product Price: ${cartItem.productPrice}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Text(text = "Delivery Price: ${cartItem.deliveryPrice}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {
+                    if (quantity > 1) {
+                        quantity--
+                        cartViewModel.updateCartItem(cartItem.id, quantity, context)
+                    }
+                }) {
+                    Icon(Icons.Default.Remove, contentDescription = "Decrease Quantity")
+                }
+                Text(text = quantity.toString(), fontSize = 16.sp, modifier = Modifier.padding(horizontal = 8.dp))
+                IconButton(onClick = {
+                    quantity++
+                    cartViewModel.updateCartItem(cartItem.id, quantity, context)
+                }) {
+                    Icon(Icons.Default.Add, contentDescription = "Increase Quantity")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = {
+                    cartViewModel.removeCartItem(cartItem.id, context)
+                }) {
+                    Icon(Icons.Default.Delete, contentDescription = "Remove Item")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CartSummary(cartItems: List<CartItemDTO>) {
+    val total = cartItems.fold(BigDecimal.ZERO) { acc, cartItem ->
+        acc + (cartItem.productPrice * BigDecimal(cartItem.quantity)) + cartItem.deliveryPrice
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Cart Summary", fontSize = 18.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Text(text = "Total Price: $total", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+        }
+    }
+}

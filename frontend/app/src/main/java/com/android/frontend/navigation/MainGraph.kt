@@ -25,12 +25,13 @@ import com.android.frontend.view.page.product.ProductDetailsPage
 import com.android.frontend.view.page.profile.AddAddressPage
 import com.android.frontend.view.page.profile.PaymentMethodsPage
 import com.android.frontend.view.page.profile.ShippingAddressesPage
+import com.android.frontend.view_models.CartViewModel
 
 @Composable
-fun MainGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Navigation.HomePage.route, modifier = modifier) {
         composable(Navigation.HomePage.route) { HomePage(navController) }
-        composable(Navigation.CartPage.route) { CartPage() }
+        composable(Navigation.CartPage.route) { CartPage(cartViewModel = cartViewModel) }
         composable(Navigation.AccountPage.route) { PersonalInformationPage(navController) }
         composable(Navigation.AboutPage.route) { AboutPage(navController) }
         composable(Navigation.OtherMenu.route) { OtherMenu(navController) }

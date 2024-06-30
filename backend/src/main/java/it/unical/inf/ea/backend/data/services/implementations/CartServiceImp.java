@@ -77,6 +77,9 @@ public class CartServiceImp implements CartService {
                     .cart(cart)
                     .product(product)
                     .quantity(cartCreateDTO.getQuantity())
+                    .productName(product.getTitle())
+                    .productPrice(product.getProductPrice())
+                    .deliveryPrice(product.getDeliveryPrice())
                     .build();
             cart.getCartItems().add(cartItem);
         }
@@ -116,6 +119,9 @@ public class CartServiceImp implements CartService {
                 .id(cartItem.getId())
                 .productId(cartItem.getProduct().getId())
                 .quantity(cartItem.getQuantity())
+                .productName(cartItem.getProductName())
+                .productPrice(cartItem.getProductPrice())
+                .deliveryPrice(cartItem.getDeliveryPrice())
                 .build();
     }
 }
