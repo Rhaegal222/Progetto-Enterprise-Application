@@ -3,7 +3,6 @@ package com.android.frontend.view.page.profile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,6 +25,7 @@ import com.android.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.PaymentCard
 import com.android.frontend.view_models.PaymentViewModel
+import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -44,14 +44,15 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
+    } else if (hasError) {
+        ErrorDialog(
+            title = stringResource(id = R.string.fetching_error),
+            onDismiss = { navController.popBackStack() },
+            onRetry = { paymentViewModel.getAllPaymentMethods(context) },
+            errorMessage = stringResource(id = R.string.payment_methods_load_failed)
+        )
     } else {
-        if (hasError) {
-            Log.d("DEBUG PaymentMethodsPage", "Failed to load payment methods")
-            Toast.makeText(context, "Failed to load payment methods", Toast.LENGTH_SHORT).show()
-            navController.popBackStack()
-        } else {
-            PaymentMethodsContent(navController, payments, paymentViewModel, context)
-        }
+        PaymentMethodsContent(navController, payments, paymentViewModel, context)
     }
 }
 

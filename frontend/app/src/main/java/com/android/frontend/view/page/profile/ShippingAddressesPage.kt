@@ -1,10 +1,9 @@
 package com.android.frontend.view.page.profile
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -23,44 +22,72 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.android.frontend.R
-import com.android.frontend.controller.models.AddressCreateDTO
 import com.android.frontend.controller.models.AddressDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.AddressCard
 import com.android.frontend.view_models.AddressViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ShippingAddressesPage(navController: NavHostController, addressViewModel: AddressViewModel = viewModel()) {
+fun ShippingAddressesPage(navController: NavController, addressViewModel: AddressViewModel = viewModel()) {
 
     val context = LocalContext.current
 
-    val addresses by addressViewModel.shippingAddressesLiveData.observeAsState()
-    addressViewModel.getAllShippingAddresses(context)
+    val isLoading by addressViewModel.isLoading.observeAsState(false)
+    val hasError by addressViewModel.hasError.observeAsState(false)
+    val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
 
-    val pagerState = rememberPagerState()
+    LaunchedEffect(Unit) {
+        Log.d("DEBUG ShippingAddressesPage", "Loading shipping addresses")
+        addressViewModel.getAllShippingAddresses(context)
+    }
 
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (hasError) {
+        ErrorDialog(
+            title = stringResource(id = R.string.fetching_error),
+            onDismiss = { navController.popBackStack() },
+            onRetry = { addressViewModel.getAllShippingAddresses(context) },
+            errorMessage = stringResource(id = R.string.shipping_addresses_load_failed)
+        )
+    } else {
+        ShippingAddressesContent(navController, addresses, addressViewModel, context)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@Composable
+fun ShippingAddressesContent(
+    navController: NavController,
+    addresses: List<AddressDTO>,
+    addressViewModel: AddressViewModel,
+    context: Context
+) {
+    val pagerState = rememberPagerState(pageCount = { addresses.size })
     var selectedAddress by remember { mutableStateOf<AddressDTO?>(null) }
     var isDefaultAddress by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(addresses) {
-        if (!addresses.isNullOrEmpty()) {
-            selectedAddress = addresses!![0]
+        if (addresses.isNotEmpty()) {
+            selectedAddress = addresses[0]
             isDefaultAddress = selectedAddress?.isDefault ?: false
         }
     }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            if (addresses != null && page in addresses!!.indices) {
-                selectedAddress = addresses!![page]
+            if (page in addresses.indices) {
+                selectedAddress = addresses[page]
                 isDefaultAddress = selectedAddress?.isDefault ?: false
             }
         }
@@ -107,20 +134,19 @@ fun ShippingAddressesPage(navController: NavHostController, addressViewModel: Ad
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            if (!addresses.isNullOrEmpty()) {
-
-                HorizontalPager(
+            if (addresses.isNotEmpty()) {
+                androidx.compose.foundation.pager.HorizontalPager(
                     state = pagerState,
-                    count = addresses!!.size,
                     contentPadding = PaddingValues(horizontal = 50.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) { page ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 0.dp)
                     ) {
-                        AddressCard(shippingAddress = addresses!![page], onRemove = {
-                            addressViewModel.deleteShippingAddress(context, addresses!![page].id)
+                        AddressCard(shippingAddress = addresses[page], onRemove = {
+                            addressViewModel.deleteShippingAddress(context, addresses[page].id)
                         })
                     }
                 }

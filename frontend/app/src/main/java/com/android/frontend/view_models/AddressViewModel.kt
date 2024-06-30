@@ -1,6 +1,7 @@
 package com.android.frontend.view_models
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,22 +10,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.infrastructure.TokenManager
 import com.android.frontend.controller.models.AddressCreateDTO
 import com.android.frontend.controller.models.AddressDTO
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
+import androidx.compose.foundation.pager.PagerState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
-import java.net.SocketTimeoutException
+import retrofit2.awaitResponse
 
 class AddressViewModel : ViewModel() {
 
-    private val shippingAddresses = MutableLiveData<List<AddressDTO>>()
-    val shippingAddressesLiveData: LiveData<List<AddressDTO>> get() = shippingAddresses
+    private val _shippingAddresses = MutableLiveData<List<AddressDTO>>()
+    val shippingAddressesLiveData: LiveData<List<AddressDTO>> get() = _shippingAddresses
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _hasError = MutableLiveData(false)
+    val hasError: LiveData<Boolean> get() = _hasError
 
     var header by mutableStateOf("")
     var country by mutableStateOf("")
@@ -35,123 +41,140 @@ class AddressViewModel : ViewModel() {
 
     fun addShippingAddress(context: Context, header: String, country: String, city: String, street: String, zipCode: String, isDefault: Boolean) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG AddressViewModel", "Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
             val shippingAddress = AddressCreateDTO(header, country, city, street, zipCode, isDefault)
             val addressService = RetrofitInstance.getAddressApi(context)
-            val call = addressService.addShippingAddress("Bearer $accessToken", shippingAddress)
-            call.enqueue(object : Callback<AddressDTO> {
-                override fun onResponse(
-                    call: Call<AddressDTO>,
-                    response: Response<AddressDTO>
-                ) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { shippingAddress ->
-                            Log.d("DEBUG AddressViewModel", "Added shipping address: $shippingAddress")
-                        }
-                    } else {
-                        Log.e("DEBUG AddressViewModel",
-                            "Failed to add shipping address: ${response.errorBody()?.string()}")
-                    }
+            val response = executeRequest(context) {
+                addressService.addShippingAddress("Bearer $accessToken", shippingAddress)
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let { shippingAddresses ->
+                    Log.d("DEBUG AddressViewModel", "Added shipping address: $shippingAddresses")
+                    getAllShippingAddresses(context)
                 }
-
-                override fun onFailure(call: Call<AddressDTO>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG AddressViewModel", "Timeout error adding shipping address", t)
-                    } else {
-                        Log.e("DEBUG AddressViewModel", "Error adding shipping address", t)
-                    }
-                }
-            })
+            } else {
+                Log.e("DEBUG AddressViewModel", "Failed to add shipping address: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
     fun getAllShippingAddresses(context: Context) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG AddressViewModel", "Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
             val addressService = RetrofitInstance.getAddressApi(context)
-            val call = addressService.getAllShippingAddresses("Bearer $accessToken")
-            call.enqueue(object : Callback<List<AddressDTO>> {
-                override fun onResponse(
-                    call: Call<List<AddressDTO>>,
-                    response: Response<List<AddressDTO>>
-                ) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { it ->
-                            shippingAddresses.value = it
-                        }
-                    } else {
-                        Log.e("DEBUG AddressViewModel",
-                            "Failed to fetch shipping addresses: ${response.errorBody()?.string()}")
-                    }
+            val response = executeRequest(context) {
+                addressService.getAllShippingAddresses("Bearer $accessToken")
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let {
+                    _shippingAddresses.value = it
                 }
-
-                override fun onFailure(call: Call<List<AddressDTO>>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG AddressViewModel", "Timeout error fetching shipping addresses", t)
-                    } else {
-                        Log.e("DEBUG AddressViewModel", "Error fetching shipping addresses", t)
-                    }
-                }
-            })
+            } else {
+                Log.e("DEBUG AddressViewModel", "Failed to get shipping addresses: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
-    @OptIn(ExperimentalPagerApi::class)
     fun setDefaultShippingAddress(context: Context, id: String, pagerState: PagerState){
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG AddressViewModel", "Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
             val addressService = RetrofitInstance.getAddressApi(context)
-            val call = addressService.setDefaultShippingAddress("Bearer $accessToken", id)
-            call.enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        Log.d("DEBUG AddressViewModel", "Set default shipping address with id: $id")
-                        viewModelScope.launch {
-                            pagerState.scrollToPage(0)
-                        }
-                        getAllShippingAddresses(context)
-                    } else {
-                        Log.e("DEBUG AddressViewModel",
-                            "Failed to set default shipping address: ${response.errorBody()?.string()}")
-                    }
+            val response = executeRequest(context) {
+                addressService.setDefaultShippingAddress("Bearer $accessToken", id)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG AddressViewModel", "Set default shipping address with id: $id")
+                viewModelScope.launch {
+                    pagerState.scrollToPage(0)
                 }
-
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG AddressViewModel", "Timeout error setting default shipping address", t)
-                    } else {
-                        Log.e("DEBUG AddressViewModel", "Error setting default shipping address", t)
-                    }
-                }
-            })
+                getAllShippingAddresses(context)
+            } else {
+                Log.e("DEBUG AddressViewModel", "Failed to set default shipping address: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
     fun deleteShippingAddress(context: Context, id: String) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG AddressViewModel", "Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
             val addressService = RetrofitInstance.getAddressApi(context)
-            val call = addressService.deleteShippingAddress("Bearer $accessToken", id)
-            call.enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        Log.d("DEBUG AddressViewModel", "Deleted shipping address with id: $id")
-                        getAllShippingAddresses(context)
-                    } else {
-                        Log.e("DEBUG AddressViewModel",
-                            "Failed to delete shipping address: ${response.errorBody()?.string()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG AddressViewModel", "Timeout error deleting shipping address", t)
-                    } else {
-                        Log.e("DEBUG AddressViewModel", "Error deleting shipping address", t)
-                    }
-                }
-            })
+            val response = executeRequest(context) {
+                addressService.deleteShippingAddress("Bearer $accessToken", id)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG AddressViewModel", "Deleted shipping address with id: $id")
+                getAllShippingAddresses(context)
+            } else {
+                Log.e("DEBUG AddressViewModel", "Failed to delete shipping address: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
+    private suspend fun <T> executeRequest(context: Context, request: () -> Call<T>): Response<T>? {
+        return try {
+            val response = withContext(Dispatchers.IO) { request().awaitResponse() }
+            when (response.code()) {
+                401, 403 -> {
+                    if (TokenManager.getInstance().tryRefreshToken(context)) {
+                        withContext(Dispatchers.IO) { request().awaitResponse() } // Retry the request
+                    } else {
+                        handleLogout(context)
+                        null
+                    }
+                }
+                else -> response
+            }
+        } catch (e: Exception) {
+            Log.e("DEBUG PaymentViewModel", "Request failed", e)
+            _hasError.value = true
+            null
+        }
+    }
+
+    private fun handleLogout(context: Context) {
+        TokenManager.getInstance().clearTokens(context)
+        context.startActivity(Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+    }
 }

@@ -19,7 +19,7 @@ class TokenInterceptor(private val context: Context) : Interceptor {
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        var accessToken = TokenManager.getInstance().getAccessToken(context)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
         val originalRequest = chain.request()
 
         var request = buildRequest(originalRequest, accessToken)

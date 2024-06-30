@@ -13,7 +13,6 @@ import androidx.lifecycle.viewModelScope
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.models.PaymentMethodCreateDTO
-import com.android.frontend.model.SecurePreferences
 import com.android.frontend.controller.models.PaymentMethodDTO
 import com.android.frontend.controller.infrastructure.TokenManager
 import com.android.frontend.service.PaymentService
@@ -23,12 +22,12 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.awaitResponse
+import androidx.compose.foundation.pager.PagerState
 
 class PaymentViewModel : ViewModel() {
 
     private val _paymentMethods = MutableLiveData<List<PaymentMethodDTO>>()
     val paymentMethodsLiveData: LiveData<List<PaymentMethodDTO>> get() = _paymentMethods
-
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -97,7 +96,7 @@ class PaymentViewModel : ViewModel() {
         }
     }
 
-    fun setDefaultPayment(context: Context, id: String, pagerState: androidx.compose.foundation.pager.PagerState) {
+    fun setDefaultPayment(context: Context, id: String, pagerState: PagerState) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false

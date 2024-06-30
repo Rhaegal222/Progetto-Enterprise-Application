@@ -1,77 +1,42 @@
 package com.android.frontend.view.page.profile
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.android.frontend.R
 import com.android.frontend.view_models.AddressViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddAddressPage(navController: NavHostController) {
 
     val context = LocalContext.current
-
     val addressViewModel = AddressViewModel()
 
-    val mText = "addressUpdated"
-    val notUpdated = "addressNotUpdated"
-
-    Scaffold(
-        containerColor = Color.White,
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.add_address).uppercase(),
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-            )
-        }
-    ) {
-        LazyColumn {
+    Scaffold {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ){
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp)
+                        .padding(vertical = 16.dp, horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
                     OutlinedTextField(
                         value = addressViewModel.header,
                         onValueChange = { addressViewModel.header = it},

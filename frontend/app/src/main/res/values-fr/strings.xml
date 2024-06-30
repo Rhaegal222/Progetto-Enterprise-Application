@@ -90,4 +90,10 @@
     <string name="debug">Debug</string>
     <string name="reject_access_token">Reject access token</string>
     <string name="show_tokens">Show tokens</string>
+    <string name="payment_methods_load_failed">Échec du chargement des méthodes de paiement.</string>
+    <string name="retry">Réessayer</string>
+    <string name="fetching_error">Erreur lors de la récupération</string>
+    <string name="load_error">Erreur de chargement</string>
+    <string name="payment_load_error">Échec du chargement des méthodes de paiement.</string>
+    <string name="shipping_addresses_load_failed">Échec du chargement des adresses de livraison.</string>
 </resources>
