@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,7 +34,7 @@ import kotlinx.coroutines.delay
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {
-
+    val colors = MaterialTheme.colorScheme
     var searchQuery by remember { mutableStateOf("") }
     var focusOnTextField by remember { mutableStateOf(false) }
 
@@ -119,7 +118,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color.White)
+                .background(colors.background)
         ) {
             // Se la search bar ha il focus
             if (focusOnTextField) {

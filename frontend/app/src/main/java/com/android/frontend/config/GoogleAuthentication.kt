@@ -105,7 +105,7 @@ class GoogleAuthentication(private val context: Context) {
     }
 
     private fun handleFailure(e: GetCredentialException) {
-        Log.e("DEBUG", "${getCurrentStackTrace()}, Error getting credential: ${e.message}")
+        Log.e("DEBUG", "${getCurrentStackTrace()}, Error getting credential: ${e}")
         TokenManager.getInstance().clearTokens(context)
     }
 
