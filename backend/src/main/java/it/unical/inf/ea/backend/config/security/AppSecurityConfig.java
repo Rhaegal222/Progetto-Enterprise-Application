@@ -75,10 +75,10 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/shipping-addresses/getShippingAddress/{id}", "/api/v1/shipping-addresses/getAllShippingAddresses").authenticated()
 
                         // CART
-                        .requestMatchers(HttpMethod.POST, "/api/v1/cart/addCartItem").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/cart/updateCartItem/{cartId}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cart/deleteCartItem/{cartId}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/getCartItemsByUserId/user/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/cart/addProduct").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/cart/updateProduct/{cartItemId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cart/removeProduct/{cartItemId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/cart/getCartByUserId/{userId}").authenticated()
 
                         // USER
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/logout", "api/v1/users/changePassword").authenticated()
