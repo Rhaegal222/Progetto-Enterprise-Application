@@ -1,36 +1,42 @@
 package com.android.frontend.view.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ManageSearch
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Shop
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.view_models.CartViewModel
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
+    val context = LocalContext.current
     val currentNavigation = navController
         .currentBackStackEntryFlow
         .collectAsState(initial = navController.currentBackStackEntry)
 
+    val cartItemCount by cartViewModel.cartItemCount.collectAsState()
+
+    LaunchedEffect(Unit) {
+        cartViewModel.loadCart(context)
+    }
+
     BottomAppBar {
         NavigationBar {
-
             NavigationBarItem(
                 selected = currentNavigation.value?.destination?.route == Navigation.HomePage.route,
                 onClick = { navController.navigate(Navigation.HomePage.route) },
@@ -59,7 +65,15 @@ fun BottomBar(navController: NavHostController) {
                 selected = currentNavigation.value?.destination?.route == Navigation.CartPage.route,
                 onClick = { navController.navigate(Navigation.CartPage.route) },
                 icon = {
-                    Icon(Icons.Default.ShoppingCart, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.cart))
+                    Box {
+                        Icon(Icons.Default.ShoppingCart, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.cart))
+                        if (cartItemCount > 0) {
+                            Badge(
+                                content = { Text(cartItemCount.toString(), fontSize = 10.sp) },
+                                modifier = Modifier.align(Alignment.TopEnd).offset(4.dp, (-4).dp)
+                            )
+                        }
+                    }
                 }
             )
 

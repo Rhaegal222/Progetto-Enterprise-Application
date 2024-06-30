@@ -3,6 +3,8 @@ package it.unical.inf.ea.backend.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +19,14 @@ public class CartItemDTO {
 
     @NotNull
     private int quantity;
+
+    @NotNull
+    private String productName;
+
+    @NotNull
+    private BigDecimal productPrice;
+
+    @NotNull
+    private BigDecimal deliveryPrice;
+
 }
