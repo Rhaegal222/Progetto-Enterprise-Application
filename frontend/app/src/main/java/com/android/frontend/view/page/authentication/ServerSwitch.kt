@@ -43,10 +43,10 @@ fun ServerSwitch() {
                 Log.d("DEBUG", "BaseUrl changed to: ${CurrentDataUtils.baseUrl}")
             },
             colors = SwitchDefaults.colors(
-                checkedThumbColor = colors.primary,
-                checkedTrackColor = colors.primary.copy(alpha = 0.5f),
-                uncheckedThumbColor = colors.onBackground,
-                uncheckedTrackColor = colors.onBackground.copy(alpha = 0.5f)
+                checkedThumbColor = colors.onSurface,
+                checkedTrackColor = colors.onSurface.copy(alpha = 0.5f),
+                uncheckedThumbColor = colors.onSecondary.copy(alpha = 0.5f),
+                uncheckedTrackColor = colors.onSecondary
             ),
         )
 

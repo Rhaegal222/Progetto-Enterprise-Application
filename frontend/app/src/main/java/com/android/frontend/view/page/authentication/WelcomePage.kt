@@ -1,14 +1,11 @@
 package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -22,11 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.frontend.R
-import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.persistence.CurrentDataUtils
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomePage(navController: NavController) {
 
@@ -41,6 +36,7 @@ fun WelcomePage(navController: NavController) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = colors.background // Colore di sfondo della schermata
     ) {
         Column(
             modifier = Modifier
@@ -65,7 +61,7 @@ fun WelcomePage(navController: NavController) {
                 text = stringResource(id = R.string.welcome),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = colors.primary,
+                color = colors.onBackground, // Usa un colore scuro per il testo "Welcome"
                 textAlign = TextAlign.Center
             )
 
@@ -75,7 +71,7 @@ fun WelcomePage(navController: NavController) {
                 text = stringResource(id = R.string.welcome_description),
                 style = typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = colors.onBackground,
+                color = colors.onBackground, // Colore del testo della descrizione
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -92,9 +88,10 @@ fun WelcomePage(navController: NavController) {
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colors.primary
+                        containerColor = colors.background, // Sfondo bianco o nero a seconda del tema
+                        contentColor = colors.onBackground // Testo nero o bianco a seconda del tema
                     ),
-                    border = BorderStroke(1.dp, colors.primary)
+                    border = BorderStroke(1.dp, colors.onBackground) // Contorno nero o bianco a seconda del tema
                 ) {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
@@ -110,9 +107,10 @@ fun WelcomePage(navController: NavController) {
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.primary,
-                        contentColor = colors.onPrimary
-                    )
+                        containerColor = colors.onBackground, // Sfondo nero o bianco a seconda del tema
+                        contentColor = colors.background // Testo bianco o nero a seconda del tema
+                    ),
+                    border = BorderStroke(1.dp, colors.onBackground) // Bordo nero o bianco a seconda del tema
                 ) {
                     Text(
                         text = stringResource(id = R.string.sign_up).uppercase(),
