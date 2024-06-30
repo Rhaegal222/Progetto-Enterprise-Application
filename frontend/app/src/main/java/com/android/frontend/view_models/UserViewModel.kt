@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
+import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.UserBasicDTO
 import com.android.frontend.dto.UserDTO
 import com.android.frontend.persistence.SecurePreferences
@@ -69,10 +70,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                         _user.postValue(it)
                     }
                 } else {
-                    Log.e("UserViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch user profile: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("UserViewModel", "Error fetching user profile", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching user profile", e)
             }
         }
     }
@@ -90,10 +91,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                         _profile.postValue(it)
                     }
                 } else {
-                    Log.e("UserViewModel", "Failed to fetch user profile: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch user profile: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("UserViewModel", "Error fetching user profile", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching user profile", e)
             }
         }
     }
@@ -113,7 +114,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             )
 
             if (_user.value?.id == "-1" || _user.value?.id == null || _user.value?.id == "" || _user.value?.id == "null") {
-                Log.e("UserViewModel", "User ID is not set")
+                Log.e("DEBUG", "${getCurrentStackTrace()},User ID is not set")
                 return@launch
             }
             val userService = RetrofitInstance.getUserApi(context)
@@ -125,12 +126,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                             getUserBasicDTO(context)
                         }
                     } else {
-                        Log.e("UserViewModel", "Failed to update user profile: ${response.errorBody()?.string()}")
+                        Log.e("DEBUG", "${getCurrentStackTrace()},Failed to update user profile: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: Call<UserDTO>, t: Throwable) {
-                    Log.e("UserViewModel", "Error updating user profile", t)
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Error updating user profile", t)
                 }
             })
         }
@@ -179,10 +180,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                         getUserBasicDTO(context) // Assuming this is a suspend function
                     }
                 } else {
-                    Log.e("UserViewModel", "Image upload failed: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image upload failed: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("UserViewModel", "Image upload error", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image upload error", e)
             }
         }
     }
@@ -197,12 +198,12 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (!response.isSuccessful) {
-                    Log.e("UserViewModel", "Image delete failed: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image delete failed: ${response.errorBody()?.string()}")
                 }
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("UserViewModel", "Image delete error: ${t.message}")
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image delete error: ${t.message}")
             }
         })
     }
@@ -218,10 +219,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                     val tempFile = saveImageToFile(context, responseBody)
                     profileImage.postValue(Uri.fromFile(tempFile))
                 } ?: run {
-                    Log.e("UserViewModel", "Image retrieval failed")
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
                 }
             } catch (e: Exception) {
-                Log.e("UserViewModel", "Image retrieval error: ${e.message}")
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
             }
         }
     }

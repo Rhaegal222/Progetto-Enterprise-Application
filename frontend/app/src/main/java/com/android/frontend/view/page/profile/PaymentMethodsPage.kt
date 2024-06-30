@@ -39,7 +39,7 @@ fun PaymentMethodsPage(navController: NavHostController, paymentViewModel: Payme
     val hasError by paymentViewModel.hasError.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        Log.d("DEBUG", "${getCurrentStackTrace()}, Loading payment methods")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Loading payment methods")
         paymentViewModel.getAllPaymentMethods(context)
     }
 

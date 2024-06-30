@@ -17,10 +17,10 @@ fun RootScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         if (TokenManager.getInstance().isUserLoggedIn(context)) {
-            Log.d("DEBUG", "${getCurrentStackTrace()}, User is authenticated. Navigating to MainScreen")
+            Log.d("DEBUG", "${getCurrentStackTrace()} User is authenticated. Navigating to MainScreen")
             navController.navigate(Screen.MainScreen.route)
         } else {
-            Log.d("DEBUG", "${getCurrentStackTrace()}, User is not authenticated. Navigating to AuthenticationScreen")
+            Log.d("DEBUG", "${getCurrentStackTrace()} User is not authenticated. Navigating to AuthenticationScreen")
             navController.navigate(Screen.AuthenticationScreen.route)
         }
     }

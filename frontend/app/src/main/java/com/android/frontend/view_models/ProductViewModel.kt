@@ -71,7 +71,7 @@ class ProductViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let { product ->
-                            Log.d("DEBUG", "${getCurrentStackTrace()}, Product details: $product")
+                            Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
                             productDetails.value = product
                         }
                     } else {
@@ -81,9 +81,9 @@ class ProductViewModel : ViewModel() {
 
                 override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
                     if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()}, Timeout error fetching product details", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
                     } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()}, Error fetching product details", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
                     }
                 }
             }
@@ -111,9 +111,9 @@ class ProductViewModel : ViewModel() {
 
                 override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
                     if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()}, Timeout error fetching products", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching products", t)
                     } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()}, Error fetching products", t)
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching products", t)
                     }
                 }
             }

@@ -47,7 +47,7 @@ class AddressViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -59,11 +59,11 @@ class AddressViewModel : ViewModel() {
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { shippingAddresses ->
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Added shipping address: $shippingAddresses")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Added shipping address: $shippingAddresses")
                     getAllShippingAddresses(context)
                 }
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to add shipping address: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to add shipping address: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -76,7 +76,7 @@ class AddressViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -90,7 +90,7 @@ class AddressViewModel : ViewModel() {
                     _shippingAddresses.value = it
                 }
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to get shipping addresses: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to get shipping addresses: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -103,7 +103,7 @@ class AddressViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -113,13 +113,13 @@ class AddressViewModel : ViewModel() {
                 addressService.setDefaultShippingAddress("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, Set default shipping address with id: $id")
+                Log.d("DEBUG", "${getCurrentStackTrace()} Set default shipping address with id: $id")
                 viewModelScope.launch {
                     pagerState.scrollToPage(0)
                 }
                 getAllShippingAddresses(context)
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to set default shipping address: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to set default shipping address: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -132,7 +132,7 @@ class AddressViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -142,10 +142,10 @@ class AddressViewModel : ViewModel() {
                 addressService.deleteShippingAddress("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, Deleted shipping address with id: $id")
+                Log.d("DEBUG", "${getCurrentStackTrace()} Deleted shipping address with id: $id")
                 getAllShippingAddresses(context)
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to delete shipping address: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to delete shipping address: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -167,7 +167,7 @@ class AddressViewModel : ViewModel() {
                 else -> response
             }
         } catch (e: Exception) {
-            Log.e("DEBUG", "${getCurrentStackTrace()}, Request failed", e)
+            Log.e("DEBUG", "${getCurrentStackTrace()} Request failed", e)
             _hasError.value = true
             null
         }

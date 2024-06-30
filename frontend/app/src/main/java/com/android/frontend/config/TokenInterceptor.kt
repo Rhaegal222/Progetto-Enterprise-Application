@@ -29,23 +29,23 @@ class TokenInterceptor(private val context: Context) : Interceptor {
             synchronized(this) {
                 val tokenManager = TokenManager.getInstance()
                 val newAccessToken = runBlocking {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Token invalid, attempting to refresh token")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Token invalid, attempting to refresh token")
                     if (tokenManager.tryRefreshToken(context)) {
-                        Log.d("DEBUG", "${getCurrentStackTrace()}, Successfully refreshed token")
+                        Log.d("DEBUG", "${getCurrentStackTrace()} Successfully refreshed token")
                         tokenManager.getAccessToken(context)
                     } else {
-                        Log.d("DEBUG", "${getCurrentStackTrace()}, Token refresh failed, logging out")
+                        Log.d("DEBUG", "${getCurrentStackTrace()} Token refresh failed, logging out")
                         TokenManager.getInstance().logout(context)
                         null
                     }
                 }
 
                 if (newAccessToken != null) {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Successfully refreshed token, retrying request")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Successfully refreshed token, retrying request")
                     request = buildRequest(originalRequest, newAccessToken)
                     response = chain.proceed(request)
                 } else {
-                    Log.d("DEBUG", "${getCurrentStackTrace()}, Token refresh failed, logging out")
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Token refresh failed, logging out")
                     TokenManager.getInstance().logout(context)
                     throw IOException("Token refresh failed")
                 }

@@ -76,7 +76,7 @@ fun AddressCard(shippingAddress: AddressDTO, onRemove: () -> Unit) {
                             maxLines = 1
                         )
                         Text(
-                            text = "${shippingAddress.city}, ${shippingAddress.country}",
+                            text = "${shippingAddress.city} ${shippingAddress.country}",
                             style = TextStyle(fontSize = 14.sp, color = Color.White),
                             maxLines = 1
                         )
