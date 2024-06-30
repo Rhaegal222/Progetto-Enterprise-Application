@@ -44,12 +44,12 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
     var isObscured by remember { mutableStateOf(true) }
 
     val profileImage by profileViewModel.profileImageLiveData.observeAsState()
-    val user by profileViewModel.userLiveData.observeAsState()
+    val profile by profileViewModel.profileLiveData.observeAsState()
 
-    var firstName by remember { mutableStateOf(user?.firstName ?: "") }
-    var lastName by remember { mutableStateOf(user?.lastName ?: "") }
-    var email by remember { mutableStateOf(user?.email ?: "") }
-    var phoneNumber by remember { mutableStateOf(user?.phoneNumber ?: "Nessun numero di telefono") }
+    var firstName by remember { mutableStateOf(profile?.firstName ?: "") }
+    var lastName by remember { mutableStateOf(profile?.lastName ?: "") }
+    var email by remember { mutableStateOf(profile?.email ?: "") }
+    var phoneNumber by remember { mutableStateOf(profile?.phoneNumber ?: "Nessun numero di telefono") }
 
     val isLoading by profileViewModel.isLoading
 
@@ -64,8 +64,8 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
         }
     }
 
-    LaunchedEffect(user) {
-        user?.let {
+    LaunchedEffect(profile) {
+        profile?.let {
             firstName = it.firstName
             lastName = it.lastName
             email = it.email
@@ -75,7 +75,7 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchData(context)
-        Log.d("DEBUG", "${getCurrentStackTrace()}, User: $user")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Profile: $profile")
         Log.d("DEBUG", "${getCurrentStackTrace()}, Profile Image: $profileImage")
     }
 

@@ -40,12 +40,12 @@ interface UserService {
     @GET("/api/v1/users/me")
     fun me(
         @Header("Authorization") authorization: String
-    ): Call<UserDTO>
+    ): Call<UserBasicDTO>
 
     @GET("/api/v1/users/{id}")
     fun userById(
         @Path("id") id: String
-    ): Call<UserBasicDTO>
+    ): Call<UserDTO>
 
     @GET("/api/v1/users/find-by-username")
     fun findByUsername(

@@ -351,7 +351,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserDTO findMyProfile() {
+    public UserBasicDTO findMyProfile() {
         User user = jwtContextUtils.getUserLoggedFromContext();
         if (user == null ||
                 user.getStatus() == UserStatus.BANNED ||
@@ -359,7 +359,7 @@ public class UserServiceImp implements UserService{
                 user.getStatus() == UserStatus.HIDDEN) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not allowed to access the profile");
         }
-        return modelMapper.map(user, UserDTO.class);
+        return modelMapper.map(user, UserBasicDTO.class);
     }
 
     public void throwOnIdMismatch(String id, UserDTO userDTO){

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.controller.models.UserBasicDTO
 import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.model.CurrentDataUtils
 import com.android.frontend.model.SecurePreferences
@@ -49,7 +50,7 @@ class TokenManager {
                 }
                 if (response.isSuccessful) {
                     Log.d("DEBUG", "${getCurrentStackTrace()}, User is logged in")
-                    if (response.body() != null && response.body() is UserDTO) {
+                    if (response.body() != null && response.body() is UserBasicDTO) {
                         SecurePreferences.saveUser(context, response.body()!!)
                     }
                     return true

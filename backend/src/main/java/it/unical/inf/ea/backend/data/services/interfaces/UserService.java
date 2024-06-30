@@ -66,6 +66,6 @@ public interface UserService {
 
     void resetPassword(String email) throws MessagingException;
 
-    UserDTO findMyProfile() throws EntityNotFoundException;
+    UserBasicDTO findMyProfile() throws EntityNotFoundException;
 
 }

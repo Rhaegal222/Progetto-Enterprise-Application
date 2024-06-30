@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.controller.infrastructure.TokenManager
+import com.android.frontend.controller.models.UserBasicDTO
 import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.controller.models.UserImageDTO
 import com.android.frontend.model.SecurePreferences
@@ -36,8 +37,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-    private val _user = MutableLiveData<UserDTO>()
-    val userLiveData: LiveData<UserDTO> get() = _user
+    private val _user = MutableLiveData<UserBasicDTO>()
+    val userLiveData: LiveData<UserBasicDTO> get() = _user
+
+    private val _profile = MutableLiveData<UserDTO>()
+    val profileLiveData: LiveData<UserDTO> get() = _profile
 
     val profileImage = MutableLiveData<Uri?>(null)
     val profileImageLiveData : LiveData<Uri?> get() = profileImage

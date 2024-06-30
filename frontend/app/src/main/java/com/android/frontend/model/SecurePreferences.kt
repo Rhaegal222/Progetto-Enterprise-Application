@@ -8,6 +8,7 @@ import androidx.security.crypto.MasterKeys
 import com.android.frontend.controller.models.AddressDTO
 import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.controller.models.PaymentMethodDTO
+import com.android.frontend.controller.models.UserBasicDTO
 import com.google.gson.Gson
 
 object SecurePreferences {
@@ -97,7 +98,7 @@ object SecurePreferences {
         }
     }
 
-    fun saveUser(context: Context, user: UserDTO) {
+    fun saveUser(context: Context, user: UserBasicDTO) {
         val sharedPreferences = getSharedPreferences(context)
         val userJson = Gson().toJson(user)
         with(sharedPreferences.edit()) {

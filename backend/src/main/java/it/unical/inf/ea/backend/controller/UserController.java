@@ -130,7 +130,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> me() {
+    public ResponseEntity<UserBasicDTO> me() {
         try {
             return ResponseEntity.ok(userService.findMyProfile());
         } catch (EntityNotFoundException e) {
