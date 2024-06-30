@@ -23,6 +23,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.awaitResponse
 import androidx.compose.foundation.pager.PagerState
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 
 class PaymentViewModel : ViewModel() {
 
@@ -47,7 +48,7 @@ class PaymentViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG PaymentViewModel", "Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -59,10 +60,10 @@ class PaymentViewModel : ViewModel() {
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { paymentMethod ->
-                    Log.d("DEBUG PaymentViewModel", "Added payment method: $paymentMethod")
+                    Log.d("DEBUG", "${getCurrentStackTrace()}, Added payment method: $paymentMethod")
                 }
             } else {
-                Log.e("DEBUG PaymentViewModel", "Failed to add payment method: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to add payment method: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -75,7 +76,7 @@ class PaymentViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG PaymentViewModel", "Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -89,7 +90,7 @@ class PaymentViewModel : ViewModel() {
                     _paymentMethods.value = it
                 }
             } else {
-                Log.e("DEBUG PaymentViewModel", "Failed to fetch payment methods: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to fetch payment methods: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -102,7 +103,7 @@ class PaymentViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG PaymentViewModel", "Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -112,13 +113,13 @@ class PaymentViewModel : ViewModel() {
                 paymentService.setDefaultPaymentMethod("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG PaymentViewModel", "Set default payment method with id: $id")
+                Log.d("DEBUG", "${getCurrentStackTrace()}, Set default payment method with id: $id")
                 viewModelScope.launch {
                     pagerState.scrollToPage(0)
                 }
                 getAllPaymentMethods(context)
             } else {
-                Log.e("DEBUG PaymentViewModel", "Failed to set default payment method: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to set default payment method: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -131,7 +132,7 @@ class PaymentViewModel : ViewModel() {
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG PaymentViewModel", "Access token missing")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -141,10 +142,10 @@ class PaymentViewModel : ViewModel() {
                 paymentService.deletePaymentMethod("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG PaymentViewModel", "Deleted payment method with id: $id")
+                Log.d("DEBUG", "${getCurrentStackTrace()}, Deleted payment method with id: $id")
                 getAllPaymentMethods(context)
             } else {
-                Log.e("DEBUG PaymentViewModel", "Failed to delete payment method: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Failed to delete payment method: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -166,7 +167,7 @@ class PaymentViewModel : ViewModel() {
                 else -> response
             }
         } catch (e: Exception) {
-            Log.e("DEBUG PaymentViewModel", "Request failed", e)
+            Log.e("DEBUG", "${getCurrentStackTrace()}, Request failed", e)
             _hasError.value = true
             null
         }

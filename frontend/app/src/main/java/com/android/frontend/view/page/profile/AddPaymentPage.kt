@@ -30,7 +30,6 @@ fun AddPaymentPage(navController: NavHostController) {
         LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             item {
                 Column(

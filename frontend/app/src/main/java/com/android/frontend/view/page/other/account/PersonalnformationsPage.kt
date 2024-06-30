@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import com.android.frontend.view_models.ProfileViewModel
 import com.android.frontend.R
 import coil.compose.rememberAsyncImagePainter
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -74,8 +75,8 @@ fun PersonalInformationPage(navController: NavController, profileViewModel: Prof
 
     LaunchedEffect(Unit) {
         profileViewModel.fetchData(context)
-        Log.d("DEBUG PersonalInformationPage", "User: $user")
-        Log.d("DEBUG PersonalInformationPage", "Profile Image: $profileImage")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, User: $user")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Profile Image: $profileImage")
     }
 
     Scaffold(

@@ -32,6 +32,7 @@ import com.android.frontend.view_models.AddressViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import com.android.frontend.controller.infrastructure.getCurrentStackTrace
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -45,7 +46,7 @@ fun ShippingAddressesPage(navController: NavController, addressViewModel: Addres
     val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        Log.d("DEBUG ShippingAddressesPage", "Loading shipping addresses")
+        Log.d("DEBUG", "${getCurrentStackTrace()}, Loading shipping addresses")
         addressViewModel.getAllShippingAddresses(context)
     }
 
