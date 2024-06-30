@@ -21,7 +21,10 @@ public class Address {
     private String id;
 
     @Column(nullable = false)
-    private String header;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @Column(nullable = false)
     private String country;

@@ -15,7 +15,11 @@ public class AddressDTO {
 
     @NotNull
     @Length(max = 100)
-    private String header;
+    private String firstName;
+
+    @NotNull
+    @Length(max = 100)
+    private String lastName;
 
     @NotNull
     @Length(max = 100)
