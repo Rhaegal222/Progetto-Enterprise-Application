@@ -1,6 +1,7 @@
 package com.android.frontend.view.page.authentication
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -30,15 +31,20 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.android.frontend.MainActivity
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.view_models.LoginViewModel
 import com.android.frontend.view_models.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SignupPage(navController: NavHostController) {
-    val viewModel: SignUpViewModel = viewModel()
+
+    val signUpViewModel: SignUpViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+
     val context = LocalContext.current
 
     var isObscured by remember { mutableStateOf(true) }
@@ -114,8 +120,8 @@ fun SignupPage(navController: NavHostController) {
             ) {
 
                 OutlinedTextField(
-                    value = viewModel.firstname,
-                    onValueChange = { viewModel.firstname = it },
+                    value = signUpViewModel.firstname,
+                    onValueChange = { signUpViewModel.firstname = it },
                     label = { Text(stringResource(id = R.string.firstname), color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -129,8 +135,8 @@ fun SignupPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = viewModel.lastname,
-                    onValueChange = { viewModel.lastname = it },
+                    value = signUpViewModel.lastname,
+                    onValueChange = { signUpViewModel.lastname = it },
                     label = { Text(stringResource(id = R.string.lastname), color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -144,8 +150,8 @@ fun SignupPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
+                    value = signUpViewModel.email,
+                    onValueChange = { signUpViewModel.email = it },
                     label = { Text(stringResource(id = R.string.email), color = textColor) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -159,8 +165,8 @@ fun SignupPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
-                    value = viewModel.password,
-                    onValueChange = { viewModel.password = it },
+                    value = signUpViewModel.password,
+                    onValueChange = { signUpViewModel.password = it },
                     label = { Text(stringResource(id = R.string.password), color = textColor) },
                     trailingIcon = {
                         IconButton(onClick = { isObscured = !isObscured }) {
@@ -185,7 +191,7 @@ fun SignupPage(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        viewModel.registerUser(context) { success, errorMessage ->
+                        signUpViewModel.registerUser(context) { success, errorMessage ->
                             if (success) {
                                 Toast.makeText(
                                     context,
@@ -221,18 +227,26 @@ fun SignupPage(navController: NavHostController) {
 
             OutlinedButton(
                 onClick = {
-                    // context.startSignIn()
+                    loginViewModel.signInWithGoogle(context) { success, errorMessage ->
+                        if (success) {
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
+                        } else {
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = textColor
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.googlelogo),
+                    painter = painterResource(id = R.drawable.google_logo),
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
-                    tint = textColor
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))

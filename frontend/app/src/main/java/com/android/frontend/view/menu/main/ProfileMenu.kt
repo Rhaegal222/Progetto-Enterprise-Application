@@ -1,4 +1,4 @@
-package com.android.frontend.view.menu
+package com.android.frontend.view.menu.main
 
 import android.content.ComponentName
 import android.content.Intent
@@ -27,15 +27,15 @@ import com.android.frontend.navigation.Navigation
 
 @Composable
 fun ProfileMenu(navController: NavController) {
-    val hi = stringResource(id = R.string.hello_user)
+
     val username = SecurePreferences.getUser(LocalContext.current)?.firstName ?: ""
     val colors = MaterialTheme.colorScheme
+
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(colors.background)
-        .padding(16.dp)) {
+        .background(colors.background)) {
         Text(
-            text = "$hi, $username!",
+            text = "${stringResource(id = R.string.hello_user)}, $username!",
             style = MaterialTheme.typography.titleLarge,
             color = colors.onBackground,
             modifier = Modifier.padding(16.dp)

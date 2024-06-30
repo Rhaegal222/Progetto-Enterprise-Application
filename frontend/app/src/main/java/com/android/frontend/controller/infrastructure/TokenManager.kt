@@ -3,6 +3,7 @@ package com.android.frontend.controller.infrastructure
 import android.content.Context
 import android.util.Log
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.controller.models.UserDTO
 import com.android.frontend.model.SecurePreferences
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -22,6 +23,34 @@ class TokenManager {
                 instance = TokenManager()
             }
             return instance!!
+        }
+    }
+
+    suspend fun isUserLoggedIn(context: Context): Boolean {
+        val accessToken = getAccessToken(context)
+        val refreshToken = getRefreshToken(context)
+
+        if (accessToken != null && refreshToken != null) {
+            val userService = RetrofitInstance.getUserApi(context)
+            return try {
+                val response = withContext(Dispatchers.IO) {
+                    userService.me("Bearer $accessToken").execute()
+                }
+
+                if (response.isSuccessful) {
+                    if (response.body() != null && response.body() is UserDTO) {
+                        SecurePreferences.saveUser(context, response.body()!!)
+                    }
+                    true
+                } else {
+                    tryRefreshToken(context)
+                }
+            } catch (e: Exception) {
+                Log.e("DEBUG TokenManager", "Error verifying token", e)
+                false
+            }
+        } else {
+            return false
         }
     }
 

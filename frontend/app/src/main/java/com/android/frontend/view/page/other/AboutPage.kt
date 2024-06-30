@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,8 +46,7 @@ import compose.icons.fontawesomeicons.brands.Twitter
 @Composable
 fun AboutPage(navController: NavController){
     val colors = MaterialTheme.colorScheme
-    Scaffold(
-        containerColor = colors.background,
+    Scaffold (
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -54,7 +54,7 @@ fun AboutPage(navController: NavController){
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.about).uppercase(),
+                        text = stringResource(id = R.string.account).uppercase(),
                     )
                 },
                 navigationIcon = {
@@ -71,15 +71,11 @@ fun AboutPage(navController: NavController){
                     .statusBarsPadding()
             )
         }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(colors.background)
-                .padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(50.dp))
-
+    ) { paddingValues ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(colors.background)
+            .padding(paddingValues)) {
             Row {
                 Text(
                     text = stringResource(R.string.about_description),

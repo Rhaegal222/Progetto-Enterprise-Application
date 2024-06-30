@@ -19,7 +19,7 @@
     <string name="wishlist">Liste de souhaits</string>
     <string name="payment_methods">Méthodes de paiement</string>
     <string name="shipping_addresses">Adresses de livraison</string>
-    <string name="settings">Paramètres</string>
+    <string name="app_settings">Paramètres de l\'application</string>
     <string name="about">À propos</string>
     <string name="logout">Déconnexion</string>
     <string name="logout_description">Êtes-vous sûr de vouloir vous déconnecter ?</string>
@@ -96,4 +96,10 @@
     <string name="load_error">Erreur de chargement</string>
     <string name="payment_load_error">Échec du chargement des méthodes de paiement.</string>
     <string name="shipping_addresses_load_failed">Échec du chargement des adresses de livraison.</string>
+    <string name="google">Google</string>
+    <string name="notifications">Notifications</string>
+    <string name="privacy">Confidentialité</string>
+    <string name="delete_account">Supprimer le compte</string>
+    <string name="no_payment_methods">Aucun moyen de paiement</string>
+    <string name="no_shipping_addresses">Aucune adresse de livraison</string>
 </resources>

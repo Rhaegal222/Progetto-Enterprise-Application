@@ -1,4 +1,4 @@
-package com.android.frontend.view.menu
+package com.android.frontend.view.menu.main
 
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -28,17 +28,16 @@ import com.android.frontend.controller.infrastructure.TokenManager
 @Composable
 fun OtherMenu(navController: NavHostController) {
     val colors = MaterialTheme.colorScheme
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.background)
-            .padding(16.dp)
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(colors.background)
     ) {
         MenuItem(navController, Icons.Default.ManageAccounts, R.string.account)
+        MenuItem(navController, Icons.Default.Settings, R.string.app_settings)
         MenuItem(navController, Icons.Default.Info, R.string.about)
-        MenuItem(navController, Icons.Default.Settings, R.string.settings)
-        MenuItem(navController, Icons.Default.BugReport, R.string.debug)
         MenuItem(navController, Icons.AutoMirrored.Filled.Logout, R.string.logout)
+        MenuItem(navController, Icons.Default.BugReport, R.string.debug)
     }
 }
 
@@ -54,7 +53,7 @@ fun MenuItem(navController: NavHostController, icon: ImageVector, textResId: Int
                 when (textResId) {
                     R.string.account -> navController.navigate(Navigation.AccountMenu.route)
                     R.string.about -> navController.navigate(Navigation.AboutPage.route)
-                    R.string.settings -> navController.navigate(Navigation.SettingsMenu.route)
+                    R.string.app_settings -> navController.navigate(Navigation.SettingsMenu.route)
                     R.string.logout -> {
                         TokenManager.getInstance().clearTokens(context)
                         val intent = Intent(context, MainActivity::class.java)

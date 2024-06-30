@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -29,7 +30,7 @@ import com.android.frontend.navigation.Navigation
 import com.android.frontend.view.component.AddressCard
 import com.android.frontend.view_models.AddressViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import com.android.frontend.view.component.ErrorDialog
 
@@ -135,43 +136,59 @@ fun ShippingAddressesContent(
             Spacer(modifier = Modifier.height(30.dp))
 
             if (addresses.isNotEmpty()) {
-                androidx.compose.foundation.pager.HorizontalPager(
-                    state = pagerState,
-                    contentPadding = PaddingValues(horizontal = 50.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) { page ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 0.dp)
-                    ) {
-                        AddressCard(shippingAddress = addresses[page], onRemove = {
-                            addressViewModel.deleteShippingAddress(context, addresses[page].id)
-                        })
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(checked = selectedAddress?.isDefault ?: false,
-                        onCheckedChange = {
-                            selectedAddress?.let {
-                                addressViewModel.setDefaultShippingAddress(context, it.id, pagerState)
-                            }
-                        })
-
-                    Text(
-                        text = stringResource(id = R.string.set_as_default),
-                        color = Color.Black,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
+                AddressPagePreview(pagerState, addresses, addressViewModel, context, selectedAddress)
+            } else {
+                Text(
+                    text = stringResource(id = R.string.no_shipping_addresses),
+                    color = Color.Black
+                )
             }
         }
+    }
+}
+
+@Composable
+fun AddressPagePreview(
+    pagerState: PagerState,
+    addresses: List<AddressDTO>,
+    addressViewModel: AddressViewModel,
+    context: Context,
+    selectedAddress: AddressDTO?
+) {
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = 50.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) { page ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp)
+        ) {
+            AddressCard(shippingAddress = addresses[page], onRemove = {
+                addressViewModel.deleteShippingAddress(context, addresses[page].id)
+            })
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(checked = selectedAddress?.isDefault ?: false,
+            onCheckedChange = {
+                selectedAddress?.let {
+                    addressViewModel.setDefaultShippingAddress(context, it.id, pagerState)
+                }
+            })
+
+        Text(
+            text = stringResource(id = R.string.set_as_default),
+            color = Color.Black,
+            modifier = Modifier.padding(start = 8.dp)
+        )
     }
 }

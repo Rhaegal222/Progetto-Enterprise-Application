@@ -221,7 +221,7 @@ fun LoginPage(navController: NavHostController) {
                 )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.googlelogo),
+                    painter = painterResource(id = R.drawable.google_logo),
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.onSurface

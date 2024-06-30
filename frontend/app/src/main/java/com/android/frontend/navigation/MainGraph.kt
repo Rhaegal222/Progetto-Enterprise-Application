@@ -6,8 +6,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.android.frontend.ui.ChangePasswordPage
-import com.android.frontend.view.menu.*
-import com.android.frontend.view.page.*
+import com.android.frontend.view.menu.sub.AccountMenu
+import com.android.frontend.view.menu.main.OtherMenu
+import com.android.frontend.view.menu.main.ProfileMenu
+import com.android.frontend.view.menu.sub.DebugMenu
+import com.android.frontend.view.menu.sub.SecurityMenu
+import com.android.frontend.view.menu.sub.SettingsMenu
+import com.android.frontend.view.page.main.HomePage
 import com.android.frontend.view_models.ProductViewModel
 import com.android.frontend.view.page.profile.AddPaymentPage
 import com.android.frontend.view.page.other.AboutPage

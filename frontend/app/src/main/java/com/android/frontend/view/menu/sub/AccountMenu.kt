@@ -1,4 +1,4 @@
-package com.android.frontend.view.menu
+package com.android.frontend.view.menu.sub
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -17,6 +17,9 @@ import com.android.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.FactCheck
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,8 +29,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 @Composable
 fun AccountMenu(navController: NavHostController) {
     val colors = MaterialTheme.colorScheme
-    Scaffold(
-        containerColor = colors.background,
+
+    Scaffold (
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -52,16 +55,20 @@ fun AccountMenu(navController: NavHostController) {
                     .statusBarsPadding()
             )
         }
-    ){
+    ) { paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .background(colors.background)
-            .padding(16.dp)) {
-            Spacer(modifier = Modifier.height(50.dp))
+            .padding(paddingValues).padding(8.dp, 0.dp)
+        ) {
             AccountItem(navController, Icons.AutoMirrored.Filled.FactCheck, R.string.personal_informations)
             AccountItem(navController, Icons.Default.Security, R.string.access_and_security)
+            AccountItem(navController, Icons.Default.Notifications, R.string.notifications)
+            AccountItem(navController, Icons.Default.PrivacyTip, R.string.privacy)
+            AccountItem(navController, Icons.Default.Delete, R.string.delete_account)
         }
     }
+
+
 }
 
 @Composable

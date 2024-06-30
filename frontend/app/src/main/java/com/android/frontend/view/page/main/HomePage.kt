@@ -1,8 +1,10 @@
-package com.android.frontend.view.page
+package com.android.frontend.view.page.main
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.view_models.HomeViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {
@@ -24,14 +27,18 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
     val searchQuery = viewModel.searchQuery.collectAsState().value
     val context = LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .background(Color.Gray)
-            .padding(16.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Scaffold(
+        topBar = {
+
+        }
     ) {
-        Text(text = "Home Screen Content")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+        }
     }
 }

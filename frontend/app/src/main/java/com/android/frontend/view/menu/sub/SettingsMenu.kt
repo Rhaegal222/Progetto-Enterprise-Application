@@ -1,6 +1,7 @@
-package com.android.frontend.view.menu
+package com.android.frontend.view.menu.sub
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -17,18 +18,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FormatColorFill
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsMenu(navController: NavHostController) {
+
     val colors = MaterialTheme.colorScheme
-    Scaffold(
-        containerColor = colors.background,
+
+    Scaffold (
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -36,7 +36,7 @@ fun SettingsMenu(navController: NavHostController) {
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.settings).uppercase(),
+                        text = stringResource(id = R.string.app_settings).uppercase(),
                     )
                 },
                 navigationIcon = {
@@ -53,11 +53,11 @@ fun SettingsMenu(navController: NavHostController) {
                     .statusBarsPadding()
             )
         }
-    ) {
+    ) { paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)) {
-            Spacer(modifier = Modifier.height(50.dp))
+            .padding(paddingValues).padding(8.dp, 0.dp)
+        ) {
             SettingsItem(navController, Icons.Default.FormatColorFill, R.string.theme)
             SettingsItem(navController, Icons.Default.Language, R.string.country_and_language)
         }

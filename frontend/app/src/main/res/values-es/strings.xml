@@ -19,7 +19,7 @@
     <string name="wishlist">Lista de deseos</string>
     <string name="payment_methods">Métodos de pago</string>
     <string name="shipping_addresses">Dirección de Envío</string>
-    <string name="settings">Ajustes</string>
+    <string name="app_settings">Ajustes</string>
     <string name="about">Sobre nosotros</string>
     <string name="logout">Cerrar sesión</string>
     <string name="logout_description">¿Estás seguro de que quieres dejar de fumar?</string>
@@ -52,7 +52,7 @@
     <string name="repeatNewPassword">Repita la nueva contraseña</string>
     <string name="passwordMissmatch">Las contraseñas no coinciden</string>
     <string name="passwordTooShort">La contraseña debe tener al menos 8 caracteres.</string>
-    <string name="apply_changes">Aplicar cambios</string>
+    <string name="apply_changes">Configuración de la aplicación</string>
     <string name="password1UpChar">La contraseña debe contener al menos una letra mayúscula.</string>
     <string name="password1Numb">La contraseña debe contener al menos un número.</string>
     <string name="password1SpecChar">La contraseña debe contener al menos un carácter especial.</string>
@@ -96,4 +96,10 @@
     <string name="load_error">Error de carga</string>
     <string name="payment_load_error">Error al cargar los métodos de pago.</string>
     <string name="shipping_addresses_load_failed">Error al cargar las direcciones de envío.</string>
+    <string name="google">Google</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="privacy">Privacidad</string>
+    <string name="delete_account">Eliminar cuenta</string>
+    <string name="no_payment_methods">No hay métodos de pago</string>
+    <string name="no_shipping_addresses">No hay direcciones de envío</string>
 </resources>

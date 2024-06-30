@@ -5,7 +5,9 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -133,47 +135,63 @@ fun PaymentMethodsContent(
         ) {
             Spacer(modifier = Modifier.height(30.dp))
             if (payments.isNotEmpty()) {
-                HorizontalPager(
-                    state = pagerState,
-                    contentPadding = PaddingValues(horizontal = 50.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) { page ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        PaymentCard(payment = payments[page], onRemove = {
-                            paymentViewModel.deletePayment(context, payments[page].id)
-                        })
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = selectedPaymentMethod?.isDefault ?: false,
-                        onCheckedChange = {
-                            selectedPaymentMethod?.let {
-                                paymentViewModel.setDefaultPayment(context, it.id, pagerState)
-                            }
-                        },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = colors.primary,
-                            uncheckedColor = colors.onSurface
-                        )
-                    )
-                    Text(
-                        text = stringResource(id = R.string.set_as_default),
-                        color = colors.onBackground,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
+                PaymentMethodsPagePreview(pagerState, payments, paymentViewModel, context, selectedPaymentMethod)
+            } else {
+                Text(
+                    text = stringResource(id = R.string.no_payment_methods),
+                    color = colors.onBackground
+                )
             }
         }
+    }
+}
+
+@Composable
+fun PaymentMethodsPagePreview(
+    pagerState: PagerState,
+    payments: List<PaymentMethodDTO>,
+    paymentViewModel: PaymentViewModel,
+    context: Context,
+    selectedPaymentMethod: PaymentMethodDTO?
+) {
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(horizontal = 50.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) { page ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+            PaymentCard(payment = payments[page], onRemove = {
+                paymentViewModel.deletePayment(context, payments[page].id)
+            })
+        }
+    }
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = selectedPaymentMethod?.isDefault ?: false,
+            onCheckedChange = {
+                selectedPaymentMethod?.let {
+                    paymentViewModel.setDefaultPayment(context, it.id, pagerState)
+                }
+            },
+            colors = CheckboxDefaults.colors(
+                checkedColor = colors.primary,
+                uncheckedColor = colors.onSurface
+            )
+        )
+        Text(
+            text = stringResource(id = R.string.set_as_default),
+            color = colors.onBackground,
+            modifier = Modifier.padding(start = 8.dp)
+        )
     }
 }

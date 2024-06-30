@@ -1,14 +1,14 @@
-package com.android.frontend.view.menu
+package com.android.frontend.view.menu.sub
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -38,17 +38,15 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.view_models.DebugViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-
 fun DebugMenu(navController: NavHostController) {
 
+    val colors = MaterialTheme.colorScheme
     val context = LocalContext.current
 
-    val colors = MaterialTheme.colorScheme
-    Scaffold(
-        containerColor = colors.background,
+    Scaffold (
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -56,7 +54,7 @@ fun DebugMenu(navController: NavHostController) {
                 ),
                 title = {
                     Text(
-                        text = "DEBUG".uppercase(),
+                        text = stringResource(id = R.string.debug).uppercase(),
                     )
                 },
                 navigationIcon = {
@@ -73,11 +71,12 @@ fun DebugMenu(navController: NavHostController) {
                     .statusBarsPadding()
             )
         }
-    ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
-            Spacer(modifier = Modifier.height(50.dp))
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues).padding(8.dp, 0.dp)
+        ) {
             DebugItem(context, Icons.Default.BugReport, R.string.reject_access_token)
             DebugItem(context, Icons.Default.BugReport, R.string.show_tokens)
         }
