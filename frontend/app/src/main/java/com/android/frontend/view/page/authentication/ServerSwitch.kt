@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Switch
@@ -17,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.frontend.persistence.CurrentDataUtils
@@ -55,6 +55,8 @@ fun ServerSwitch() {
         Text(
             text = if (isDevelopment.value) "Localhost" else "Gaetano",
             color = colors.onBackground,
+            modifier = Modifier.width(100.dp),
+            textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
     }

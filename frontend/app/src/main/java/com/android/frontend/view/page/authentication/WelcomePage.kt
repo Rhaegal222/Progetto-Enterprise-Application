@@ -50,6 +50,7 @@ fun WelcomePage(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ServerSwitch()
+
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
