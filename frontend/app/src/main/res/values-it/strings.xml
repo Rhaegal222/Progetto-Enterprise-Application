@@ -102,4 +102,5 @@
     <string name="delete_account">Elimina account</string>
     <string name="no_payment_methods">Nessun metodo di pagamento</string>
     <string name="no_shipping_addresses">Nessun indirizzo di spedizione</string>
+    <string name="search">Cerca</string>
 </resources>

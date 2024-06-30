@@ -102,4 +102,5 @@
     <string name="delete_account">Supprimer le compte</string>
     <string name="no_payment_methods">Aucun moyen de paiement</string>
     <string name="no_shipping_addresses">Aucune adresse de livraison</string>
+    <string name="search">Chercher</string>
 </resources>
