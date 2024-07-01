@@ -1,7 +1,7 @@
 // ShippingService.kt
 package com.android.frontend.service
 
-import com.android.frontend.dto.AddressCreateDTO
+import com.android.frontend.dto.creation.AddressCreateDTO
 import com.android.frontend.dto.AddressDTO
 import retrofit2.Call
 import retrofit2.http.*

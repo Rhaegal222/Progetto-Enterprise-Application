@@ -70,7 +70,10 @@ fun LoginPage(navController: NavHostController) {
                     IconButton(onClick = { navController.navigate(Navigation.WelcomePage.route) }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
-                }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
             )
         }
     ) { paddingValues ->
@@ -78,8 +81,7 @@ fun LoginPage(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues)
-                .padding(16.dp, 0.dp),
+                .padding(paddingValues).padding(16.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 

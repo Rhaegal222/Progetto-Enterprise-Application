@@ -1,4 +1,4 @@
-package com.android.frontend.dto
+package com.android.frontend.dto.creation
 
 data class CartCreateDTO(
     val userId : kotlin.String,

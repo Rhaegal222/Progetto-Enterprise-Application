@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.dto.CartCreateDTO
+import com.android.frontend.dto.creation.CartCreateDTO
 import com.android.frontend.dto.CartDTO
 import com.android.frontend.persistence.SecurePreferences
 import kotlinx.coroutines.Dispatchers

@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.dto.CartCreateDTO
+import com.android.frontend.dto.creation.CartCreateDTO
 import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.config.getCurrentStackTrace

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
@@ -69,10 +71,16 @@ fun DebugMenu(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues).padding(8.dp, 0.dp)
+                .padding(paddingValues).padding(16.dp, 0.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             DebugItem(context, Icons.Default.BugReport, R.string.reject_access_token)
             DebugItem(context, Icons.Default.BugReport, R.string.show_tokens)
+            DebugItem(context, Icons.Default.BugReport, R.string.add_category)
+            DebugItem(context, Icons.Default.BugReport, R.string.shipping_addresses)
+            DebugItem(context, Icons.Default.BugReport, R.string.add_payment_method)
+            DebugItem(context, Icons.Default.BugReport, R.string.add_brand)
+            DebugItem(context, Icons.Default.BugReport, R.string.add_product)
         }
     }
 }
@@ -88,6 +96,11 @@ fun DebugItem(context: Context, icon: ImageVector, textResId: Int) {
                 when (textResId) {
                     R.string.reject_access_token -> DebugViewModel().rejectToken(context)
                     R.string.show_tokens -> DebugViewModel().showToken(context)
+                    R.string.add_category -> DebugViewModel().generateProductCategory(context)
+                    R.string.shipping_addresses -> DebugViewModel().generateAddress(context)
+                    R.string.add_payment_method -> DebugViewModel().generatePayment(context)
+                    R.string.add_brand -> DebugViewModel().generateBrand(context)
+                    // R.string.add_product -> DebugViewModel().generateProduct(context)
                 }
             }
     ) {
@@ -99,7 +112,6 @@ fun DebugItem(context: Context, icon: ImageVector, textResId: Int) {
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = textResId),
-                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         }

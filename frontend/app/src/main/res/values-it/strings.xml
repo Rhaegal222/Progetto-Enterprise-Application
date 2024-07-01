@@ -103,4 +103,7 @@
     <string name="no_payment_methods">Nessun metodo di pagamento</string>
     <string name="no_shipping_addresses">Nessun indirizzo di spedizione</string>
     <string name="search">Cerca</string>
+    <string name="add_category">Aggiungi categoria</string>
+    <string name="add_brand">Aggiungi marca</string>
+    <string name="add_product">Aggiungi prodotto</string>
 </resources>

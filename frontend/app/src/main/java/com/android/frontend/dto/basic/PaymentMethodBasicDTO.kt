@@ -1,4 +1,4 @@
-package com.android.frontend.dto
+package com.android.frontend.dto.basic
 
 data class PaymentMethodBasicDTO (
 

@@ -1,6 +1,4 @@
-package com.android.frontend.dto
-
-import java.time.LocalDate
+package com.android.frontend.dto.creation
 
 data class PaymentMethodCreateDTO(
     val cardNumber: String,

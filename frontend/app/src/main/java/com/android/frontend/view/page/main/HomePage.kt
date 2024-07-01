@@ -30,6 +30,7 @@ import com.android.frontend.view_models.HomeViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
@@ -58,7 +59,6 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                     if (focusOnTextField)
                         IconButton(
                             onClick = {
-                                // Clear search query
                                 searchQuery = ""
                                 focusOnTextField = false
                                 focusManager.clearFocus()
@@ -134,9 +134,12 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomePagePreview(pagerState: com.google.accompanist.pager.PagerState) {
+fun HomePagePreview(pagerState: PagerState) {
+
+    val featuredOffers = listOf<Any>()
 
     var currentPage by remember { mutableIntStateOf(0) }
+    val totalPages by remember { mutableIntStateOf(featuredOffers.size) }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -157,7 +160,7 @@ fun HomePagePreview(pagerState: com.google.accompanist.pager.PagerState) {
 
         HorizontalPager(
             state = pagerState,
-            count = 3,
+            count = totalPages,
             modifier = Modifier.fillMaxWidth()
         ) { page ->
             when (page) {

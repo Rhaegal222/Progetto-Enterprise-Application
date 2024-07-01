@@ -88,10 +88,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
-                        )
+                        Icon( Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null )
                     }
                 },
                 modifier = Modifier
@@ -99,7 +96,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                     .statusBarsPadding()
             )
         }
-    ) {
+    ) {paddingValues ->
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -112,10 +109,10 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = 16.dp, horizontal = 16.dp),
+                    .padding(paddingValues).padding(16.dp, 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(25.dp))
 
                 Box(modifier = Modifier.size(160.dp)) {
                     if (profileImage != null) {
@@ -152,9 +149,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                     }
                 }
 
-                Spacer(modifier = Modifier.height(50.dp))
-
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(25.dp))
 
                 OutlinedTextField(
                     colors = OutlinedTextFieldColorScheme.colors(),
@@ -207,7 +202,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 if (isEditMode) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
 
                         Button(
@@ -226,19 +221,17 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                                 }
                             },
                             colors = ButtonColorScheme.buttonColors(),
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.height(40.dp).width(150.dp)
                         ) {
                             Text(text = stringResource(id = R.string.apply_changes))
                         }
-
-                        Spacer(modifier = Modifier.height(8.dp))
 
                         Button(
                             onClick = {
                                 isEditMode = false
                             },
-                            colors = ButtonColorScheme.buttonColors(),
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.height(40.dp).width(150.dp),
+                            colors = ButtonColorScheme.buttonColors()
                         ) {
                             Text(text = stringResource(id = R.string.cancel))
                         }
@@ -248,12 +241,14 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                         onClick = {
                             isEditMode = true
                         },
-                        colors = ButtonColorScheme.buttonColors(),
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.height(40.dp).width(150.dp),
+                        colors = ButtonColorScheme.buttonColors()
                     ) {
                         Text(text = stringResource(id = R.string.edit))
                     }
                 }
+
+                Spacer(modifier = Modifier.height(25.dp))
 
                 if (showEmailChangeDialog) {
                     AlertDialog(

@@ -1,4 +1,6 @@
-package com.android.frontend.dto
+package com.android.frontend.dto.basic
+
+import com.android.frontend.dto.UserImageDTO
 
 data class UserBasicDTO (
 

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.dto.UserBasicDTO
+import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.persistence.SecurePreferences
 import kotlinx.coroutines.*

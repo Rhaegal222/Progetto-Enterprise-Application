@@ -66,7 +66,8 @@ fun AboutPage(navController: NavController){
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier
+        Column(
+            modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)) {
             Row {

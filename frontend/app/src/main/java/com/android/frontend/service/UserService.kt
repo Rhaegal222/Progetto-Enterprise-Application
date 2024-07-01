@@ -1,7 +1,7 @@
 package com.android.frontend.service
 
 import com.android.frontend.dto.UserDTO
-import com.android.frontend.dto.UserBasicDTO
+import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.dto.UserUpdateRequest
 import retrofit2.Call
 import retrofit2.http.*

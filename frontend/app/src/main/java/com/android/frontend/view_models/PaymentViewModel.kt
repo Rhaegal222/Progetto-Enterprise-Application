@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.dto.PaymentMethodCreateDTO
+import com.android.frontend.dto.creation.PaymentMethodCreateDTO
 import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.config.TokenManager
 import com.android.frontend.service.PaymentService

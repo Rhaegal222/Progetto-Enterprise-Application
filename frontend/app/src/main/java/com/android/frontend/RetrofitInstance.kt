@@ -63,4 +63,12 @@ object RetrofitInstance {
     fun getCartApi(context: Context): CartService {
         return getAuthenticatedRetrofit(context).create(CartService::class.java)
     }
+
+    fun getProductCategoryApi(context: Context): ProductCategoryService {
+        return getAuthenticatedRetrofit(context).create(ProductCategoryService::class.java)
+    }
+
+    fun getBrandApi(context: Context): BrandService {
+        return getAuthenticatedRetrofit(context).create(BrandService::class.java)
+    }
 }

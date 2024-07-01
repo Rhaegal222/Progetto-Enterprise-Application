@@ -15,7 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
-import com.android.frontend.dto.UserBasicDTO
+import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.dto.UserDTO
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.dto.UserUpdateRequest
