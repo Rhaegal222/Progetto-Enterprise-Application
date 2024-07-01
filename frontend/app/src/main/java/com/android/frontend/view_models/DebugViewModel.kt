@@ -23,15 +23,19 @@ class DebugViewModel : ViewModel() {
     private val _isLoading = MutableLiveData(false)
 
     fun generateAddress(context: Context) {
-        addresViewModel.addShippingAddress(context, "Firstname", "Lastname", "Country", "City", "Street", "ZipCode", false)
+        Log.d("DEBUG", "${getCurrentStackTrace()} Generating address")
+        addresViewModel.addShippingAddress(context, "Mario Rossi", "1234567890", "Street", "Additional info", "12345", "City", "Province", "Country", false)
     }
     fun generateBrand(context: Context) {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Generating brand")
         brandViewModel.addBrand(context, "Brand", "Description")
     }
     fun generateProductCategory(context: Context) {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Generating product category")
         categoryViewModel.addProductCategory(context, "Category")
     }
     fun generatePayment(context: Context) {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Generating payment")
         paymentViewModel.addPaymentCard(context, "1111222233334444", "12", "20", "Mario Rossi", false)
     }
 

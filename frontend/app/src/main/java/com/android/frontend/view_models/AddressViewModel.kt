@@ -1,7 +1,6 @@
 package com.android.frontend.view_models
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.creation.AddressCreateDTO
@@ -18,12 +16,7 @@ import com.android.frontend.dto.AddressDTO
 import androidx.compose.foundation.pager.PagerState
 import com.android.frontend.config.Request
 import com.android.frontend.config.getCurrentStackTrace
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.awaitResponse
 
 class AddressViewModel : ViewModel() {
 
@@ -34,15 +27,28 @@ class AddressViewModel : ViewModel() {
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
-    var firstname by mutableStateOf("")
-    var lastname by mutableStateOf("")
-    var country by mutableStateOf("")
-    var city by mutableStateOf("")
+    var addressId by mutableStateOf("")
+    var fullName by mutableStateOf("")
+    var phoneNumber by mutableStateOf("")
     var street by mutableStateOf("")
+    var additionalInfo by mutableStateOf("")
     var zipCode by mutableStateOf("")
+    var city by mutableStateOf("")
+    var province by mutableStateOf("")
+    var country by mutableStateOf("")
     var isDefault by mutableStateOf(false)
 
-    fun addShippingAddress(context: Context, firstname: String, lastname: String, country: String, city: String, street: String, zipCode: String, isDefault: Boolean) {
+    fun addShippingAddress(
+        context: Context,
+        fullName: String,
+        phoneNumber: String,
+        street: String,
+        additionalInfo: String,
+        zipCode: String, city:
+        String, province: String,
+        country: String,
+        isDefault: Boolean)
+    {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -53,7 +59,7 @@ class AddressViewModel : ViewModel() {
                 _hasError.value = true
                 return@launch
             }
-            val shippingAddress = AddressCreateDTO(firstname, lastname, country, city, street, zipCode, isDefault)
+            val shippingAddress = AddressCreateDTO(fullName, phoneNumber, street, additionalInfo, zipCode, city, province, country, isDefault)
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
                 addressService.addShippingAddress("Bearer $accessToken", shippingAddress)
@@ -64,7 +70,7 @@ class AddressViewModel : ViewModel() {
                     getAllShippingAddresses(context)
                 }
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to add shipping address: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to add shipping address: ${response?.errorBody()?.string() ?: "Empty response"}")
                 _hasError.value = true
             }
             _isLoading.value = false
