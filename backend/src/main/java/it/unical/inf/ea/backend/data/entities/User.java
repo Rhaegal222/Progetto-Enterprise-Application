@@ -82,6 +82,9 @@ public class User implements UserDetails {
         }
         return null;
     }
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
+
+    private List<Wishlist> wishlists;
 
     @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
     private List<PaymentMethod> paymentMethods;

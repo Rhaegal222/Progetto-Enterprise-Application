@@ -3,8 +3,8 @@ package it.unical.inf.ea.backend.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
-import it.unical.inf.ea.backend.dto.WishListDTO;
-import it.unical.inf.ea.backend.dto.creation.WishListCreateDTO;
+import it.unical.inf.ea.backend.dto.WishlistDTO;
+import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @PostMapping("/createWishlist")
-    public ResponseEntity<WishListDTO> createWishlist(@RequestBody WishListCreateDTO wishListCreateDTO){
+    public ResponseEntity<WishlistDTO> createWishlist(@RequestBody WishlistCreateDTO wishListCreateDTO){
         try {
             return ResponseEntity.ok(wishlistService.createWishlist(wishListCreateDTO));
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class WishlistController {
         }
     }
 
-    
+
 
 
 

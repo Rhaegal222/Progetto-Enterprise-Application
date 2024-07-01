@@ -9,7 +9,7 @@ import java.util.Set;
 @ToString
 @Builder
 @AllArgsConstructor
-public class WishListDTO {
+public class WishlistDTO {
     private Long id;
     private String WishListName;
     private String userId;

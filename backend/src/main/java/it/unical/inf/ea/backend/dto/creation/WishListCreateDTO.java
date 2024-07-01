@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class WishListCreateDTO {
+public class WishlistCreateDTO {
     @NotNull
     private String userId;
 

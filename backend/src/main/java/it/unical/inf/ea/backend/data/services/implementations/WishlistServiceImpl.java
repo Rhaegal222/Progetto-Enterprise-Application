@@ -8,8 +8,8 @@ import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.entities.Wishlist;
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
-import it.unical.inf.ea.backend.dto.WishListDTO;
-import it.unical.inf.ea.backend.dto.creation.WishListCreateDTO;
+import it.unical.inf.ea.backend.dto.WishlistDTO;
+import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final JwtContextUtils jwtContextUtils;
 
     @Override
-    public WishListDTO createWishlist(WishListCreateDTO wishListCreateDTO) {
+    public WishlistDTO createWishlist(WishlistCreateDTO wishListCreateDTO) {
         Wishlist wishlist = new Wishlist();
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 //        User user = userDao.findById(wishListCreateDTO.getUserId())
@@ -38,7 +38,7 @@ public class WishlistServiceImpl implements WishlistService {
         wishlist.setWishlistName(wishListCreateDTO.getWishListName());
         wishlist.setVisibility(wishListCreateDTO.getVisibility());
         wishlist.getProducts().add(product);
-        return modelMapper.map(wishListDao.save(wishlist), WishListDTO.class);
+        return modelMapper.map(wishListDao.save(wishlist), WishlistDTO.class);
     }
 
     @Override
@@ -51,14 +51,14 @@ public class WishlistServiceImpl implements WishlistService {
 
     }
 
-    @Override
-    public Optional<Wishlist> getWishListById(User user, String wishListName) {
-        return wishListDao.findByUserAndName(user, wishListName);
-    }
+//    @Override
+//    public Optional<Wishlist> getWishlistById(User user, String wishListName) {
+//        return wishListDao.findByUserAndName(user, wishListName);
+//    }
 
     @Override
 
-    public WishListDTO addProductToWishlist(WishListCreateDTO wishListCreateDTO) {
+    public WishlistDTO addProductToWishlist(WishlistCreateDTO wishListCreateDTO) {
         User user = userDao.findById(wishListCreateDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Product product = productDao.findById(wishListCreateDTO.getProductId())
@@ -73,7 +73,7 @@ public class WishlistServiceImpl implements WishlistService {
             wishlist.getProducts().add(product);
             wishListDao.save(wishlist);
         }
-        return modelMapper.map(wishlist, WishListDTO.class);
+        return modelMapper.map(wishlist, WishlistDTO.class);
     }
 
 
