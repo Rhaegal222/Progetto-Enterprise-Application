@@ -32,23 +32,30 @@ import com.android.frontend.view_models.AddressViewModel
 fun AddAddressPage(navController: NavHostController, addressViewModel: AddressViewModel = viewModel()) {
 
     val context = LocalContext.current
-
     val focusManager = LocalFocusManager.current
 
-    val firstNameFocusRequester = remember { FocusRequester() }
-    val lastNameFocusRequester = remember { FocusRequester() }
+    val fullNameFocusRequester = remember { FocusRequester() }
+    val phoneNumFocusRequester = remember { FocusRequester() }
     val streetFocusRequester = remember { FocusRequester() }
-    val cityFocusRequester = remember { FocusRequester() }
-    val countryFocusRequester = remember { FocusRequester() }
+    val additionalInfoFocusRequester = remember { FocusRequester() }
     val zipCodeFocusRequester = remember { FocusRequester() }
+    val cityFocusRequester = remember { FocusRequester() }
+    val provinceFocusRequester = remember { FocusRequester() }
+    val countryFocusRequester = remember { FocusRequester() }
+
+    var fullName by remember { mutableStateOf("") }
+    var phoneNum by remember { mutableStateOf("") }
+    var street by remember { mutableStateOf("") }
+    var additionalInfo by remember { mutableStateOf("") }
+    var zipCode by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
+    var province by remember { mutableStateOf("") }
+    var country by remember { mutableStateOf("") }
 
     val allFieldsValid by derivedStateOf {
-        addressViewModel.firstname.isNotEmpty() &&
-                addressViewModel.lastname.isNotEmpty() &&
-                addressViewModel.street.isNotEmpty() &&
-                addressViewModel.city.isNotEmpty() &&
-                addressViewModel.country.isNotEmpty() &&
-                addressViewModel.zipCode.isNotEmpty()
+        fullName.isNotBlank() && street.isNotBlank() &&
+        zipCode.isNotBlank() && city.isNotBlank() &&
+        province.isNotBlank() && country.isNotBlank()
     }
 
     Scaffold (
@@ -88,30 +95,30 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.firstname,
+                        value = addressViewModel.fullName,
                         onValueChange = {
-                            addressViewModel.firstname = it
+                            addressViewModel.fullName = it
                         },
                         label = { Text(stringResource(id = R.string.firstname)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = { lastNameFocusRequester.requestFocus() }
+                            onNext = { phoneNumFocusRequester.requestFocus() }
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .focusRequester(firstNameFocusRequester)
+                            .focusRequester(fullNameFocusRequester)
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.lastname,
+                        value = addressViewModel.phoneNumber,
                         onValueChange = {
-                            addressViewModel.lastname = it
+                            addressViewModel.phoneNumber = it
                         },
                         label = { Text(stringResource(id = R.string.lastname)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -122,10 +129,10 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .focusRequester(lastNameFocusRequester)
+                            .focusRequester(phoneNumFocusRequester)
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
@@ -139,14 +146,56 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = { cityFocusRequester.requestFocus() }
+                            onNext = { additionalInfoFocusRequester.requestFocus() }
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(streetFocusRequester)
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
+                        singleLine = true,
+                        value = addressViewModel.additionalInfo,
+                        onValueChange = {
+                            addressViewModel.additionalInfo = it
+                        },
+                        label = { Text("Additional Info") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { zipCodeFocusRequester.requestFocus() }
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(additionalInfoFocusRequester)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
+                        singleLine = true,
+                        value = addressViewModel.zipCode,
+                        onValueChange = {
+                            addressViewModel.zipCode = it
+                        },
+                        label = { Text("Zip Code") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { cityFocusRequester.requestFocus() }
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(zipCodeFocusRequester)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
@@ -160,56 +209,35 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = { countryFocusRequester.requestFocus() }
+                            onNext = { provinceFocusRequester.requestFocus() }
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(cityFocusRequester)
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.country,
+                        value = addressViewModel.province,
                         onValueChange = {
-                            addressViewModel.country = it
+                            addressViewModel.province = it
                         },
-                        label = { Text("Country") },
+                        label = { Text("Province") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = { zipCodeFocusRequester.requestFocus() }
+                            onNext = { countryFocusRequester.requestFocus() }
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .focusRequester(countryFocusRequester)
+                            .focusRequester(provinceFocusRequester)
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        colors = OutlinedTextFieldColorScheme.colors(),
-                        singleLine = true,
-                        value = addressViewModel.zipCode,
-                        onValueChange = {
-                            addressViewModel.zipCode = it
-                        },
-                        label = { Text("Zip Code") },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = if (allFieldsValid) ImeAction.Done else ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(zipCodeFocusRequester)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -225,7 +253,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                         Text(text = stringResource(id = R.string.set_as_default))
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
                         enabled = allFieldsValid,
@@ -233,12 +261,14 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                             try {
                                 addressViewModel.addShippingAddress(
                                     context = context,
-                                    firstname = addressViewModel.firstname,
-                                    lastname = addressViewModel.lastname,
+                                    fullName = addressViewModel.fullName,
+                                    phoneNumber = addressViewModel.phoneNumber,
                                     street = addressViewModel.street,
-                                    city = addressViewModel.city,
-                                    country = addressViewModel.country,
+                                    additionalInfo = addressViewModel.additionalInfo,
                                     zipCode = addressViewModel.zipCode,
+                                    city = addressViewModel.city,
+                                    province = addressViewModel.province,
+                                    country = addressViewModel.country,
                                     isDefault = addressViewModel.isDefault
                                 )
                                 navController.popBackStack()
