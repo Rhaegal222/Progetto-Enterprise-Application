@@ -3,6 +3,7 @@ package it.unical.inf.ea.backend.data.entities;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
@@ -69,6 +70,13 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory productCategory;
+
+    @Column(name = "on_sale", nullable = false)
+    private boolean onSale;
+
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Column(name = "discounted_price", nullable = true)
+    private BigDecimal discountedPrice;
 
 
 }
