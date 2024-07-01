@@ -37,7 +37,7 @@ fun ServerSwitch() {
                 CurrentDataUtils.baseUrl = if (isChecked) {
                     "http://10.0.2.2:8080/"
                 } else {
-                    "https://192.168.160.200:8080/"
+                    "http://192.168.169.200:8080/"
                 }
                 Log.d("DEBUG", "BaseUrl changed to: ${CurrentDataUtils.baseUrl}")
             }

@@ -106,4 +106,10 @@
     <string name="add_category">Ajouter catégorie</string>
     <string name="add_brand">Ajouter marque</string>
     <string name="add_product">Ajouter produit</string>
+    <string name="brand">Marque</string>
+    <string name="category">Catègorie</string>
+    <string name="back">Dos</string>
+    <string name="products">Produits</string>
+    <string name="categories">Catégories</string>
+    <string name="brands">Marques</string>
 </resources>

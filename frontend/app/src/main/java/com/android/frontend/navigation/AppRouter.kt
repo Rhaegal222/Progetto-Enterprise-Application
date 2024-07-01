@@ -13,6 +13,8 @@ sealed class Screen(val route: String) {
     object RootScreen : Screen(route = Graph.ROOT)
     object AuthenticationScreen : Screen(route = Graph.AUTHENTICATION)
     object MainScreen : Screen(route = Graph.MAIN)
+
+    object AdminScreen : Screen(route = Graph.ADMIN)
 }
 
 sealed class Navigation(val route: String) {
@@ -40,4 +42,11 @@ sealed class Navigation(val route: String) {
     object AddAddressPage : Navigation(route = "addaddress_page")
     object DebugMenu : Navigation(route = "debug_menu")
     object LoadingPage : Navigation(route = "loading_page")
+    object AdminMenu : Navigation(route = "admin_menu")
+    object AddProductPage : Navigation(route = "add_product_page")
+    object AddBrandPage : Navigation(route = "add_brand_page")
+    object AddCategoryPage : Navigation(route = "add_category_page")
+    object CategoryPage : Navigation(route = "category_page")
+    object BrandPage : Navigation(route = "brand_page")
+    object ProductPage : Navigation(route = "product_page")
 }

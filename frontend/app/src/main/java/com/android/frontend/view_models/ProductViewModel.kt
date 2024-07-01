@@ -8,10 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.creation.CartCreateDTO
 import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.creation.ProductCreateDTO
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
@@ -24,10 +26,11 @@ class ProductViewModel : ViewModel() {
     private val productDetails = MutableLiveData<ProductDTO>()
     val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
 
-    fun setProduct(context: Context, productDTO: ProductDTO) {
+    fun setProduct(context: Context, productCreateDTO: ProductCreateDTO) {
         viewModelScope.launch {
             val productService = RetrofitInstance.getProductApi(context)
-            productService.addProduct(productDTO)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            productService.addProduct("Bearer $accessToken", productCreateDTO)
         }
     }
 
@@ -63,7 +66,8 @@ class ProductViewModel : ViewModel() {
     fun getProductDetails(context: Context, id: String) {
         viewModelScope.launch {
             val productService = RetrofitInstance.getProductApi(context)
-            val call = productService.getProductById(id)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val call = productService.getProductById("Bearer $accessToken",id)
             call.enqueue(object : retrofit2.Callback<ProductDTO> {
                 override fun onResponse(
                     call: retrofit2.Call<ProductDTO>,
@@ -94,7 +98,8 @@ class ProductViewModel : ViewModel() {
 
         viewModelScope.launch {
             val productService = RetrofitInstance.getProductApi(context)
-            val call = productService.getAllProducts()
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val call = productService.getAllProducts("Bearer $accessToken")
             call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
                 override fun onResponse(
                     call: retrofit2.Call<List<ProductDTO>>,

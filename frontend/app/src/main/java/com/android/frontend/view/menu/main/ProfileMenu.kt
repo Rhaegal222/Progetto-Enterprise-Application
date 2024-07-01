@@ -45,7 +45,7 @@ fun ProfileMenu(navController: NavController) {
 }
 
 @Composable
-fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: Int, isLogout: Boolean = false) {
+fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: Int) {
     val context = LocalContext.current
 
     Card(
@@ -53,24 +53,11 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                if (isLogout) {
-                    SecurePreferences.clearAll(context)
-                    val packageManager: PackageManager = context.packageManager
-                    val intent: Intent =
-                        packageManager.getLaunchIntentForPackage(context.packageName)!!
-                    val componentName: ComponentName = intent.component!!
-                    val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
-                    context.startActivity(restartIntent)
-                    Runtime
-                        .getRuntime()
-                        .exit(0)
-                } else {
-                    when (textResId) {
-                        // R.string.my_orders ->
-                        // R.string.wishlist ->
-                        R.string.payment_methods -> navController.navigate(Navigation.PaymentsPage.route)
-                        R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
-                    }
+                when (textResId) {
+                    // R.string.my_orders ->
+                    // R.string.wishlist ->
+                    R.string.payment_methods -> navController.navigate(Navigation.PaymentsPage.route)
+                    R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
                 }
             }
     ) {
