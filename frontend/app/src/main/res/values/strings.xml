@@ -111,4 +111,5 @@
     <string name="products">Products</string>
     <string name="categories">Categories</string>
     <string name="brands">Brands</string>
+    <string name="login_as_admin">Log in as administrator</string>
 </resources>

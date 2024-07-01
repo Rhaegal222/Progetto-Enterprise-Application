@@ -6,14 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object TextButtonColorScheme {
-        private val containerColorLight = Color.Transparent
-        private val contentColorLight = Color(0xFF2979FF)
-        private val disabledContainerColorLight = Color.Transparent
-        private val disabledContentColorLight = Color(0xFF888888)
-        private val containerColorDark = Color.Transparent
-        private val contentColorDark = Color(0xFF2979FF)
-        private val disabledContainerColorDark = Color.Transparent
-        private val disabledContentColorDark = Color(0xFF888888)
+    private val containerColorLight = Color.Transparent
+    private val contentColorLight = Color(0xFF2A2B2C) // Un grigio più scuro per migliorare il contrasto
+    private val disabledContainerColorLight = Color.Transparent
+    private val disabledContentColorLight = Color(0xFF888888) // Un grigio più chiaro per disabilitato
+
+    private val containerColorDark = Color.Transparent
+    private val contentColorDark = Color(0xFFD5D4D3)
+    private val disabledContainerColorDark = Color.Transparent
+    private val disabledContentColorDark = Color(0xFF888888)
     @Composable
     fun textButtonColors(
         containerColor: Color = if (isSystemInDarkTheme()) containerColorDark else containerColorLight,

@@ -29,7 +29,7 @@ fun CartPage(cartViewModel: CartViewModel) {
     }
 
     cart?.let {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(it.cartItems) { cartItem ->
                     CartItemCard(cartItem, cartViewModel, context)
