@@ -31,7 +31,7 @@ fun AddCategoryPage(navController: NavHostController, viewModel: ProductCategory
             TopAppBar(
                 title = { Text(stringResource(id = R.string.add_category)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.CategoryPage.route)  }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }

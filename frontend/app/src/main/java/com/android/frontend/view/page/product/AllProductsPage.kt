@@ -5,6 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -51,14 +54,14 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
             )
         },
         content = { innerPadding ->
-            LazyColumn(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel)
-                }
+                    ProductsCard(productDTO, navController, productViewModel, cartViewModel)                }
             }
         }
     )
@@ -73,7 +76,8 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .padding(12.dp)
-            .width(174.dp)
+            .fillMaxWidth()
+            .height(250.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
                 navController.navigate(Navigation.ProductDetailsPage.route)
@@ -94,12 +98,14 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = productDTO.title,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                maxLines = 2,
+                modifier = Modifier.heightIn(min = 40.dp)
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -110,7 +116,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,22 +126,22 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                     text = "${productDTO.productPrice}€",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterVertically),
-                    fontSize = 18.sp
+                    fontSize = 13.sp
                 )
 
                 Button(
                     colors = ButtonColorScheme.buttonColors(),
                     modifier = Modifier.size(46.dp),
                     shape = RoundedCornerShape(14.dp),
-                    contentPadding = PaddingValues(10.dp),
+                    contentPadding = PaddingValues(0.dp),
                     onClick = {
                         cartViewModel.addProductToCart(userId, productDTO.id, 1, context)
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.fillMaxSize(),
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add"
+                        contentDescription = "Add",
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
