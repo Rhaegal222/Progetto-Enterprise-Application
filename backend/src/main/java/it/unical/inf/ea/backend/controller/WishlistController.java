@@ -29,7 +29,7 @@ public class WishlistController {
     public ResponseEntity<?> createWishlist(@Valid @RequestBody WishlistCreateDTO wishListCreateDTO){
         try {
             wishlistService.createWishlist(wishListCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Wishlist created successfully\"}");
+            return ResponseEntity.ok("{\"message\": \"Wishlist created successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

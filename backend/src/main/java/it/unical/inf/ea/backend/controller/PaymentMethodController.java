@@ -27,7 +27,7 @@ public class PaymentMethodController {
     public ResponseEntity<?> addPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) {
         try {
             paymentMethodService.createPaymentMethod(paymentMethodCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Payment method registered successfully\"}");
+            return ResponseEntity.ok("{\"message\": \"Payment method registered successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
