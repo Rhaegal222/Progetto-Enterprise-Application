@@ -67,7 +67,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
                 TopAppBar(
                     title = { Text("Add Product") },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(onClick = { navController.navigate(Navigation.ProductPage.route)  }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                         }
                     }
