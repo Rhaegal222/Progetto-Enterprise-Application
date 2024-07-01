@@ -91,9 +91,11 @@ fun ShippingAddressesContent(
     }
 
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { index ->
-            selectedAddress = addresses[index]
-            isDefaultAddress = selectedAddress?.isDefault ?: false
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            if (page in addresses.indices) {
+                selectedAddress = addresses[page]
+                isDefaultAddress = selectedAddress?.isDefault ?: false
+            }
         }
     }
 
@@ -102,31 +104,10 @@ fun ShippingAddressesContent(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.payment_methods)
+                        text = stringResource(id = R.string.shipping_addresses),
                     )
                 }
             )
-        },
-        floatingActionButton = {
-            Button(
-                onClick = {
-                    navController.navigate(Navigation.AddPaymentPage.route)
-                },
-                colors = ButtonColorScheme.buttonColors(),
-                modifier = Modifier
-                    .padding(0.dp)
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = "Add shipping address",
-                    modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
-                        .padding(0.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(id = R.string.add_payment_method))
-            }
         }
     ) { innerPadding ->
         Column(
