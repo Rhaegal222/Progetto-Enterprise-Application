@@ -23,6 +23,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.awaitResponse
 import androidx.compose.foundation.pager.PagerState
+import com.android.frontend.config.Request
 import com.android.frontend.config.getCurrentStackTrace
 
 class PaymentViewModel : ViewModel() {
@@ -55,7 +56,7 @@ class PaymentViewModel : ViewModel() {
             }
             val paymentMethod = PaymentMethodCreateDTO(cardNumber, expireMonth, expireYear, owner, isDefault)
             val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 paymentService.addPaymentMethod("Bearer $accessToken", paymentMethod)
             }
             if (response?.isSuccessful == true) {
@@ -82,7 +83,7 @@ class PaymentViewModel : ViewModel() {
                 return@launch
             }
             val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 paymentService.getAllPaymentMethods("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
@@ -109,7 +110,7 @@ class PaymentViewModel : ViewModel() {
                 return@launch
             }
             val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
-            val response = executeRequest<Void>(context) {
+            val response = Request().executeRequest<Void>(context) {
                 paymentService.setDefaultPaymentMethod("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
@@ -138,7 +139,7 @@ class PaymentViewModel : ViewModel() {
                 return@launch
             }
             val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
-            val response = executeRequest<Void>(context) {
+            val response = Request().executeRequest<Void>(context) {
                 paymentService.deletePaymentMethod("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
@@ -150,34 +151,6 @@ class PaymentViewModel : ViewModel() {
             }
             _isLoading.value = false
         }
-    }
-
-    private suspend fun <T> executeRequest(context: Context, request: () -> Call<T>): Response<T>? {
-        return try {
-            val response = withContext(Dispatchers.IO) { request().awaitResponse() }
-            when (response.code()) {
-                401, 403 -> {
-                    if (TokenManager.getInstance().tryRefreshToken(context)) {
-                        withContext(Dispatchers.IO) { request().awaitResponse() } // Retry the request
-                    } else {
-                        handleLogout(context)
-                        null
-                    }
-                }
-                else -> response
-            }
-        } catch (e: Exception) {
-            Log.e("DEBUG", "${getCurrentStackTrace()} Request failed", e)
-            _hasError.value = true
-            null
-        }
-    }
-
-    private fun handleLogout(context: Context) {
-        TokenManager.getInstance().clearTokens(context)
-        context.startActivity(Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
     }
 }
 

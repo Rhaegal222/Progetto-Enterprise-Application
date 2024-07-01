@@ -16,6 +16,7 @@ import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.creation.AddressCreateDTO
 import com.android.frontend.dto.AddressDTO
 import androidx.compose.foundation.pager.PagerState
+import com.android.frontend.config.Request
 import com.android.frontend.config.getCurrentStackTrace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +55,7 @@ class AddressViewModel : ViewModel() {
             }
             val shippingAddress = AddressCreateDTO(firstname, lastname, country, city, street, zipCode, isDefault)
             val addressService = RetrofitInstance.getAddressApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 addressService.addShippingAddress("Bearer $accessToken", shippingAddress)
             }
             if (response?.isSuccessful == true) {
@@ -82,7 +83,7 @@ class AddressViewModel : ViewModel() {
                 return@launch
             }
             val addressService = RetrofitInstance.getAddressApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Getting shipping addresses")
                 addressService.getAllShippingAddresses("Bearer $accessToken")
             }
@@ -111,7 +112,7 @@ class AddressViewModel : ViewModel() {
                 return@launch
             }
             val addressService = RetrofitInstance.getAddressApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 addressService.setDefaultShippingAddress("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
@@ -140,7 +141,7 @@ class AddressViewModel : ViewModel() {
                 return@launch
             }
             val addressService = RetrofitInstance.getAddressApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 addressService.deleteShippingAddress("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
@@ -152,33 +153,5 @@ class AddressViewModel : ViewModel() {
             }
             _isLoading.value = false
         }
-    }
-
-    private suspend fun <T> executeRequest(context: Context, request: () -> Call<T>): Response<T>? {
-        return try {
-            val response = withContext(Dispatchers.IO) { request().awaitResponse() }
-            when (response.code()) {
-                401, 403 -> {
-                    if (TokenManager.getInstance().tryRefreshToken(context)) {
-                        withContext(Dispatchers.IO) { request().awaitResponse() } // Retry the request
-                    } else {
-                        handleLogout(context)
-                        null
-                    }
-                }
-                else -> response
-            }
-        } catch (e: Exception) {
-            Log.e("DEBUG", "${getCurrentStackTrace()} Request failed", e)
-            _hasError.value = true
-            null
-        }
-    }
-
-    private fun handleLogout(context: Context) {
-        TokenManager.getInstance().clearTokens(context)
-        context.startActivity(Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
     }
 }
