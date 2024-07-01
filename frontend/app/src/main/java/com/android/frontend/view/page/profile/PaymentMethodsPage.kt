@@ -24,6 +24,7 @@ import com.android.frontend.R
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view.component.PaymentCard
 import com.android.frontend.view_models.PaymentViewModel
 import com.android.frontend.view.component.ErrorDialog
@@ -100,6 +101,7 @@ fun PaymentMethodsContent(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
+                colors = ButtonColorScheme.buttonColors(),
                 modifier = Modifier
                     .padding(0.dp)
             ) {

@@ -41,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerHighest = Color(0xFFC0C0C0), // Grigio medio
     surfaceContainerLow = Color(0xFFB0B0B0), // Grigio chiaro
     surfaceContainerLowest = Color(0xFFA0A0A0), // Grigio medio
-    surfaceDim = Color(0xFF909090) // Grigio scuro
+    surfaceDim = Color(0xFF909090), // Grigio scuro
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -80,7 +80,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerHighest = Color(0xFF202020), // Grigio molto scuro
     surfaceContainerLow = Color(0xFF101010), // Grigio molto scuro
     surfaceContainerLowest = Color(0xFF000000), // Nero
-    surfaceDim = Color(0xFF101010) // Grigio molto scuro
+    surfaceDim = Color(0xFF101010), // Grigio molto scuro
 )
 
 @Composable

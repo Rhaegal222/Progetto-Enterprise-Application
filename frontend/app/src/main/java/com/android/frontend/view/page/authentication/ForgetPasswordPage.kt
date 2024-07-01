@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
@@ -23,6 +22,9 @@ import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.service.UserService
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
+import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +47,10 @@ fun ForgetPasswordPage(navController: NavHostController) {
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
             confirmButton = {
-                TextButton(onClick = { showDialog.value = false }) {
+                TextButton(
+                    onClick = { showDialog.value = false },
+                    colors = TextButtonColorScheme.textButtonColors()
+                ) {
                     Text("OK")
                 }
             },
@@ -101,6 +106,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldColorScheme.colors()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -111,6 +117,7 @@ fun ForgetPasswordPage(navController: NavHostController) {
                         showDialog.value = true
                     }
                 },
+                colors = OutlinedButtonColorScheme.outlinedButtonColors()
             ) {
                 Text(
                     text = stringResource(id = R.string.send_email).uppercase(),

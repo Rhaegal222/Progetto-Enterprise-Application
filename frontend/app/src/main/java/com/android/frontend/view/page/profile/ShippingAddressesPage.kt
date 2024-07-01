@@ -32,6 +32,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -109,6 +110,7 @@ fun ShippingAddressesContent(
                 onClick = {
                     navController.navigate(Navigation.AddAddressPage.route)
                 },
+                colors = ButtonColorScheme.buttonColors(),
                 modifier = Modifier
                     .padding(0.dp)
 

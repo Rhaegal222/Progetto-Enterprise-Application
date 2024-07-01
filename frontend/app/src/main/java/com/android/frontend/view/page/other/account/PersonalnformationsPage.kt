@@ -30,6 +30,9 @@ import com.android.frontend.view_models.UserViewModel
 import com.android.frontend.R
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
+import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -154,6 +157,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 Spacer(modifier = Modifier.height(20.dp))
 
                 OutlinedTextField(
+                    colors = OutlinedTextFieldColorScheme.colors(),
                     value = firstName,
                     onValueChange = { firstName = it },
                     label = { Text(stringResource(id = R.string.firstname)) },
@@ -165,6 +169,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
+                    colors = OutlinedTextFieldColorScheme.colors(),
                     value = lastName,
                     onValueChange = { lastName = it },
                     label = { Text(stringResource(id = R.string.lastname)) },
@@ -176,6 +181,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
+                    colors = OutlinedTextFieldColorScheme.colors(),
                     value = email,
                     onValueChange = { email = it },
                     label = { Text(stringResource(id = R.string.email)) },
@@ -187,6 +193,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                 Spacer(modifier = Modifier.height(8.dp))
 
                 OutlinedTextField(
+                    colors = OutlinedTextFieldColorScheme.colors(),
                     value = phoneNumber,
                     onValueChange = { phoneNumber = it },
                     label = { Text(stringResource(id = R.string.phone_number)) },
@@ -218,6 +225,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                                     isEditMode = false
                                 }
                             },
+                            colors = ButtonColorScheme.buttonColors(),
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(text = stringResource(id = R.string.apply_changes))
@@ -229,6 +237,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                             onClick = {
                                 isEditMode = false
                             },
+                            colors = ButtonColorScheme.buttonColors(),
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(text = stringResource(id = R.string.cancel))
@@ -239,6 +248,7 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                         onClick = {
                             isEditMode = true
                         },
+                        colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(text = stringResource(id = R.string.edit))
@@ -261,7 +271,8 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                                         phoneNumber
                                     )
                                     userViewModel.logout(context)
-                                }
+                                },
+                                colors = TextButtonColorScheme.textButtonColors()
                             ) {
                                 Text("Continua")
                             }
@@ -271,7 +282,8 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
                                 onClick = {
                                     showEmailChangeDialog = false
                                     isEditMode = false
-                                }
+                                },
+                                colors = TextButtonColorScheme.textButtonColors()
                             ) {
                                 Text("Cancella")
                             }

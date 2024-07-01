@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,7 +107,8 @@ fun CountryLanguagePage(navController: NavHostController) {
                 onClick = {
                     setLocale(context, selectedLanguage)
                     navController.popBackStack()
-                }
+                },
+                colors = ButtonColorScheme.buttonColors()
             ) {
                 Text(text = "Confirm")
             }

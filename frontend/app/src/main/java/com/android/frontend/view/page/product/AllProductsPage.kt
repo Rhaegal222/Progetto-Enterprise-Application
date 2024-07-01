@@ -27,6 +27,7 @@ import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view_models.CartViewModel
 import com.android.frontend.view_models.ProductViewModel
 
@@ -123,6 +124,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
                 )
 
                 Button(
+                    colors = ButtonColorScheme.buttonColors(),
                     modifier = Modifier.size(46.dp),
                     shape = RoundedCornerShape(14.dp),
                     contentPadding = PaddingValues(10.dp),

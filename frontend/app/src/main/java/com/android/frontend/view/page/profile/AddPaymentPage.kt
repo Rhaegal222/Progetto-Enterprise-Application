@@ -25,6 +25,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.frontend.R
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view_models.PaymentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,6 +91,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = formattedCardNumber,
                         onValueChange = { newTextFieldValue ->
@@ -131,6 +134,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         OutlinedTextField(
+                            colors = OutlinedTextFieldColorScheme.colors(),
                             singleLine = true,
                             value = expireMonth,
                             onValueChange = {
@@ -159,6 +163,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         OutlinedTextField(
+                            colors = OutlinedTextFieldColorScheme.colors(),
                             singleLine = true,
                             value = expireYear,
                             onValueChange = {
@@ -187,6 +192,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = owner,
                         onValueChange = {
@@ -239,8 +245,8 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                             } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                             }
-
                         },
+                        colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(stringResource(id = R.string.add_payment_card))

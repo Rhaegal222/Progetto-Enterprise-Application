@@ -24,6 +24,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.MainActivity
 import com.android.frontend.R
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view_models.ChangePasswordViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -102,6 +104,7 @@ fun ChangePasswordPage(navController: NavHostController) {
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldColorScheme.colors()
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -129,6 +132,7 @@ fun ChangePasswordPage(navController: NavHostController) {
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldColorScheme.colors()
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -154,6 +158,7 @@ fun ChangePasswordPage(navController: NavHostController) {
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldColorScheme.colors()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -167,11 +172,8 @@ fun ChangePasswordPage(navController: NavHostController) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                colors = ButtonColorScheme.buttonColors(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(id = R.string.apply)
@@ -183,7 +185,9 @@ fun ChangePasswordPage(navController: NavHostController) {
             // Password requirements text
             Column(
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.passwordRequirements_line1),

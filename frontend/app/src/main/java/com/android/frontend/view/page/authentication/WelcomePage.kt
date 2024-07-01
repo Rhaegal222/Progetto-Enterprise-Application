@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -75,11 +77,12 @@ fun WelcomePage(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                OutlinedButton(
+                OutlinedButton (
                     onClick = {
                         navController.navigate(Navigation.LoginPage.route)
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    colors = OutlinedButtonColorScheme.outlinedButtonColors()
                 ) {
                     Text(
                         text = stringResource(id = R.string.login).uppercase(),
@@ -93,7 +96,8 @@ fun WelcomePage(navController: NavController) {
                     onClick = {
                         navController.navigate(Navigation.SignupPage.route)
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonColorScheme.buttonColors()
                 ) {
                     Text(
                         text = stringResource(id = R.string.sign_up).uppercase(),

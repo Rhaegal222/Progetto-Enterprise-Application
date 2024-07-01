@@ -22,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.frontend.R
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view_models.AddressViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,6 +86,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = addressViewModel.firstname,
                         onValueChange = {
@@ -104,6 +107,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = addressViewModel.lastname,
                         onValueChange = {
@@ -124,6 +128,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = addressViewModel.street,
                         onValueChange = {
@@ -144,6 +149,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = addressViewModel.city,
                         onValueChange = {
@@ -164,6 +170,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = addressViewModel.country,
                         onValueChange = {
@@ -184,6 +191,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
                         value = addressViewModel.zipCode,
                         onValueChange = {
@@ -239,6 +247,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                             }
 
                         },
+                        colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(stringResource(id = R.string.add_address))

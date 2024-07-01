@@ -20,11 +20,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,6 +30,10 @@ import androidx.navigation.NavHostController
 import com.android.frontend.MainActivity
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
+import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 import com.android.frontend.view_models.LoginViewModel
 import com.android.frontend.view_models.SignUpViewModel
 
@@ -74,7 +76,8 @@ fun SignupPage(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(paddingValues).padding(8.dp, 0.dp),
+                .padding(paddingValues)
+                .padding(16.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
@@ -87,7 +90,8 @@ fun SignupPage(navController: NavHostController) {
             )
 
             TextButton(
-                onClick = { navController.navigate(Navigation.LoginPage.route) }
+                onClick = { navController.navigate(Navigation.LoginPage.route) },
+                colors = TextButtonColorScheme.textButtonColors()
             ) {
                 Text(
                     buildAnnotatedString {
@@ -110,7 +114,8 @@ fun SignupPage(navController: NavHostController) {
                     onValueChange = { signUpViewModel.firstname = it },
                     label = { Text(stringResource(id = R.string.firstname)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldColorScheme.colors()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -120,7 +125,8 @@ fun SignupPage(navController: NavHostController) {
                     onValueChange = { signUpViewModel.lastname = it },
                     label = { Text(stringResource(id = R.string.lastname)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldColorScheme.colors()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -130,7 +136,8 @@ fun SignupPage(navController: NavHostController) {
                     onValueChange = { signUpViewModel.email = it },
                     label = { Text(stringResource(id = R.string.email)) },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldColorScheme.colors()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -149,7 +156,8 @@ fun SignupPage(navController: NavHostController) {
                     },
                     singleLine = true,
                     visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldColorScheme.colors()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -173,7 +181,8 @@ fun SignupPage(navController: NavHostController) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonColorScheme.buttonColors()
                 ) {
                     Text(stringResource(id = R.string.sign_up).uppercase())
                 }
@@ -198,6 +207,7 @@ fun SignupPage(navController: NavHostController) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedButtonColorScheme.outlinedButtonColors()
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.google_logo),
@@ -209,6 +219,8 @@ fun SignupPage(navController: NavHostController) {
 
                 Text( text = stringResource(id = R.string.sign_up_with_google) )
             }
+
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

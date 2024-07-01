@@ -6,6 +6,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.android.frontend.R
+import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 
 @Composable
 fun ErrorDialog(title: String, errorMessage: String, onDismiss: () -> Unit, onRetry: () -> Unit) {
@@ -14,12 +15,18 @@ fun ErrorDialog(title: String, errorMessage: String, onDismiss: () -> Unit, onRe
         title = { Text(title) },
         text = { Text(errorMessage) },
         confirmButton = {
-            TextButton(onClick = onRetry) {
+            TextButton(
+                onClick = onRetry,
+                colors = TextButtonColorScheme.textButtonColors()
+            ) {
                 Text(stringResource(id = R.string.retry))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                colors = TextButtonColorScheme.textButtonColors()
+            ) {
                 Text(stringResource(id = R.string.cancel))
             }
         }

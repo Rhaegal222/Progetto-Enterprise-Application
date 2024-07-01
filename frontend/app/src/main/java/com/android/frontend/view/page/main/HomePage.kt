@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.Suggestion
 import com.android.frontend.view_models.HomeViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -97,6 +98,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                         }
                 },
                 singleLine = true,
+                colors = OutlinedTextFieldColorScheme.colors(),
                 placeholder = { stringResource(id = R.string.search) },
                 modifier = Modifier
                     .fillMaxWidth()

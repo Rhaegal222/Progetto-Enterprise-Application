@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import com.android.frontend.MainActivity
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -137,7 +138,8 @@ fun ThemePage(navController: NavHostController) {
                     sharedPreferences.edit().putBoolean("isDarkTheme", isDarkTheme).apply()
                     setAppTheme(context, isDarkTheme)
                     navController.popBackStack()
-                }
+                },
+                colors = ButtonColorScheme.buttonColors()
             ) {
                 Text(text = "Apply Theme")
             }
