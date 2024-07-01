@@ -27,7 +27,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     private final JwtContextUtils jwtContextUtils;
 
     @Override
-    public PaymentMethodDTO createPaymentMethod(PaymentMethodCreateDTO paymentMethodCreateDTO) throws IllegalAccessException {
+    public void createPaymentMethod(PaymentMethodCreateDTO paymentMethodCreateDTO) throws IllegalAccessException {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -35,7 +35,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
             }
 
             PaymentMethod paymentMethod = modelMapper.map(paymentMethodCreateDTO, PaymentMethod.class);
-            paymentMethod.setOwnerUser(loggedUser);
+            paymentMethod.setUser(loggedUser);
 
             if (paymentMethod.isDefault()) {
                 for (PaymentMethod existingMethod : loggedUser.getPaymentMethods()) {
@@ -45,10 +45,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
                     }
                 }
             }
-
-            paymentMethod = paymentMethodDao.save(paymentMethod);
-
-            return mapToDTO(paymentMethod);
+            paymentMethodDao.save(paymentMethod);
         } catch (Exception e) {
             throw new IllegalAccessException("Cannot create payment method");
         }
@@ -61,7 +58,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getOwnerUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot update payment method");
         }
 
@@ -89,11 +86,12 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
+    @Transactional
     public void setDefaultPaymentMethod(String id) throws IllegalAccessException {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getOwnerUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot set default payment method");
         }
 
@@ -113,7 +111,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         try{
             PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getOwnerUser().getId().equals(loggedUser.getId()))
+            if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId()))
                 throw new IllegalAccessException("Cannot delete payment method");
             paymentMethodDao.deleteById(id);
         }catch (Exception e){
@@ -127,7 +125,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(paymentMethod.getOwnerUser().getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(paymentMethod.getUser().getId())) {
             throw new IllegalAccessException("User cannot get payment method");
         }
 

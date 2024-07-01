@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface WishlistDao extends JpaRepository<Wishlist, String>{
-    //List<Wishlist> findByOwnerUserEquals(User user);
+    //List<Wishlist> findByUserEquals(User user);
     List<Wishlist> findByUser(User user);
 
 }

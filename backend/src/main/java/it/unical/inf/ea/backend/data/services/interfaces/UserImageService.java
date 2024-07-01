@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface UserImageService {
     Resource getImage(String url) throws IOException;
 
-    UserImageDTO savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException;
+    void savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException;
 
     void deletePhotoUser(String id) throws IllegalAccessException;
 

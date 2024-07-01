@@ -134,7 +134,6 @@ public class ProductServiceImp implements ProductService {
 
     }
 
-
     @Override
     public void deleteProduct(String id) throws IllegalAccessException{
         Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);

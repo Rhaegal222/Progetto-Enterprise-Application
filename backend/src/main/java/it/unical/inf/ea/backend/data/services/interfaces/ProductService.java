@@ -6,7 +6,6 @@ import it.unical.inf.ea.backend.data.entities.ProductCategory;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

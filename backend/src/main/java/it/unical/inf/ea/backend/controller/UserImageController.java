@@ -24,28 +24,33 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 public class UserImageController {
     private final UserImageService userImageService;
 
-    @GetMapping(path = "/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<Resource> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name ,@PathVariable("file_name") String file_name) throws IOException {
-
-        Resource resource = userImageService.getImage(type+"/"+folder_name+"/"+file_name);
-        return ResponseEntity.ok(resource);
-    }
-
     @PostMapping(value = "/users/photo-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserImageDTO savePhotoUser(
-            @RequestPart("file") MultipartFile multipartFile,
-            @RequestParam("description") String description
-    ) throws IOException, IllegalAccessException {
-        return userImageService.savePhotoUser(multipartFile, description);
+    public ResponseEntity<?> savePhotoUser(@RequestPart("file") MultipartFile multipartFile, @RequestParam("description") String description) {
+        try {
+            userImageService.savePhotoUser(multipartFile, description);
+            return ResponseEntity.ok("{\"message\": \"Image uploaded successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
+    @GetMapping(path = "/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<?> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name ,@PathVariable("file_name") String file_name) {
+        try {
+            Resource resource = userImageService.getImage(type+"/"+folder_name+"/"+file_name);
+            return ResponseEntity.ok(resource);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
     @DeleteMapping("/users/photo-profile/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePhotoUser(@PathVariable("id") String id) throws IllegalAccessException {
-        userImageService.deletePhotoUser(id);
+    public ResponseEntity<?> deletePhotoUser(@PathVariable("id") String id){
+        try {
+            userImageService.deletePhotoUser(id);
+            return ResponseEntity.ok("{\"message\": \"Image deleted successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
-
-
 }

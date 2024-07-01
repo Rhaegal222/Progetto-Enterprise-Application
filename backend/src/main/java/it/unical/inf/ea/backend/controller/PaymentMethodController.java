@@ -26,8 +26,8 @@ public class PaymentMethodController {
     @PostMapping(path="/addPaymentMethod")
     public ResponseEntity<?> addPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) {
         try {
-            PaymentMethodDTO createdPaymentMethod = paymentMethodService.createPaymentMethod(paymentMethodCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPaymentMethod);
+            paymentMethodService.createPaymentMethod(paymentMethodCreateDTO);
+            return ResponseEntity.ok("{\"message\": \"Payment method registered successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
@@ -46,8 +46,8 @@ public class PaymentMethodController {
     @PutMapping(path = "/updatePaymentMethod/{id}")
     public ResponseEntity<?> updatePaymentMethod(@PathVariable("id") String id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) {
         try {
-            PaymentMethodDTO updatedPaymentMethod = paymentMethodService.updatePaymentMethod(id, paymentMethodDTO);
-            return ResponseEntity.ok(updatedPaymentMethod);
+            paymentMethodService.updatePaymentMethod(id, paymentMethodDTO);
+            return ResponseEntity.ok("{\"message\": \"Payment method updated successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
@@ -57,7 +57,7 @@ public class PaymentMethodController {
     public ResponseEntity<?> deletePaymentMethod(@PathVariable("id") String id) {
         try {
             paymentMethodService.deletePaymentMethod(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("{\"message\": \"Payment method deleted successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

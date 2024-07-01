@@ -23,26 +23,42 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping("/getCartByUserId/{userId}")
-    public ResponseEntity<CartDTO> getCartByUserId(@PathVariable String userId) {
-        CartDTO cart = cartService.getCartByUserId(userId);
-        return ResponseEntity.ok(cart);
+    public ResponseEntity<?> getCartByUserId(@PathVariable String userId) {
+        try {
+            CartDTO cart = cartService.getCartByUserId(userId);
+            return ResponseEntity.ok(cart);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<CartDTO> addProductToCart(@RequestBody CartCreateDTO cartCreateDTO) {
-        CartDTO updatedCart = cartService.addProductToCart(cartCreateDTO);
-        return ResponseEntity.ok(updatedCart);
+    public ResponseEntity<?> addProductToCart(@RequestBody CartCreateDTO cartCreateDTO) {
+        try {
+            CartDTO cart = cartService.addProductToCart(cartCreateDTO);
+            return ResponseEntity.ok(cart);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @DeleteMapping("/removeProduct/{cartItemId}")
-    public ResponseEntity<Void> removeProductFromCart(@PathVariable String cartItemId) {
-        cartService.removeProductFromCart(cartItemId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> removeProductFromCart(@PathVariable String cartItemId) {
+        try {
+            cartService.removeProductFromCart(cartItemId);
+            return ResponseEntity.ok("{\"message\": \"Product removed from cart\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
     @PutMapping("/updateProduct/{cartItemId}")
-    public ResponseEntity<CartDTO> updateCartItem(@PathVariable String cartItemId, @RequestParam int quantity) {
-        CartDTO updatedCart = cartService.updateCartItem(cartItemId, quantity);
-        return ResponseEntity.ok(updatedCart);
+    public ResponseEntity<?> updateCartItem(@PathVariable String cartItemId, @RequestParam int quantity) {
+        try {
+            cartService.updateCartItem(cartItemId, quantity);
+            return ResponseEntity.ok("{\"message\": \"Cart updated successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 }
