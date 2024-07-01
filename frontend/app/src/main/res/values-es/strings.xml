@@ -73,7 +73,6 @@
     <string name="recover_password_text">Te enviaremos un correo electrónico con las instrucciones para recuperar tu contraseña a tu dirección de correo electrónico.</string>
     <string name="theme">Tema</string>
     <string name="country_and_language">País e idioma</string>
-    <string name="add_payment_method_short">Añadir pago</string>
     <string name="delete">Eliminar</string>
     <string name="add_payment_card">Añadir tarjeta de pago</string>
     <string name="add_address">Añadir dirección</string>
@@ -82,7 +81,7 @@
     <string name="cancel">Cancelar</string>
     <string name="edit">Editar</string>
     <string name="security">Seguridad</string>
-    <string name="add_payment_method">Agregar un método de pago</string>
+    <string name="add_payment_method">Agregar método de pago</string>
     <string name="set_as_default">Establecer como predeterminado</string>
     <string name="apply">Aplicar</string>
     <string name="server_communication_error">Error de comunicación con el servidor. Por favor intenta de nuevo más tarde.</string>

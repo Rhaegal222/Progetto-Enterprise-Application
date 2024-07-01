@@ -74,7 +74,7 @@ fun DebugMenu(navController: NavHostController) {
             DebugItem(context, Icons.Default.BugReport, R.string.reject_access_token)
             DebugItem(context, Icons.Default.BugReport, R.string.show_tokens)
             DebugItem(context, Icons.Default.BugReport, R.string.add_category)
-            DebugItem(context, Icons.Default.BugReport, R.string.shipping_addresses)
+            DebugItem(context, Icons.Default.BugReport, R.string.add_address)
             DebugItem(context, Icons.Default.BugReport, R.string.add_payment_method)
             DebugItem(context, Icons.Default.BugReport, R.string.add_brand)
             DebugItem(context, Icons.Default.BugReport, R.string.add_product)

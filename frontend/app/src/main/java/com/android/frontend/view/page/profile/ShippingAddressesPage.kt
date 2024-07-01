@@ -30,8 +30,10 @@ import com.android.frontend.view_models.AddressViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
@@ -112,14 +114,15 @@ fun ShippingAddressesContent(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(1f)
             ) { page ->
                 if (addresses.isNotEmpty()) {
                     ShippingAddressesPagePreview(pagerState, addresses, addressViewModel, context, selectedAddress)
@@ -128,7 +131,6 @@ fun ShippingAddressesContent(
                         text = stringResource(id = R.string.no_shipping_addresses)
                     )
                 }
-
             }
         }
     }
@@ -142,135 +144,144 @@ fun ShippingAddressesPagePreview(
     context: Context,
     selectedAddress: AddressDTO?
 ) {
-    HorizontalPager(
-        state = pagerState,
-        contentPadding = PaddingValues(horizontal = 50.dp),
-        modifier = Modifier.fillMaxWidth()
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 16.dp, horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                singleLine = true,
-                value = addressViewModel.firstname,
-                onValueChange = {
-                    addressViewModel.firstname = it
-                },
-                label = { Text(stringResource(id = R.string.firstname)) },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
+        Text(text = "First Name:")
 
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                singleLine = true,
-                value = addressViewModel.lastname,
-                onValueChange = {
-                    addressViewModel.lastname = it
-                },
-                label = { Text(stringResource(id = R.string.lastname)) },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                singleLine = true,
-                value = addressViewModel.street,
-                onValueChange = {
-                    addressViewModel.street = it
-                },
-                label = { Text("Street") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {}
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                singleLine = true,
-                value = addressViewModel.city,
-                onValueChange = {
-                    addressViewModel.city = it
-                },
-                label = { Text("City") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { }
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                singleLine = true,
-                value = addressViewModel.country,
-                onValueChange = {
-                    addressViewModel.country = it
-                },
-                label = { Text("Country") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { }
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                singleLine = true,
-                value = addressViewModel.zipCode,
-                onValueChange = {
-                    addressViewModel.zipCode = it
-                },
-                label = { Text("Zip Code") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { }
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
     }
+//    HorizontalPager(
+//        state = pagerState,
+//        contentPadding = PaddingValues(horizontal = 50.dp),
+//        modifier = Modifier.fillMaxWidth()
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(vertical = 16.dp, horizontal = 16.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldColorScheme.colors(),
+//                singleLine = true,
+//                value = addressViewModel.firstname,
+//                onValueChange = {
+//                    addressViewModel.firstname = it
+//                },
+//                label = { Text(stringResource(id = R.string.firstname)) },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Next
+//                ),
+//                keyboardActions = KeyboardActions(
+//
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldColorScheme.colors(),
+//                singleLine = true,
+//                value = addressViewModel.lastname,
+//                onValueChange = {
+//                    addressViewModel.lastname = it
+//                },
+//                label = { Text(stringResource(id = R.string.lastname)) },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Next
+//                ),
+//                keyboardActions = KeyboardActions(
+//
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldColorScheme.colors(),
+//                singleLine = true,
+//                value = addressViewModel.street,
+//                onValueChange = {
+//                    addressViewModel.street = it
+//                },
+//                label = { Text("Street") },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Next
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onNext = {}
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldColorScheme.colors(),
+//                singleLine = true,
+//                value = addressViewModel.city,
+//                onValueChange = {
+//                    addressViewModel.city = it
+//                },
+//                label = { Text("City") },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Next
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onNext = { }
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldColorScheme.colors(),
+//                singleLine = true,
+//                value = addressViewModel.country,
+//                onValueChange = {
+//                    addressViewModel.country = it
+//                },
+//                label = { Text("Country") },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Next
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onNext = { }
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldColorScheme.colors(),
+//                singleLine = true,
+//                value = addressViewModel.zipCode,
+//                onValueChange = {
+//                    addressViewModel.zipCode = it
+//                },
+//                label = { Text("Zip Code") },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onDone = { }
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            )
+//        }
+//    }
 }

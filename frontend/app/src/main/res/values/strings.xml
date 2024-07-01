@@ -75,7 +75,6 @@
     <string name="set_as_default">Set as Default</string>
     <string name="theme">Theme</string>
     <string name="country_and_language">Country and language</string>
-    <string name="add_payment_method_short">Add payment</string>
     <string name="delete">Delete</string>
     <string name="add_payment_card">Add payment card</string>
     <string name="add_address">Add address</string>
