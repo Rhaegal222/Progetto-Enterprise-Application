@@ -51,5 +51,10 @@ public class ProductCreateDTO {
     private ProductCategoryDTO productCategory;
 
     private String imageUrl;
+
+    @NotNull
+    private boolean onSale;
+
+    private BigDecimal discountedPrice;
 }
 

@@ -94,7 +94,7 @@ fun DebugItem(context: Context, icon: ImageVector, textResId: Int) {
                     R.string.reject_access_token -> DebugViewModel().rejectToken(context)
                     R.string.show_tokens -> DebugViewModel().showToken(context)
                     R.string.add_category -> DebugViewModel().generateProductCategory(context)
-                    R.string.shipping_addresses -> DebugViewModel().generateAddress(context)
+                    R.string.add_address -> DebugViewModel().generateAddress(context)
                     R.string.add_payment_method -> DebugViewModel().generatePayment(context)
                     R.string.add_brand -> DebugViewModel().generateBrand(context)
                     // R.string.add_product -> DebugViewModel().generateProduct(context)

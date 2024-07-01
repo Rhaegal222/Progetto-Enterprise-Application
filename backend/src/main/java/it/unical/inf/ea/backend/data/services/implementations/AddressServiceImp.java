@@ -65,8 +65,7 @@ public class AddressServiceImp implements AddressService {
             throw new IllegalAccessException("User cannot update address");
         }
 
-        address.setFirstName(patch.getFirstName());
-        address.setLastName(patch.getLastName());
+        address.setFullName(patch.getFullName());
         address.setCountry(patch.getCountry());
         address.setCity(patch.getCity());
         address.setStreet(patch.getStreet());

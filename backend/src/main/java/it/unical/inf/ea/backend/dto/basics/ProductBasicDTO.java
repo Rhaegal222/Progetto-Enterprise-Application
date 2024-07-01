@@ -61,4 +61,9 @@ public class ProductBasicDTO {
             this.productImages = List.of(productImages.get(0));
     }
 
+    @NotNull
+    private boolean onSale;
+
+    private BigDecimal discountedPrice;
+
 }

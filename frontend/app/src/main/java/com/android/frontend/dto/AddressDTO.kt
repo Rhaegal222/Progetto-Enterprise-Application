@@ -1,13 +1,15 @@
 package com.android.frontend.dto
 
 data class AddressDTO (
-
-    val id: kotlin.String,
-    val header: kotlin.String,
-    val country: kotlin.String,
-    val city: kotlin.String,
-    val street: kotlin.String,
-    val zipCode: kotlin.String,
-    val isDefault: kotlin.Boolean
+    val id: String,
+    val fullName: String,
+    val phoneNumber: String,
+    val street: String,
+    val additionalInfo: String,
+    val zipCode: String,
+    val city: String,
+    val province: String,
+    val country: String,
+    val isDefault: Boolean
 ) {
 }

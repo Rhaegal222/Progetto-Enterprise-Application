@@ -1,11 +1,11 @@
 package com.android.frontend.view.page.profile
 
+import ShippingAddressCard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,22 +24,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.dto.AddressDTO
-import com.android.frontend.navigation.Navigation
-import com.android.frontend.view.component.AddressCard
 import com.android.frontend.view_models.AddressViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.material.icons.filled.Add
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
-import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -81,7 +73,6 @@ fun ShippingAddressesContent(
     addressViewModel: AddressViewModel,
     context: Context
 ) {
-    val pagerState = rememberPagerState(pageCount = { addresses.size })
     var selectedAddress by remember { mutableStateOf<AddressDTO?>(null) }
     var isDefaultAddress by remember { mutableStateOf(false) }
 
@@ -89,15 +80,6 @@ fun ShippingAddressesContent(
         if (addresses.isNotEmpty()) {
             selectedAddress = addresses[0]
             isDefaultAddress = selectedAddress?.isDefault ?: false
-        }
-    }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            if (page in addresses.indices) {
-                selectedAddress = addresses[page]
-                isDefaultAddress = selectedAddress?.isDefault ?: false
-            }
         }
     }
 
@@ -115,173 +97,16 @@ fun ShippingAddressesContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .fillMaxWidth()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) { page ->
-                if (addresses.isNotEmpty()) {
-                    ShippingAddressesPagePreview(pagerState, addresses, addressViewModel, context, selectedAddress)
-                } else {
-                    Text(
-                        text = stringResource(id = R.string.no_shipping_addresses)
-                    )
-                }
+            for (address in addresses) {
+                ShippingAddressCard(
+                    shippingAddress = address,
+                    onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
             }
         }
     }
-}
-
-@Composable
-fun ShippingAddressesPagePreview(
-    pagerState: PagerState,
-    addresses: List<AddressDTO>,
-    addressViewModel: AddressViewModel,
-    context: Context,
-    selectedAddress: AddressDTO?
-) {
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "First Name:")
-
-    }
-//    HorizontalPager(
-//        state = pagerState,
-//        contentPadding = PaddingValues(horizontal = 50.dp),
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(vertical = 16.dp, horizontal = 16.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            OutlinedTextField(
-//                colors = OutlinedTextFieldColorScheme.colors(),
-//                singleLine = true,
-//                value = addressViewModel.firstname,
-//                onValueChange = {
-//                    addressViewModel.firstname = it
-//                },
-//                label = { Text(stringResource(id = R.string.firstname)) },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(
-//
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            OutlinedTextField(
-//                colors = OutlinedTextFieldColorScheme.colors(),
-//                singleLine = true,
-//                value = addressViewModel.lastname,
-//                onValueChange = {
-//                    addressViewModel.lastname = it
-//                },
-//                label = { Text(stringResource(id = R.string.lastname)) },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(
-//
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            OutlinedTextField(
-//                colors = OutlinedTextFieldColorScheme.colors(),
-//                singleLine = true,
-//                value = addressViewModel.street,
-//                onValueChange = {
-//                    addressViewModel.street = it
-//                },
-//                label = { Text("Street") },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(
-//                    onNext = {}
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            OutlinedTextField(
-//                colors = OutlinedTextFieldColorScheme.colors(),
-//                singleLine = true,
-//                value = addressViewModel.city,
-//                onValueChange = {
-//                    addressViewModel.city = it
-//                },
-//                label = { Text("City") },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(
-//                    onNext = { }
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            OutlinedTextField(
-//                colors = OutlinedTextFieldColorScheme.colors(),
-//                singleLine = true,
-//                value = addressViewModel.country,
-//                onValueChange = {
-//                    addressViewModel.country = it
-//                },
-//                label = { Text("Country") },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(
-//                    onNext = { }
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            )
-//
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            OutlinedTextField(
-//                colors = OutlinedTextFieldColorScheme.colors(),
-//                singleLine = true,
-//                value = addressViewModel.zipCode,
-//                onValueChange = {
-//                    addressViewModel.zipCode = it
-//                },
-//                label = { Text("Zip Code") },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//
-//                ),
-//                keyboardActions = KeyboardActions(
-//                    onDone = { }
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            )
-//        }
-//    }
 }

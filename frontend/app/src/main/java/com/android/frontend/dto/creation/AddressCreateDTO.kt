@@ -1,11 +1,13 @@
 package com.android.frontend.dto.creation
 
 data class AddressCreateDTO (
-    val firstName: String,
-    val lastName: String,
-    val country: String,
-    val city: String,
+    val fullName: String,
+    val phoneNumber: String,
     val street: String,
+    val additionalInfo: String,
     val zipCode: String,
+    val city: String,
+    val province: String,
+    val country: String,
     val isDefault: Boolean
 )

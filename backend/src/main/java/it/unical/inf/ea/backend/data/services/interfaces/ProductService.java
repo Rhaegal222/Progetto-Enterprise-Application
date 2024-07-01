@@ -22,6 +22,7 @@ public interface ProductService {
     ProductDTO updateProduct(String id, ProductDTO productDTO) throws IllegalAccessException ;
     void save(ProductDTO product);
     void deleteProduct(String id) throws IllegalAccessException;
+    List<ProductDTO> getSalesProducts();
 
 }
 
