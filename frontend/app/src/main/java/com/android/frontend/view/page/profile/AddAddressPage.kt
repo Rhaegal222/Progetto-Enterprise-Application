@@ -62,9 +62,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(id = R.string.add_address).uppercase(),
-                    )
+                    Text(text = stringResource(id = R.string.add_address).uppercase())
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

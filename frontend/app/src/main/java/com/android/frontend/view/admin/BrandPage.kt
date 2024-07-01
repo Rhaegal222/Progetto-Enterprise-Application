@@ -40,13 +40,13 @@ fun BrandPage(navController: NavHostController, viewModel: ProductCategoryBrandV
                 title = { Text(stringResource(id = R.string.brand)) },
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate(Navigation.AddCategoryPage.route)
+                        navController.navigate(Navigation.AddBrandPage.route)
                     }) {
                         Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.add_brand))
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.AdminMenu.route) }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }

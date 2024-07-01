@@ -2,7 +2,7 @@ package com.android.frontend.view.admin
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.*
@@ -19,8 +19,7 @@ import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
     val context = LocalContext.current
@@ -33,7 +32,7 @@ fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBra
             TopAppBar(
                 title = { Text(stringResource(id = R.string.add_brand)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.BrandPage.route)  }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }

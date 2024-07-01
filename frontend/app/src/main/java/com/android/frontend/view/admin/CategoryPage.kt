@@ -46,7 +46,7 @@ fun CategoryPage(navController: NavHostController, viewModel: ProductCategoryBra
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate(Navigation.AdminMenu.route)  }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }

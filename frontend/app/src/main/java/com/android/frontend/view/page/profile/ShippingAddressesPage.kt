@@ -24,7 +24,9 @@ import com.android.frontend.dto.AddressDTO
 import com.android.frontend.view_models.user.AddressViewModel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.unit.dp
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -95,6 +97,26 @@ fun ShippingAddressesContent(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Button(
+                onClick = {
+                    navController.navigate("add_shipping_address")
+                },
+                modifier = Modifier.padding(16.dp),
+                colors = ButtonColorScheme.buttonColors()
+            ) {
+                Text(text = stringResource(id = R.string.add_address))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (addresses.isEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.no_shipping_addresses),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
             for (address in addresses) {
                 ShippingAddressCard(
                     shippingAddress = address,

@@ -3,6 +3,8 @@ package com.android.frontend.view.page.authentication
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +23,8 @@ import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
+import com.android.frontend.ui.theme.colors.TextButtonColorScheme
+import com.android.frontend.view.component.ServerSwitch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -43,6 +47,7 @@ fun WelcomePage(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             ServerSwitch()
 
             Image(
@@ -52,8 +57,6 @@ fun WelcomePage(navController: NavController) {
                     .height(size.height * 0.4f)
                     .fillMaxWidth()
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = stringResource(id = R.string.welcome),
