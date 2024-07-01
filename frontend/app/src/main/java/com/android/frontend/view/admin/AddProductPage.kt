@@ -1,5 +1,8 @@
 package com.android.frontend.view.admin
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -47,6 +50,14 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
     var selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
     var selectedCategory by remember { mutableStateOf<ProductCategoryDTO?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
+
+//    val imagePickerLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.GetContent()
+//    ) { uri: Uri? ->
+//        uri?.let {
+//            viewModel.uploadImage(context, it)
+//        }
+//    }
 
     if (isLoading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())

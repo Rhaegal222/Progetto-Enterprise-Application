@@ -9,13 +9,13 @@ import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.entities.Wishlist;
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
+
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +47,12 @@ public class WishlistServiceImpl implements WishlistService {
         }
     }
 
-        @Override
+//    @Override
+//    public WishlistDTO createWishlist(WishlistCreateDTO wishListCreateDTO) {
+//        return null;
+//    }
+
+    @Override
     public List<Wishlist> getAllWishlistsByUser(User user) {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         List<Wishlist> wishlists = wishListDao.findByUser(loggedUser);
@@ -56,6 +61,11 @@ public class WishlistServiceImpl implements WishlistService {
                 .toList();
 
     }
+
+//    @Override
+//    public void removeProductFromWishlist(Wishlist wishlist, Product product) {
+//
+//    }
 
 //    @Override
 //    public Optional<Wishlist> getWishlistById(User user, String wishListName) {

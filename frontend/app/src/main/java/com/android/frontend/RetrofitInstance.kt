@@ -51,6 +51,10 @@ object RetrofitInstance {
         return getAuthenticatedRetrofit(context).create(UserImageService::class.java)
     }
 
+    fun getProductImageApi(context: Context): ProductImageService {
+        return getAuthenticatedRetrofit(context).create(ProductImageService::class.java)
+    }
+
     fun getAddressApi(context: Context): AddressService {
         return getAuthenticatedRetrofit(context).create(AddressService::class.java)
     }

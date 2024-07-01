@@ -64,8 +64,8 @@ public class Product {
     @Max(1000)
     private int quantity;
 
-    @Column(name = "imgUrl")
-    private String imgUrl;
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
+    private ProductImage photoProduct;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

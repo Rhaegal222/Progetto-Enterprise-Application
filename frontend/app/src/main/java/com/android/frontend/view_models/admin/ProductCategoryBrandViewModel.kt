@@ -2,6 +2,7 @@ package com.android.frontend.view_models.admin
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,14 +18,26 @@ import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.dto.creation.ProductCategoryCreateDTO
 import com.android.frontend.dto.creation.ProductCreateDTO
+import com.android.frontend.persistence.SecurePreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.awaitResponse
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.math.BigDecimal
 import java.net.SocketTimeoutException
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class ProductCategoryBrandViewModel() : ViewModel() {
 
@@ -296,5 +309,69 @@ class ProductCategoryBrandViewModel() : ViewModel() {
         context.startActivity(Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
+    }
+
+
+    private suspend fun uploadImage(context: Context, productId: String, imageUri: Uri) {
+        withContext(Dispatchers.IO) {
+            val file = getFileFromUri(context, imageUri) ?: return@withContext
+
+            val requestFile = file
+                .asRequestBody("image/*".toMediaTypeOrNull())
+
+            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+            val description = "Product Image".toRequestBody("text/plain".toMediaTypeOrNull())
+
+            try {
+                val accessToken = TokenManager.getInstance().getAccessToken(context)
+                val productImageService = RetrofitInstance.getProductImageApi(context)
+                val call = productImageService.savePhotoProduct("Bearer $accessToken", body, productId, description)
+                val response = call.execute()
+
+                if (response.isSuccessful) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image uploaded successfully")
+                } else {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image upload failed: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image upload error", e)
+            }
+        }
+    }
+
+    private fun deletePhotoProduct(context: Context, productId: String) {
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
+
+        val productImageService = RetrofitInstance.getProductImageApi(context)
+        val call = productImageService.deletePhotoProduct("Bearer $accessToken", productId)
+
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (!response.isSuccessful) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image delete failed: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image delete error: ${t.message}")
+            }
+        })
+    }
+
+
+    private fun getFileFromUri(context: Context, uri: Uri): File? {
+        val fileName = "photoProduct.png"
+        val tempFile = File(context.cacheDir, fileName)
+        try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(tempFile)
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+        return tempFile
     }
 }

@@ -35,7 +35,6 @@ public class ProductServiceImp implements ProductService {
     private final TokenStore tokenStore;
     private final Clock clock;
     private final JwtContextUtils jwtContextUtils;
-    private static final String UPLOAD_DIR = "src/main/resources/images/";
 
 
 
@@ -129,32 +128,13 @@ public class ProductServiceImp implements ProductService {
             product.setProductWeight(productDTO.getProductWeight());
             product.setUploadDate(now);
             product.setLastUpdateDate(now);
-            product.setImgUrl(productDTO.getImageUrl());
             product.setProductCategory(modelMapper.map(productDTO.getProductCategory(), ProductCategory.class));
             productDao.save(product);
             return modelMapper.map(product, ProductDTO.class);
 
     }
 
-    public String saveImage(MultipartFile image, String productId) {
-        try {
-            byte[] bytes = image.getBytes();
-            String imageName = image.getOriginalFilename();
-            Path path = Paths.get(UPLOAD_DIR + imageName);
-            Files.write(path, bytes);
 
-            String imageUrl = "/images/" + imageName;
-
-            // Aggiorna l'URL dell'immagine del prodotto nel database
-            Product product = productDao.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-            product.setImgUrl(imageUrl);
-            productDao.save(product);
-
-            return imageUrl;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to store image", e);
-        }
-    }
     @Override
     public void deleteProduct(String id) throws IllegalAccessException{
         Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);

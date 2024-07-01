@@ -50,12 +50,6 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/uploadImage/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image, @PathVariable String id) {
-        String imageUrl = productService.saveImage(image, id);
-        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
-    }
 
     @DeleteMapping("/deleteProduct/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -74,12 +68,6 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-//    @GetMapping("/getAllProductsBrands")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<?> getAllProductsBrands() {
-//        List<String> brands = productService.getAllProductsBrands();
-//        return ResponseEntity.ok(brands);
-//    }
 
 
     @PutMapping("/updateProduct/{id}")
