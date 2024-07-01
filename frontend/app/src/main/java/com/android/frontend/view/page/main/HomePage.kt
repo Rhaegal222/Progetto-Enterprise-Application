@@ -31,7 +31,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object ButtonColorScheme {
-    private val containerColorLight = Color(0xFF000000) // Nero per il contenitore attivo in tema chiaro
+    private val containerColorLight = Color(0xFF2A2B2C) // Nero per il contenitore attivo in tema chiaro
     private val contentColorLight = Color(0xFFFFFFFF) // Bianco per il contenuto attivo in tema chiaro
     private val disabledContainerColorLight = Color(0xFFE0E0E0) // Grigio chiaro per il contenitore disabilitato in tema chiaro
     private val disabledContentColorLight = Color(0xFF9E9E9E) // Grigio medio per il contenuto disabilitato in tema chiaro

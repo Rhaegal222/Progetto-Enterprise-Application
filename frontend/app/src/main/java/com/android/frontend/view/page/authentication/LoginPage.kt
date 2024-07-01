@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.DpSize
@@ -46,6 +48,9 @@ fun LoginPage(navController: NavHostController) {
 
     val loginViewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
+
+    var password = remember { mutableStateOf("") }
+    var username = remember { mutableStateOf("") }
 
     var isObscured by remember { mutableStateOf(true) }
 
@@ -95,7 +100,10 @@ fun LoginPage(navController: NavHostController) {
 
             OutlinedTextField(
                 value = loginViewModel.username,
-                onValueChange = { loginViewModel.username = it },
+                onValueChange = {
+                    loginViewModel.username = it
+                    username.value = it
+                                },
                 label = {
                     Text(
                         text = stringResource(id = R.string.email)
@@ -106,14 +114,20 @@ fun LoginPage(navController: NavHostController) {
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldColorScheme.colors()
+                colors = OutlinedTextFieldColorScheme.colors(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = loginViewModel.password,
-                onValueChange = { loginViewModel.password = it },
+                onValueChange = {
+                    loginViewModel.password = it
+                    password.value = it
+                },
                 label = {
                     Text(
                         text = stringResource(id = R.string.password)
@@ -136,21 +150,30 @@ fun LoginPage(navController: NavHostController) {
                 singleLine = true,
                 visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldColorScheme.colors()
+                colors = OutlinedTextFieldColorScheme.colors(),
+                keyboardOptions = if (password.value.length > 8 && username.value.length > 8){
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    )
+                } else {
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Next
+                    )
+                }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             TextButton(
                 onClick = { navController.navigate(Navigation.ForgetPasswordPage.route) },
-                colors = TextButtonColorScheme.textButtonColors()
+                colors = TextButtonColorScheme.textButtonColors(),
             ) {
                 Text(
                     text = stringResource(id = R.string.forgot_password)
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
@@ -167,7 +190,7 @@ fun LoginPage(navController: NavHostController) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.width(200.dp),
                 colors = ButtonColorScheme.buttonColors()
             ) {
                 Text(
@@ -175,11 +198,11 @@ fun LoginPage(navController: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text( text = stringResource(id = R.string.or).uppercase() )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             OutlinedButton(
                 onClick = {
@@ -192,7 +215,7 @@ fun LoginPage(navController: NavHostController) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.width(200.dp),
                 colors = OutlinedButtonColorScheme.outlinedButtonColors()
             ) {
                 Icon(
@@ -206,7 +229,7 @@ fun LoginPage(navController: NavHostController) {
                 Text( text = stringResource(id = R.string.login_with_google) )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             TextButton(
                 onClick = { navController.navigate(Navigation.SignupPage.route) },
@@ -219,6 +242,8 @@ fun LoginPage(navController: NavHostController) {
                     }
                 )
             }
+
+            Spacer(modifier = Modifier.height(25.dp))
         }
     }
 }

@@ -13,7 +13,6 @@ sealed class Screen(val route: String) {
     object RootScreen : Screen(route = Graph.ROOT)
     object AuthenticationScreen : Screen(route = Graph.AUTHENTICATION)
     object MainScreen : Screen(route = Graph.MAIN)
-
     object AdminScreen : Screen(route = Graph.ADMIN)
 }
 
