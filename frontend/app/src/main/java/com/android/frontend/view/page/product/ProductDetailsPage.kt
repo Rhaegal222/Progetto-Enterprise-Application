@@ -1,6 +1,5 @@
 package com.android.frontend.view.page.product
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +24,6 @@ import com.android.frontend.dto.ProductDTO
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.view_models.CartViewModel
-import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.view_models.ProductViewModel
 
 

@@ -70,7 +70,7 @@ fun AccountItem(navController: NavHostController, icon: ImageVector, textResId: 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(0.dp, 8.dp)
             .clickable {
                 when (textResId) {
                     R.string.personal_informations -> navController.navigate(Navigation.AccountPage.route)

@@ -2,7 +2,6 @@ package com.android.frontend.view.menu.sub
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,11 +21,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,8 +67,8 @@ fun DebugMenu(navController: NavHostController) {
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues).padding(16.dp, 0.dp)
+                .fillMaxWidth()
+                .padding(paddingValues).padding(8.dp, 0.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             DebugItem(context, Icons.Default.BugReport, R.string.reject_access_token)
@@ -91,7 +88,7 @@ fun DebugItem(context: Context, icon: ImageVector, textResId: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(0.dp, 8.dp)
             .clickable {
                 when (textResId) {
                     R.string.reject_access_token -> DebugViewModel().rejectToken(context)

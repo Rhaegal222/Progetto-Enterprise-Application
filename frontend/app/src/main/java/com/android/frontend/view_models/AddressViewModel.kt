@@ -83,9 +83,11 @@ class AddressViewModel : ViewModel() {
             }
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = executeRequest(context) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Getting shipping addresses")
                 addressService.getAllShippingAddresses("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Got shipping addresses")
                 response.body()?.let {
                     _shippingAddresses.value = it
                 }
