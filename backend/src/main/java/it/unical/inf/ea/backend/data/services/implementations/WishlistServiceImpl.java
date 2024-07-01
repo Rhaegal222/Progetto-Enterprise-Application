@@ -11,12 +11,16 @@ import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
 
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
-import jakarta.transaction.Transactional;
+import it.unical.inf.ea.backend.dto.enums.UserRole;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,61 +49,73 @@ public class WishlistServiceImpl implements WishlistService {
         }
     }
 
+
     @Override
-    @Transactional
-    public List<Wishlist> getAllWishlistsByUser(User user) {
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        List<Wishlist> wishlists = wishListDao.findByUser(loggedUser);
+    public List<WishlistDTO> getAllWishlists() {
+        List<Wishlist> wishlists = wishListDao.findAll();
         return wishlists.stream()
-                .filter(wishlist -> wishlist.getUser().equals(user))
-                .toList();
+                .map(product -> modelMapper.map(wishlists, WishlistDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public WishlistDTO getWishlistById(Long id) {
+        Wishlist wishlist = wishListDao.findById(String.valueOf(id)).orElseThrow(() -> new EntityNotFoundException("Wishlist not found with id: " + id));
+        return modelMapper.map(wishlist, WishlistDTO.class);
+    }
+
+    @Override
+    public void deleteWishlist(String id) throws IllegalAccessException {
+        try {
+            Wishlist wishlist = wishListDao.findById(id).orElseThrow();
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().getId().equals(loggedUser.getId()))
+                throw new IllegalAccessException("User cannot delete wishlist");
+            wishListDao.deleteById(id);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 
-//    @Override
-//    public void removeProductFromWishlist(Wishlist wishlist, Product product) {
-//
-//    }
+    public void addProductsToWishlist(Set<String> productIds, String wishlistId) throws IllegalAccessException, EntityNotFoundException, IllegalStateException {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Logged user cannot be null");
+        }
 
-//    @Override
-//    public Optional<Wishlist> getWishlistById(User user, String wishListName) {
-//        return wishListDao.findByUserAndName(user, wishListName);
-//    }
+        Wishlist wishlist = wishListDao.findById(wishlistId).orElseThrow();
 
-//    @Override
-//    public WishlistDTO addProductToWishlist(WishlistDTO wishlistDTO) {
-//        try {
-//            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-//
-//            if (loggedUser == null) {
-//                throw new IllegalStateException("Logged user cannot be null");
-//            }
-//            Product product = productDao.findById(wishlistDTO.getProductId())
-//                    .orElseThrow(() -> new RuntimeException("Product not found"));
-//
-//            Wishlist wishlist = wishListDao.findByUser(loggedUser)
-//                    .stream()
-//                    .filter(wishList -> wishList.getWishlistName().equals(wishlistDTO.getWishListName()))
-//                    .findFirst()
-//                    .orElseThrow(() -> new RuntimeException("Wishlist not found"));
-//            if (!wishlist.getProducts().contains(product)) {
-//                wishlist.getProducts().add(product);
-//                wishListDao.save(wishlist);
-//            }
-//            return modelMapper.map(wishlist, WishlistDTO.class);
-//        } catch (IllegalStateException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+        if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().getId().equals(loggedUser.getId())) {
+            throw new IllegalAccessException("User cannot modify this wishlist.");
+        }
 
+        Set<Product> productsToAdd = new HashSet<>(); // Use a Set to avoid duplicates
+        for (String productId : productIds) {
+            Product productToAdd = productDao.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
+            productsToAdd.add(productToAdd);
+        }
 
+        for (Product product : productsToAdd) {
+            if (!wishlist.getProducts().contains(product)) {
+                wishlist.getProducts().add(product);
+            } else {
+                 throw new IllegalArgumentException("Product is already in this wishlist.");
+            }
+        }
 
-
-
-        @Override
-    public void removeProductFromWishlist(Wishlist wishlist, Product product) {
-        wishlist.getProducts().remove(product);
         wishListDao.save(wishlist);
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+

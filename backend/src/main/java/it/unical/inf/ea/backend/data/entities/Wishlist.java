@@ -1,5 +1,7 @@
 package it.unical.inf.ea.backend.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.unical.inf.ea.backend.dto.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
