@@ -119,4 +119,11 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/getSalesProducts")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ProductDTO>> getSalesProducts() {
+        List<ProductDTO> products = productService.getSalesProducts();
+        return ResponseEntity.ok(products);
+    }
+
 }

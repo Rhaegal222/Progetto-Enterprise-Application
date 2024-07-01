@@ -13,15 +13,22 @@ public class AddressCreateDTO {
 
     @NotNull
     @Length(max = 100)
-    private String firstName;
+    private String fullName;
 
     @NotNull
     @Length(max = 100)
-    private String lastName;
+    private String phoneNumber;
 
     @NotNull
     @Length(max = 100)
-    private String country;
+    private String street;
+
+    @Length(max = 100)
+    private String additionalInfo;
+
+    @NotNull
+    @Length(max = 10)
+    private String zipCode;
 
     @NotNull
     @Length(max = 100)
@@ -29,11 +36,11 @@ public class AddressCreateDTO {
 
     @NotNull
     @Length(max = 100)
-    private String street;
+    private String province;
 
     @NotNull
-    @Length(max = 10)
-    private String zipCode;
+    @Length(max = 100)
+    private String country;
 
     @NotNull
     private Boolean isDefault;

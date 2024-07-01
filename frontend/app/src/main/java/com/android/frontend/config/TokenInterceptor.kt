@@ -30,12 +30,17 @@ class TokenInterceptor(private val context: Context) : Interceptor {
                 val tokenManager = TokenManager.getInstance()
                 val newAccessToken = runBlocking {
                     Log.d("DEBUG", "${getCurrentStackTrace()} Token invalid, attempting to refresh token")
-                    if (tokenManager.tryRefreshToken(context)) {
-                        Log.d("DEBUG", "${getCurrentStackTrace()} Successfully refreshed token")
-                        tokenManager.getAccessToken(context)
-                    } else {
-                        Log.d("DEBUG", "${getCurrentStackTrace()} Token refresh failed, logging out")
-                        TokenManager.getInstance().logout(context)
+                    try {
+                        if (tokenManager.tryRefreshToken(context)) {
+                            Log.d("DEBUG", "${getCurrentStackTrace()} Successfully refreshed token")
+                            tokenManager.getAccessToken(context)
+                        } else {
+                            Log.d("DEBUG", "${getCurrentStackTrace()} Token refresh failed, logging out")
+                            tokenManager.logout(context)
+                            null
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Token refresh failed due to an exception: ${e.message}")
                         null
                     }
                 }
@@ -45,12 +50,12 @@ class TokenInterceptor(private val context: Context) : Interceptor {
                     request = buildRequest(originalRequest, newAccessToken)
                     response = chain.proceed(request)
                 } else {
-                    Log.d("DEBUG", "${getCurrentStackTrace()} Token refresh failed, logging out")
-                    TokenManager.getInstance().logout(context)
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Token refresh failed, throwing IOException")
                     throw IOException("Token refresh failed")
                 }
             }
         }
+
         return response
     }
 }

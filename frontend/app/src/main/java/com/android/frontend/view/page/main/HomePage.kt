@@ -2,11 +2,9 @@ package com.android.frontend.view.page.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -58,6 +56,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                 leadingIcon = {
                     if (focusOnTextField)
                         IconButton(
+                            modifier = Modifier.padding(0.dp),
                             onClick = {
                                 searchQuery = ""
                                 focusOnTextField = false
@@ -65,33 +64,40 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                             }
                         ) {
                             Icon(
+                                modifier = Modifier.padding(0.dp),
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(id = R.string.cancel),
                             )
                         }
                     else
                         Icon(
+                            modifier = Modifier.padding(0.dp),
                             imageVector = Icons.Filled.Search,
                             contentDescription = stringResource(id = R.string.search),
                         )
                 },
                 trailingIcon = {
                     if (!focusOnTextField)
-                        IconButton(onClick = {
-                            // Handle QR code scanner click
-                        }) {
+                        IconButton(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                            }
+                        ) {
                             Icon(
+                                modifier = Modifier.padding(0.dp),
                                 imageVector = Icons.Filled.QrCodeScanner,
                                 contentDescription = stringResource(id = R.string.search),
                             )
                         }
                     else
                         IconButton(
+                            modifier = Modifier.padding(0.dp),
                             onClick = {
 
                             }
                         ) {
                             Icon(
+                                modifier = Modifier.padding(0.dp),
                                 imageVector = Icons.Default.Search,
                                 contentDescription = stringResource(id = R.string.cancel),
                             )
@@ -101,6 +107,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                 colors = OutlinedTextFieldColorScheme.colors(),
                 placeholder = { stringResource(id = R.string.search) },
                 modifier = Modifier
+                    .padding(5.dp)
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
                     .onFocusChanged { focusState ->

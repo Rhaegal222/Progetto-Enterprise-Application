@@ -21,22 +21,28 @@ public class Address {
     private String id;
 
     @Column(nullable = false)
-    private String firstName;
+    private String fullName;
 
     @Column(nullable = false)
-    private String lastName;
+    private String phoneNumber;
 
     @Column(nullable = false)
-    private String country;
+    private String street;
+
+    @Column
+    private String additionalInfo;
+
+    @Column(nullable = false)
+    private String zipCode;
 
     @Column(nullable = false)
     private String city;
 
     @Column(nullable = false)
-    private String street;
+    private String province;
 
     @Column(nullable = false)
-    private String zipCode;
+    private String country = "Italy";
 
     @Column(nullable = false)
     private Boolean isDefault;

@@ -3,9 +3,8 @@ package com.android.frontend.view.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Divider
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.NorthWest
@@ -14,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.android.frontend.R
 
 @Composable
@@ -40,7 +38,9 @@ fun Suggestion() {
                 text = "Suggestion"
             )
         }
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(
+            onClick = { /*TODO*/ }
+        ) {
             Icon(
                 imageVector = Icons.Default.NorthWest,
                 contentDescription = stringResource(id = R.string.cancel),

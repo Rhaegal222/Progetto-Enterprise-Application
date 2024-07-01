@@ -54,4 +54,9 @@ public class ProductDTO {
 
     private String imageUrl;
 
+    @NotNull
+    private boolean onSale;
+
+    private BigDecimal discountedPrice;
+
 }

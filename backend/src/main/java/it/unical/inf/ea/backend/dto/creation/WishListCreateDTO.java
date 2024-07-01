@@ -1,15 +1,20 @@
 package it.unical.inf.ea.backend.dto.creation;
 
 import it.unical.inf.ea.backend.dto.enums.Visibility;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
 @NoArgsConstructor
-@ToString
 @Builder
 @AllArgsConstructor
-public class WishListCreateDTO {
+public class WishlistCreateDTO {
 
-    private Long userId;
+    @NotNull
+    private String wishlistName;
+
+    @NotNull
     private Visibility visibility;
+
+
 }

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.creation.BrandCreateDTO
@@ -48,7 +49,7 @@ class BrandViewModel : ViewModel() {
             }
             val brand = BrandCreateDTO(name, description)
             val brandService = RetrofitInstance.getBrandApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 brandService.addBrand("Bearer $accessToken", brand)
             }
             if (response?.isSuccessful == true) {
@@ -76,7 +77,7 @@ class BrandViewModel : ViewModel() {
                 return@launch
             }
             val brandService = RetrofitInstance.getBrandApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 brandService.getAllBrands("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
@@ -103,7 +104,7 @@ class BrandViewModel : ViewModel() {
                 return@launch
             }
             val brandService = RetrofitInstance.getBrandApi(context)
-            val response = executeRequest(context) {
+            val response = Request().executeRequest(context) {
                 brandService.deleteBrand("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
@@ -115,33 +116,5 @@ class BrandViewModel : ViewModel() {
             }
             _isLoading.value = false
         }
-    }
-
-    private suspend fun <T> executeRequest(context: Context, request: () -> Call<T>): Response<T>? {
-        return try {
-            val response = withContext(Dispatchers.IO) { request().awaitResponse() }
-            when (response.code()) {
-                401, 403 -> {
-                    if (TokenManager.getInstance().tryRefreshToken(context)) {
-                        withContext(Dispatchers.IO) { request().awaitResponse() } // Retry the request
-                    } else {
-                        handleLogout(context)
-                        null
-                    }
-                }
-                else -> response
-            }
-        } catch (e: Exception) {
-            Log.e("DEBUG", "${getCurrentStackTrace()} Request failed", e)
-            _hasError.value = true
-            null
-        }
-    }
-
-    private fun handleLogout(context: Context) {
-        TokenManager.getInstance().clearTokens(context)
-        context.startActivity(Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
     }
 }

@@ -12,10 +12,10 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "WishList")
+@Table(name = "Wishlist")
 @Builder
 @AllArgsConstructor
-public class WishList {
+public class Wishlist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,11 @@ public class WishList {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "wishlist_name", nullable = false)
+    private String wishlistName;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false)
     private Visibility visibility;
 
     @ManyToMany(fetch = FetchType.LAZY)

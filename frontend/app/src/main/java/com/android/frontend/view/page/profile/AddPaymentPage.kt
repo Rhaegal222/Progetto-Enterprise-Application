@@ -35,7 +35,6 @@ import com.android.frontend.view_models.PaymentViewModel
 fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentViewModel = viewModel()) {
 
     val context = LocalContext.current
-
     val focusManager = LocalFocusManager.current
 
     val expireMonthFocusRequester = remember { FocusRequester() }
@@ -50,10 +49,8 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
     var owner by remember { mutableStateOf("") }
 
     val allFieldsValid by derivedStateOf {
-        cardNumber.length == 16 &&
-                expireMonth.length == 2 &&
-                expireYear.length == 2 &&
-                owner.isNotEmpty()
+        cardNumber.length == 16 && expireMonth.length == 2 &&
+        expireYear.length == 2 && owner.isNotEmpty()
     }
 
     Scaffold (

@@ -164,4 +164,12 @@ public class ProductServiceImp implements ProductService {
     private LocalDateTime getTimeNow() {
         return LocalDateTime.now(clock);
     }
+
+    @Override
+    public List<ProductDTO> getSalesProducts() {
+        List<Product> products = productDao.findProductsOnSale();
+        return products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+    }
 }

@@ -73,7 +73,6 @@
     <string name="recover_password_text">Nous vous enverrons un e-mail avec les instructions pour récupérer votre mot de passe à votre adresse e-mail.</string>
     <string name="theme">Thème</string>
     <string name="country_and_language">Pays et langue</string>
-    <string name="add_payment_method_short">Ajouter paiement</string>
     <string name="delete">Supprimer</string>
     <string name="add_payment_card">Ajouter carte de paiement</string>
     <string name="add_address">Ajouter une adresse</string>
@@ -82,7 +81,7 @@
     <string name="cancel">Annuler</string>
     <string name="edit">Modifier</string>
     <string name="security">Sécurité</string>
-    <string name="add_payment_method">Add a payment method</string>
+    <string name="add_payment_method">Ajouter mode de paiement</string>
     <string name="set_as_default">Définir par défaut</string>
     <string name="apply">Appliquer</string>
     <string name="server_communication_error">Erreur de communication avec le serveur. Veuillez réessayer plus tard.</string>
