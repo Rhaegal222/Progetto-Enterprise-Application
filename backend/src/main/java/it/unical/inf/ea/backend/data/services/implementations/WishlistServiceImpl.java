@@ -10,16 +10,17 @@ import it.unical.inf.ea.backend.data.entities.Wishlist;
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class WishlistServiceImpl implements WishlistService {
+
     private final UserDao userDao;
     private final WishlistDao wishListDao;
     private final ModelMapper modelMapper;
@@ -27,27 +28,24 @@ public class WishlistServiceImpl implements WishlistService {
     private final JwtContextUtils jwtContextUtils;
 
     @Override
-    public WishlistDTO createWishlist(WishlistCreateDTO wishListCreateDTO) {
+    public void createWishlist(WishlistCreateDTO wishlistCreateDTO) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-
             if (loggedUser == null) {
                 throw new IllegalStateException("Logged user cannot be null");
             }
 
-            Wishlist wishlist = new Wishlist();
-
+            Wishlist wishlist = modelMapper.map(wishlistCreateDTO, Wishlist.class);
             wishlist.setUser(loggedUser);
-            wishlist.setWishlistName(wishListCreateDTO.getWishlistName());
-            wishlist.setVisibility(wishListCreateDTO.getVisibility());
             wishListDao.save(wishlist);
-            return modelMapper.map(wishlist, WishlistDTO.class);
+
         } catch (IllegalStateException e) {
             throw new RuntimeException(e);
         }
     }
 
-        @Override
+    @Override
+    @Transactional
     public List<Wishlist> getAllWishlistsByUser(User user) {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         List<Wishlist> wishlists = wishListDao.findByUser(loggedUser);

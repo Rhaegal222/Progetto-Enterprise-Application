@@ -4,10 +4,7 @@ import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -83,23 +80,19 @@ public class User implements UserDetails {
         return null;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wishlist> wishlists;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 
-    @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<PaymentMethod> paymentMethods;
 
-    @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
+    @Getter
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Address> addresses;
 
-
-
-    public List<Address> getAddresses() {
-        return addresses;
-    }
 
     @Override
     public boolean isAccountNonExpired() {

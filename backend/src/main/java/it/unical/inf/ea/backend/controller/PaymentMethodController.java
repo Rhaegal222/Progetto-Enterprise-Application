@@ -26,8 +26,8 @@ public class PaymentMethodController {
     @PostMapping(path="/addPaymentMethod")
     public ResponseEntity<?> addPaymentMethod(@Valid @RequestBody PaymentMethodCreateDTO paymentMethodCreateDTO) {
         try {
-            PaymentMethodDTO createdPaymentMethod = paymentMethodService.createPaymentMethod(paymentMethodCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPaymentMethod);
+            paymentMethodService.createPaymentMethod(paymentMethodCreateDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Payment method registered successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

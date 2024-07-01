@@ -24,22 +24,25 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 public class UserImageController {
     private final UserImageService userImageService;
 
+    @PostMapping(value = "/users/photo-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> savePhotoUser(
+            @RequestPart("file") MultipartFile multipartFile,
+            @RequestParam("description") String description
+    ) {
+        try {
+            userImageService.savePhotoUser(multipartFile, description);
+            return ResponseEntity.ok("{\"message\": \"Image uploaded successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
     @GetMapping(path = "/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<Resource> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name ,@PathVariable("file_name") String file_name) throws IOException {
 
         Resource resource = userImageService.getImage(type+"/"+folder_name+"/"+file_name);
         return ResponseEntity.ok(resource);
     }
-
-    @PostMapping(value = "/users/photo-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserImageDTO savePhotoUser(
-            @RequestPart("file") MultipartFile multipartFile,
-            @RequestParam("description") String description
-    ) throws IOException, IllegalAccessException {
-        return userImageService.savePhotoUser(multipartFile, description);
-    }
-
 
     @DeleteMapping("/users/photo-profile/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

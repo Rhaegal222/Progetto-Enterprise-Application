@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "Wishlist")
+@Table(name = "wishlist")
 @Builder
 @AllArgsConstructor
 public class Wishlist {
@@ -21,19 +21,19 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @Column(name = "wishlist_name", nullable = false)
+    @Column(nullable = false)
     private String wishlistName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "visibility", nullable = false)
+    @Column(nullable = false)
     private Visibility visibility;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "wishlist_products", joinColumns = @JoinColumn(name = "wishlist_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

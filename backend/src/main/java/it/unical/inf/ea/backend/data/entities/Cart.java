@@ -28,9 +28,4 @@ public class Cart {
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<CartItem> cartItems = Collections.emptyList();
-
-    public Cart(User user) {
-        this.user = user;
-        this.cartItems = Collections.emptyList();
-    }
 }
