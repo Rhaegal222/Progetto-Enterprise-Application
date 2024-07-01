@@ -1,7 +1,6 @@
-package com.android.frontend.view_models
+package com.android.frontend.view_models.user
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,18 +9,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.dto.creation.PaymentMethodCreateDTO
 import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.config.TokenManager
 import com.android.frontend.service.PaymentService
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.awaitResponse
 import androidx.compose.foundation.pager.PagerState
 import com.android.frontend.config.Request
 import com.android.frontend.config.getCurrentStackTrace

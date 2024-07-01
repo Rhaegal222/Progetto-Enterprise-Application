@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.frontend.R
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
-import com.android.frontend.view_models.AddressViewModel
+import com.android.frontend.view_models.user.AddressViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")

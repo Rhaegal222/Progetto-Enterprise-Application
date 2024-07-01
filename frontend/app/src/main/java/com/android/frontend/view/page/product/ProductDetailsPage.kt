@@ -23,8 +23,8 @@ import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.persistence.SecurePreferences
-import com.android.frontend.view_models.CartViewModel
-import com.android.frontend.view_models.ProductViewModel
+import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.ProductViewModel
 
 
 @Composable

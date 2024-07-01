@@ -31,7 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.MainActivity
 import com.android.frontend.R
-import com.android.frontend.view_models.LoginViewModel
+import com.android.frontend.view_models.authentication.LoginViewModel
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme

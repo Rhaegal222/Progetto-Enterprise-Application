@@ -9,7 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.navigation.MainGraph
 import com.android.frontend.view.component.BottomBar
-import com.android.frontend.view_models.CartViewModel
+import com.android.frontend.view_models.user.CartViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

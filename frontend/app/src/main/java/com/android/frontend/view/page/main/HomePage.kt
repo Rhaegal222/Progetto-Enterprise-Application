@@ -24,7 +24,7 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.Suggestion
-import com.android.frontend.view_models.HomeViewModel
+import com.android.frontend.view_models.user.HomeViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState

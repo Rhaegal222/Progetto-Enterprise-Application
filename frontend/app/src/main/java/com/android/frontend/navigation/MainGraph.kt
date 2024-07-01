@@ -13,7 +13,7 @@ import com.android.frontend.view.menu.sub.DebugMenu
 import com.android.frontend.view.menu.sub.SecurityMenu
 import com.android.frontend.view.menu.sub.SettingsMenu
 import com.android.frontend.view.page.main.HomePage
-import com.android.frontend.view_models.ProductViewModel
+import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view.page.profile.AddPaymentPage
 import com.android.frontend.view.page.other.AboutPage
 import com.android.frontend.view.page.other.account.PersonalInformationPage
@@ -25,7 +25,7 @@ import com.android.frontend.view.page.product.ProductDetailsPage
 import com.android.frontend.view.page.profile.AddAddressPage
 import com.android.frontend.view.page.profile.PaymentMethodsPage
 import com.android.frontend.view.page.profile.ShippingAddressesPage
-import com.android.frontend.view_models.CartViewModel
+import com.android.frontend.view_models.user.CartViewModel
 
 @Composable
 fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, modifier: Modifier = Modifier) {

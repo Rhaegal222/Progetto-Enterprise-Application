@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view_models.CartViewModel
+import com.android.frontend.view_models.user.CartViewModel
 
 @Composable
 fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {

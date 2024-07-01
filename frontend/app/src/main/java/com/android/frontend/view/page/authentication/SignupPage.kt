@@ -34,8 +34,8 @@ import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
-import com.android.frontend.view_models.LoginViewModel
-import com.android.frontend.view_models.SignUpViewModel
+import com.android.frontend.view_models.authentication.LoginViewModel
+import com.android.frontend.view_models.authentication.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

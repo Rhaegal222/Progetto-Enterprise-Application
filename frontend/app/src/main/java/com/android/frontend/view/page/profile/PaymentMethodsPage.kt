@@ -26,7 +26,7 @@ import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view.component.PaymentCard
-import com.android.frontend.view_models.PaymentViewModel
+import com.android.frontend.view_models.user.PaymentViewModel
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

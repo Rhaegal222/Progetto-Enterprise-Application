@@ -1,4 +1,4 @@
-package com.android.frontend.view_models
+package com.android.frontend.view_models.user
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
