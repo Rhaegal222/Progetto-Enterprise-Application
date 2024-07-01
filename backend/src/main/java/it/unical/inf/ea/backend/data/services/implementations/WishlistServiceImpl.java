@@ -28,20 +28,26 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public WishlistDTO createWishlist(WishlistCreateDTO wishListCreateDTO) {
-        Wishlist wishlist = new Wishlist();
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-//        User user = userDao.findById(wishListCreateDTO.getUserId())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-        Product product = productDao.findById(wishListCreateDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        wishlist.setUser(loggedUser);
-        wishlist.setWishlistName(wishListCreateDTO.getWishListName());
-        wishlist.setVisibility(wishListCreateDTO.getVisibility());
-        wishlist.getProducts().add(product);
-        return modelMapper.map(wishListDao.save(wishlist), WishlistDTO.class);
+        try {
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+
+            if (loggedUser == null) {
+                throw new IllegalStateException("Logged user cannot be null");
+            }
+
+            Wishlist wishlist = new Wishlist();
+
+            wishlist.setUser(loggedUser);
+            wishlist.setWishlistName(wishListCreateDTO.getWishlistName());
+            wishlist.setVisibility(wishListCreateDTO.getVisibility());
+            wishListDao.save(wishlist);
+            return modelMapper.map(wishlist, WishlistDTO.class);
+        } catch (IllegalStateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
+        @Override
     public List<Wishlist> getAllWishlistsByUser(User user) {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         List<Wishlist> wishlists = wishListDao.findByUser(loggedUser);
@@ -56,25 +62,31 @@ public class WishlistServiceImpl implements WishlistService {
 //        return wishListDao.findByUserAndName(user, wishListName);
 //    }
 
-    @Override
-
-    public WishlistDTO addProductToWishlist(WishlistCreateDTO wishListCreateDTO) {
-        User user = userDao.findById(wishListCreateDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Product product = productDao.findById(wishListCreateDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        Wishlist wishlist = wishListDao.findByUser(user)
-                .stream()
-                .filter(wishList -> wishList.getWishlistName().equals(wishListCreateDTO.getWishListName()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Wishlist not found"));
-        if (!wishlist.getProducts().contains(product)) {
-            wishlist.getProducts().add(product);
-            wishListDao.save(wishlist);
-        }
-        return modelMapper.map(wishlist, WishlistDTO.class);
-    }
+//    @Override
+//    public WishlistDTO addProductToWishlist(WishlistDTO wishlistDTO) {
+//        try {
+//            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+//
+//            if (loggedUser == null) {
+//                throw new IllegalStateException("Logged user cannot be null");
+//            }
+//            Product product = productDao.findById(wishlistDTO.getProductId())
+//                    .orElseThrow(() -> new RuntimeException("Product not found"));
+//
+//            Wishlist wishlist = wishListDao.findByUser(loggedUser)
+//                    .stream()
+//                    .filter(wishList -> wishList.getWishlistName().equals(wishlistDTO.getWishListName()))
+//                    .findFirst()
+//                    .orElseThrow(() -> new RuntimeException("Wishlist not found"));
+//            if (!wishlist.getProducts().contains(product)) {
+//                wishlist.getProducts().add(product);
+//                wishListDao.save(wishlist);
+//            }
+//            return modelMapper.map(wishlist, WishlistDTO.class);
+//        } catch (IllegalStateException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
 

@@ -9,15 +9,12 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class WishlistCreateDTO {
-    @NotNull
-    private String userId;
 
     @NotNull
-    private String WishListName;
+    private String wishlistName;
 
     @NotNull
     private Visibility visibility;
 
-    @NotNull
-    private String productId;
+
 }

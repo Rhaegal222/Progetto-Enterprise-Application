@@ -29,6 +29,7 @@ public class Wishlist {
     private String wishlistName;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false)
     private Visibility visibility;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -14,7 +14,6 @@ import java.util.Optional;
 public interface WishlistService {
     WishlistDTO createWishlist(WishlistCreateDTO wishListCreateDTO);
     List<Wishlist> getAllWishlistsByUser(User user);
-    //Optional<Wishlist> getWishlistById(User user, String wishListName);
-    WishlistDTO addProductToWishlist(WishlistCreateDTO wishListCreateDTO);
+    //WishlistDTO addProductToWishlist(WishlistDTO wishlistDTO);
     void removeProductFromWishlist(Wishlist wishlist, Product product);
 }

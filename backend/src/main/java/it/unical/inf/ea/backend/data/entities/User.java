@@ -82,9 +82,12 @@ public class User implements UserDetails {
         }
         return null;
     }
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wishlist> wishlists;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
 
     @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
     private List<PaymentMethod> paymentMethods;
@@ -92,8 +95,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "ownerUser", fetch = FetchType.LAZY)
     private List<Address> addresses;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Cart cart;
+
 
     public List<Address> getAddresses() {
         return addresses;
