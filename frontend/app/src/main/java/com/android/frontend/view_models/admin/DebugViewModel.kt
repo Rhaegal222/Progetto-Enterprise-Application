@@ -46,7 +46,7 @@ class DebugViewModel : ViewModel() {
     }
 
     fun generateProduct(context: Context) {
-        productViewModel.generateProduct(context)
+        // productViewModel.generateProduct(context)
     }
 
     fun rejectToken(context: Context) {
