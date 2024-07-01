@@ -16,7 +16,7 @@ public interface ProductService {
     List<ProductDTO> getAllProducts();
     List<ProductDTO> getProductsByCategory(ProductCategory productCategory);
     List<ProductDTO> getProductsByBrand(Brand brand);
-    String saveImage(MultipartFile image, String id);
+    void uploadImage(MultipartFile image, String id);
     List<ProductDTO> getProductsByPriceRange(Double min, Double max);
     ProductDTO getProductById(String id) throws IllegalAccessException;
     ProductDTO updateProduct(String id, ProductDTO productDTO) throws IllegalAccessException ;

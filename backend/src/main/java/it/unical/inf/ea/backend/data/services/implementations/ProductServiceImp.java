@@ -136,7 +136,7 @@ public class ProductServiceImp implements ProductService {
 
     }
 
-    public String saveImage(MultipartFile image, String productId) {
+    public void uploadImage(MultipartFile image, String productId) {
         try {
             byte[] bytes = image.getBytes();
             String imageName = image.getOriginalFilename();
@@ -150,7 +150,6 @@ public class ProductServiceImp implements ProductService {
             product.setImgUrl(imageUrl);
             productDao.save(product);
 
-            return imageUrl;
         } catch (IOException e) {
             throw new RuntimeException("Failed to store image", e);
         }
