@@ -11,7 +11,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class WishListDTO {
     private Long id;
-    private Long userId;
+    private String WishListName;
+    private String userId;
     private Visibility visibility;
+    private String productId;
     private Set<ProductDTO> products;
 }

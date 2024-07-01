@@ -62,6 +62,18 @@ public class AppSecurityConfig {
                                 "/api/v1/products/getProductsByCategory/", "/api/v1/products/getAllProducts",
                                 "/api/v1/products/getProductsByBrand/","/api/v1/products/getProductsByPriceRange/").authenticated()
 
+                        // CATEGORY
+                        .requestMatchers(HttpMethod.POST, "/api/v1/category/addCategory").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/category/updateCategory").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/category/deleteCategory").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/category/getCategoryById", "/api/v1/category/getAllCategories").authenticated()
+
+                        // Wishlist
+                        .requestMatchers(HttpMethod.POST, "/api/v1/wishList/createWishlist").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/wishList/getAllWishlistsByUser", "/api/v1/wishList/getWishListById").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/wishList/addProductToWishlist").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/wishList/removeProductFromWishlist").authenticated()
+
                         // PAYMENT METHOD
                         .requestMatchers(HttpMethod.POST, "/api/v1/payment-methods/addPaymentMethod").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/updatePaymentMethod/{id}").authenticated()

@@ -21,6 +21,9 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "WishlistName",nullable = false)
+    private String WishlistName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -29,7 +32,9 @@ public class Wishlist {
     private Visibility visibility;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "wishlist_products", joinColumns = @JoinColumn(name = "wishlist_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @JoinTable(name = "wishlist_products",
+            joinColumns = @JoinColumn(name = "wishlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products;
 
 }
