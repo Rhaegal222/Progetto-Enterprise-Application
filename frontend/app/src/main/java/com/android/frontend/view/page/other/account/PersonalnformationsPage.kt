@@ -84,10 +84,16 @@ fun PersonalInformationContent(
     userViewModel: UserViewModel,
     context: Context){
 
+
     var firstName by remember { mutableStateOf(profile?.firstName ?: "") }
     var lastName by remember { mutableStateOf(profile?.lastName ?: "") }
     var email by remember { mutableStateOf(profile?.email ?: "") }
     var phoneNumber by remember { mutableStateOf(profile?.phoneNumber ?: "Nessun numero di telefono") }
+
+    val previusFirstName by remember { mutableStateOf(firstName) }
+    val previusLastName by remember { mutableStateOf(lastName) }
+    val previusEmail by remember { mutableStateOf(email) }
+    val previusPhoneNumber by remember { mutableStateOf(phoneNumber) }
 
     var isEditMode by remember { mutableStateOf(false) }
     var showEmailChangeDialog by remember { mutableStateOf(false) }
@@ -243,6 +249,10 @@ fun PersonalInformationContent(
                     Button(
                         onClick = {
                             isEditMode = false
+                            firstName = previusFirstName
+                            lastName = previusLastName
+                            email = previusEmail
+                            phoneNumber = previusPhoneNumber
                         },
                         modifier = Modifier
                             .height(40.dp)
