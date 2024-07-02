@@ -13,5 +13,6 @@ public interface WishlistService {
     List<WishlistDTO> getAllWishlists();
     WishlistDTO getWishlistById(Long id);
     void deleteWishlist(String id) throws IllegalAccessException;
-    void addProductsToWishlist(Set<String> productIds, String wishlistId) throws IllegalAccessException;
+    void addProductsToWishlist(Set<String> productIds, Long wishlistId) throws IllegalAccessException;
+    void removeProductsFromWishlist(Set<String> productIds, Long wishlistId) throws IllegalAccessException;
 }
