@@ -64,7 +64,7 @@ public class UserImageServiceImp implements UserImageService {
         userImage.setUser(loggedUser);
         loggedUser.setPhotoProfile(userImage);
 
-        FileUploadUtil.saveFile(localStorageDir, fileName, multipartFile);
+        FileUploadUtil.saveMultipartFile(localStorageDir, fileName, multipartFile);
         userImage = userImageDao.save(userImage);
 
         modelMapper.map(userImage, UserImageDTO.class);

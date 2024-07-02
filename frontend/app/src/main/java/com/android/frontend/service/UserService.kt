@@ -16,7 +16,7 @@ interface UserService {
         @Query("password") password: String
     ): Call<Void>
 
-    @POST("/api/v1/users/authenticate")
+    @POST("/api/v1/users/login")
     fun login(
         @Query("username") username: String,
         @Query("password") password: String

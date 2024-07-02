@@ -43,7 +43,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _profile = MutableLiveData<UserDTO>()
     val profileLiveData: LiveData<UserDTO> get() = _profile
 
-    val profileImage = MutableLiveData<Uri?>(null)
+    private val profileImage = MutableLiveData<Uri?>(null)
     val profileImageLiveData : LiveData<Uri?> get() = profileImage
 
     var isLoading = mutableStateOf(true)

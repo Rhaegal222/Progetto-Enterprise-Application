@@ -36,8 +36,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping(path = "/authenticate")
-    public ResponseEntity<Map<String, String>> authenticate(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletResponse response) {
+    @PostMapping(path = "/login")
+    public ResponseEntity<Map<String, String>> login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletResponse response) {
         try {
             return ResponseEntity.ok(userService.authenticateUser(username, password, Provider.LOCAL));
         } catch (Exception e) {
@@ -132,19 +132,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/google-auth")
+    @PostMapping("/googleAuthentication")
     public ResponseEntity<Map<String, String>> googleAuth(@RequestParam String idTokenString) {
         try {
             return ResponseEntity.ok(userService.googleAuth(idTokenString));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
-        }
-    }
-
-    @PostMapping(value = "/login-with-google", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public ResponseEntity<Map<String, String>> loginWithGoogle(LoginWithGoogleBody body) {
-        try {
-            return ResponseEntity.ok(userService.googleAuth(body.getCredential()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }

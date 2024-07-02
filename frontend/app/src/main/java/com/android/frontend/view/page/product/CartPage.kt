@@ -15,12 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.android.frontend.dto.CartItemDTO
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.CartViewModel
 import java.math.BigDecimal
 
 @Composable
-fun CartPage(cartViewModel: CartViewModel) {
+fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
     val context = LocalContext.current
     val cart by cartViewModel.cart.collectAsState()
 
@@ -36,6 +38,16 @@ fun CartPage(cartViewModel: CartViewModel) {
                 }
             }
             CartSummary(cartItems = it.cartItems)
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.CheckoutPage.route)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text("Complete Order")
+            }
         }
     }
 }
@@ -81,7 +93,6 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
         }
     }
 }
-
 
 @Composable
 fun CartSummary(cartItems: List<CartItemDTO>) {
