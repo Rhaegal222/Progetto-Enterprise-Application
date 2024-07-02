@@ -1,11 +1,14 @@
 package com.android.frontend.view.page.product
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,22 +16,27 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel, navController: NavController) {
     val context = LocalContext.current
     val productId = CurrentDataUtils.currentProductId
     val productDetails = productViewModel.productDetailsLiveData.observeAsState().value
@@ -36,29 +44,49 @@ fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartVi
 
     productViewModel.getProductDetails(context, productId)
 
-    Scaffold { padding ->
-        Column {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .weight(1f)
-                    .padding(padding)
-            ) {
-                productDetails?.let { productItem ->
-                    DetailContentImageHeader(productItem = productItem)
-                    Spacer(modifier = Modifier.height(24.dp))
-                    DetailContentDescription(productItem = productItem)
-                }
-            }
-
+    Scaffold(
+        topBar = {
+            androidx.compose.material.TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.AllProductsPage.route)
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp
+            )
+        }
+    ) {
+        Scaffold { padding ->
             Column {
-                productDetails?.let {
-                    DetailButtonAddCart(
-                        productItem = it,
-                        onClickToCart = { productItem ->
-                            cartViewModel.addProductToCart(userId, productItem.id, 1, context)
-                        }
-                    )
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1f)
+                        .padding(padding)
+                ) {
+                    productDetails?.let { productItem ->
+                        DetailContentImageHeader(productItem = productItem)
+                        Spacer(modifier = Modifier.height(24.dp))
+                        DetailContentDescription(productItem = productItem)
+                    }
+                }
+
+                Column {
+                    productDetails?.let {
+                        DetailButtonAddCart(
+                            productItem = it,
+                            onClickToCart = { productItem ->
+                                cartViewModel.addProductToCart(userId, productItem.id, 1, context)
+                            }
+                        )
+                    }
                 }
             }
         }

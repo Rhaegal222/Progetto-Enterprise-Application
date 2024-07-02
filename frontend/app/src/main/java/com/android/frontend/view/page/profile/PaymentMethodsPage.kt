@@ -8,6 +8,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -93,7 +94,17 @@ fun PaymentMethodsContent(
                     Text(
                         text = stringResource(id = R.string.payment_methods)
                     )
-                }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.ProfileMenu.route)
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                },
             )
         },
         floatingActionButton = {
