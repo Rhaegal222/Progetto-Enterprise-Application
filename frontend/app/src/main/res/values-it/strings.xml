@@ -119,4 +119,6 @@
     <string name="purchase">Purchase</string>
     <string name="add_shipping_address">Aggiungi indirizzo di spedizione</string>
     <string name="fetching_error_message">Si è verificato un errore durante il recupero dei dati. Per favore, riprova più tardi.</string>
+    <string name="wishlist">Lista dei desideri</string>
+    <string name="all_wishlists">Tutte le liste dei desideri</string>
 </resources>

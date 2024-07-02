@@ -60,7 +60,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                 title = {
                     Text(
                         text = stringResource(id = R.string.add_payment_card).uppercase(),
-                    )
+                        )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.PaymentsPage.route) }) {

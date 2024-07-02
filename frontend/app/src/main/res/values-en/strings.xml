@@ -119,4 +119,6 @@
     <string name="purchase">Purchase</string>
     <string name="add_shipping_address">Add shipping address</string>
     <string name="fetching_error_message">An error occurred while fetching the data. Please try again later.</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="all_wishlists">All Wishlists</string>
 </resources>
