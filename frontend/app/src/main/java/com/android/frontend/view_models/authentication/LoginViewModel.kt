@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.GoogleAuthentication
+import com.android.frontend.config.Request
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +22,6 @@ class LoginViewModel : ViewModel() {
 
     var username by mutableStateOf("")
     var password by mutableStateOf("")
-    private var accessToken by mutableStateOf("")
-    private var refreshToken by mutableStateOf("")
 
     private fun validateForm(): Boolean {
         return username.isNotEmpty() && password.isNotEmpty()
@@ -32,35 +31,31 @@ class LoginViewModel : ViewModel() {
         if (validateForm()) {
             viewModelScope.launch {
                 val userService: UserService = RetrofitInstance.getUserApi(context)
-                val call = userService.login(username, password)
-                call.enqueue(object : Callback<Map<String, String>> {
-                    override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
-                        if (response.isSuccessful) {
-                            val tokenMap = response.body()
-                            val accessToken = tokenMap?.get("accessToken")
-                            val refreshToken = tokenMap?.get("refreshToken")
-                            if (accessToken != null && refreshToken != null) {
-                                TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
-                                SecurePreferences.saveProvider(context, "local")
-                                onResult(true, null)
-                            } else {
-                                val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
-                                onResult(false, errorMessage)
-                            }
+                val response = Request().executeRequest(context) {
+                    userService.login(username, password)
+                }
+                if (response?.isSuccessful == true) {
+                    val tokenMap = response.body()
+                    if (tokenMap != null) {
+                        val accessToken = tokenMap["accessToken"]
+                        val refreshToken = tokenMap["refreshToken"]
+                        if (accessToken != null && refreshToken != null) {
+                            TokenManager.getInstance().saveTokens(context, accessToken, refreshToken)
+                            onResult(true, null)
                         } else {
-                            val errorMessage = response.errorBody()?.string() ?: "Errore sconosciuto"
-                            onResult(false, errorMessage)
+                            onResult(false, "Errore sconosciuto")
                         }
+                    } else {
+                        onResult(false, "Errore sconosciuto")
                     }
-
-                    override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
-                        val failureMessage = t.message ?: "Errore sconosciuto"
-                        onResult(false, failureMessage)
-                    }
-                })
+                }
+                else {
+                    val errorMessage = response?.errorBody()?.string() ?: "Errore sconosciuto"
+                    onResult(false, errorMessage)
+                }
             }
         } else {
-            onResult(false, "Validazione del modulo fallita")
+            onResult(false, "Compila tutti i campi")
         }
     }
 

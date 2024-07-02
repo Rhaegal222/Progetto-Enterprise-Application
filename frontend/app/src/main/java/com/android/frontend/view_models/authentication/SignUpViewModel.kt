@@ -7,12 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.Request
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class SignUpViewModel : ViewModel() {
+class SignupViewModel : ViewModel() {
     var lastname by mutableStateOf("")
     var firstname by mutableStateOf("")
     var email by mutableStateOf("")
@@ -27,27 +25,18 @@ class SignUpViewModel : ViewModel() {
         if (validateForm()) {
             viewModelScope.launch {
                 val userService = RetrofitInstance.getUserApi(context)
-                val call = userService.register(firstname, lastname, email, password)
-                call.enqueue(object : Callback<Void> {
-                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                        if (response.isSuccessful) {
-                            onResult(true, "")
-                        } else {
-                            val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                            println("Error: $errorMessage")
-                            onResult(false, errorMessage)
-                        }
+                val response = Request().executeRequest(context) {
+                    userService.register(lastname, firstname, email, password)
+                }
+                if (response?.isSuccessful == true) {
+                    onResult(true, "Registrazione avvenuta con successo")
+                } else {
+                    val errorMessage = response?.errorBody()?.string() ?: "Errore sconosciuto"
+                    onResult(false, errorMessage)
                     }
-
-                    override fun onFailure(call: Call<Void>, t: Throwable) {
-                        val failureMessage = t.message ?: "Unknown failure"
-                        println("Failure: $failureMessage")
-                        onResult(false, failureMessage)
-                    }
-                })
             }
         } else {
-            onResult(false, "Form validation failed")
+            onResult(false, "Compila tutti i campi")
         }
     }
 }

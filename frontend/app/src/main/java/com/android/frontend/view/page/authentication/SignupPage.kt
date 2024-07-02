@@ -37,14 +37,14 @@ import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 import com.android.frontend.view_models.authentication.LoginViewModel
-import com.android.frontend.view_models.authentication.SignUpViewModel
+import com.android.frontend.view_models.authentication.SignupViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun SignupPage(navController: NavHostController) {
 
-    val signUpViewModel: SignUpViewModel = viewModel()
+    val signUpViewModel: SignupViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
 
     val context = LocalContext.current
