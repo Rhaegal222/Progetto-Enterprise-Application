@@ -6,6 +6,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -52,5 +53,10 @@ interface ProductService {
     @GET("/api/v1/products/getProductsByPriceRange/")
     fun getProductsByPriceRange(
         @Query("min") min: Double, @Query("max") max: Double
+    ): Call<List<ProductDTO>>
+
+    @GET("/api/v1/products/getSalesProducts")
+    fun getSalesProducts(
+        @Header("Authorization") authorization: String
     ): Call<List<ProductDTO>>
 }

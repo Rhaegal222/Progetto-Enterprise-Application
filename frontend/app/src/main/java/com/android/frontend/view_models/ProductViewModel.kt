@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.creation.CartCreateDTO
 import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.ProductDTO
@@ -120,5 +121,35 @@ class ProductViewModel : ViewModel() {
             )
         }
     }
+    fun fetchSalesProducts(context: Context) {
+        viewModelScope.launch {
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val productService = RetrofitInstance.getProductApi(context)
+            val call = productService.getSalesProducts("Bearer $accessToken")
+            call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
+                override fun onResponse(
+                    call: retrofit2.Call<List<ProductDTO>>,
+                    response: retrofit2.Response<List<ProductDTO>>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { productsList ->
+                            products.value = productsList
+                        }
+                    } else {
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch sales products: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
+                    if (t is SocketTimeoutException) {
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching sales products", t)
+                    } else {
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching sales products", t)
+                    }
+                }
+            })
+        }
+    }
+
 }
 

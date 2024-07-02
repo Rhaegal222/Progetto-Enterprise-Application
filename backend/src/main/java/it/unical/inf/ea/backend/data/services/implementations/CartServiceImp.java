@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collections;
@@ -68,6 +69,8 @@ public class CartServiceImp implements CartService {
                 .filter(item -> item.getProduct().getId().equals(product.getId()))
                 .findFirst();
 
+        BigDecimal price = product.isOnSale() ? product.getDiscountedPrice() : product.getProductPrice();
+
         CartItem cartItem;
         if (existingCartItem.isPresent()) {
             cartItem = existingCartItem.get();
@@ -78,7 +81,7 @@ public class CartServiceImp implements CartService {
                     .product(product)
                     .quantity(cartCreateDTO.getQuantity())
                     .productName(product.getTitle())
-                    .productPrice(product.getProductPrice())
+                    .productPrice(price)
                     .deliveryPrice(product.getDeliveryPrice())
                     .build();
             cart.getCartItems().add(cartItem);
@@ -87,6 +90,7 @@ public class CartServiceImp implements CartService {
         cartItemDao.save(cartItem);
         return convertToDTO(cart);
     }
+
 
     @Override
     @Transactional

@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -65,7 +66,12 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
 }
 
 @Composable
-fun ProductsCard(productDTO: ProductDTO, navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+fun ProductsCard(
+    productDTO: ProductDTO,
+    navController: NavController,
+    productViewModel: ProductViewModel,
+    cartViewModel: CartViewModel
+) {
     val context = LocalContext.current
     val userId = SecurePreferences.getUser(context)?.id ?: ""
 
@@ -76,7 +82,12 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
             .width(174.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
-                navController.navigate(Navigation.ProductDetailsPage.route)
+                val route = if (productDTO.onSale) {
+                    Navigation.SaleProductDetailsPage.route
+                } else {
+                    Navigation.ProductDetailsPage.route
+                }
+                navController.navigate(route)
             }
     ) {
         Column(
@@ -112,32 +123,56 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "${productDTO.productPrice}€",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    fontSize = 18.sp
-                )
-
-                Button(
-                    colors = ButtonColorScheme.buttonColors(),
-                    modifier = Modifier.size(46.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    contentPadding = PaddingValues(10.dp),
-                    onClick = {
-                        cartViewModel.addProductToCart(userId, productDTO.id, 1, context)
-                    }
+            if (productDTO.onSale && productDTO.discountedPrice != null) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        modifier = Modifier.fillMaxSize(),
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add"
+                    Text(
+                        text = "${productDTO.productPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+
+                    Text(
+                        text = "${productDTO.discountedPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp
                     )
                 }
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "${productDTO.productPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Button(
+                colors = ButtonColorScheme.buttonColors(),
+                modifier = Modifier.size(46.dp),
+                shape = RoundedCornerShape(14.dp),
+                contentPadding = PaddingValues(10.dp),
+                onClick = {
+                    cartViewModel.addProductToCart(userId, productDTO.id, 1, context)
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add"
+                )
             }
         }
     }

@@ -41,23 +41,25 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductDTO addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
-            LocalDateTime now = getTimeNow();
-            Product product = new Product();
-            product.setTitle(productCreateDTO.getTitle());
-            product.setBrand(modelMapper.map(productCreateDTO.getBrand(), Brand.class));
-            product.setProductPrice(productCreateDTO.getProductPrice());
-            product.setDescription(productCreateDTO.getDescription());
-            product.setIngredients(productCreateDTO.getIngredients());
-            product.setProductWeight(productCreateDTO.getProductWeight());
-            product.setNutritionalValues(productCreateDTO.getNutritionalValues());
-            product.setQuantity(productCreateDTO.getQuantity());
-            product.setDeliveryPrice(productCreateDTO.getDeliveryPrice());
-            product.setAvailability(productCreateDTO.getAvailability());
-            product.setUploadDate(now);
-            product.setLastUpdateDate(now);
-            product.setProductCategory(modelMapper.map(productCreateDTO.getProductCategory(), ProductCategory.class));
-            productDao.save(product);
-            return modelMapper.map(product, ProductDTO.class);
+        LocalDateTime now = getTimeNow();
+        Product product = new Product();
+        product.setTitle(productCreateDTO.getTitle());
+        product.setBrand(modelMapper.map(productCreateDTO.getBrand(), Brand.class));
+        product.setProductPrice(productCreateDTO.getProductPrice());
+        product.setDescription(productCreateDTO.getDescription());
+        product.setIngredients(productCreateDTO.getIngredients());
+        product.setProductWeight(productCreateDTO.getProductWeight());
+        product.setNutritionalValues(productCreateDTO.getNutritionalValues());
+        product.setQuantity(productCreateDTO.getQuantity());
+        product.setDeliveryPrice(productCreateDTO.getDeliveryPrice());
+        product.setAvailability(productCreateDTO.getAvailability());
+        product.setUploadDate(now);
+        product.setLastUpdateDate(now);
+        product.setOnSale(productCreateDTO.isOnSale());
+        product.setDiscountedPrice(productCreateDTO.getDiscountedPrice());
+        product.setProductCategory(modelMapper.map(productCreateDTO.getProductCategory(), ProductCategory.class));
+        productDao.save(product);
+        return modelMapper.map(product, ProductDTO.class);
 
     }
 

@@ -3,6 +3,7 @@ package com.android.frontend.view.page.main
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.Suggestion
 import com.android.frontend.view_models.HomeViewModel
@@ -129,6 +131,10 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            Button(onClick = { navController.navigate(Navigation.SalesProductsPage.route) }) {
+                Text("Offerte del giorno")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             // Se la search bar ha il focus
             if (focusOnTextField) {
                 Suggestion()
@@ -162,8 +168,7 @@ fun HomePagePreview(pagerState: PagerState) {
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-
-        Text(text = "Offerte del giorno")
+        //Text(text = "Offerte del giorno")
 
         HorizontalPager(
             state = pagerState,
