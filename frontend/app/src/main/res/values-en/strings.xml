@@ -17,7 +17,7 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="already_have_account">Do you already have an account?</string>
     <string name="my_orders">My orders</string>
-    <string name="wishlist">Wishlist</string>
+    <string name="add_wishlist">Add wishlist</string>
     <string name="payment_methods">Payment methods</string>
     <string name="shipping_addresses">Shipping addresses</string>
     <string name="app_settings">App settings</string>

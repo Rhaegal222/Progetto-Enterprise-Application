@@ -1,7 +1,6 @@
 package com.android.frontend.view.page.profile
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -62,7 +61,7 @@ fun AddWishlistPage(navController: NavHostController, WishlistViewModel: Wishlis
                             readOnly = true,
                             value = selectedVisibility,
                             onValueChange = {},
-                            label = { Text(stringResource(id = R.string.wishlist)) },
+                            label = { Text(stringResource(id = R.string.add_wishlist)) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             modifier = Modifier.fillMaxWidth()
                         )

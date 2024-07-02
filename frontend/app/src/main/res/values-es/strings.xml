@@ -16,7 +16,7 @@
     <string name="forgot_password">¿Has olvidado tu contraseña?</string>
     <string name="already_have_account">Ya tienes una cuenta?</string>
     <string name="my_orders">Mis ordenes</string>
-    <string name="wishlist">Lista de deseos</string>
+    <string name="add_wishlist">Añadir lista de deseos</string>
     <string name="payment_methods">Métodos de pago</string>
     <string name="shipping_addresses">Dirección de Envío</string>
     <string name="app_settings">Ajustes</string>

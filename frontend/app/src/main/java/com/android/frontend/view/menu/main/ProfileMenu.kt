@@ -1,8 +1,5 @@
 package com.android.frontend.view.menu.main
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -38,7 +35,7 @@ fun ProfileMenu(navController: NavController) {
         )
 
         ProfileMenuItem(navController, Icons.Default.LocalShipping, R.string.my_orders)
-        ProfileMenuItem(navController, Icons.Default.Favorite, R.string.wishlist)
+        ProfileMenuItem(navController, Icons.Default.Favorite, R.string.add_wishlist)
         ProfileMenuItem(navController, Icons.Default.Payment, R.string.payment_methods)
         ProfileMenuItem(navController, Icons.Default.LocationOn, R.string.shipping_addresses)
     }
@@ -55,7 +52,7 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
             .clickable {
                 when (textResId) {
                     // R.string.my_orders ->
-                     R.string.wishlist ->navController.navigate(Navigation.AllWishlistsPage.route)
+                     R.string.add_wishlist ->navController.navigate(Navigation.AllWishlistsPage.route)
                     R.string.payment_methods -> navController.navigate(Navigation.PaymentsPage.route)
                     R.string.shipping_addresses -> navController.navigate(Navigation.ShippingAddressesPage.route)
                 }
