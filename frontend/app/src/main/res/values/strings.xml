@@ -112,6 +112,7 @@
     <string name="categories">Categories</string>
     <string name="brands">Brands</string>
     <string name="login_as_admin">Log in as administrator</string>
+    <string name="users">Users</string>
     <string name="checkout">Checkout</string>
     <string name="payment_method">Payment Method:</string>
     <string name="shipping_address">Shipping Address:</string>

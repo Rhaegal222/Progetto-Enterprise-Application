@@ -7,6 +7,7 @@ import it.unical.inf.ea.backend.dto.UserDTO;
 import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.config.security.LoginWithGoogleBody;
+import it.unical.inf.ea.backend.dto.enums.UserRole;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +40,24 @@ public class UserController {
     public ResponseEntity<Map<String, String>> login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletResponse response) {
         try {
             return ResponseEntity.ok(userService.authenticateUser(username, password, Provider.LOCAL));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.getAllUser());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping(path = "/changeRole/{userId}")
+    public ResponseEntity<?> changeRole(@PathVariable("userId") String userId, @RequestParam("role") String role) {
+        try {
+            return ResponseEntity.ok(userService.changeRole(userId, UserRole.valueOf(role)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }
@@ -74,7 +94,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/deleteUser/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") String id) {
         try {
             userService.deleteUser(id);

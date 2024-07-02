@@ -112,6 +112,7 @@
     <string name="categories">Categorie</string>
     <string name="brands">Marche</string>
     <string name="login_as_admin">Accedi come amministratore</string>
+    <string name="users">Utenti</string>
     <string name="checkout">Checkout</string>
     <string name="payment_method">Payment Method:</string>
     <string name="shipping_address">Shipping Address:</string>

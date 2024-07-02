@@ -4,6 +4,7 @@ import com.android.frontend.dto.UserDTO
 import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.dto.UserUpdateRequest
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface UserService {
@@ -20,6 +21,24 @@ interface UserService {
         @Query("username") username: String,
         @Query("password") password: String
     ): Call<Map<String, String>>
+
+    @GET("/api/v1/users/getAllUsers")
+    suspend fun getAllUsers(
+        @Header("Authorization") token: String
+    ): Response<List<UserDTO>>
+
+    @DELETE("/api/v1/users/deleteUser/{id}")
+    suspend fun deleteUser(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String
+    ): Response<Void>
+
+    @POST("/api/v1/users/changeRole/{userId}")
+    suspend fun changeRole(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String,
+        @Query("role") role: String
+    ): Response<Void>
 
     @GET("/api/v1/users/refreshToken")
     fun refreshToken(

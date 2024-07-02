@@ -10,11 +10,13 @@ import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,6 +33,8 @@ public interface UserService {
     Page<UserDTO> findAll(int page, int size, UserRole userRole, String username) throws IllegalAccessException;
 
     Optional<UserDTO> findByUsername(String username);
+
+    List<UserDTO> getAllUser() throws IllegalAccessException;
 
     Map<String, String> googleAuth(String code) throws Exception;
 
@@ -50,7 +54,7 @@ public interface UserService {
     void activateUser(String token) throws ParseException, JOSEException;
 
 
-    UserDTO changeRole(String userId, UserRole role);
+    UserDTO changeRole(String userId, UserRole role) throws IllegalAccessException;
 
     UserDTO banUser(String userId);
 

@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static it.unical.inf.ea.backend.config.FileUploadUtil.saveBufferedImage;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -180,6 +181,19 @@ public class UserServiceImp implements UserService{
         else
             return userDao.findAllByRoleEqualsOrRoleEquals(PageRequest.of(page, size ),UserRole.ADMIN,UserRole.ADMIN)
                     .map(this::mapToDto);
+    }
+
+    @Override
+    public List<UserDTO> getAllUser() throws IllegalAccessException {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+
+        if(!loggedUser.getRole().equals(UserRole.ADMIN))
+            throw new IllegalAccessException("You can't access this list");
+
+        List<User> users = userDao.findAll();
+        return users.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     private Pair<Boolean,UserDTO> processOAuthPostGoogleLogin(Map<String, String> userInfo) {
@@ -332,6 +346,20 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
+    public UserDTO changeRole(String userId, UserRole role) throws IllegalAccessException {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+
+        if(!loggedUser.getRole().equals(UserRole.ADMIN))
+            throw new IllegalAccessException("Only admin can change role");
+
+        User user = userDao.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setRole(role);
+        return mapToDto(userDao.save(user));
+    }
+
+    @Override
     @Transactional
     public void getNewPasswordByEmail(String token) throws ParseException, JOSEException, MessagingException {
         tokenStore.verifyToken(token, Constants.RESET_PASSWORD_CLAIM);
@@ -424,14 +452,6 @@ public class UserServiceImp implements UserService{
         new ResponseEntity<>("user activated", HttpStatus.OK);
     }
 
-    @Override
-    public UserDTO changeRole(String userId, UserRole role) {
-        User user = userDao.findById(userId).orElseThrow(EntityNotFoundException::new);
-        if (jwtContextUtils.getUserLoggedFromContext().getId().equals(userId))
-            throw new IllegalArgumentException("You cannot change your own role");
-        user.setRole(role);
-        return mapToDto(userDao.save(user));
-    }
 
     @Override
     public UserDTO banUser(String userId) {
