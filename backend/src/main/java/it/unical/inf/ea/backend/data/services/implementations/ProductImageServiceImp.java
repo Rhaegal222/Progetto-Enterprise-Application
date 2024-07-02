@@ -71,7 +71,7 @@ public class ProductImageServiceImp implements ProductImageService {
         productImage.setDescription(description);
         productImage.setUrlPhoto("images/product_photos/"+product.getId()+"/"+fileName);
         productImage.setProduct(product);
-        FileUploadUtil.saveFile(localStorageDir, fileName, multipartFile);
+        FileUploadUtil.saveMultipartFile(localStorageDir, fileName, multipartFile);
         productImageDao.save(productImage);
 
         return modelMapper.map(productImage,ProductImageDTO.class);

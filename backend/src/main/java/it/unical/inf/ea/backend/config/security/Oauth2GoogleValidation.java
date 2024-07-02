@@ -14,11 +14,8 @@ import java.util.Map;
 @Component
 public class Oauth2GoogleValidation {
 
-
     @Value("${spring.security.oauth2.client.registration.google.clientId}")
     private String clientId;
-
-
 
     private GoogleIdTokenVerifier verifier;
 
@@ -33,7 +30,6 @@ public class Oauth2GoogleValidation {
 
         GoogleIdToken idToken = verifier.verify(idTokenString);
 
-
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
@@ -45,10 +41,7 @@ public class Oauth2GoogleValidation {
             String familyName = (String) payload.get("family_name");
             String givenName = (String) payload.get("given_name");
 
-
             return Map.of("email", email, "name", name, "pictureUrl", pictureUrl, "familyName", familyName, "givenName", givenName);
-
-
         } else {
             throw new Exception("Invalid ID token.");
         }

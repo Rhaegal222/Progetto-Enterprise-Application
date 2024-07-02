@@ -34,8 +34,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping(path = "/authenticate")
-    public ResponseEntity<Map<String, String>> authenticate(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletResponse response) {
+    @PostMapping(path = "/login")
+    public ResponseEntity<Map<String, String>> login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletResponse response) {
         try {
             return ResponseEntity.ok(userService.authenticateUser(username, password, Provider.LOCAL));
         } catch (Exception e) {
