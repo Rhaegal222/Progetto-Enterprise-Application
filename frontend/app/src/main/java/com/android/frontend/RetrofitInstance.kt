@@ -75,4 +75,9 @@ object RetrofitInstance {
     fun getBrandApi(context: Context): BrandService {
         return getAuthenticatedRetrofit(context).create(BrandService::class.java)
     }
+
+    fun getWishlistApi(context: Context): WishlistService {
+        return getAuthenticatedRetrofit(context).create(WishlistService::class.java)
+
+    }
 }

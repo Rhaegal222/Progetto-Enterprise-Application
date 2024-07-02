@@ -5,7 +5,7 @@ data class WishlistDTO (
     val wishlistName: String,
     val userId: String,
     val visibility: Visibility,
-    val products: Set<ProductDTO>? = null
+    val products: List<ProductDTO>? = null
 ) {
 
     enum class Visibility(val value:String){

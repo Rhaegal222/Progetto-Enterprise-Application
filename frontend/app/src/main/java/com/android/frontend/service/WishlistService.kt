@@ -22,7 +22,7 @@ interface WishlistService {
     fun addProductToWishlist(
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: Long,
-        @Body productId: Set<String>
+        @Body productId: String
     ): Call<Void>
 
     @GET("/api/v1/wishlist/getAllLoggedUserWishlists")
@@ -35,7 +35,7 @@ interface WishlistService {
     fun removeProductsFromWishlist(
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: Long,
-        @Path("productId") productId: Set<String>
+        @Body productId: String
     ): Call<Void>
 
 
