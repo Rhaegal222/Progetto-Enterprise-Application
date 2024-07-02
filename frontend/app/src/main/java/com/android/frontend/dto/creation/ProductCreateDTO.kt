@@ -3,6 +3,7 @@ package com.android.frontend.dto.creation
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.ProductCategoryDTO
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.dto.ProductImageDTO
 import java.math.BigDecimal
 
 data class ProductCreateDTO(
@@ -17,7 +18,7 @@ data class ProductCreateDTO(
         val quantity: Int,
         val brand: BrandDTO,
         val productCategory: ProductCategoryDTO,
-        val imageUrl: String? = null,
+        val photoProduct: ProductImageDTO? = null,
         val onSale: Boolean,
         val discountedPrice: BigDecimal? = null
 )
