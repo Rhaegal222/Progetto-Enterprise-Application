@@ -12,20 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.persistence.SecurePreferences
-import com.android.frontend.view_models.CartViewModel
-import com.android.frontend.view_models.ProductViewModel
+import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.ProductViewModel
 
 @Composable
 fun SaleProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {

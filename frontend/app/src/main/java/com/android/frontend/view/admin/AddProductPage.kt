@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -46,18 +47,12 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
     val quantity by viewModel.quantity.observeAsState(0)
     val allBrands by viewModel.allBrands.observeAsState(emptyList())
     val allCategories by viewModel.allCategories.observeAsState(emptyList())
+    val onSale by viewModel.onSale.observeAsState(false)
+    val discountedPrice by viewModel.discountedPrice.observeAsState(BigDecimal.ZERO)
 
     var selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
     var selectedCategory by remember { mutableStateOf<ProductCategoryDTO?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
-
-//    val imagePickerLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.GetContent()
-//    ) { uri: Uri? ->
-//        uri?.let {
-//            viewModel.uploadImage(context, it)
-//        }
-//    }
 
     if (isLoading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
@@ -221,6 +216,27 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
                                 }
                             }
                         }
+                    }
+
+                    // On Sale Toggle
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("On Sale", modifier = Modifier.weight(1f))
+                        Switch(
+                            checked = onSale,
+                            onCheckedChange = { viewModel.onSale.value = it }
+                        )
+                    }
+
+                    if (onSale) {
+                        TextField(
+                            value = discountedPrice.toString(),
+                            onValueChange = { viewModel.discountedPrice.value = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
+                            label = { Text("Discounted Price") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
 
                     Button(
