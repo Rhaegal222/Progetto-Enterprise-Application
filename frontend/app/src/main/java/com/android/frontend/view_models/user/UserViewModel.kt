@@ -107,8 +107,8 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun getProfileImage(context: Context) {
-        withContext(Dispatchers.IO) {
+    fun getProfileImage(context: Context) {
+        viewModelScope.launch {
             try {
                 val type = "user_photos"
                 val folderName = SecurePreferences.getUser(context)?.id ?: ""

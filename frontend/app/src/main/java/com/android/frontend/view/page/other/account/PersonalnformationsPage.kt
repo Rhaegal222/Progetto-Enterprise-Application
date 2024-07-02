@@ -59,8 +59,10 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
         ErrorDialog(
             title = stringResource(id = R.string.fetching_error),
             onDismiss = { navController.popBackStack() },
-            onRetry = {  },
-            errorMessage = stringResource(id = R.string.payment_methods_load_failed)
+            onRetry = { userViewModel.getUserBasicDTO(context)
+                        userViewModel.getProfileImage(context)
+                      },
+            errorMessage = stringResource(id = R.string.fetching_error_message)
         )
     } else {
         PersonalInformationContent(
