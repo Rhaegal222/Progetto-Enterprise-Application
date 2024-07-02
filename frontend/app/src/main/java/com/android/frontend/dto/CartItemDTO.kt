@@ -8,5 +8,7 @@ data class CartItemDTO(
     val quantity: Int,
     val productName: String,
     val productPrice: BigDecimal,
-    val deliveryPrice: BigDecimal
+    val deliveryPrice: BigDecimal,
+    val onSale: Boolean,
+    val discountedPrice: BigDecimal?
 )

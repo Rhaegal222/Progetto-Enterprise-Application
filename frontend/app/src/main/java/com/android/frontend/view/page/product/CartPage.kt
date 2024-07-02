@@ -43,6 +43,7 @@ fun CartPage(cartViewModel: CartViewModel) {
 @Composable
 fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: Context) {
     var quantity by remember { mutableStateOf(cartItem.quantity) }
+    val price = if (cartItem.onSale) cartItem.discountedPrice ?: cartItem.productPrice else cartItem.productPrice
 
     Card(
         modifier = Modifier
@@ -52,7 +53,7 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Product: ${cartItem.productName}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-            Text(text = "Product Price: ${cartItem.productPrice}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Text(text = "Product Price: $price", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
             Text(text = "Delivery Price: ${cartItem.deliveryPrice}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = {
@@ -80,6 +81,7 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
         }
     }
 }
+
 
 @Composable
 fun CartSummary(cartItems: List<CartItemDTO>) {

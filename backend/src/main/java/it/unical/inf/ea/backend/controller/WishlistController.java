@@ -66,10 +66,20 @@ public class WishlistController {
     }
 
     @PostMapping("/{wishlistId}/products")
-    public ResponseEntity<?> addProductsToWishlist(@PathVariable String wishlistId, @RequestBody Set<String> productIds) {
+    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @RequestBody Set<String> productIds) {
         try {
             wishlistService.addProductsToWishlist(productIds, wishlistId);
             return ResponseEntity.ok("{\"message\": \"Products added to wishlist successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @DeleteMapping("/{wishlistId}/products")
+    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @RequestBody Set<String> productIds) {
+        try {
+            wishlistService.removeProductsFromWishlist(productIds, wishlistId);
+            return ResponseEntity.ok("{\"message\": \"Products removed from wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

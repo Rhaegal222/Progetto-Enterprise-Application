@@ -41,6 +41,8 @@ sealed class Navigation(val route: String) {
     object AddAddressPage : Navigation(route = "addaddress_page")
     object DebugMenu : Navigation(route = "debug_menu")
     object LoadingPage : Navigation(route = "loading_page")
+    object SalesProductsPage : Navigation(route = "salesProducts")
+    object SaleProductDetailsPage : Navigation(route = "salesProductsDetails")
     object AdminMenu : Navigation(route = "admin_menu")
     object AddProductPage : Navigation(route = "add_product_page")
     object AddBrandPage : Navigation(route = "add_brand_page")
