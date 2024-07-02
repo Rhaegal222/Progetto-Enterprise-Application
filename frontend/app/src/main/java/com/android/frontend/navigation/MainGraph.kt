@@ -22,6 +22,8 @@ import com.android.frontend.view.page.other.CountryLanguagePage
 import com.android.frontend.view.page.product.AllProductsPage
 import com.android.frontend.view.page.product.CartPage
 import com.android.frontend.view.page.product.ProductDetailsPage
+import com.android.frontend.view.page.product.SaleProductDetailsPage
+import com.android.frontend.view.page.product.SalesProductsPage
 import com.android.frontend.view.page.profile.AddAddressPage
 import com.android.frontend.view.page.profile.PaymentMethodsPage
 import com.android.frontend.view.page.profile.ShippingAddressesPage
@@ -40,7 +42,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
         composable(Navigation.AllProductsPage.route) { AllProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
-        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
@@ -49,5 +51,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.ShippingAddressesPage.route) { ShippingAddressesPage(navController)  }
         composable(Navigation.AddAddressPage.route) { AddAddressPage(navController)  }
         composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
+        composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.SaleProductDetailsPage.route) { SaleProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
     }
 }

@@ -17,5 +17,7 @@ data class ProductCreateDTO(
         val quantity: Int,
         val brand: BrandDTO,
         val productCategory: ProductCategoryDTO,
-        val imageUrl: String? = null
+        val imageUrl: String? = null,
+        val onSale: Boolean,
+        val discountedPrice: BigDecimal? = null
 )

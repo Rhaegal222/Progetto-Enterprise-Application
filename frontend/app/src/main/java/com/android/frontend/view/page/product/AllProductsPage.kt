@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -38,37 +36,49 @@ import com.android.frontend.view_models.user.ProductViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
-
     val context = LocalContext.current
-
-    val products = productViewModel.productsLiveData.observeAsState().value
+    val products by productViewModel.productsLiveData.observeAsState()
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         productViewModel.fetchAllProducts(context)
+        isLoading = false
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("All Products") },
             )
         },
         content = { innerPadding ->
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel)                }
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    items(products ?: emptyList()) { productDTO ->
+                        ProductsCard(productDTO, navController, productViewModel, cartViewModel)
+                    }
+                }
             }
         }
     )
 }
 
 @Composable
-fun ProductsCard(productDTO: ProductDTO, navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+fun ProductsCard(
+    productDTO: ProductDTO,
+    navController: NavController,
+    productViewModel: ProductViewModel,
+    cartViewModel: CartViewModel
+) {
     val context = LocalContext.current
     val userId = SecurePreferences.getUser(context)?.id ?: ""
 
@@ -80,7 +90,12 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
             .height(250.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
-                navController.navigate(Navigation.ProductDetailsPage.route)
+                val route = if (productDTO.onSale) {
+                    Navigation.SaleProductDetailsPage.route
+                } else {
+                    Navigation.ProductDetailsPage.route
+                }
+                navController.navigate(route)
             }
     ) {
         Column(
@@ -118,32 +133,56 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, productVi
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "${productDTO.productPrice}€",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    fontSize = 13.sp
-                )
-
-                Button(
-                    colors = ButtonColorScheme.buttonColors(),
-                    modifier = Modifier.size(46.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    onClick = {
-                        cartViewModel.addProductToCart(userId, productDTO.id, 1, context)
-                    }
+            if (productDTO.onSale && productDTO.discountedPrice != null) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
-                        modifier = Modifier.size(24.dp)
+                    Text(
+                        text = "${productDTO.productPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+
+                    Text(
+                        text = "${productDTO.discountedPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp
                     )
                 }
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "${productDTO.productPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Button(
+                colors = ButtonColorScheme.buttonColors(),
+                modifier = Modifier.size(46.dp),
+                shape = RoundedCornerShape(14.dp),
+                contentPadding = PaddingValues(10.dp),
+                onClick = {
+                    cartViewModel.addProductToCart(userId, productDTO.id, 1, context)
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add"
+                )
             }
         }
     }

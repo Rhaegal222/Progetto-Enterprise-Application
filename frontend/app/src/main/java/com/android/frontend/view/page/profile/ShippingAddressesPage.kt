@@ -24,8 +24,11 @@ import com.android.frontend.dto.AddressDTO
 import com.android.frontend.view_models.user.AddressViewModel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.unit.dp
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view.component.ErrorDialog
 
@@ -85,7 +88,17 @@ fun ShippingAddressesContent(
                     Text(
                         text = stringResource(id = R.string.shipping_addresses),
                     )
-                }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.ProfileMenu.route)
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                },
             )
         }
     ) { innerPadding ->
@@ -100,7 +113,7 @@ fun ShippingAddressesContent(
 
             Button(
                 onClick = {
-                    navController.navigate("add_shipping_address")
+                    navController.navigate(Navigation.AddAddressPage.route)
                 },
                 modifier = Modifier.padding(16.dp),
                 colors = ButtonColorScheme.buttonColors()
