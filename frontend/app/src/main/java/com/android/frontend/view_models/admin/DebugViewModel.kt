@@ -2,12 +2,15 @@ package com.android.frontend.view_models.admin
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.ProductDTO
+import com.android.frontend.dto.creation.ProductCreateDTO
 import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view_models.user.AddressViewModel
 import com.android.frontend.view_models.user.PaymentViewModel
@@ -42,17 +45,9 @@ class DebugViewModel : ViewModel() {
         paymentViewModel.addPaymentCard(context, "1111222233334444", "12", "20", "Mario Rossi", false)
     }
 
-//    fun generateProduct(): ProductCreateDTO {
-//        return ProductCreateDTO(
-//            title = "Product",
-//            productPrice = 10.0.toBigDecimal(),
-//            deliveryPrice = 5.0.toBigDecimal(),
-//            availability = ProductDTO.Availability.AVAILABLE,
-//            quantity = 10,
-//            brand = ProductDTO.BrandDTO("Brand"),
-//            productCategory = ProductDTO.ProductCategoryDTO("Category")
-//        )
-//    }
+    fun generateProduct(context: Context) {
+        // productViewModel.generateProduct(context)
+    }
 
     fun rejectToken(context: Context) {
         viewModelScope.launch {
