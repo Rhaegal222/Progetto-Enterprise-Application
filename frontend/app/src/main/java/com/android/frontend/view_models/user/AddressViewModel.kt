@@ -1,4 +1,4 @@
-package com.android.frontend.view_models
+package com.android.frontend.view_models.user
 
 import android.content.Context
 import android.util.Log
@@ -27,7 +27,7 @@ class AddressViewModel : ViewModel() {
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
-    var addressId by mutableStateOf("")
+    // var addressId by mutableStateOf("")
     var fullName by mutableStateOf("")
     var phoneNumber by mutableStateOf("")
     var street by mutableStateOf("")

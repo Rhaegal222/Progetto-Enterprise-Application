@@ -40,7 +40,6 @@ public class ProductController {
     private final BrandService brandService;
 
     @PostMapping("/addProduct")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> addProduct(@RequestBody ProductCreateDTO productCreateDTO) {
         try {
             productService.addProduct(productCreateDTO);
@@ -50,16 +49,9 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/uploadImage/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image, @PathVariable String id) {
-        String imageUrl = productService.saveImage(image, id);
-        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
-    }
 
     @DeleteMapping("/deleteProduct/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
         try {
             productService.deleteProduct(productService.getProductById(id).getId());
             return ResponseEntity.ok("{\"message\": \"Product deleted successfully\"}");
@@ -69,61 +61,73 @@ public class ProductController {
     }
 
     @GetMapping("/getAllProducts")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-//    @GetMapping("/getAllProductsBrands")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<?> getAllProductsBrands() {
-//        List<String> brands = productService.getAllProductsBrands();
-//        return ResponseEntity.ok(brands);
-//    }
 
 
     @PutMapping("/updateProduct/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable String id, @RequestBody ProductDTO product) throws IllegalAccessException {
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody ProductDTO product) {
+        try {
+            productService.updateProduct(id, product);
+            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
     }
     @GetMapping("/getProductsByCategory/")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getProductsByCategory(@RequestParam String categoryName) {
-        ProductCategory productCategory = productCategoryService.findByCategoryName(categoryName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
-        List<ProductDTO> products = productService.getProductsByCategory(productCategory);
-        return ResponseEntity.ok(products);
+        try {
+            ProductCategory category = productCategoryService.findByCategoryName(categoryName)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+            List<ProductDTO> products = productService.getProductsByCategory(category);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
     }
 
     @GetMapping("/getProductsByBrand/")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getProductsByBrand(@RequestParam String brandName) {
-        Brand brand = brandService.findBrandByName(brandName)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Brand not found"));
-        List<ProductDTO> products = productService.getProductsByBrand(brand);
-        return ResponseEntity.ok(products);
+        try {
+            Brand brand = brandService.findBrandByName(brandName)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Brand not found"));
+            List<ProductDTO> products = productService.getProductsByBrand(brand);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
     }
 
     @GetMapping("/getProductById/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable String id) throws IllegalAccessException {
-        ProductDTO product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<?> getProductById(@PathVariable String id) throws IllegalAccessException {
+        try {
+            ProductDTO product = productService.getProductById(id);
+            return ResponseEntity.ok(product);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
     }
 
     @GetMapping("/getProductsByPriceRange/")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getProductsByPriceRange(@RequestParam Double min, @RequestParam Double max) {
-        List<ProductDTO> products = productService.getProductsByPriceRange(min, max);
-        return ResponseEntity.ok(products);
+        try {
+            List<ProductDTO> products = productService.getProductsByPriceRange(min, max);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
     }
 
     @GetMapping("/getSalesProducts")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ProductDTO>> getSalesProducts() {
-        List<ProductDTO> products = productService.getSalesProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<?> getSalesProducts() {
+        try {
+            List<ProductDTO> products = productService.getSalesProducts();
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
     }
 
 }

@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,21 +13,20 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.dto.AddressDTO
-import com.android.frontend.view_models.AddressViewModel
+import com.android.frontend.view_models.user.AddressViewModel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.ui.unit.dp
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
@@ -90,7 +88,17 @@ fun ShippingAddressesContent(
                     Text(
                         text = stringResource(id = R.string.shipping_addresses),
                     )
-                }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.ProfileMenu.route)
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                },
             )
         }
     ) { innerPadding ->
@@ -102,6 +110,26 @@ fun ShippingAddressesContent(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.AddAddressPage.route)
+                },
+                modifier = Modifier.padding(16.dp),
+                colors = ButtonColorScheme.buttonColors()
+            ) {
+                Text(text = stringResource(id = R.string.add_address))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (addresses.isEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.no_shipping_addresses),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
             for (address in addresses) {
                 ShippingAddressCard(
                     shippingAddress = address,

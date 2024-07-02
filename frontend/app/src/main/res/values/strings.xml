@@ -105,4 +105,11 @@
     <string name="add_category">Add category</string>
     <string name="add_brand">Add brand</string>
     <string name="add_product">Add Product</string>
+    <string name="brand">Brand</string>
+    <string name="category">Category</string>
+    <string name="back">Back</string>
+    <string name="products">Products</string>
+    <string name="categories">Categories</string>
+    <string name="brands">Brands</string>
+    <string name="login_as_admin">Log in as administrator</string>
 </resources>

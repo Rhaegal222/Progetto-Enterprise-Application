@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.DpSize
@@ -34,11 +36,11 @@ import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
-import com.android.frontend.view_models.LoginViewModel
-import com.android.frontend.view_models.SignUpViewModel
+import com.android.frontend.view_models.authentication.LoginViewModel
+import com.android.frontend.view_models.authentication.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun SignupPage(navController: NavHostController) {
 
@@ -54,6 +56,13 @@ fun SignupPage(navController: NavHostController) {
             width = LocalConfiguration.current.screenWidthDp.dp,
             height = LocalConfiguration.current.screenHeightDp.dp
         )
+    }
+
+    val allFielsValid by derivedStateOf {
+        signUpViewModel.firstname.isNotEmpty() &&
+        signUpViewModel.lastname.isNotEmpty() &&
+        signUpViewModel.email.isNotEmpty() &&
+        signUpViewModel.password.isNotEmpty()
     }
 
     Scaffold (
@@ -103,7 +112,7 @@ fun SignupPage(navController: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Column(
                 modifier = Modifier
@@ -117,10 +126,15 @@ fun SignupPage(navController: NavHostController) {
                     label = { Text(stringResource(id = R.string.firstname)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldColorScheme.colors()
-                )
+                    colors = OutlinedTextFieldColorScheme.colors(),
+                    keyboardOptions =
+                        if (allFielsValid)
+                            KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                        else
+                            KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 OutlinedTextField(
                     value = signUpViewModel.lastname,
@@ -128,10 +142,15 @@ fun SignupPage(navController: NavHostController) {
                     label = { Text(stringResource(id = R.string.lastname)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldColorScheme.colors()
+                    colors = OutlinedTextFieldColorScheme.colors(),
+                    keyboardOptions =
+                    if (allFielsValid)
+                        KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                    else
+                        KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 OutlinedTextField(
                     value = signUpViewModel.email,
@@ -139,10 +158,15 @@ fun SignupPage(navController: NavHostController) {
                     label = { Text(stringResource(id = R.string.email)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldColorScheme.colors()
+                    colors = OutlinedTextFieldColorScheme.colors(),
+                    keyboardOptions =
+                    if (allFielsValid)
+                        KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                    else
+                        KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
                 OutlinedTextField(
                     value = signUpViewModel.password,
@@ -159,10 +183,15 @@ fun SignupPage(navController: NavHostController) {
                     singleLine = true,
                     visualTransformation = if (isObscured) PasswordVisualTransformation() else VisualTransformation.None,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldColorScheme.colors()
+                    colors = OutlinedTextFieldColorScheme.colors(),
+                    keyboardOptions =
+                    if (allFielsValid)
+                        KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
+                    else
+                        KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
                     onClick = {
@@ -183,19 +212,18 @@ fun SignupPage(navController: NavHostController) {
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.width(200.dp),
                     colors = ButtonColorScheme.buttonColors()
                 ) {
                     Text(stringResource(id = R.string.sign_up).uppercase())
                 }
-
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(stringResource(id = R.string.or).uppercase())
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             OutlinedButton(
                 onClick = {
@@ -208,7 +236,7 @@ fun SignupPage(navController: NavHostController) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.width(200.dp),
                 colors = OutlinedButtonColorScheme.outlinedButtonColors()
             ) {
                 Icon(

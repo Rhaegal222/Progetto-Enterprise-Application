@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,36 +29,43 @@ import com.android.frontend.dto.ProductDTO
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
-import com.android.frontend.view_models.CartViewModel
-import com.android.frontend.view_models.ProductViewModel
+import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.ProductViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
-
     val context = LocalContext.current
-
-    val products = productViewModel.productsLiveData.observeAsState().value
+    val products by productViewModel.productsLiveData.observeAsState()
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         productViewModel.fetchAllProducts(context)
+        isLoading = false
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("All Products") },
             )
         },
         content = { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel)
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    items(products ?: emptyList()) { productDTO ->
+                        ProductsCard(productDTO, navController, productViewModel, cartViewModel)
+                    }
                 }
             }
         }
@@ -79,7 +86,8 @@ fun ProductsCard(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .padding(12.dp)
-            .width(174.dp)
+            .fillMaxWidth()
+            .height(250.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
                 val route = if (productDTO.onSale) {
@@ -105,12 +113,14 @@ fun ProductsCard(
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = productDTO.title,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                maxLines = 2,
+                modifier = Modifier.heightIn(min = 40.dp)
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -121,7 +131,7 @@ fun ProductsCard(
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             if (productDTO.onSale && productDTO.discountedPrice != null) {
                 Row(

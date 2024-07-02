@@ -26,14 +26,14 @@ import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.Suggestion
-import com.android.frontend.view_models.HomeViewModel
+import com.android.frontend.view_models.user.HomeViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = viewModel()) {

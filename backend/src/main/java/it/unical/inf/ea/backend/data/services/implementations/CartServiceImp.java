@@ -1,5 +1,6 @@
 package it.unical.inf.ea.backend.data.services.implementations;
 
+import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.data.dao.CartDao;
 import it.unical.inf.ea.backend.data.dao.CartItemDao;
 import it.unical.inf.ea.backend.data.entities.Cart;
@@ -12,6 +13,7 @@ import it.unical.inf.ea.backend.dto.CartItemDTO;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.dto.creation.CartCreateDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,20 +23,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collections;
 
+@RequiredArgsConstructor
 @Service
 public class CartServiceImp implements CartService {
 
-    @Autowired
-    private CartDao cartDao;
+    private final CartDao cartDao;
 
-    @Autowired
-    private CartItemDao cartItemDao;
+    private final CartItemDao cartItemDao;
 
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    @Autowired
-    private ProductDao productDao;
+    private final ProductDao productDao;
+
+    private final JwtContextUtils jwtContextUtils;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -53,8 +55,10 @@ public class CartServiceImp implements CartService {
     @Override
     @Transactional
     public CartDTO addProductToCart(CartCreateDTO cartCreateDTO) {
-        User user = userDao.findById(cartCreateDTO.getUserId())
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        User user = userDao.findById(loggedUser.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         Product product = productDao.findById(cartCreateDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 

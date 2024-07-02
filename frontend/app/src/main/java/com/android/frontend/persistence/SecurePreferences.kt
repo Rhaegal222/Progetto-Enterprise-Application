@@ -106,11 +106,11 @@ object SecurePreferences {
         }
     }
 
-    fun getUser(context: Context): UserDTO? {
+    fun getUser(context: Context): UserBasicDTO? {
         val sharedPreferences = getSharedPreferences(context)
         val userJson = sharedPreferences.getString(USER_KEY, null)
         return if (userJson != null) {
-            Gson().fromJson(userJson, UserDTO::class.java)
+            Gson().fromJson(userJson, UserBasicDTO::class.java)
         } else {
             null
         }

@@ -35,7 +35,7 @@ public class AddressServiceImp implements AddressService {
             }
 
             Address address = modelMapper.map(addressCreateDTO, Address.class);
-            address.setOwnerUser(loggedUser);
+            address.setUser(loggedUser);
 
             if (address.getIsDefault()) {
                 for (Address existingAddress : loggedUser.getAddresses()) {
@@ -61,7 +61,7 @@ public class AddressServiceImp implements AddressService {
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !address.getOwnerUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !address.getUser().getId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot update address");
         }
 
@@ -92,7 +92,7 @@ public class AddressServiceImp implements AddressService {
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !address.getOwnerUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !address.getUser().getId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot set default address");
         }
 
@@ -112,7 +112,7 @@ public class AddressServiceImp implements AddressService {
         try {
             Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if (loggedUser.getRole().equals(UserRole.USER) && !address.getOwnerUser().getId().equals(loggedUser.getId())) {
+            if (loggedUser.getRole().equals(UserRole.USER) && !address.getUser().getId().equals(loggedUser.getId())) {
                 throw new IllegalAccessException("Cannot delete address");
             }
             addressDao.deleteById(id);
@@ -126,7 +126,7 @@ public class AddressServiceImp implements AddressService {
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(address.getOwnerUser().getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(address.getUser().getId())) {
             throw new IllegalAccessException("User cannot get address");
         }
 

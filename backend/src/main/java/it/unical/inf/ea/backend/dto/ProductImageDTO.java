@@ -15,14 +15,4 @@ public class ProductImageDTO {
 
     @NotNull
     private String urlPhoto;
-
-    /*
-    @JsonSetter
-    public void setUrlPhoto(String url) {
-        if(url != null && !url.startsWith("http"))
-            this.urlPhoto = Constants.BASE_PATH + url;
-        else
-            this.urlPhoto = url;
-    }
-     */
 }

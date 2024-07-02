@@ -105,4 +105,11 @@
     <string name="add_category">Aggiungi categoria</string>
     <string name="add_brand">Aggiungi marca</string>
     <string name="add_product">Aggiungi prodotto</string>
+    <string name="brand">Marca</string>
+    <string name="category">Categoria</string>
+    <string name="back">Indietro</string>
+    <string name="products">Prodotti</string>
+    <string name="categories">Categorie</string>
+    <string name="brands">Marche</string>
+    <string name="login_as_admin">Accedi come amministratore</string>
 </resources>

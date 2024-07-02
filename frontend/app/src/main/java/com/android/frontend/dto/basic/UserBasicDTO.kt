@@ -9,5 +9,6 @@ data class UserBasicDTO (
     val firstName: kotlin.String,
     val photoProfile: UserImageDTO? = null,
     val status: kotlin.String? = null,
+    val role: kotlin.String? = null,
 ) {
 }

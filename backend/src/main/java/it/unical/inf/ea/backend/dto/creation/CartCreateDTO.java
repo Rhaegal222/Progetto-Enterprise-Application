@@ -9,8 +9,6 @@ import lombok.*;
 @Builder
 public class CartCreateDTO {
 
-    @NotNull
-    private String userId;
 
     @NotNull
     private String productId;

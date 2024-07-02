@@ -7,11 +7,14 @@ import androidx.navigation.compose.composable
 import com.android.frontend.view.screen.AuthenticationScreen
 import com.android.frontend.view.screen.MainScreen
 import com.android.frontend.view.screen.RootScreen
+import com.android.frontend.view.screen.AdminScreen
+
 
 object Graph {
     const val AUTHENTICATION = "authentication"
     const val MAIN = "main"
     const val ROOT = "root"
+    const val ADMIN = "admin"
 }
 
 @Composable
@@ -20,5 +23,6 @@ fun RootGraph(navController: NavHostController) {
         composable(Graph.ROOT) { RootScreen(navController) }
         composable(Graph.AUTHENTICATION) { AuthenticationScreen() }
         composable(Graph.MAIN) { MainScreen() }
+        composable(Graph.ADMIN) { AdminScreen() }
     }
 }

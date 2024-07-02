@@ -27,7 +27,7 @@ public class AddressController {
     public ResponseEntity<?> addShippingAddress(@Valid @RequestBody AddressCreateDTO addressCreateDTO) {
         try {
             AddressDTO createdAddress = addressService.createAddress(addressCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdAddress);
+            return ResponseEntity.ok(createdAddress);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
@@ -48,7 +48,7 @@ public class AddressController {
         try {
             AddressDTO updatedAddress = addressService.updateAddress(id, addressDTO);
             return ResponseEntity.ok(updatedAddress);
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
@@ -68,7 +68,7 @@ public class AddressController {
         try {
             return ResponseEntity.ok(addressService.getAddressById(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
@@ -77,7 +77,7 @@ public class AddressController {
         try {
             return ResponseEntity.ok(addressService.getAllAddresses());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 }

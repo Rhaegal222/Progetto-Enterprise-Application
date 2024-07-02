@@ -1,6 +1,8 @@
 package com.android.frontend.view.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -20,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view_models.CartViewModel
+import com.android.frontend.view_models.user.CartViewModel
 
 @Composable
 fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
@@ -35,8 +37,12 @@ fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
         cartViewModel.loadCart(context)
     }
 
-    BottomAppBar {
-        NavigationBar {
+    BottomAppBar(
+        modifier = Modifier.fillMaxWidth().height(60.dp)
+    ) {
+        NavigationBar(
+            modifier = Modifier.fillMaxWidth().height(60.dp),
+        ) {
             NavigationBarItem(
                 selected = currentNavigation.value?.destination?.route == Navigation.HomePage.route,
                 onClick = { navController.navigate(Navigation.HomePage.route) },

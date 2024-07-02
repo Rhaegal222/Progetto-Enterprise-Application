@@ -28,7 +28,8 @@ public class BrandServiceImpl implements BrandService {
         brand.setName(brandDTO.getName());
         brand.setDescription(brandDTO.getDescription());
         Brand newBrand = brandDao.save(brand);
-        modelMapper.map(newBrand, BrandDTO.class);}
+        modelMapper.map(newBrand, BrandDTO.class);
+    }
 
     @Override
     public void deleteBrand(Integer id) {

@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.dto.basics;
 
 import it.unical.inf.ea.backend.dto.UserImageDTO;
+import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -25,5 +26,7 @@ public class UserBasicDTO {
     private UserImageDTO photoProfile;
 
     private UserStatus status;
+
+    private UserRole role;
 
 }

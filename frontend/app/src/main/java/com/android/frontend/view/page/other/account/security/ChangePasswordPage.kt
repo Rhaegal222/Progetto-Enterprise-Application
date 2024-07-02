@@ -26,7 +26,7 @@ import com.android.frontend.MainActivity
 import com.android.frontend.R
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
-import com.android.frontend.view_models.ChangePasswordViewModel
+import com.android.frontend.view_models.user.ChangePasswordViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)

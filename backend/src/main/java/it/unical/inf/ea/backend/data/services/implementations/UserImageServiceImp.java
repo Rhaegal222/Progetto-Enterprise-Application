@@ -50,7 +50,7 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public UserImageDTO savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException {
+    public void savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (loggedUser.getPhotoProfile() != null) {
             throw new IllegalAccessException("Cannot upload more photos, replace the previous photo.");
@@ -67,7 +67,7 @@ public class UserImageServiceImp implements UserImageService {
         FileUploadUtil.saveFile(localStorageDir, fileName, multipartFile);
         userImage = userImageDao.save(userImage);
 
-        return modelMapper.map(userImage, UserImageDTO.class);
+        modelMapper.map(userImage, UserImageDTO.class);
     }
 
     @Override

@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.frontend.dto.CartItemDTO
-import com.android.frontend.view_models.CartViewModel
+import com.android.frontend.view_models.user.CartViewModel
 import java.math.BigDecimal
 
 @Composable
@@ -29,7 +29,7 @@ fun CartPage(cartViewModel: CartViewModel) {
     }
 
     cart?.let {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(it.cartItems) { cartItem ->
                     CartItemCard(cartItem, cartViewModel, context)

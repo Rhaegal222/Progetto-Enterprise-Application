@@ -8,6 +8,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,7 +27,7 @@ import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view.component.PaymentCard
-import com.android.frontend.view_models.PaymentViewModel
+import com.android.frontend.view_models.user.PaymentViewModel
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -93,7 +94,17 @@ fun PaymentMethodsContent(
                     Text(
                         text = stringResource(id = R.string.payment_methods)
                     )
-                }
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.ProfileMenu.route)
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                },
             )
         },
         floatingActionButton = {

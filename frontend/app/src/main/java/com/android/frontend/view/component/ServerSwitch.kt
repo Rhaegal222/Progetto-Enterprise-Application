@@ -1,16 +1,13 @@
-package com.android.frontend.view.page.authentication
+package com.android.frontend.view.component
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,14 +27,13 @@ fun ServerSwitch() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Switch(
-            modifier = Modifier.size(40.dp),
             checked = isDevelopment.value,
             onCheckedChange = { isChecked ->
                 isDevelopment.value = isChecked
                 CurrentDataUtils.baseUrl = if (isChecked) {
                     "http://10.0.2.2:8080/"
                 } else {
-                    "https://192.168.160.200:8080/"
+                    "http://192.168.169.200:8080/"
                 }
                 Log.d("DEBUG", "BaseUrl changed to: ${CurrentDataUtils.baseUrl}")
             }
@@ -49,7 +45,7 @@ fun ServerSwitch() {
             text = if (isDevelopment.value) "Localhost" else "Gaetano",
             modifier = Modifier.width(100.dp),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp
+            fontSize = 18.sp
         )
     }
 }
