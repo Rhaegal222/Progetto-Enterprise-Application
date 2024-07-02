@@ -124,14 +124,17 @@ public class UserServiceImp implements UserService{
     public void  deleteUser(String id) {
         try{
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if(loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(id))
+            if(loggedUser.getRole().equals(UserRole.USER))
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized Request");
 
-            loggedUser.setStatus(UserStatus.CANCELLED);
-            String newUsername = "deletedUser_" + loggedUser.getId();
-            loggedUser.setUsername(newUsername);
+            User user = userDao.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-            userDao.save(loggedUser);
+            user.setStatus(UserStatus.CANCELLED);
+            String newUsername = "deletedUser_" + user.getId();
+            user.setUsername(newUsername);
+
+            userDao.save(user);
         } catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error deleting user", e);
         }

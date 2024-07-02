@@ -68,9 +68,14 @@ class ProductCategoryBrandViewModel() : ViewModel() {
     fun fetchAllData(context: Context) {
         viewModelScope.launch {
             isLoading.value = true
-            fetchAllBrands(context)
-            fetchAllCategories(context)
-            isLoading.value = false
+            try {
+                fetchAllBrands(context)
+                fetchAllCategories(context)
+            } catch (e: Exception) {
+                errorMessage.value = "Failed to load data"
+            } finally {
+                isLoading.value = false
+            }
         }
     }
 
@@ -308,6 +313,7 @@ class ProductCategoryBrandViewModel() : ViewModel() {
         }
     }
 
+
     private fun handleLogout(context: Context) {
         TokenManager.getInstance().clearTokens(context)
         context.startActivity(Intent(context, MainActivity::class.java).apply {
@@ -360,6 +366,40 @@ class ProductCategoryBrandViewModel() : ViewModel() {
                 Log.e("DEBUG", "${getCurrentStackTrace()},Image delete error: ${t.message}")
             }
         })
+    }
+
+    private suspend fun fetchImage(context: Context, type: String, folderName: String, fileName: String): ResponseBody? {
+        return withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+                val productImageService = RetrofitInstance.getProductImageApi(context)
+                val call = productImageService.getImage(type, folderName, fileName)
+                call.enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        if (response.isSuccessful) {
+                            continuation.resume(response.body())
+                        } else {
+                            continuation.resume(null)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        continuation.resume(null)
+                    }
+                })
+            }
+        }
+    }
+
+    private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
+        return withContext(Dispatchers.IO) {
+            val tempFile = File.createTempFile("product", "jpg", context.cacheDir)
+            val inputStream = responseBody.byteStream()
+            val outputStream = FileOutputStream(tempFile)
+            inputStream.copyTo(outputStream)
+            inputStream.close()
+            outputStream.close()
+            tempFile
+        }
     }
 
 

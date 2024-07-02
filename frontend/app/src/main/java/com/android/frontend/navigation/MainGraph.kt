@@ -26,9 +26,12 @@ import com.android.frontend.view.page.product.ProductDetailsPage
 import com.android.frontend.view.page.product.SaleProductDetailsPage
 import com.android.frontend.view.page.product.SalesProductsPage
 import com.android.frontend.view.page.profile.AddAddressPage
+import com.android.frontend.view.page.profile.AddWishlistPage
 import com.android.frontend.view.page.profile.PaymentMethodsPage
 import com.android.frontend.view.page.profile.ShippingAddressesPage
+import com.android.frontend.view.page.wishlist.AllWishlistsPage
 import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.WishlistViewModel
 
 @Composable
 fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, modifier: Modifier = Modifier) {
@@ -54,6 +57,8 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
         composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
         composable(Navigation.SaleProductDetailsPage.route) { SaleProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.AllWishlistsPage.route) { AllWishlistsPage(navController, WishlistViewModel()) }
+        composable(Navigation.AddWishlistPage.route) { AddWishlistPage(navController, WishlistViewModel()) }
         composable(Navigation.CheckoutPage.route) { CheckoutPage(cartViewModel = cartViewModel, navController = navController) }
     }
 }

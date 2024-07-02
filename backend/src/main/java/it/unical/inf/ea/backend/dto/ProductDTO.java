@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import it.unical.inf.ea.backend.data.entities.ProductImage;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -52,7 +53,7 @@ public class ProductDTO {
     @NotNull
     private ProductCategoryDTO productCategory;
 
-    private String imageUrl;
+    private ProductImage photoProduct;
 
     @NotNull
     private boolean onSale;

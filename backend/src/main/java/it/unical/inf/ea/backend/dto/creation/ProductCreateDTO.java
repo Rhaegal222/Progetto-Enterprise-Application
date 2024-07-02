@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.dto.creation;
 
 
+import it.unical.inf.ea.backend.data.entities.ProductImage;
 import it.unical.inf.ea.backend.dto.*;
 import it.unical.inf.ea.backend.dto.enums.Availability;
 import jakarta.validation.constraints.NotNull;
@@ -50,7 +51,7 @@ public class ProductCreateDTO {
     @NotNull
     private ProductCategoryDTO productCategory;
 
-    private String imageUrl;
+    private ProductImage photoProduct;
 
     @NotNull
     private boolean onSale;
