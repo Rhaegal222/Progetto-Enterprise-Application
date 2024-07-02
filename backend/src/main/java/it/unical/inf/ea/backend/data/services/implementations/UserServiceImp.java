@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static it.unical.inf.ea.backend.config.FileUploadUtil.saveBufferedImage;

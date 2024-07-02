@@ -20,24 +20,12 @@ public class OrderDTO {
     private String id;
 
     @NotNull
-    private OrderState state;
-
-    @Past
-    private LocalDateTime orderDate;
-
-    @Past
-    private LocalDateTime orderUpdateDate;
-
-    @NotNull
-    private ProductBasicDTO product;
+    private CartDTO cart;
 
     @NotNull
     private UserBasicDTO user;
 
-
-    private DeliveryDTO delivery;
-
     private AddressDTO deliveryAddress;
 
-    private TransactionDTO transaction;
+    private PaymentMethodDTO paymentMethod;
 }

@@ -1,5 +1,6 @@
 package it.unical.inf.ea.backend.dto.basics;
 
+import it.unical.inf.ea.backend.dto.CartDTO;
 import it.unical.inf.ea.backend.dto.enums.OrderState;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -18,15 +19,6 @@ public class OrderBasicDTO {
     private String id;
 
     @NotNull
-    private OrderState state;
-
-    @Past
-    private LocalDateTime orderDate;
-
-    @Past
-    private LocalDateTime orderUpdateDate;
-
-    @NotNull
-    private ProductBasicDTO product;
+    private CartDTO cart;
 
 }
