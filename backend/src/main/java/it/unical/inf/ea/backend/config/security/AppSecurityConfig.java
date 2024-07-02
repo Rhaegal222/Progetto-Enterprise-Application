@@ -70,9 +70,8 @@ public class AppSecurityConfig {
 
                         // Wishlist
                         .requestMatchers(HttpMethod.POST, "/api/v1/wishList/createWishlist").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/wishList/getAllWishlists").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/wishList/getAllWishlists", "/api/v1/wishList/getWishlistById").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/wishList/deleteWishlist").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/wishList/getWishlistById").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/wishList/addProductToWishlist").authenticated()
 
                         // PAYMENT METHOD

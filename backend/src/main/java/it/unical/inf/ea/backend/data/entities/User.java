@@ -80,9 +80,6 @@ public class User implements UserDetails {
         return null;
     }
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wishlist> wishlists;
-
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 

@@ -40,8 +40,9 @@ public class WishlistServiceImpl implements WishlistService {
                 throw new IllegalStateException("Logged user cannot be null");
             }
 
-            Wishlist wishlist = modelMapper.map(wishlistCreateDTO, Wishlist.class);
+            Wishlist wishlist = mapToEntity(wishlistCreateDTO);
             wishlist.setUser(loggedUser);
+
             wishListDao.save(wishlist);
 
         } catch (IllegalStateException e) {
@@ -52,10 +53,8 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public List<WishlistDTO> getAllWishlists() {
-        List<Wishlist> wishlists = wishListDao.findAll();
-        return wishlists.stream()
-                .map(product -> modelMapper.map(wishlists, WishlistDTO.class))
-                .collect(Collectors.toList());
+        List<Wishlist> wishlist = wishListDao.findAll();
+        return wishlist.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -104,9 +103,11 @@ public class WishlistServiceImpl implements WishlistService {
                  throw new IllegalArgumentException("Product is already in this wishlist.");
             }
         }
-
         wishListDao.save(wishlist);
     }
+
+    public Wishlist mapToEntity(WishlistCreateDTO wishlistCreateDTO) { return modelMapper.map(wishlistCreateDTO, Wishlist.class);}
+    public WishlistDTO mapToDto(Wishlist wishlist) { return modelMapper.map(wishlist, WishlistDTO.class); }
 }
 
 

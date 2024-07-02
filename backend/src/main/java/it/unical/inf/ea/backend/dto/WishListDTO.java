@@ -11,6 +11,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 public class WishlistDTO {
+
     @NonNull
     private Long id;
 
