@@ -168,6 +168,8 @@ class GoogleAuthentication(private val context: Context) {
             override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                 if (response.isSuccessful) {
                     val tokenMap = response.body()!!
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Map received: $tokenMap")
+                    val pictureUrl = tokenMap["pictureUrl"].toString()
                     onResult(tokenMap)
                     refreshAccessToken()
                 } else {
