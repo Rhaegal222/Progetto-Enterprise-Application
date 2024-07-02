@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.android.frontend.view.page.authentication.*
+import com.android.frontend.view.pages.authentication.*
 
 @Composable
 fun AuthGraph(navController: NavHostController) {
