@@ -141,3 +141,10 @@ frontend/local.properties
 .idea/dataSources.local.xml
 .vscode/settings.json
 
+backend/.idea/backend.iml
+backend/.idea/dataSources.xml
+backend/.idea/misc.xml
+backend/.idea/modules.xml
+backend/.idea/backend.iml
+backend/.idea/dataSources.xml
+backend/.idea/misc.xml

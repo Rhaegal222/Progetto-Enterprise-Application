@@ -3,14 +3,15 @@ package com.android.frontend.view.page.product
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
@@ -51,13 +52,13 @@ fun SalesProductsPage(navController: NavController, productViewModel: ProductVie
             )
         },
         content = { innerPadding ->
-            LazyColumn(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    //SalesProductCard(productDTO, navController, productViewModel, cartViewModel)
                     ProductsCard(productDTO, navController, productViewModel, cartViewModel)
                 }
             }
