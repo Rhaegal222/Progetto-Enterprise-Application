@@ -11,6 +11,7 @@ import com.android.frontend.view.admin.AdminMenu
 import com.android.frontend.view.admin.BrandPage
 import com.android.frontend.view.admin.CategoryPage
 import com.android.frontend.view.admin.ProductPage
+import com.android.frontend.view.admin.UserPage
 
 @Composable
 fun AdminGraph(navController: NavHostController) {
@@ -22,5 +23,6 @@ fun AdminGraph(navController: NavHostController) {
         composable(Navigation.CategoryPage.route) { CategoryPage(navController) }
         composable(Navigation.BrandPage.route) { BrandPage(navController) }
         composable(Navigation.ProductPage.route) { ProductPage(navController) }
+        composable(Navigation.UserPage.route) { UserPage(navController) }
     }
 }

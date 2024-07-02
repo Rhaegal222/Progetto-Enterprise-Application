@@ -112,4 +112,5 @@
     <string name="categories">Catégories</string>
     <string name="brands">Marques</string>
     <string name="login_as_admin">Connectez-vous en tant qu\'administrateur</string>
+    <string name="users">Utilisateurs</string>
 </resources>

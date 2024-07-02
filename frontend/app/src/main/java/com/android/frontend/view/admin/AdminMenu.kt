@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AddBusiness
 import androidx.compose.material.icons.filled.Addchart
 import androidx.compose.material.icons.filled.BrandingWatermark
@@ -37,7 +38,7 @@ fun AdminMenu(navController: NavController) {
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(16.dp)
         )
-
+        AdminMenuItem(navController, Icons.Default.AccountBox, R.string.users)
         AdminMenuItem(navController, Icons.Default.LocalGroceryStore, R.string.products)
         AdminMenuItem(navController, Icons.Default.Category , R.string.categories )
         AdminMenuItem(navController, Icons.Default.BrandingWatermark , R.string.brands )
@@ -62,6 +63,7 @@ fun AdminMenuItem(navController: NavController, icon: ImageVector, textResId: In
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     }
+                    R.string.users -> navController.navigate(Navigation.UserPage.route) // Correct route name
                     R.string.products -> navController.navigate(Navigation.ProductPage.route) // Correct route name
                     R.string.categories -> navController.navigate(Navigation.CategoryPage.route) // Correct route name
                     R.string.brands -> navController.navigate(Navigation.BrandPage.route) // Correct route name

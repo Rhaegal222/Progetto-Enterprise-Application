@@ -93,9 +93,10 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/cart/getCartByUserId/{userId}").authenticated()
 
                         // USER
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/logout", "api/v1/users/changePassword").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/logout", "api/v1/users/changePassword", "/api/v1/users/changeRole/{userId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/user/getUserById", "/api/v1/user/getUserByUsername", "/api/v1/user/getUserByEmail",
-                                "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken").authenticated()
+                                "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken", "/api/v1/users/getAllUsers").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/deleteUser/{id}").authenticated()
 
 
                         // Richieste dove non è richiesta l'autenticazione

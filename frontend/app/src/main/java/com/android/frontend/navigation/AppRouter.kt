@@ -50,4 +50,5 @@ sealed class Navigation(val route: String) {
     object CategoryPage : Navigation(route = "category_page")
     object BrandPage : Navigation(route = "brand_page")
     object ProductPage : Navigation(route = "product_page")
+    object UserPage : Navigation(route = "user_page")
 }
