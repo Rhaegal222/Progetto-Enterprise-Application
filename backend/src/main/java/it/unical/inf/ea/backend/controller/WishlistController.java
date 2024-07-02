@@ -45,10 +45,10 @@ public class WishlistController {
         }
     }
 
-    @GetMapping("/getAllWishlists")
+    @GetMapping("/getAllLoggedUserWishlists")
     public ResponseEntity<?> getAllWishlists(){
         try {
-            return ResponseEntity.ok(wishlistService.getAllWishlists());
+            return ResponseEntity.ok(wishlistService.getAllLoggedUserWishlists());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

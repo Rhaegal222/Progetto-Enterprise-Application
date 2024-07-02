@@ -41,7 +41,7 @@ public class WishlistServiceImpl implements WishlistService {
             }
 
             Wishlist wishlist = mapToEntity(wishlistCreateDTO);
-            wishlist.setUser(loggedUser);
+            wishlist.setUserId(loggedUser.getId());
 
             wishListDao.save(wishlist);
 
@@ -52,9 +52,13 @@ public class WishlistServiceImpl implements WishlistService {
 
 
     @Override
-    public List<WishlistDTO> getAllWishlists() {
-        List<Wishlist> wishlist = wishListDao.findAll();
-        return wishlist.stream().map(this::mapToDto).collect(Collectors.toList());
+    public List<WishlistDTO> getAllLoggedUserWishlists() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Logged user cannot be null");
+        }
+        List<Wishlist> wishlists = wishListDao.findAllByUserId(loggedUser.getId());
+        return wishlists.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -68,14 +72,12 @@ public class WishlistServiceImpl implements WishlistService {
         try {
             Wishlist wishlist = wishListDao.findById(id).orElseThrow();
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().getId().equals(loggedUser.getId()))
+            if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUserId().equals(loggedUser.getId()))
                 throw new IllegalAccessException("User cannot delete wishlist");
             wishListDao.deleteById(id);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     public void addProductsToWishlist(Set<String> productIds, Long wishlistId) throws IllegalAccessException, EntityNotFoundException, IllegalStateException {
@@ -84,7 +86,7 @@ public class WishlistServiceImpl implements WishlistService {
             throw new IllegalStateException("Logged user cannot be null");
         }
         Wishlist wishlist = wishListDao.findById(String.valueOf(wishlistId)).orElseThrow();
-        if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUserId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot modify this wishlist.");
         }
         Set<Product> productsToAdd = new HashSet<>(); // Use a Set to avoid duplicates
@@ -108,7 +110,7 @@ public class WishlistServiceImpl implements WishlistService {
             throw new IllegalStateException("Logged user cannot be null");
         }
         Wishlist wishlist = wishListDao.findById(String.valueOf(wishlistId)).orElseThrow();
-        if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUserId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot modify this wishlist.");
         }
         Set<Product> productsToRemove = new HashSet<>(); // Use a Set to avoid duplicates

@@ -10,7 +10,7 @@ import java.util.Set;
 @Service
 public interface WishlistService {
     void createWishlist(WishlistCreateDTO wishListCreateDTO) throws IllegalAccessException;
-    List<WishlistDTO> getAllWishlists();
+    List<WishlistDTO> getAllLoggedUserWishlists();
     WishlistDTO getWishlistById(Long id);
     void deleteWishlist(String id) throws IllegalAccessException;
     void addProductsToWishlist(Set<String> productIds, Long wishlistId) throws IllegalAccessException;
