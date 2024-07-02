@@ -21,6 +21,7 @@ import com.android.frontend.view.page.other.ThemePage
 import com.android.frontend.view.page.other.CountryLanguagePage
 import com.android.frontend.view.page.product.AllProductsPage
 import com.android.frontend.view.page.product.CartPage
+import com.android.frontend.view.page.product.CheckoutPage
 import com.android.frontend.view.page.product.ProductDetailsPage
 import com.android.frontend.view.page.product.SaleProductDetailsPage
 import com.android.frontend.view.page.product.SalesProductsPage
@@ -35,7 +36,7 @@ import com.android.frontend.view_models.user.WishlistViewModel
 fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Navigation.HomePage.route, modifier = modifier) {
         composable(Navigation.HomePage.route) { HomePage(navController) }
-        composable(Navigation.CartPage.route) { CartPage(cartViewModel = cartViewModel) }
+        composable(Navigation.CartPage.route) { CartPage(cartViewModel = cartViewModel, navController = navController) }
         composable(Navigation.AccountPage.route) { PersonalInformationPage(navController) }
         composable(Navigation.AboutPage.route) { AboutPage(navController) }
         composable(Navigation.OtherMenu.route) { OtherMenu(navController) }
@@ -50,11 +51,12 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
         composable(Navigation.ThemePage.route) { ThemePage(navController) }
         composable(Navigation.CountryLanguagePage.route) { CountryLanguagePage(navController) }
-        composable(Navigation.ShippingAddressesPage.route) { ShippingAddressesPage(navController)  }
-        composable(Navigation.AddAddressPage.route) { AddAddressPage(navController)  }
+        composable(Navigation.ShippingAddressesPage.route) { ShippingAddressesPage(navController) }
+        composable(Navigation.AddAddressPage.route) { AddAddressPage(navController) }
         composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
         composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
         composable(Navigation.SaleProductDetailsPage.route) { SaleProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
         composable(Navigation.AllWishlistsPage.route) { AllWishlistsPage(navController, WishlistViewModel()) }
+        composable(Navigation.CheckoutPage.route) { CheckoutPage(cartViewModel = cartViewModel, navController = navController) }
     }
 }

@@ -2,6 +2,7 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
+import it.unical.inf.ea.backend.config.FileUploadUtil;
 import it.unical.inf.ea.backend.config.security.*;
 import it.unical.inf.ea.backend.data.dao.CartDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
@@ -35,10 +36,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.*;
 
+import static it.unical.inf.ea.backend.config.FileUploadUtil.saveBufferedImage;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -60,6 +68,7 @@ public class UserServiceImp implements UserService{
     private final EmailService emailService;
     private final Oauth2GoogleValidation oauth2GoogleValidation;
 
+    private static final String userDir = System.getProperty("user.dir") + "/images/user_photos/";
 
     public UserDTO createUser(User user) {
         user.setStatus(UserStatus.ACTIVE);
@@ -195,18 +204,21 @@ public class UserServiceImp implements UserService{
         return new Pair<>(true, mapToDto(existUser));
     }
 
+    private void retrieveProfileImage(String url, String userId) throws IOException, IllegalAccessException {
+
+        URL imageUrl = new URL(url);
+        BufferedImage image = ImageIO.read(imageUrl);
+
+        saveBufferedImage(userDir + userId, "photoProfile.png", image);
+    }
+
     @Override
     public Map<String, String> googleAuth(String code) throws Exception {
         try {
-
             Map<String, String> userInfo = oauth2GoogleValidation.validate(code);
             Pair<Boolean, UserDTO> pair = processOAuthPostGoogleLogin(userInfo);
 
-            if(!pair.getUserExists()) {
-                UserImage userImage = new UserImage();
-                userImage.setUrlPhoto(userInfo.get("pictureUrl"));
-                userImage.setUser(mapToEntity(pair.getUser()));
-            }
+            retrieveProfileImage(userInfo.get("pictureUrl"), pair.getUser().getId());
 
             return authenticateUser(pair.getUser().getUsername(), Constants.STANDARD_GOOGLE_ACCOUNT_PASSWORD, Provider.GOOGLE);
         }
@@ -218,12 +230,15 @@ public class UserServiceImp implements UserService{
 
     @Override
     public Map<String, String> authenticateUser(String username, String password, Provider provider) throws JOSEException {
+
         User u = userDao.findByUsername(username);
+
         if(!provider.equals(Provider.GOOGLE) && password.equals(Constants.STANDARD_GOOGLE_ACCOUNT_PASSWORD)
                 && u.getProvider().equals(Provider.GOOGLE))
             throw new IllegalArgumentException("You cannot login with password with a google linked account");
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
         String accessToken = tokenStore.createAccessToken(Map.of("username", username, "role", u.getAuthorities().toString()));
         String refreshToken = tokenStore.createRefreshToken(username);
         return Map.of("accessToken", "Bearer "+accessToken, "refreshToken", "Bearer "+refreshToken);
