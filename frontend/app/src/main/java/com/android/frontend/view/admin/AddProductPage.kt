@@ -50,6 +50,8 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
     val onSale by viewModel.onSale.observeAsState(false)
     val discountedPrice by viewModel.discountedPrice.observeAsState(BigDecimal.ZERO)
 
+    val productId by viewModel.productId.observeAsState("")
+
     var selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
     var selectedCategory by remember { mutableStateOf<ProductCategoryDTO?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
@@ -256,7 +258,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
                 title = { Text("Success") },
-                text = { Text("Product added successfully!") },
+                text = { Text("Product added successfully! ${productId}") },
                 confirmButton = {
                     TextButton(onClick = {
                         showSuccessDialog = false

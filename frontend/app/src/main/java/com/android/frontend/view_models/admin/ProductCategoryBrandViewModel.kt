@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.MainActivity
@@ -15,10 +14,10 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.ProductCategoryDTO
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.dto.admin.AddProductResponse
 import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.dto.creation.ProductCategoryCreateDTO
 import com.android.frontend.dto.creation.ProductCreateDTO
-import com.android.frontend.persistence.SecurePreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,6 +37,8 @@ import java.math.BigDecimal
 import java.net.SocketTimeoutException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 
 class ProductCategoryBrandViewModel() : ViewModel() {
 
@@ -64,6 +65,8 @@ class ProductCategoryBrandViewModel() : ViewModel() {
 
     private val products = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> get() = products
+
+    val productId = MutableLiveData<String>()
 
     fun fetchAllData(context: Context) {
         viewModelScope.launch {
@@ -247,7 +250,7 @@ class ProductCategoryBrandViewModel() : ViewModel() {
                 productWeight = productWeight.value,
                 availability = availability.value ?: ProductDTO.Availability.UNAVAILABLE,
                 quantity = quantity.value ?: 0,
-                brand = brand.value ?: BrandDTO(0,"",  ""),
+                brand = brand.value ?: BrandDTO(0, "", ""),
                 productCategory = productCategory.value ?: ProductCategoryDTO(0, ""),
                 onSale = onSale.value ?: false,
                 discountedPrice = discountedPrice.value
@@ -262,12 +265,22 @@ class ProductCategoryBrandViewModel() : ViewModel() {
                 productService.addProduct("Bearer $accessToken", productCreateDTO)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()} Product added successfully")
+                response.body()?.let { responseBody ->
+                    val gson = Gson()
+                    val responseBodyString = responseBody.toString() // Ottieni il corpo della risposta come stringa
+                    val addProductResponse = gson.fromJson(responseBodyString, AddProductResponse::class.java)
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Product added successfully")
+                    productId.postValue(addProductResponse.productId) // Salva il productId per l'upload dell'immagine
+                }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Error adding product: ${response?.errorBody()?.string()}")
             }
         }
     }
+
+
+
+
 
     fun deleteProduct(productId: String, context: Context) {
         viewModelScope.launch {
