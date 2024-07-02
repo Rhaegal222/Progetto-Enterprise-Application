@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
@@ -276,4 +277,5 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
         return tempFile
     }
+
 }

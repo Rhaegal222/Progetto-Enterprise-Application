@@ -1,12 +1,14 @@
 package com.android.frontend.view_models.admin
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
@@ -24,6 +26,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class UserViewModel : ViewModel() {
+    val currentUser: UserDTO? = null
     private val _usersLiveData = MutableLiveData<List<UserDTO>>()
     val usersLiveData: LiveData<List<UserDTO>> = _usersLiveData
 
@@ -142,5 +145,13 @@ class UserViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun logout(context: Context) {
+        TokenManager
+            .getInstance()
+            .clearTokens(context)
+        val intent = Intent(context, MainActivity::class.java)
+        context.startActivity(intent)
     }
 }
