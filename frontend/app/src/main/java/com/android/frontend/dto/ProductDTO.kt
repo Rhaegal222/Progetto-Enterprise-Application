@@ -16,7 +16,7 @@ data class ProductDTO (
     val quantity: Int,
     val availability: Availability,
     val productCategory: ProductCategoryDTO,
-    val productImages: List<ProductImageDTO>,
+    val photoProduct: ProductImageDTO? = null,
     val onSale: Boolean,
     val discountedPrice: BigDecimal?
 ) {

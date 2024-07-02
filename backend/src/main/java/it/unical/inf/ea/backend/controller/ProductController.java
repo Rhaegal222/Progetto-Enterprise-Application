@@ -42,8 +42,8 @@ public class ProductController {
     @PostMapping("/addProduct")
     public ResponseEntity<?> addProduct(@RequestBody ProductCreateDTO productCreateDTO) {
         try {
-            productService.addProduct(productCreateDTO);
-            return ResponseEntity.ok("{\"message\": \"Product registered successfully\"}");
+            ProductDTO createdProduct = productService.addProduct(productCreateDTO);
+            return ResponseEntity.ok("{\"message\": \"Product registered successfully\", \"productId\": \"" + createdProduct.getId() + "\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
         }

@@ -36,6 +36,33 @@ class PaymentViewModel : ViewModel() {
     var expireYear by mutableStateOf("")
     var isDefault by mutableStateOf(false)
 
+    fun getAllPaymentMethods(context: Context) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
+            val response = Request().executeRequest(context) {
+                paymentService.getAllPaymentMethods("Bearer $accessToken")
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let {
+                    _paymentMethods.value = it
+                }
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch payment methods: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
+
     fun addPaymentCard(context: Context, cardNumber: String, expireMonth: String, expireYear: String, owner: String, isDefault: Boolean) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -58,33 +85,6 @@ class PaymentViewModel : ViewModel() {
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to add payment method: ${response?.errorBody()?.string()}")
-                _hasError.value = true
-            }
-            _isLoading.value = false
-        }
-    }
-
-    fun getAllPaymentMethods(context: Context) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                _isLoading.value = false
-                _hasError.value = true
-                return@launch
-            }
-            val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
-            val response = Request().executeRequest(context) {
-                paymentService.getAllPaymentMethods("Bearer $accessToken")
-            }
-            if (response?.isSuccessful == true) {
-                response.body()?.let {
-                    _paymentMethods.value = it
-                }
-            } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch payment methods: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
