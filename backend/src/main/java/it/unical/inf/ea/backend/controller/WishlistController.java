@@ -2,7 +2,6 @@ package it.unical.inf.ea.backend.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
@@ -11,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.Set;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
@@ -56,7 +53,7 @@ public class WishlistController {
 
 
     @DeleteMapping(path = "/deleteWishlist/{id}")
-    public ResponseEntity<?> deleteWishlist(@PathVariable("id") String id) {
+    public ResponseEntity<?> deleteWishlist(@PathVariable("id") Long id) {
         try {
             wishlistService.deleteWishlist(id);
             return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
@@ -66,20 +63,20 @@ public class WishlistController {
     }
 
     @PostMapping("/{wishlistId}/products")
-    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @RequestBody Set<String> productIds) {
+    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @RequestBody String productId) {
         try {
-            wishlistService.addProductsToWishlist(productIds, wishlistId);
-            return ResponseEntity.ok("{\"message\": \"Products added to wishlist successfully\"}");
+            wishlistService.addProductsToWishlist(productId, wishlistId);
+            return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
     @DeleteMapping("/{wishlistId}/products")
-    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @RequestBody Set<String> productIds) {
+    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @RequestBody String productId) {
         try {
-            wishlistService.removeProductsFromWishlist(productIds, wishlistId);
-            return ResponseEntity.ok("{\"message\": \"Products removed from wishlist successfully\"}");
+            wishlistService.removeProductsFromWishlist(productId, wishlistId);
+            return ResponseEntity.ok("{\"message\": \"Product removed from wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
