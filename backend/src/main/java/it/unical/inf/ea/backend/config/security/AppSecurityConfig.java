@@ -98,6 +98,11 @@ public class AppSecurityConfig {
                                 "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken", "/api/v1/users/getAllUsers").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/deleteUser/{id}").authenticated()
 
+                        //ORDER
+                        .requestMatchers(HttpMethod.POST, "/api/v1/orders/addOrder").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/orders/updateOrder/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/orders/deleteOrder/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/orders/getOrder/{id}", "/api/v1/orders/getAllOrders").authenticated()
 
                         // Richieste dove non è richiesta l'autenticazione
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/register", "/api/v1/users/authenticate").permitAll()
