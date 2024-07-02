@@ -52,6 +52,8 @@ class ProductCategoryBrandViewModel() : ViewModel() {
     val quantity = MutableLiveData<Int>()
     val brand = MutableLiveData<BrandDTO>()
     val productCategory = MutableLiveData<ProductCategoryDTO>()
+    val onSale = MutableLiveData<Boolean>()
+    val discountedPrice = MutableLiveData<BigDecimal>()
 
     val allBrands = MutableLiveData<List<BrandDTO>>()
     val allCategories = MutableLiveData<List<ProductCategoryDTO>>()
@@ -241,7 +243,9 @@ class ProductCategoryBrandViewModel() : ViewModel() {
                 availability = availability.value ?: ProductDTO.Availability.UNAVAILABLE,
                 quantity = quantity.value ?: 0,
                 brand = brand.value ?: BrandDTO(0,"",  ""),
-                productCategory = productCategory.value ?: ProductCategoryDTO(0, "")
+                productCategory = productCategory.value ?: ProductCategoryDTO(0, ""),
+                onSale = onSale.value ?: false,
+                discountedPrice = discountedPrice.value
             )
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
