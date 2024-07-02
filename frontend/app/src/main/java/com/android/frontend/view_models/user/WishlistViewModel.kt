@@ -26,7 +26,7 @@ class WishlistViewModel : ViewModel() {
     fun fetchAllWishlists(context: Context) {
         val wishlistService = RetrofitInstance.getWishlistApi(context)
         val accessToken = TokenManager.getInstance().getAccessToken(context)
-        val call = wishlistService.getAllLoggedUserWishlists("Bearer $accessToken")
+        val call = wishlistService.getAllWishlists("Bearer $accessToken")
         call.enqueue(object : retrofit2.Callback<List<WishlistDTO>> {
             override fun onResponse(
                 call: retrofit2.Call<List<WishlistDTO>>,

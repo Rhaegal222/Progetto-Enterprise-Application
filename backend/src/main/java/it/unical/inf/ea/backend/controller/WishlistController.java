@@ -14,7 +14,7 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path="/api/v1/wishList", produces="application/json")
+@RequestMapping(path="/api/v1/wishlist", produces="application/json")
 @CrossOrigin(origins= "http://localhost:4200")
 @Slf4j
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)
@@ -41,7 +41,7 @@ public class WishlistController {
     }
 
     @GetMapping("/getAllLoggedUserWishlists")
-    public ResponseEntity<?> getAllWishlists(){
+    public ResponseEntity<?> getAllLoggedUserWishlists(){
         try {
             return ResponseEntity.ok(wishlistService.getAllLoggedUserWishlists());
         } catch (Exception e) {
