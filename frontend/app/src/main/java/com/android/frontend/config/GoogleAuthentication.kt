@@ -1,28 +1,44 @@
 package com.android.frontend.config
 
-import com.android.frontend.R
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
+import android.widget.ImageView
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.lifecycle.MutableLiveData
+import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.dto.basic.UserBasicDTO
+import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.service.GoogleAuthenticationService
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import kotlin.random.Random
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.content.Intent
-import android.provider.Settings
-import com.android.frontend.persistence.SecurePreferences
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.InputStream
+import kotlin.random.Random
 
 class GoogleAuthentication(private val context: Context) {
 
@@ -31,7 +47,9 @@ class GoogleAuthentication(private val context: Context) {
     private val webClientId = context.getString(R.string.web_client_id)
     private val credentialManager = CredentialManager.create(context)
     private val googleAuthService: GoogleAuthenticationService = RetrofitInstance.getGoogleAuthApi(context)
+    private val profileImage: ImageView = ImageView(context)
 
+    private val user = MutableLiveData<UserBasicDTO>()
     private var accessToken = TokenManager.getInstance().getAccessToken(context) ?: ""
     private var refreshToken = TokenManager.getInstance().getRefreshToken(context) ?: ""
     private var provider = SecurePreferences.getProvider(context) ?: ""
@@ -39,10 +57,7 @@ class GoogleAuthentication(private val context: Context) {
     suspend fun signIn(onResult: (Map<String, String>?, String?) -> Unit) {
         request = createRequest()
         try {
-            val result = credentialManager.getCredential(
-                context = context,
-                request = request,
-            )
+            val result = credentialManager.getCredential(context = context, request = request)
             handleSignIn(result, onResult)
         } catch (e: GetCredentialException) {
             withContext(Dispatchers.Main) {
@@ -88,11 +103,11 @@ class GoogleAuthentication(private val context: Context) {
 
     private fun createRequest(): GetCredentialRequest {
         Log.d("DEBUG", "${getCurrentStackTrace()} Creating request")
-        try {
-            return if (userAlreadySignedIn()) {
+        return try {
+            if (userAlreadySignedIn()) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} User is already signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getGoogleIdOption()).build()
-            } else  {
+            } else {
                 Log.d("DEBUG", "${getCurrentStackTrace()} User is not signed in")
                 GetCredentialRequest.Builder().addCredentialOption(getSignInGoogleOption()).build()
             }
@@ -100,7 +115,7 @@ class GoogleAuthentication(private val context: Context) {
             Log.e("DEBUG", "${getCurrentStackTrace()} Error creating request: ${e.message}")
             TokenManager.getInstance().clearTokens(context)
             promptAddGoogleAccount()
-            return GetCredentialRequest.Builder().build()
+            GetCredentialRequest.Builder().build()
         }
     }
 
@@ -111,9 +126,7 @@ class GoogleAuthentication(private val context: Context) {
 
     private suspend fun handleSignIn(result: GetCredentialResponse, onResult: (Map<String, String>?, String?) -> Unit) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Sign-in flow completed")
-
         when (val credential = result.credential) {
-
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {
@@ -149,13 +162,14 @@ class GoogleAuthentication(private val context: Context) {
         }
     }
 
-
     private fun sendGoogleIdTokenToBackend(idToken: String, onResult: (Map<String, String>?) -> Unit) {
         val call = googleAuthService.googleAuth(idToken)
         call.enqueue(object : Callback<Map<String, String>> {
             override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
                 if (response.isSuccessful) {
                     val tokenMap = response.body()!!
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Map received: $tokenMap")
+                    val pictureUrl = tokenMap["pictureUrl"].toString()
                     onResult(tokenMap)
                     refreshAccessToken()
                 } else {
@@ -163,6 +177,7 @@ class GoogleAuthentication(private val context: Context) {
                     onResult(null)
                 }
             }
+
             override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to send google id token to backend", t)
                 onResult(null)
@@ -191,5 +206,4 @@ class GoogleAuthentication(private val context: Context) {
             })
         }
     }
-
 }
