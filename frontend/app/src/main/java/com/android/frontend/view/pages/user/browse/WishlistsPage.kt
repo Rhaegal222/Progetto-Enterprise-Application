@@ -1,6 +1,7 @@
 package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,7 @@ import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view_models.user.WishlistViewModel
 
@@ -128,7 +130,8 @@ fun WishlistCard(wishlist: WishlistDTO, navController: NavController) {
             .padding(8.dp)
             .fillMaxWidth()
             .clickable {
-                navController.navigate("wishlist_details/${wishlist.id}")
+                CurrentDataUtils.currentWishlistId = wishlist.id
+                navController.navigate(Navigation.WishlistDetailsPage.route)
             },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),

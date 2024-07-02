@@ -136,7 +136,7 @@ fun AddWishlistPage(
                             try {
                                 wishlistViewModel.createWishlist(
                                     context = context,
-                                    wishlistname = wishlistName.text,
+                                    wishlistName = wishlistName.text,
                                     WishlistDTO.Visibility.valueOf(selectedVisibility.uppercase())
                                 )
                                 navController.popBackStack()

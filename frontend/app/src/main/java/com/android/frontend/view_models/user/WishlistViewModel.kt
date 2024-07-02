@@ -2,9 +2,6 @@ package com.android.frontend.view_models.user
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +10,7 @@ import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.dto.creation.WishlistCreateDTO
 import kotlinx.coroutines.launch
@@ -20,6 +18,7 @@ import kotlinx.coroutines.launch
 class WishlistViewModel : ViewModel() {
     private val wishlist = MutableLiveData<List<WishlistDTO>>()
     val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = wishlist
+
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
     private val _hasError = MutableLiveData(false)
@@ -27,12 +26,9 @@ class WishlistViewModel : ViewModel() {
     private val wishlistDetails = MutableLiveData<WishlistDTO>()
     val wishlistDetailsLiveData: MutableLiveData<WishlistDTO> get() = wishlistDetails
 
-    var wishlistname by mutableStateOf("")
-    var visibility by mutableStateOf("")
-
     fun createWishlist(
         context: Context,
-        wishlistname: String,
+        wishlistName: String,
         visibility: WishlistDTO.Visibility
     ) {
         viewModelScope.launch {
@@ -46,7 +42,7 @@ class WishlistViewModel : ViewModel() {
                 return@launch
             }
             val wishlistService = RetrofitInstance.getWishlistApi(context)
-            val wishlistCreateDTO = WishlistCreateDTO(wishlistname, visibility)
+            val wishlistCreateDTO = WishlistCreateDTO(wishlistName, visibility)
             val response = Request().executeRequest(context) {
                 wishlistService.createWishlist("Bearer $accessToken", wishlistCreateDTO)
             }
@@ -88,5 +84,35 @@ class WishlistViewModel : ViewModel() {
                 Log.e("DEBUG", "Error fetching wishlists", t)
             }
         })
+    }
+
+    fun getWishlistDetails(context: Context,wishlistId: Long) {
+        viewModelScope.launch {
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val call = wishlistService.getWishlistById("Bearer $accessToken", wishlistId)
+            call.enqueue(object : retrofit2.Callback<WishlistDTO> {
+                override fun onResponse(
+                    call: retrofit2.Call<WishlistDTO>,
+                    response: retrofit2.Response<WishlistDTO>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { wishlist ->
+                            wishlistDetails.value = wishlist
+                        }
+                    } else {
+                        Log.e(
+                            "DEBUG",
+                            "Error fetching wishlist details: ${response.errorBody()?.string()}"
+                        )
+                    }
+                }
+                override fun onFailure(call: retrofit2.Call<WishlistDTO>, t: Throwable) {
+                    Log.e("DEBUG", "Error fetching wishlist details", t)
+                }
+            })
+        }
+
+
     }
 }

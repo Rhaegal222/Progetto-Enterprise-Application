@@ -30,6 +30,11 @@ interface WishlistService {
         @Header("Authorization") authorization: String
     ): Call<List<WishlistDTO>>
 
+    @GET("/api/v1/wishlist/getWishlistById/{id}")
+    fun getWishlistById(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: Long
+    ): Call<WishlistDTO>
 
     @DELETE("/api/v1/wishlist/{wishlistId}/products/{productId}")
     fun removeProductsFromWishlist(
