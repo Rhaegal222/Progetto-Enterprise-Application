@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.android.frontend.view.admin.AddBrandPage
-import com.android.frontend.view.admin.AddCategoryPage
-import com.android.frontend.view.admin.AddProductPage
-import com.android.frontend.view.admin.AdminMenu
-import com.android.frontend.view.admin.BrandPage
-import com.android.frontend.view.admin.CategoryPage
-import com.android.frontend.view.admin.ProductPage
-import com.android.frontend.view.admin.UserPage
+import com.android.frontend.view.pages.admin.add.AddBrandPage
+import com.android.frontend.view.pages.admin.add.AddCategoryPage
+import com.android.frontend.view.pages.admin.add.AddProductPage
+import com.android.frontend.view.pages.admin.menu.AdminMenu
+import com.android.frontend.view.pages.admin.browse.BrandPage
+import com.android.frontend.view.pages.admin.browse.CategoryPage
+import com.android.frontend.view.pages.admin.browse.ProductPage
+import com.android.frontend.view.pages.admin.browse.UserPage
 
 @Composable
 fun AdminGraph(navController: NavHostController) {
