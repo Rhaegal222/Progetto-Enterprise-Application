@@ -24,7 +24,7 @@ interface ProductCategoryService {
         @Query("id") id: String
     ): Call<String>
 
-    @GET("/api/v1/category/allCategories")
+    @GET("/api/v1/category/getAllCategories")
     fun getAllCategories(
         @Header("Authorization") authorization: String
     ): Call<List<CategoryDTO>>
