@@ -51,7 +51,7 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public void savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException {
+    public void uploadImage(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
         if (userImageDao.existsByUser(loggedUser)){
@@ -73,7 +73,7 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public void deletePhotoUser(UUID id) throws IllegalAccessException {
+    public void deleteImage(UUID id) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         UserImage userImage = userImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
 

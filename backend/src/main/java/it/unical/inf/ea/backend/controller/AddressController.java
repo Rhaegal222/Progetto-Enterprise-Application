@@ -16,7 +16,7 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path="/api/v1/shipping-addresses", produces="application/json")
+@RequestMapping(path="/api/v1/addresses", produces="application/json")
 @CrossOrigin(origins= "http://localhost:4200")
 @Slf4j
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)

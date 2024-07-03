@@ -31,6 +31,16 @@ public class WishlistController {
         }
     }
 
+    @PostMapping("/{wishlistId}/addProductsToWishlist/{productId}")
+    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
+        try {
+            wishlistService.addProductToWishlist(productId, wishlistId);
+            return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
     @DeleteMapping(path = "/deleteWishlist/{id}")
     public ResponseEntity<?> deleteWishlist(@PathVariable("id") Long id) {
         try {
@@ -41,17 +51,7 @@ public class WishlistController {
         }
     }
 
-    @PostMapping("/{wishlistId}/products")
-    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
-        try {
-            wishlistService.addProductToWishlist(productId, wishlistId);
-            return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @DeleteMapping("/{wishlistId}/products")
+    @DeleteMapping("/{wishlistId}/removeProductsFromWishlist/{productId}")
     public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
         try {
             wishlistService.removeProductFromWishlist(wishlistId, productId);

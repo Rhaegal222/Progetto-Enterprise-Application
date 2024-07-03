@@ -18,20 +18,13 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/images", produces = "application/json")
+@RequestMapping(value = "/api/v1/productPicture", produces = "application/json")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)
 public class ProductImageController {
     private final ProductImageService productImageService;
 
-    @GetMapping(path = "/products/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<Resource> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name , @PathVariable("file_name") String file_name) throws IOException {
-
-        Resource resource = productImageService.getImage(type+"/"+folder_name+"/"+file_name);
-        return ResponseEntity.ok(resource);
-    }
-
-    @PostMapping(value = "/products/photo-product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ProductImageDTO savePhotoProduct(
             @RequestPart("file") MultipartFile multipartFile,
@@ -41,7 +34,14 @@ public class ProductImageController {
         return productImageService.savePhotoProduct(multipartFile, productId, description);
     }
 
-    @DeleteMapping("/products/photo-product/{id}")
+    @GetMapping(path = "/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<Resource> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name , @PathVariable("file_name") String file_name) throws IOException {
+
+        Resource resource = productImageService.getImage(type+"/"+folder_name+"/"+file_name);
+        return ResponseEntity.ok(resource);
+    }
+
+    @DeleteMapping("deleteImage/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePhotoUser(@PathVariable("id") UUID id) throws IllegalAccessException, IOException {
         productImageService.deletePhotoProduct(id);

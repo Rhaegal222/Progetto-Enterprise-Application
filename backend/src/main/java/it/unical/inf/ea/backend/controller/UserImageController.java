@@ -16,23 +16,23 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/images", produces = "application/json")
+@RequestMapping(value = "/api/v1/profilePicture", produces = "application/json")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)
 public class UserImageController {
     private final UserImageService userImageService;
 
-    @PostMapping(value = "/users/photo-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> savePhotoUser(@RequestPart("file") MultipartFile multipartFile, @RequestParam("description") String description) {
+    @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(@RequestPart("file") MultipartFile multipartFile, @RequestParam("description") String description) {
         try {
-            userImageService.savePhotoUser(multipartFile, description);
+            userImageService.uploadImage(multipartFile, description);
             return ResponseEntity.ok("{\"message\": \"Image uploaded successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
-    @GetMapping(path = "/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(path = "getImage/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<?> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name ,@PathVariable("file_name") String file_name) {
         try {
             Resource resource = userImageService.getImage(type+"/"+folder_name+"/"+file_name);
@@ -42,10 +42,10 @@ public class UserImageController {
         }
     }
 
-    @DeleteMapping("/users/photo-profile/{id}")
-    public ResponseEntity<?> deletePhotoUser(@PathVariable("id") UUID id){
+    @DeleteMapping("/deleteImage/{id}")
+    public ResponseEntity<?> deleteImage(@PathVariable("id") UUID id){
         try {
-            userImageService.deletePhotoUser(id);
+            userImageService.deleteImage(id);
             return ResponseEntity.ok("{\"message\": \"Image deleted successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");

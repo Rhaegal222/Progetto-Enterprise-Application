@@ -17,7 +17,7 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 @CrossOrigin(origins= "http://localhost:4200")
 @Slf4j
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)
-public class ProductCategoryController {
+public class CategoryController {
 
     private final CategoryService categoryService;
 
