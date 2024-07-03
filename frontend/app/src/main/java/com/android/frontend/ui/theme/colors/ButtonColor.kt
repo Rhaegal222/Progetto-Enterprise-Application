@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object ButtonColorScheme {
-    private val containerColorLight = Color(0xFF2A2B2C)
+    private val containerColorLight = Color(0xFF000000)
     private val contentColorLight = Color(0xFFFFFFFF)
     private val disabledContainerColorLight = Color(0xFFE0E0E0)
     private val disabledContentColorLight = Color(0xFF9E9E9E)
