@@ -3,11 +3,18 @@ package com.android.frontend.view.pages.admin.browse
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -59,14 +66,14 @@ fun CategoryPage(navController: NavHostController, viewModel: ProductCategoryBra
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            let {
-                categories.forEach { category ->
-                    item {
-                        CategoryCard(category = category) {
-                            viewModel.deleteCategory(context, category.id)
-                        }
-                    }
-                }
+            item{
+                Spacer(modifier = Modifier.height(50.dp))
+            }
+            items(categories) { category ->
+                CategoryCard(category = category, onDelete = {
+                    viewModel.deleteCategory(context, it.id)
+                    viewModel.fetchAllCategories(context)
+                })
             }
         }
     }
@@ -75,7 +82,7 @@ fun CategoryPage(navController: NavHostController, viewModel: ProductCategoryBra
 @Composable
 fun CategoryCard(category: CategoryDTO, onDelete: (CategoryDTO) -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
