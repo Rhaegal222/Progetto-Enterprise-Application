@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ProductImageService {
-    @GET("/api/v1/productPicture/getImage/{type}/{folder_name}/{file_name:.*}")
+    @GET("/api/v1/productPicture/getImage/{type}/{folder_name}/{file_name}")
     @Streaming
     fun getImage(
         @Path("type") type: String,

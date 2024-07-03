@@ -9,7 +9,7 @@ import retrofit2.http.*
 
 interface UserImageService {
 
-    @GET("/api/v1/profilePicture/getImage/{type}/{folder_name}/{file_name:.*}")
+    @GET("/api/v1/profilePicture/getImage/{type}/{folder_name}/{file_name}")
     @Streaming
     fun getImage(
         @Path("type") type: String,
