@@ -33,7 +33,7 @@ import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
-import com.android.frontend.ui.component.ErrorDialog
+import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

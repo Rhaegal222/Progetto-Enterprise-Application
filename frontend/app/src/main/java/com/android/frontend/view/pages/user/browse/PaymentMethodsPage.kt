@@ -26,9 +26,9 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
-import com.android.frontend.ui.component.PaymentCard
+import com.android.frontend.view.component.PaymentCard
 import com.android.frontend.view_models.user.PaymentViewModel
-import com.android.frontend.ui.component.ErrorDialog
+import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

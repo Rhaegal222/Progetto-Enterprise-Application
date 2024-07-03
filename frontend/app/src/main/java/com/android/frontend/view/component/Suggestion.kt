@@ -1,4 +1,4 @@
-package com.android.frontend.ui.component
+package com.android.frontend.view.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
