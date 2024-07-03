@@ -124,8 +124,10 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlist/deleteWishlist/{id}", "/{wishlistId}/removeProductFromWishlist/{productId}",
                                 "/{wishlistId}/removeProductsFromWishlist/{productId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/wishlist/getWishlistById/{id}", "/api/v1/wishlist/getAllLoggedUserWishlists").authenticated()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
                         .anyRequest().denyAll())
-                
+
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))
                 .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
