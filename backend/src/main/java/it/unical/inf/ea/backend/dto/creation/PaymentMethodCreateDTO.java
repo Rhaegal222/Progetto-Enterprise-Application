@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class PaymentMethodCreateDTO {
 
     @NotNull
-    @Length(min = 19, max = 19)
+    @Length(min = 16, max = 16)
     private String cardNumber;
 
     @NotNull

@@ -24,7 +24,7 @@ public class PaymentMethod {
     private UUID id;
 
     @Column(nullable = false)
-    @Length(min = 19, max = 19)
+    @Length(min = 16, max = 16)
     private String cardNumber;
 
     @Column(nullable = false)
