@@ -26,7 +26,6 @@ object CurrentDataUtils {
             _currentProductImageUri = newValue
         }
 
-
     var currentWishlistId: Long
         get() = _currentWishlistId
         set(newValue){
@@ -36,7 +35,7 @@ object CurrentDataUtils {
     var baseUrl: String
         get() = _baseUrl
         set(newValue){
-            // Log.d("DEBUG", "${getCurrentStackTrace()} $baseUrl")
+            Log.d("DEBUG", "${getCurrentStackTrace()} $baseUrl")
             _baseUrl = newValue
         }
 }

@@ -193,7 +193,7 @@ public class UserServiceImp implements UserService{
     private Pair<Boolean,UserDTO> processOAuthPostGoogleLogin(Map<String, String> userInfo) {
 
         String email = userInfo.get("email");
-        User existUser = userDao.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        User existUser = userDao.findByEmail(email).orElse(null);
 
         if (existUser == null) {
             if (userDao.findByUsername(email).isPresent())
