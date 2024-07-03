@@ -26,16 +26,16 @@ public class Order {
     @JoinColumn(name = "order_cart", nullable = false)
     private Cart cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_user", nullable = false)
     private User user;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_address",nullable = false)
     private Address deliveryAddress;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_payment",nullable = false)
     private PaymentMethod paymentMethod;
 
