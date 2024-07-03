@@ -8,9 +8,9 @@ data class UserBasicDTO(
     var lastName: String,
     var firstName: String,
     var email: String,
-    var phoneNumber: String? = null,
-    var photoProfile: UserImageDTO? = null,
-    var status: UserDTO.UserStatus? = null,
-    var role: UserDTO.UserRole? = null
+    var phoneNumber: String,
+    var photoProfile: UserImageDTO,
+    var status: UserDTO.UserStatus,
+    var role: UserDTO.UserRole
 )
 
