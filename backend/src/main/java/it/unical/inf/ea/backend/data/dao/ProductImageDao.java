@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface ProductImageDao extends JpaRepository<ProductImage, UUID>, JpaSpecificationExecutor<ProductImage> {
+public interface ProductImageDao extends JpaRepository<ProductImage, String>, JpaSpecificationExecutor<ProductImage> {
 }
