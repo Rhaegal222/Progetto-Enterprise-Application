@@ -53,8 +53,8 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
 
     val productId by viewModel.productId.observeAsState("")
 
-    val selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
-    val selectedCategory by remember { mutableStateOf<CategoryDTO?>(null) }
+    var selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
+    var selectedCategory by remember { mutableStateOf<CategoryDTO?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showImageUploadDialog by remember { mutableStateOf(false) }
     var showImageSuccessDialog by remember { mutableStateOf(false) }
@@ -164,132 +164,157 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
                             .clickable(onClick = { expandedAvailability = true })
                             .padding(16.dp)
                     )
-
-
-                    // Brand ChoiceBox
-                    var expandedBrand by remember { mutableStateOf(false) }
-
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedBrand?.name ?: "Select Brand",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable(onClick = { expandedBrand = true })
-                                .padding(16.dp)
-                        )
-                        DropdownMenu(
-                            expanded = expandedBrand,
-                            onDismissRequest = { expandedBrand = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            allBrands.forEach { brand ->
-
-                            }
-                        }
-                    }
-
-                    // Category ChoiceBox
-                    var expandedCategory by remember { mutableStateOf(false) }
-
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = selectedCategory?.name ?: "Select Category",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable(onClick = { expandedCategory = true })
-                                .padding(16.dp)
-                        )
-                        DropdownMenu(
-                            expanded = expandedCategory,
-                            onDismissRequest = { expandedCategory = false },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            allCategories.forEach { category ->
-
-                            }
-                        }
-                    }
-
-                    // On Sale Toggle
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    DropdownMenu(
+                        expanded = expandedAvailability,
+                        onDismissRequest = { expandedAvailability = false },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("On Sale", modifier = Modifier.weight(1f))
-                        Switch(
-                            checked = onSale,
-                            onCheckedChange = { viewModel.onSale.value = it }
-                        )
-                    }
-
-                    if (onSale) {
-                        TextField(
-                            value = discountedPrice.toString(),
-                            onValueChange = {
-                                viewModel.salePrice.value =
-                                    it.toBigDecimalOrNull() ?: BigDecimal.ZERO
-                            },
-                            label = { Text("Discounted Price") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    Button(
-                        onClick = {
-                            viewModel.addProduct(context)
-                            showSuccessDialog = true
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Add Product")
+                        availabilityOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option.name) },
+                                onClick = {
+                                    viewModel.availability.value = option
+                                    expandedAvailability = false
+                                }
+                            )
+                        }
                     }
                 }
 
-                if (showSuccessDialog) {
-                    AlertDialog(
-                        onDismissRequest = { showSuccessDialog = false },
-                        title = { Text("Success") },
-                        text = { Text("Product added successfully! Do you want to upload an image for the product?") },
-                        confirmButton = {
-                            TextButton(onClick = {
-                                showSuccessDialog = false
-                                showImageUploadDialog = true
-                            }) {
-                                Text("Yes")
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(onClick = {
-                                showSuccessDialog = false
-                                navController.navigate(Navigation.ProductPage.route)
-                            }) {
-                                Text("No")
-                            }
+                // Brand ChoiceBox
+                var expandedBrand by remember { mutableStateOf(false) }
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = selectedBrand?.name ?: "Select Brand",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { expandedBrand = true })
+                            .padding(16.dp)
+                    )
+                    DropdownMenu(
+                        expanded = expandedBrand,
+                        onDismissRequest = { expandedBrand = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        allBrands.forEach { brand ->
+                            DropdownMenuItem(
+                                text = { Text(brand.name) },
+                                onClick = {
+                                    selectedBrand = brand
+                                    viewModel.brand.value = brand
+                                    expandedBrand = false
+                                }
+                            )
                         }
+                    }
+                }
+
+                // Category ChoiceBox
+                var expandedCategory by remember { mutableStateOf(false) }
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = selectedCategory?.name ?: "Select Category",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { expandedCategory = true })
+                            .padding(16.dp)
+                    )
+                    DropdownMenu(
+                        expanded = expandedCategory,
+                        onDismissRequest = { expandedCategory = false },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        allCategories.forEach { category ->
+                            DropdownMenuItem(
+                                text = { Text(category.name) },
+                                onClick = {
+                                    selectedCategory = category
+                                    viewModel.category.value = category
+                                    expandedCategory = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // On Sale Toggle
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("On Sale", modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = onSale,
+                        onCheckedChange = { viewModel.onSale.value = it }
                     )
                 }
 
-                if (showImageUploadDialog) {
-                    launcher.launch("image/*")
-                    showImageUploadDialog = false
+                if (onSale) {
+                    TextField(
+                        value = discountedPrice.toString(),
+                        onValueChange = { viewModel.salePrice.value = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
+                        label = { Text("Discounted Price") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
 
-                if (showImageSuccessDialog) {
-                    AlertDialog(
-                        onDismissRequest = { showImageSuccessDialog = false },
-                        title = { Text("Success") },
-                        text = { Text("Product image uploaded successfully!") },
-                        confirmButton = {
-                            TextButton(onClick = {
-                                showImageSuccessDialog = false
-                                navController.navigate(Navigation.ProductPage.route)
-                            }) {
-                                Text("OK")
-                            }
-                        }
-                    )
+                Button(
+                    onClick = {
+                        viewModel.addProduct(context)
+                        showSuccessDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Add Product")
                 }
             }
+        }
+
+        if (showSuccessDialog) {
+            AlertDialog(
+                onDismissRequest = { showSuccessDialog = false },
+                title = { Text("Success") },
+                text = { Text("Product added successfully! Do you want to upload an image for the product?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showSuccessDialog = false
+                        showImageUploadDialog = true
+                    }) {
+                        Text("Yes")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showSuccessDialog = false
+                        navController.navigate(Navigation.ProductPage.route)
+                    }) {
+                        Text("No")
+                    }
+                }
+            )
+        }
+
+        if (showImageUploadDialog) {
+            launcher.launch("image/*")
+            showImageUploadDialog = false
+        }
+
+        if (showImageSuccessDialog) {
+            AlertDialog(
+                onDismissRequest = { showImageSuccessDialog = false },
+                title = { Text("Success") },
+                text = { Text("Product image uploaded successfully!") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showImageSuccessDialog = false
+                        navController.navigate(Navigation.ProductPage.route)
+                    }) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }

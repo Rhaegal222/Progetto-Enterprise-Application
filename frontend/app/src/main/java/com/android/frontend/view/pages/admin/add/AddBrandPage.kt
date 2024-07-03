@@ -40,6 +40,7 @@ fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBra
             )
         }
     ) {
+        Spacer(modifier = Modifier.height(50.dp))
         Column(
             modifier = Modifier
                 .fillMaxSize()

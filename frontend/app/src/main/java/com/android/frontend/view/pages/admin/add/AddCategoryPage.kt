@@ -39,6 +39,7 @@ fun AddCategoryPage(navController: NavHostController, viewModel: ProductCategory
             )
         }
     ) {
+        Spacer(modifier = Modifier.height(50.dp))
         Column(
             modifier = Modifier
                 .fillMaxSize()
