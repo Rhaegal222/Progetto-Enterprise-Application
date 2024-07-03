@@ -147,7 +147,7 @@ public class UserServiceImp implements UserService{
     }
 
     public Optional<UserDTO> findByUsername(String username) {
-        User user= userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        User user= userDao.findByUsername(username).orElse(null);
         if (user==null || !user.getStatus().equals(UserStatus.ACTIVE))
             return Optional.empty();
         return Optional.of(mapToDto(user));
@@ -155,7 +155,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public Optional<UserBasicDTO> findBasicByUsername(String username) {
-        User user= userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        User user= userDao.findByUsername(username).orElse(null);
         if (user==null)
             return Optional.empty();
         return Optional.of(mapToBasicDto(user));
@@ -261,7 +261,7 @@ public class UserServiceImp implements UserService{
 
         if(findByUsername(email).isPresent())
             throw new IllegalArgumentException("username already exists");
-        if(userDao.findByEmail(email) != null)
+        if(userDao.findByEmail(email).isPresent())
             throw new IllegalArgumentException("email already exists");
         createUser(lastname, firstname, email, passwordEncoder.encode(password));
         log.info("User created: {}", firstname);
