@@ -34,6 +34,11 @@ interface PaymentService {
         @Header("Authorization") authorization: String,
         @Path("id") id: String
     ): Call<Void>
+
+    @GET("/api/v1/payment-methods/getAllLoggedUserPaymentMethods")
+    fun getAllLoggedUserPaymentMethods(
+        @Header("Authorization") authorization: String
+    ): Call<List<PaymentMethodDTO>>
 /*
     @PUT("/api/v1/payment-methods/{id}")
     fun updatePaymentMethod(

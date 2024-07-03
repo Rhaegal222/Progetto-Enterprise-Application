@@ -81,4 +81,13 @@ public class PaymentMethodController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
+
+    @GetMapping(path = "/getAllLoggedUserPaymentMethods")
+    public ResponseEntity<?> getAllLoggedUserPaymentMethods() {
+        try {
+            return ResponseEntity.ok(paymentMethodService.getAllLoggedUserPaymentMethods());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
 }

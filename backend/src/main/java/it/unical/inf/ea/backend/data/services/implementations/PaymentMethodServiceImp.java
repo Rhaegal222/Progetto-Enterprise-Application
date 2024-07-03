@@ -112,40 +112,46 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
             PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId()))
-                throw new IllegalAccessException("Cannot delete payment method");
+                throw new IllegalAccessException("User cannot delete this payment method");
             paymentMethodDao.deleteById(id);
-        }catch (Exception e){
-            throw new IllegalAccessException("Cannot delete payment method");
         }
-
+        catch (Exception e){
+            throw new IllegalAccessException("Cannot delete this payment method");
+        }
     }
 
     @Override
     public PaymentMethodDTO getPaymentMethodById(String id) throws IllegalAccessException {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(paymentMethod.getUser().getId())) {
-            throw new IllegalAccessException("User cannot get payment method");
-        }
-
+        if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId()))
+            throw new IllegalAccessException("User cannot access this payment method");
         return mapToDTO(paymentMethod);
     }
 
     @Override
     public List<PaymentMethodDTO> getAllPaymentMethods() {
-        return paymentMethodDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+        List<PaymentMethod> paymentMethods = paymentMethodDao.findAll();
+        return paymentMethods.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    public PaymentMethod mapToEntity(PaymentMethodDTO paymentMethodDTO) {
-        return modelMapper.map(paymentMethodDTO, PaymentMethod.class);
-    }
-    public PaymentMethodDTO mapToDTO(PaymentMethod paymentMethod) {
-        return modelMapper.map(paymentMethod, PaymentMethodDTO.class);
+    @Override
+    public List<PaymentMethodDTO> getAllLoggedUserPaymentMethods() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        List<PaymentMethod> paymentMethods = paymentMethodDao.findAllByUserId(loggedUser.getId());
+        return paymentMethods.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    private void throwOnIdMismatch(String id, PaymentMethodDTO paymentMethodDTO) {
-        if (!paymentMethodDTO.getId().equals(id))
+    private void throwOnIdMismatch(String id, PaymentMethodDTO paymentMethodDTO){
+        if(!paymentMethodDTO.getId().equals(id))
             throw new IdMismatchException();
+    }
+
+    private PaymentMethodDTO mapToDTO(PaymentMethod paymentMethod) {
+        return modelMapper.map(paymentMethod, PaymentMethodDTO.class);
     }
 }
