@@ -70,7 +70,7 @@ fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: Nav
                         modifier = Modifier.padding(16.dp)
                     )
                     Text(
-                        text = wishlistDetails.visibility.toString(),
+                        text = wishlistDetails.wishlistVisibility.toString(),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(16.dp)
                     )

@@ -1,7 +1,7 @@
 package com.android.frontend.dto
 
 data class PaymentMethodDTO(
-    var id: String? = null,
+    var id: String,
     var cardNumber: String,
     var expireMonth: String,
     var expireYear: String,

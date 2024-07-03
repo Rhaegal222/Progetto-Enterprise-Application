@@ -40,6 +40,12 @@ class ProductViewModel : ViewModel() {
     private val _productImagesLiveData = MutableLiveData<Map<String, Uri>>()
     val productImagesLiveData: LiveData<Map<String, Uri>> = _productImagesLiveData
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _hasError = MutableLiveData(false)
+    val hasError: LiveData<Boolean> get() = _hasError
+
     fun setProduct(context: Context, productCreateDTO: ProductCreateDTO) {
         viewModelScope.launch {
             val productService = RetrofitInstance.getProductApi(context)
@@ -47,7 +53,6 @@ class ProductViewModel : ViewModel() {
             productService.addProduct("Bearer $accessToken", productCreateDTO)
         }
     }
-
 
     fun getProductDetails(context: Context, id: String) {
         viewModelScope.launch {

@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import com.android.frontend.dto.CartItemDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.ProductViewModel
 import java.math.BigDecimal
 
 @Composable
@@ -33,11 +34,11 @@ fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
     cart?.let {
         Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(it.cartItems) { cartItem ->
+                items(it.items) { cartItem ->
                     CartItemCard(cartItem, cartViewModel, context)
                 }
             }
-            CartSummary(cartItems = it.cartItems)
+            CartSummary(cartItems = it.items)
             Button(
                 onClick = {
                     navController.navigate(Navigation.CheckoutPage.route)
@@ -55,7 +56,10 @@ fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
 @Composable
 fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: Context) {
     var quantity by remember { mutableStateOf(cartItem.quantity) }
-    val price = if (cartItem.onSale) cartItem.discountedPrice ?: cartItem.productPrice else cartItem.productPrice
+
+    val productViewModel = ProductViewModel()
+
+    val productDTO = productViewModel.getProduct(cartItem.productId, context)
 
     Card(
         modifier = Modifier
