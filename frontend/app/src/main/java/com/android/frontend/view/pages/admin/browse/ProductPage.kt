@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.*
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
@@ -64,7 +64,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.AdminMenu.route)  }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.back)
                         )
                     }
@@ -104,7 +104,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                 .padding(12.dp)
         ) {
             val painter = if (imageUri != null) {
-                rememberImagePainter(data = imageUri)
+                rememberAsyncImagePainter(model = imageUri)
             } else {
                 painterResource(id = R.drawable.product_placeholder)
             }
@@ -121,7 +121,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = productDTO.title,
+                text = productDTO.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 maxLines = 2,
@@ -131,7 +131,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = productDTO.brand.name,
+                text = "${productDTO.brand.name}",
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp
             )
@@ -143,7 +143,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "${productDTO.productPrice}€",
+                    text = "${productDTO.price}€",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.CenterVertically),
                     fontSize = 13.sp
@@ -194,7 +194,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             confirmButton = {
                 Button(
                     onClick = {
-                        viewModel.deleteProduct(productDTO.id.toString(), context)
+                        viewModel.deleteProduct(productDTO.id, context)
                         showDialog = false
                     }
                 ) {

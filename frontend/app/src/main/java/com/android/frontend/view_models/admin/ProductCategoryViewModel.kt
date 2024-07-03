@@ -10,12 +10,14 @@ import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.CategoryDTO
+import com.android.frontend.dto.creation.CategoryCreateDTO
 import kotlinx.coroutines.launch
 
 class ProductCategoryViewModel : ViewModel() {
 
-    private val _categories = MutableLiveData<List<ProductCategoryDTO>>()
-    val categories: LiveData<List<ProductCategoryDTO>> get() = _categories
+    private val _categories = MutableLiveData<List<CategoryDTO>>()
+    val categories: LiveData<List<CategoryDTO>> get() = _categories
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -32,7 +34,7 @@ class ProductCategoryViewModel : ViewModel() {
                 _hasError.value = true
                 return@launch
             }
-            val productCategory = ProductCategoryCreateDTO(categoryName)
+            val productCategory = CategoryCreateDTO(categoryName)
             val productCategoryService = RetrofitInstance.getProductCategoryApi(context)
             val response = Request().executeRequest(context) {
                 productCategoryService.addCategory("Bearer $accessToken", productCategory)

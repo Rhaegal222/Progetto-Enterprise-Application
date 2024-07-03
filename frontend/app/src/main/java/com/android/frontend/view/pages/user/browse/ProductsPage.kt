@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.dto.ProductDTO
@@ -73,7 +73,7 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                                 expanded = expanded,
                                 onDismissRequest = { expanded = false }
                             ) {
-                                SortOption.values().forEach { option ->
+                                SortOption.entries.forEach { option ->
                                     DropdownMenuItem(
                                         onClick = {
                                             selectedSortOption = option
@@ -95,10 +95,10 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                 }
             } else {
                 val sortedProducts = when (selectedSortOption) {
-                    SortOption.ALPHABETICAL -> products?.sortedBy { it.title }
-                    SortOption.REVERSE_ALPHABETICAL -> products?.sortedByDescending { it.title }
-                    SortOption.PRICE_ASCENDING -> products?.sortedBy { it.productPrice }
-                    SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.productPrice }
+                    SortOption.ALPHABETICAL -> products?.sortedBy { it.name }
+                    SortOption.REVERSE_ALPHABETICAL -> products?.sortedByDescending { it.name }
+                    SortOption.PRICE_ASCENDING -> products?.sortedBy { it.name }
+                    SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.price }
                 }
 
                 LazyVerticalGrid(
@@ -150,7 +150,7 @@ fun ProductsCard(
                 .padding(12.dp)
         ) {
             val painter = if (imageUri != null) {
-                rememberImagePainter(data = imageUri)
+                rememberAsyncImagePainter(model = imageUri)
             } else {
                 painterResource(id = R.drawable.product_placeholder)
             }
@@ -167,7 +167,7 @@ fun ProductsCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = productDTO.title,
+                text = productDTO.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 maxLines = 2,
@@ -177,7 +177,7 @@ fun ProductsCard(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = productDTO.brand.name,
+                text = "${productDTO.brand.name}",
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp
             )
@@ -190,7 +190,7 @@ fun ProductsCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "${productDTO.productPrice}€",
+                        text = "${productDTO.price}€",
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.align(Alignment.CenterVertically),
                         fontSize = 18.sp,
@@ -210,7 +210,7 @@ fun ProductsCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "${productDTO.productPrice}€",
+                        text = "${productDTO.price}€",
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.align(Alignment.CenterVertically),
                         fontSize = 18.sp

@@ -13,5 +13,5 @@ public interface WishlistService {
     WishlistDTO getWishlistById(String id);
     void deleteWishlist(String id) throws IllegalAccessException;
     WishlistDTO addProductToWishlist(String productId, String wishlistId) throws IllegalAccessException;
-    void removeProductFromWishlist(String wishlistId, String productId) throws IllegalAccessException;
+    WishlistDTO removeProductFromWishlist(String wishlistId, String productId) throws IllegalAccessException;
 }

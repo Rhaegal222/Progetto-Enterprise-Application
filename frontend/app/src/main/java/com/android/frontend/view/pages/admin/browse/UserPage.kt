@@ -12,7 +12,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.UserDTO
 import com.android.frontend.persistence.SecurePreferences
@@ -64,7 +64,7 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.back)
                         )
                     }
@@ -121,7 +121,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                 .padding(12.dp)
         ) {
             val painter = if (imageUri != null) {
-                rememberImagePainter(data = imageUri)
+                rememberAsyncImagePainter(model = imageUri)
             } else {
                 painterResource(id = R.drawable.user_image)
             }

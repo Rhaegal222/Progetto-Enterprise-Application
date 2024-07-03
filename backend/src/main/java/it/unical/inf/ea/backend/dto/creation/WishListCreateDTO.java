@@ -18,6 +18,4 @@ public class WishlistCreateDTO {
     @NonNull
     private WishlistVisibility visibility;
 
-    private List<ProductDTO> products;
-
 }

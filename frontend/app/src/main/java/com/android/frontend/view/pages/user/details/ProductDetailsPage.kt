@@ -140,7 +140,7 @@ fun DetailContentDescription(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = productItem.title,
+                    text = productItem.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
                 )
@@ -148,7 +148,7 @@ fun DetailContentDescription(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = productItem.brand.name,
+                    text = "${ productItem.brand.name }",
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp
                 )
@@ -163,7 +163,7 @@ fun DetailContentDescription(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "${productItem.productPrice}€",
+            text = "${productItem.price}€",
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.End),
             fontSize = 18.sp
@@ -178,7 +178,7 @@ fun DetailContentDescription(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = productItem.description,
+            text = "${ productItem.description }",
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp,
         )
@@ -203,7 +203,7 @@ fun DetailContentDescription(
                 )
             ) {
                 Text(
-                    text = productItem.ingredients,
+                    text = "${productItem.ingredients}",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 10.sp,
                     modifier = Modifier.padding(4.dp)

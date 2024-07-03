@@ -126,7 +126,7 @@ fun CheckoutPage(
 
         Button(
             onClick = {
-                cart?.cartItems?.forEach { cartItem ->
+                cart?.items?.forEach { cartItem ->
                     cartViewModel.removeCartItem(cartItem.id, context)
                 }
                 navController.navigate(Navigation.CartPage.route)

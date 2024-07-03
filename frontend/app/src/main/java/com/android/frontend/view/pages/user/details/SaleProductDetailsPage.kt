@@ -76,7 +76,7 @@ fun DetailContentDescriptionWithDiscount(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = productItem.title,
+                    text = productItem.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
                 )
@@ -84,7 +84,7 @@ fun DetailContentDescriptionWithDiscount(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = productItem.brand.name,
+                    text = "${productItem.brand.name}",
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp
                 )
@@ -104,7 +104,7 @@ fun DetailContentDescriptionWithDiscount(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "${productItem.productPrice}€",
+                    text = "${productItem.price}€",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     textDecoration = TextDecoration.LineThrough
@@ -118,7 +118,7 @@ fun DetailContentDescriptionWithDiscount(
             }
         } else {
             Text(
-                text = "${productItem.productPrice}€",
+                text = "${productItem.price}€",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -133,7 +133,7 @@ fun DetailContentDescriptionWithDiscount(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = productItem.description,
+            text = "${productItem.description}",
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp,
         )
@@ -158,7 +158,7 @@ fun DetailContentDescriptionWithDiscount(
                 )
             ) {
                 Text(
-                    text = productItem.ingredients,
+                    text = "${productItem.ingredients}",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 10.sp,
                     modifier = Modifier.padding(4.dp)

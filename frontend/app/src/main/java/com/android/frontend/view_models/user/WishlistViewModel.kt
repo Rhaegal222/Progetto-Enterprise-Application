@@ -29,7 +29,7 @@ class WishlistViewModel : ViewModel() {
     fun createWishlist(
         context: Context,
         wishlistName: String,
-        visibility: WishlistDTO.Visibility
+        visibility: WishlistDTO.WishlistVisibility
     ) {
         viewModelScope.launch {
             _isLoading.value = true
