@@ -29,4 +29,9 @@ interface AddressService {
         @Header("Authorization") authorization: String,
         @Path("id") id: String
     ): Call<Void>
+
+    @GET("/api/v1/shipping-addresses/getAllLoggedUserShippingAddresses")
+    fun getAllLoggedUserShippingAddresses(
+        @Header("Authorization") authorization: String
+    ): Call<List<AddressDTO>>
 }

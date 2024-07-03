@@ -1,5 +1,6 @@
 package com.android.frontend.persistence
 
+import android.net.Uri
 import android.util.Log
 import com.android.frontend.config.getCurrentStackTrace
 import java.util.concurrent.atomic.AtomicInteger
@@ -9,6 +10,7 @@ object CurrentDataUtils {
     private var _baseUrl: String = "http://10.0.2.2:8080/"
 
     private var _currentProductId: String = ""
+    private var _currentProductImageUri: Uri? = null
     private var _currentWishlistId: Long = 0
     var refreshAttempts = AtomicInteger(0)
 
@@ -17,6 +19,14 @@ object CurrentDataUtils {
         set(newValue){
             _currentProductId = newValue
         }
+
+    var currentProductImageUri: Uri?
+        get() = _currentProductImageUri
+        set(newValue){
+            _currentProductImageUri = newValue
+        }
+
+
     var currentWishlistId: Long
         get() = _currentWishlistId
         set(newValue){

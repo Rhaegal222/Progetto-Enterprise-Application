@@ -34,7 +34,7 @@ public class ProductServiceImp implements ProductService {
 
 
     @Override
-    public ProductDTO addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
+    public Map<String, String> addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
         LocalDateTime now = getTimeNow();
         Product product = new Product();
         product.setName(productCreateDTO.getTitle());
@@ -53,8 +53,7 @@ public class ProductServiceImp implements ProductService {
         product.setSalePrice(productCreateDTO.getDiscountedPrice());
         product.setCategory(modelMapper.map(productCreateDTO.getCategory(), Category.class));
         productDao.save(product);
-        return modelMapper.map(product, ProductDTO.class);
-
+        return Map.of("message", "Product added successfully", "productId", product.getId());
     }
 
     public void save(ProductDTO productDTO) {

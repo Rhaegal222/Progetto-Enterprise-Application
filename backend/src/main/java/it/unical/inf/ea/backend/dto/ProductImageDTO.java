@@ -6,9 +6,9 @@ import lombok.*;
 
 @Data
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor
 @Builder
-@ToString
 public class ProductImageDTO {
     @NotNull
     private String id;

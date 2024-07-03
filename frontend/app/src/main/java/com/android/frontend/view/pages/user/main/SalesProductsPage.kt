@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +24,8 @@ fun SalesProductsPage(navController: NavController, productViewModel: ProductVie
 
     val context = LocalContext.current
     val products = productViewModel.productsLiveData.observeAsState().value
+    val productImages by productViewModel.productImagesLiveData.observeAsState()
+
 
     LaunchedEffect(Unit) {
         productViewModel.fetchSalesProducts(context)
@@ -42,7 +45,7 @@ fun SalesProductsPage(navController: NavController, productViewModel: ProductVie
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel)
+                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
                 }
             }
         }

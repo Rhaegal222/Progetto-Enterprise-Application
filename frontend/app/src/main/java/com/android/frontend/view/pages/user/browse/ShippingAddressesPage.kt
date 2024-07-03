@@ -44,7 +44,7 @@ fun ShippingAddressesPage(navController: NavController, addressViewModel: Addres
 
     LaunchedEffect(Unit) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Loading shipping addresses")
-        addressViewModel.getAllShippingAddresses(context)
+        addressViewModel.getAllLoggedUserShippingAddresses(context)
     }
 
     if (isLoading) {
@@ -55,7 +55,7 @@ fun ShippingAddressesPage(navController: NavController, addressViewModel: Addres
         ErrorDialog(
             title = stringResource(id = R.string.fetching_error),
             onDismiss = { navController.popBackStack() },
-            onRetry = { addressViewModel.getAllShippingAddresses(context) },
+            onRetry = { addressViewModel.getAllLoggedUserShippingAddresses(context) },
             errorMessage = stringResource(id = R.string.shipping_addresses_load_failed)
         )
     } else {

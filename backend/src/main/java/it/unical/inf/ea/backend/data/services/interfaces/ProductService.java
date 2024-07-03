@@ -8,10 +8,11 @@ import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ProductService {
-    ProductDTO addProduct(ProductCreateDTO productCreateDTO)throws IllegalAccessException;
+    Map<String, String> addProduct(ProductCreateDTO productCreateDTO)throws IllegalAccessException;
     List<ProductDTO> getAllProducts();
     List<ProductDTO> getProductsByCategory(Category category);
     List<ProductDTO> getProductsByBrand(Brand brand);

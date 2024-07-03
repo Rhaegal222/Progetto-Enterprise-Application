@@ -26,7 +26,7 @@ public class ProductImage {
     private String urlPhoto;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
 }

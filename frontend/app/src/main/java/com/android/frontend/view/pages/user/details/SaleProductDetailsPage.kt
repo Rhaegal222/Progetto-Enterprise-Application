@@ -26,6 +26,7 @@ import com.android.frontend.view_models.user.ProductViewModel
 fun SaleProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
     val context = LocalContext.current
     val productId = CurrentDataUtils.currentProductId
+    val productUri = CurrentDataUtils.currentProductImageUri
     val productDetails = productViewModel.productDetailsLiveData.observeAsState().value
     val userId = SecurePreferences.getUser(context)?.id ?: ""
 
@@ -40,7 +41,7 @@ fun SaleProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: Ca
                     .padding(padding)
             ) {
                 productDetails?.let { productItem ->
-                    DetailContentImageHeader(productItem = productItem)
+                    DetailContentImageHeader(productItem = productItem, productUri)
                     Spacer(modifier = Modifier.height(24.dp))
                     DetailContentDescriptionWithDiscount(productItem = productItem)
                 }

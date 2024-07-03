@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ProductImageService {
-    @GET("api/v1/images/products/{type}/{folder_name}/{file_name}")
+    @GET("/api/v1/images/products/{type}/{folder_name}/{file_name}")
     @Streaming
     fun getImage(
         @Path("type") type: String,
@@ -17,16 +17,16 @@ interface ProductImageService {
     ): Call<ResponseBody>
 
     @Multipart
-    @POST("api/v1/images/products/photo-product")
+    @POST("/api/v1/images/products/photo-product")
     fun savePhotoProduct(
         @Header("Authorization") authHeader: String,
         @Part file: MultipartBody.Part,
-        @Part("product_id") productId: String,
+        @Part("product_id") productId: RequestBody,
         @Part("description") description: RequestBody
     ): Call<ProductImageDTO>
 
 
-    @DELETE("api/v1/images//products/photo-product/{id}")
+    @DELETE("/api/v1/images//products/photo-product/{id}")
     fun deletePhotoProduct(
         @Header("Authorization") authHeader: String,
         @Path("id") id: String

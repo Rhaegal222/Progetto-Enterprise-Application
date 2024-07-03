@@ -114,10 +114,10 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
             if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().equals(loggedUser))
                 throw new IllegalAccessException("Cannot delete payment method");
             paymentMethodDao.deleteById(id);
-        }catch (Exception e){
-            throw new IllegalAccessException("Cannot delete payment method");
         }
-
+        catch (Exception e){
+            throw new IllegalAccessException("Cannot delete this payment method");
+        }
     }
 
     @Override
@@ -134,18 +134,27 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
 
     @Override
     public List<PaymentMethodDTO> getAllPaymentMethods() {
-        return paymentMethodDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+        List<PaymentMethod> paymentMethods = paymentMethodDao.findAll();
+        return paymentMethods.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    public PaymentMethod mapToEntity(PaymentMethodDTO paymentMethodDTO) {
-        return modelMapper.map(paymentMethodDTO, PaymentMethod.class);
-    }
-    public PaymentMethodDTO mapToDTO(PaymentMethod paymentMethod) {
-        return modelMapper.map(paymentMethod, PaymentMethodDTO.class);
+    @Override
+    public List<PaymentMethodDTO> getAllLoggedUserPaymentMethods() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        List<PaymentMethod> paymentMethods = paymentMethodDao.findAllByUserId(loggedUser.getId());
+        return paymentMethods.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    private void throwOnIdMismatch(String id, PaymentMethodDTO paymentMethodDTO) {
-        if (!paymentMethodDTO.getId().equals(id))
+    private void throwOnIdMismatch(String id, PaymentMethodDTO paymentMethodDTO){
+        if(!paymentMethodDTO.getId().equals(id))
             throw new IdMismatchException();
+    }
+
+    private PaymentMethodDTO mapToDTO(PaymentMethod paymentMethod) {
+        return modelMapper.map(paymentMethod, PaymentMethodDTO.class);
     }
 }

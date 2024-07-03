@@ -7,7 +7,6 @@ import it.unical.inf.ea.backend.dto.creation.AddressCreateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,6 +75,15 @@ public class AddressController {
     public ResponseEntity<?> getAllShippingAddresses() {
         try {
             return ResponseEntity.ok(addressService.getAllAddresses());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping(path = "/getAllLoggedUserShippingAddresses")
+    public ResponseEntity<?> getAllLoggedUserShippingAddresses() {
+        try {
+            return ResponseEntity.ok(addressService.getAllLoggedUserShippingAddresses());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

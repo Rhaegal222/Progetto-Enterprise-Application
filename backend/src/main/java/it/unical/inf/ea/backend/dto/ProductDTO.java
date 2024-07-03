@@ -4,9 +4,7 @@ import it.unical.inf.ea.backend.data.entities.ProductImage;
 import it.unical.inf.ea.backend.dto.enums.ProductAvailability;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
@@ -15,6 +13,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @ToString
+@AllArgsConstructor
+@Builder
 public class ProductDTO {
 
     @NotNull

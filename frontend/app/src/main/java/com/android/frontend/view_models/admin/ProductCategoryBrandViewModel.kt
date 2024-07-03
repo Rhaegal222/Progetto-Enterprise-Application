@@ -14,7 +14,6 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.ProductCategoryDTO
 import com.android.frontend.dto.ProductDTO
-import com.android.frontend.dto.admin.AddProductResponse
 import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.dto.creation.ProductCategoryCreateDTO
 import com.android.frontend.dto.creation.ProductCreateDTO
@@ -38,7 +37,8 @@ import java.net.SocketTimeoutException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
+import com.android.frontend.dto.UserDTO
+import com.android.frontend.persistence.SecurePreferences
 
 class ProductCategoryBrandViewModel() : ViewModel() {
 
@@ -63,8 +63,11 @@ class ProductCategoryBrandViewModel() : ViewModel() {
     val errorMessage = MutableLiveData<String>()
     val successMessage = MutableLiveData<String>()
 
-    private val products = MutableLiveData<List<ProductDTO>>()
-    val productsLiveData: LiveData<List<ProductDTO>> get() = products
+    private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
+    val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
+
+    private val _productImagesLiveData = MutableLiveData<Map<String, Uri>>()
+    val productImagesLiveData: LiveData<Map<String, Uri>> = _productImagesLiveData
 
     val productId = MutableLiveData<String>()
 
@@ -94,8 +97,10 @@ class ProductCategoryBrandViewModel() : ViewModel() {
                     response: retrofit2.Response<List<ProductDTO>>
                 ) {
                     if (response.isSuccessful) {
-                        response.body()?.let { productsList ->
-                            products.value = productsList
+                        val products = response.body() ?: emptyList()
+                        _productsLiveData.postValue(products)
+                        products.forEach { product ->
+                            fetchProductImage(context, product.id)
                         }
                     } else {
                         Log.e("DEBUG", " ${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
@@ -265,21 +270,17 @@ class ProductCategoryBrandViewModel() : ViewModel() {
                 productService.addProduct("Bearer $accessToken", productCreateDTO)
             }
             if (response?.isSuccessful == true) {
-                response.body()?.let { responseBody ->
-                    val gson = Gson()
-                    val responseBodyString = responseBody.toString() // Ottieni il corpo della risposta come stringa
-                    val addProductResponse = gson.fromJson(responseBodyString, AddProductResponse::class.java)
-                    Log.d("DEBUG", "${getCurrentStackTrace()} Product added successfully")
-                    productId.postValue(addProductResponse.productId) // Salva il productId per l'upload dell'immagine
+                val tokenMap = response.body()
+                if (tokenMap != null) {
+                    val message = tokenMap["message"]
+                    productId.postValue(tokenMap["productId"])
+                    Log.d("DEBUG", "${getCurrentStackTrace()} ${message}: ${productId.value}")
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Error adding product: ${response?.errorBody()?.string()}")
             }
         }
     }
-
-
-
 
 
     fun deleteProduct(productId: String, context: Context) {
@@ -334,33 +335,47 @@ class ProductCategoryBrandViewModel() : ViewModel() {
         })
     }
 
+    fun uploadProductImage(context: Context, productId: String, imageUri: Uri) {
+        viewModelScope.launch {
+            //stampa nel log productId e imageUri
+            Log.d("DEBUG", "${getCurrentStackTrace()} productId: $productId, imageUri: $imageUri")
+            uploadImage(context, productId, imageUri)
+
+        }
+    }
 
     private suspend fun uploadImage(context: Context, productId: String, imageUri: Uri) {
         withContext(Dispatchers.IO) {
             val file = getFileFromUri(context, imageUri) ?: return@withContext
 
-            val requestFile = file
-                .asRequestBody("image/*".toMediaTypeOrNull())
-
+            // Prepare the file part
+            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
-            val description = "Product Image".toRequestBody("text/plain".toMediaTypeOrNull())
+
+            // Prepare other parts
+            val descriptionPart = "Product Image".toRequestBody("text/plain".toMediaTypeOrNull())
+            val productIdPart = productId.toRequestBody("text/plain".toMediaTypeOrNull())
 
             try {
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 val productImageService = RetrofitInstance.getProductImageApi(context)
-                val call = productImageService.savePhotoProduct("Bearer $accessToken", body, productId, description)
+                val call = productImageService.savePhotoProduct("Bearer $accessToken", body, productIdPart, descriptionPart)
                 val response = call.execute()
 
                 if (response.isSuccessful) {
-                    Log.e("DEBUG", "${getCurrentStackTrace()},Image uploaded successfully")
+                    response.body()?.let { userImageDTO ->
+                        Log.e("DEBUG", "${getCurrentStackTrace()}, Image upload success: ${userImageDTO}")
+                    }
                 } else {
-                    Log.e("DEBUG", "${getCurrentStackTrace()},Image upload failed: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()}, Image upload failed: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()},Image upload error", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Image upload error", e)
             }
         }
     }
+
+
 
     private fun deletePhotoProduct(context: Context, productId: String) {
         val accessToken = TokenManager.getInstance().getAccessToken(context)
@@ -380,6 +395,7 @@ class ProductCategoryBrandViewModel() : ViewModel() {
             }
         })
     }
+
 
     private suspend fun fetchImage(context: Context, type: String, folderName: String, fileName: String): ResponseBody? {
         return withContext(Dispatchers.IO) {
@@ -415,6 +431,29 @@ class ProductCategoryBrandViewModel() : ViewModel() {
         }
     }
 
+    private fun fetchProductImage(context: Context, productId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    val type = "product_photos"
+                    val folderName = productId
+                    val fileName = "photoProduct.png"
+                    val responseBody = fetchImage(context, type, folderName, fileName)
+                    responseBody?.let {
+                        val tempFile = saveImageToFile(context, responseBody)
+                        val imageUri = Uri.fromFile(tempFile)
+                        val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
+                        currentImages[productId] = imageUri
+                        _productImagesLiveData.postValue(currentImages)
+                    } ?: run {
+                        Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
+                    }
+                } catch (e: Exception) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
+                }
+            }
+        }
+    }
 
     private fun getFileFromUri(context: Context, uri: Uri): File? {
         val fileName = "photoProduct.png"

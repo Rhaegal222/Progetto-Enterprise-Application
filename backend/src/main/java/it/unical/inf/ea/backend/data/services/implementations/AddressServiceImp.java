@@ -126,7 +126,7 @@ public class AddressServiceImp implements AddressService {
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(address.getUser().getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !address.getUser().getId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot get address");
         }
         return mapToDTO(address);
@@ -134,20 +134,26 @@ public class AddressServiceImp implements AddressService {
 
     @Override
     public List<AddressDTO> getAllAddresses() {
-        return addressDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+        List<Address> addresses = addressDao.findAll();
+        return addresses.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public Address mapToEntity(AddressDTO addressDTO) {
-        return modelMapper.map(addressDTO, Address.class);
+    @Override
+    public List<AddressDTO> getAllLoggedUserShippingAddresses() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        List<Address> addresses = addressDao.findAllByUserId(loggedUser.getId());
+        return addresses.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public AddressDTO mapToDTO(Address address) {
-        return modelMapper.map(address, AddressDTO.class);
-    }
-
-    private void throwOnIdMismatch(String id, AddressDTO addressDTO) {
-        if (!addressDTO.getId().equals(id)) {
+    private void throwOnIdMismatch(String id, AddressDTO patch) {
+        if (patch.getId() == null) {
+            patch.setId(id);
+        } else if (!id.equals(patch.getId())) {
             throw new IdMismatchException();
         }
+    }
+
+    private AddressDTO mapToDTO(Address address) {
+        return modelMapper.map(address, AddressDTO.class);
     }
 }
