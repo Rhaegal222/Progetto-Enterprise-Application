@@ -4,11 +4,17 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -48,10 +54,9 @@ fun BrandPage(navController: NavHostController, viewModel: ProductCategoryBrandV
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.AdminMenu.route) }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back))
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }
-
             )
         }
     ) {
@@ -61,9 +66,13 @@ fun BrandPage(navController: NavHostController, viewModel: ProductCategoryBrandV
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            item{
+                Spacer(modifier = Modifier.height(50.dp))
+
+            }
             items(brands) { brand ->
                 BrandCard(brand = brand, onDelete = {
-                    viewModel.deleteBrand(context, it.id)
+                    viewModel.deleteBrand(context,it.id)
                     viewModel.fetchAllBrands(context)
                 })
             }

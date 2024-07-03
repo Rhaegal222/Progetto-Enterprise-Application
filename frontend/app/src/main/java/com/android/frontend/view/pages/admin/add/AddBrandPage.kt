@@ -45,7 +45,10 @@ fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBra
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
+
         ) {
+            Spacer(modifier = Modifier.height(50.dp))
+
             TextField(
                 value = brandName,
                 onValueChange = { viewModel.name.value = it },
