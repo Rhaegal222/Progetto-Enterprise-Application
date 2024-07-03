@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,6 +35,13 @@ import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 
+enum class SortOption(val displayName: String) {
+    ALPHABETICAL("Alphabetical"),
+    REVERSE_ALPHABETICAL("Reverse Alphabetical"),
+    PRICE_ASCENDING("Price: Low to High"),
+    PRICE_DESCENDING("Price: High to Low")
+}
+
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +50,8 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
     val products by productViewModel.productsLiveData.observeAsState()
     val productImages by productViewModel.productImagesLiveData.observeAsState()
     var isLoading by remember { mutableStateOf(true) }
+    var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
+    var expanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         productViewModel.fetchAllProducts(context)
@@ -52,6 +62,30 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
         topBar = {
             TopAppBar(
                 title = { Text("All Products") },
+                actions = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Sort By", modifier = Modifier.padding(end = 8.dp))
+                        Box {
+                            IconButton(onClick = { expanded = true }) {
+                                Icon(Icons.Filled.ArrowDropDown, contentDescription = "Sort")
+                            }
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                SortOption.values().forEach { option ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            selectedSortOption = option
+                                            expanded = false
+                                        },
+                                        text = { Text(option.displayName) }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             )
         },
         content = { innerPadding ->
@@ -60,13 +94,20 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                     CircularProgressIndicator()
                 }
             } else {
+                val sortedProducts = when (selectedSortOption) {
+                    SortOption.ALPHABETICAL -> products?.sortedBy { it.title }
+                    SortOption.REVERSE_ALPHABETICAL -> products?.sortedByDescending { it.title }
+                    SortOption.PRICE_ASCENDING -> products?.sortedBy { it.productPrice }
+                    SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.productPrice }
+                }
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    items(products ?: emptyList()) { productDTO ->
+                    items(sortedProducts ?: emptyList()) { productDTO ->
                         ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
                     }
                 }

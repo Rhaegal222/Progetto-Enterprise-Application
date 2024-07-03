@@ -49,7 +49,7 @@ class PaymentViewModel : ViewModel() {
             }
             val paymentService: PaymentService = RetrofitInstance.getPaymentApi(context)
             val response = Request().executeRequest(context) {
-                paymentService.getAllPaymentMethods("Bearer $accessToken")
+                paymentService.getAllLoggedUserPaymentMethods("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let {
@@ -146,4 +146,3 @@ class PaymentViewModel : ViewModel() {
         }
     }
 }
-

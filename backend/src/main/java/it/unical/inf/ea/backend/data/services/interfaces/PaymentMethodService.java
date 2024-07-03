@@ -13,4 +13,5 @@ public interface PaymentMethodService {
     void deletePaymentMethod(String id) throws IllegalAccessException;
     PaymentMethodDTO getPaymentMethodById(String id) throws IllegalAccessException;
     List<PaymentMethodDTO> getAllPaymentMethods();
+    List<PaymentMethodDTO> getAllLoggedUserPaymentMethods();
 }
