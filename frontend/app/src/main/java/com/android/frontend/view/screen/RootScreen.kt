@@ -19,7 +19,7 @@ fun RootScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         if (TokenManager.getInstance().isUserLoggedIn(context)) {
-            if (SecurePreferences.getUser(context)?.role == UserDTO.UserRole.ADMIN) {
+            if (SecurePreferences.getUserRole(context) == "ADMIN"){
                 Log.d("DEBUG", "${getCurrentStackTrace()} User is authenticated as ADMIN. Navigating to AdminScreen")
                 navController.navigate(Screen.AdminScreen.route)
             } else {

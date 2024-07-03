@@ -16,6 +16,7 @@ object SecurePreferences {
     private const val ACCESS_TOKEN_KEY = "access_token"
     private const val REFRESH_TOKEN_KEY = "refresh_token"
     private const val USER_KEY = "user_data"
+    private const val USER_ROLE_KEY = "user_role"
     private const val PROVIDER = "user_provider"
 
     private const val ADDRESS_KEY = "address_data"
@@ -100,8 +101,10 @@ object SecurePreferences {
     fun saveUser(context: Context, user: UserBasicDTO) {
         val sharedPreferences = getSharedPreferences(context)
         val userJson = Gson().toJson(user)
+        val role = user.role.toString()
         with(sharedPreferences.edit()) {
             putString(USER_KEY, userJson)
+            putString(USER_ROLE_KEY, role)
             apply()
         }
     }
@@ -114,6 +117,11 @@ object SecurePreferences {
         } else {
             null
         }
+    }
+
+    fun getUserRole(context: Context): String? {
+        val sharedPreferences = getSharedPreferences(context)
+        return sharedPreferences.getString(USER_ROLE_KEY, null)
     }
 
     private fun clearUser(context: Context) {
