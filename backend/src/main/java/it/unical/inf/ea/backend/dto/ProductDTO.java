@@ -59,5 +59,5 @@ public class ProductDTO {
     @NotNull
     private boolean onSale;
 
-    private BigDecimal discountedPrice;
+    private BigDecimal salePrice;
 }

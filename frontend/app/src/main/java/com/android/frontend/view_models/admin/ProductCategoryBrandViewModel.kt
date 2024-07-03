@@ -14,7 +14,6 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.creation.BrandCreateDTO
-import com.android.frontend.dto.creation.ProductCategoryCreateDTO
 import com.android.frontend.dto.creation.ProductCreateDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,25 +35,27 @@ import java.net.SocketTimeoutException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import androidx.lifecycle.MutableLiveData
+import com.android.frontend.dto.CategoryDTO
+import com.android.frontend.dto.creation.CategoryCreateDTO
 
 class ProductCategoryBrandViewModel() : ViewModel() {
 
-    val title = MutableLiveData<String>()
+    val name = MutableLiveData<String>()
     val description = MutableLiveData<String>()
     val ingredients = MutableLiveData<String>()
     val nutritionalValues = MutableLiveData<String>()
-    val productPrice = MutableLiveData<BigDecimal>()
-    val deliveryPrice = MutableLiveData<BigDecimal>()
-    val productWeight = MutableLiveData<String>()
+    val price = MutableLiveData<BigDecimal>()
+    val shippingCost = MutableLiveData<BigDecimal>()
+    val weight = MutableLiveData<String>()
     val availability = MutableLiveData<ProductDTO.Availability>()
     val quantity = MutableLiveData<Int>()
     val brand = MutableLiveData<BrandDTO>()
-    val productCategory = MutableLiveData<ProductCategoryDTO>()
+    val category = MutableLiveData<CategoryDTO>()
     val onSale = MutableLiveData<Boolean>()
-    val discountedPrice = MutableLiveData<BigDecimal>()
+    val salePrice = MutableLiveData<BigDecimal>()
 
     val allBrands = MutableLiveData<List<BrandDTO>>()
-    val allCategories = MutableLiveData<List<ProductCategoryDTO>>()
+    val allCategories = MutableLiveData<List<CategoryDTO>>()
 
     val isLoading = MutableLiveData<Boolean>()
     val errorMessage = MutableLiveData<String>()
@@ -198,7 +199,7 @@ class ProductCategoryBrandViewModel() : ViewModel() {
         }
     }
 
-    fun addCategory(categoryCreateDTO: ProductCategoryCreateDTO, context: Context) {
+    fun addCategory(categoryCreateDTO: CategoryCreateDTO, context: Context) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
@@ -220,7 +221,7 @@ class ProductCategoryBrandViewModel() : ViewModel() {
         }
     }
 
-    fun deleteCategory(id: Int, context: Context) {
+    fun deleteCategory(context: Context, id: String) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
@@ -243,19 +244,19 @@ class ProductCategoryBrandViewModel() : ViewModel() {
     fun addProduct(context: Context) {
         viewModelScope.launch {
             val productCreateDTO = ProductCreateDTO(
-                title = title.value ?: "",
-                description = description.value,
+                name = name.value,
+                description = description.value?: "",
                 ingredients = ingredients.value,
                 nutritionalValues = nutritionalValues.value,
-                productPrice = productPrice.value ?: BigDecimal.ZERO,
-                deliveryPrice = deliveryPrice.value ?: BigDecimal.ZERO,
-                productWeight = productWeight.value,
-                availability = availability.value ?: ProductDTO.Availability.UNAVAILABLE,
-                quantity = quantity.value ?: 0,
-                brand = brand.value ?: BrandDTO(0, "", ""),
-                productCategory = productCategory.value ?: ProductCategoryDTO(0, ""),
+                price = price.value,
+                shippingCost = shippingCost.value,
+                weight = weight.value,
+                availability = availability.value,
+                quantity = quantity.value,
+                brand = brand.value,
+                category = category.value,
                 onSale = onSale.value ?: false,
-                discountedPrice = discountedPrice.value
+                salePrice = salePrice.value
             )
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {

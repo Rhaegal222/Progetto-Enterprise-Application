@@ -46,7 +46,7 @@ public class CartServiceImp implements CartService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-            Product product = productDao.findById(cartItemCreateDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+            Product product = productDao.findById(cartItemCreateDTO.getId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);

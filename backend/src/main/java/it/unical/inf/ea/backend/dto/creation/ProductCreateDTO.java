@@ -43,7 +43,7 @@ public class ProductCreateDTO {
     private BigDecimal shippingCost;
 
     @NotNull
-    private ProductAvailability productAvailability;
+    private ProductAvailability availability;
 
     @NotNull
     private BrandDTO brand;
@@ -56,6 +56,6 @@ public class ProductCreateDTO {
     @NotNull
     private boolean onSale;
 
-    private BigDecimal discountedPrice;
+    private BigDecimal salePrice;
 }
 

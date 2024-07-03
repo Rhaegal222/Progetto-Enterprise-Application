@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class CartItemCreateDTO {
 
     @NotNull
-    private String productId;
+    private String id;
 
     @NotNull
     private int quantity;

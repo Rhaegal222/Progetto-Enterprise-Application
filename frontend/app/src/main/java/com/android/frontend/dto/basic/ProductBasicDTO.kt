@@ -1,3 +1,4 @@
+import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.dto.ProductImageDTO
 import java.math.BigDecimal
 import java.time.LocalDateTime

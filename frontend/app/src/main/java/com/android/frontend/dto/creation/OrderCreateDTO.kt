@@ -5,8 +5,8 @@ import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.PaymentMethodDTO
 
 data class OrderCreateDTO(
-    val cart: CartDTO,
-    val deliveryAddress: AddressDTO,
-    val paymentMethod: PaymentMethodDTO
-) {
-}
+    val items : List<CartDTO>,
+    val addressId : String,
+    val paymentMethod : String,
+    val userId : String
+)

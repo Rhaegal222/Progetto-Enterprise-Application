@@ -2,9 +2,9 @@ package com.android.frontend.view.pages.admin.add
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -15,15 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
-import com.android.frontend.dto.creation.ProductCategoryCreateDTO
+import com.android.frontend.dto.creation.CategoryCreateDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddCategoryPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
     val context = LocalContext.current
-    val categoryName by viewModel.title.observeAsState("")
+    val categoryName by viewModel.name.observeAsState("")
     var showSuccessDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -32,7 +33,7 @@ fun AddCategoryPage(navController: NavHostController, viewModel: ProductCategory
                 title = { Text(stringResource(id = R.string.add_category)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.CategoryPage.route)  }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }
             )
@@ -46,13 +47,13 @@ fun AddCategoryPage(navController: NavHostController, viewModel: ProductCategory
         ) {
             TextField(
                 value = categoryName,
-                onValueChange = { viewModel.title.value = it },
+                onValueChange = { viewModel.name.value = it },
                 label = { Text("Category Name") },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
                 onClick = {
-                    val categoryCreateDTO = ProductCategoryCreateDTO(categoryName = categoryName)
+                    val categoryCreateDTO = CategoryCreateDTO(name = categoryName)
                     viewModel.addCategory(categoryCreateDTO, context)
                     showSuccessDialog = true
                 },

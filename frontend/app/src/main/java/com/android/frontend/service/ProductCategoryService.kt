@@ -1,6 +1,7 @@
 package com.android.frontend.service
 
-import com.android.frontend.dto.creation.ProductCategoryCreateDTO
+import com.android.frontend.dto.CategoryDTO
+import com.android.frontend.dto.creation.CategoryCreateDTO
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -11,20 +12,20 @@ import retrofit2.http.Query
 
 interface ProductCategoryService {
 
-    @POST("/api/v1/productCategory/addCategory")
+    @POST("/api/v1/category/addCategory")
     fun addCategory(
         @Header("Authorization") token: String,
-        @Body productCategoryCreateDTO: ProductCategoryCreateDTO
+        @Body categoryCreateDTO: CategoryCreateDTO
     ): Call<Void>
 
-    @DELETE("/api/v1/productCategory/deleteCategory")
+    @DELETE("/api/v1/category/deleteCategory")
     fun deleteCategory(
         @Header("Authorization") token: String,
-        @Query("id") id: Int
+        @Query("id") id: String
     ): Call<String>
 
-    @GET("/api/v1/productCategory/allCategories")
+    @GET("/api/v1/category/allCategories")
     fun getAllCategories(
         @Header("Authorization") authorization: String
-    ): Call<List<ProductCategoryDTO>>
+    ): Call<List<CategoryDTO>>
 }

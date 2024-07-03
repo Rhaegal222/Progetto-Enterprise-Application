@@ -3,10 +3,10 @@ package com.android.frontend.view.pages.admin.browse
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -19,10 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
+import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 import com.android.frontend.navigation.Navigation
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CategoryPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
     val context = LocalContext.current
@@ -45,7 +47,7 @@ fun CategoryPage(navController: NavHostController, viewModel: ProductCategoryBra
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.AdminMenu.route)  }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 }
             )
@@ -57,28 +59,30 @@ fun CategoryPage(navController: NavHostController, viewModel: ProductCategoryBra
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(categories) { category ->
-                CategoryCard(category = category, onDelete = {
-                    viewModel.deleteCategory(it.id, context)
-                    viewModel.fetchAllCategories(context)
-                })
+            let {
+                categories.forEach { category ->
+                    item {
+                        CategoryCard(category = category) {
+                            viewModel.deleteCategory(context, category.id)
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun CategoryCard(category: ProductCategoryDTO, onDelete: (ProductCategoryDTO) -> Unit) {
+fun CategoryCard(category: CategoryDTO, onDelete: (CategoryDTO) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = 4.dp
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = category.categoryName, style = MaterialTheme.typography.h6)
+            Text(text = category.name)
             IconButton(onClick = { onDelete(category) }) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(id = R.string.delete), tint = Color.Red)
             }

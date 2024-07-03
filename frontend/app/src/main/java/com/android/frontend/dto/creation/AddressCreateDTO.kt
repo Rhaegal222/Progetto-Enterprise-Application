@@ -5,7 +5,7 @@ data class AddressCreateDTO (
     val phoneNumber: String,
     val street: String,
     val additionalInfo: String,
-    val zipCode: String,
+    val postalCode: String,
     val city: String,
     val province: String,
     val country: String,

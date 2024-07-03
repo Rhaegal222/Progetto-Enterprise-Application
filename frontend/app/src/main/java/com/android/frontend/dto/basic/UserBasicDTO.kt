@@ -1,5 +1,6 @@
 package com.android.frontend.dto.basic
 
+import com.android.frontend.dto.UserDTO
 import com.android.frontend.dto.UserImageDTO
 
 data class UserBasicDTO(
@@ -9,21 +10,7 @@ data class UserBasicDTO(
     var email: String,
     var phoneNumber: String? = null,
     var photoProfile: UserImageDTO? = null,
-    var status: UserStatus? = null,
-    var role: UserRole? = null
-) {
-    enum class UserRole {
-        USER,
-        ADMIN,
-        SUPPLIER
-    }
-
-    enum class UserStatus {
-        ACTIVE,
-        INACTIVE,
-        BANNED,
-        SUSPENDED,
-        CANCELLED
-    }
-}
+    var status: UserDTO.UserStatus? = null,
+    var role: UserDTO.UserRole? = null
+)
 

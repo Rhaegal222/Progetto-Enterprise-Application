@@ -12,7 +12,7 @@ data class ProductDTO(
     var quantity: Int,
     var price: BigDecimal,
     var shippingCost: BigDecimal,
-    var productAvailability: ProductAvailability,
+    var availability: Availability,
     var brand: BrandDTO,
     var category: CategoryDTO,
     var image: ProductImageDTO? = null,
@@ -21,7 +21,7 @@ data class ProductDTO(
 ) {
 
 
-    enum class ProductAvailability{
+    enum class Availability{
         IN_STOCK,
         OUT_OF_STOCK,
         PRE_ORDER,

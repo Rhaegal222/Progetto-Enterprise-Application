@@ -37,20 +37,20 @@ public class ProductServiceImp implements ProductService {
     public Map<String, String> addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
         LocalDateTime now = getTimeNow();
         Product product = new Product();
-        product.setName(productCreateDTO.getTitle());
+        product.setName(productCreateDTO.getName());
         product.setBrand(modelMapper.map(productCreateDTO.getBrand(), Brand.class));
-        product.setPrice(productCreateDTO.getProductPrice());
+        product.setPrice(productCreateDTO.getPrice());
         product.setDescription(productCreateDTO.getDescription());
         product.setIngredients(productCreateDTO.getIngredients());
-        product.setWeight(productCreateDTO.getProductWeight());
+        product.setWeight(productCreateDTO.getWeight());
         product.setNutritionalValues(productCreateDTO.getNutritionalValues());
         product.setQuantity(productCreateDTO.getQuantity());
-        product.setShippingCost(productCreateDTO.getDeliveryPrice());
-        product.setAvailability(productCreateDTO.getProductAvailability());
+        product.setShippingCost(productCreateDTO.getShippingCost());
+        product.setAvailability(productCreateDTO.getAvailability());
         product.setCreatedAt(now);
         product.setUpdatedAt(now);
         product.setOnSale(productCreateDTO.isOnSale());
-        product.setSalePrice(productCreateDTO.getDiscountedPrice());
+        product.setSalePrice(productCreateDTO.getSalePrice());
         product.setCategory(modelMapper.map(productCreateDTO.getCategory(), Category.class));
         productDao.save(product);
         return Map.of("message", "Product added successfully", "productId", product.getId());
@@ -123,7 +123,7 @@ public class ProductServiceImp implements ProductService {
         product.setAvailability(productDTO.getProductAvailability());
         product.setUpdatedAt(now);
         product.setOnSale(productDTO.isOnSale());
-        product.setSalePrice(productDTO.getDiscountedPrice());
+        product.setSalePrice(productDTO.getSalePrice());
         product.setCategory(modelMapper.map(productDTO.getCategory(), Category.class));
         productDao.save(product);
         return modelMapper.map(product, ProductDTO.class);

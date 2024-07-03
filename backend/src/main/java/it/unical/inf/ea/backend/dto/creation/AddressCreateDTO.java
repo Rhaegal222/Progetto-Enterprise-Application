@@ -31,11 +31,11 @@ public class AddressCreateDTO {
 
     @NotNull
     @Length(max = 100)
-    private String province;
+    private String city;
 
     @NotNull
     @Length(max = 100)
-    private String city;
+    private String province;
 
     @NotNull
     @Length(max = 100)
