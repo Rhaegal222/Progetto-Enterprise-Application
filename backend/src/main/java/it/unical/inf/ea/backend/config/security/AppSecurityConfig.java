@@ -109,10 +109,9 @@ public class AppSecurityConfig {
                                 "/api/v1/users/retrieveUserProfile", "api/v1/users/findUserById/", "api/v1/users/findByUsername",
                                 "api/v1/users/updateUser/", "api/v1/users/getNewPassword").authenticated()
 
-
                         // Richieste dove non è richiesta l'autenticazione
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication").permitAll()
-                        .requestMatchers(HttpMethod.GET,"**/"+Constants.BASE_PATH).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication", "/api/v1/users/activate").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         // USER IMAGE
                         .requestMatchers(HttpMethod.POST, "/api/v1/profilePicture/uploadImage").authenticated()
@@ -124,17 +123,12 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlist/deleteWishlist/{id}", "/{wishlistId}/removeProductFromWishlist/{productId}",
                                 "/{wishlistId}/removeProductsFromWishlist/{productId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/wishlist/getWishlistById/{id}", "/api/v1/wishlist/getAllLoggedUserWishlists").authenticated()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
-                        .anyRequest().denyAll())
+                        .anyRequest().permitAll())
 
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))
                 .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // Configurazione CORS
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        // Configurazione CSRF
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

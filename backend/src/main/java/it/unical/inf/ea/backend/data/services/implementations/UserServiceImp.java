@@ -27,12 +27,12 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
@@ -271,14 +271,28 @@ public class UserServiceImp implements UserService{
     @Override
     public ResponseEntity<String> sendVerificationEmail(String username) throws MessagingException {
         User user = userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
-        if(user == null)
-            return new ResponseEntity<>( "user not found" , HttpStatus.NOT_FOUND);
-        if(user.isEmailVerified())
-            return new ResponseEntity<>( "user already verified" , HttpStatus.CONFLICT);
+        if (user == null)
+            return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
+        if (user.isEmailVerified())
+            return new ResponseEntity<>("user already verified", HttpStatus.CONFLICT);
+
         String token = tokenStore.createEmailToken(username, Constants.EMAIL_VERIFICATION_CLAIM);
         String url = Constants.BASE_PATH + "users/activate?token=" + token;
-        emailService.sendEmail(user.getEmail(), Constants.VERIFICATION_EMAIL_SUBJECT,Constants.VERIFICATION_EMAIL_TEXT + url);
-        return new ResponseEntity<>( "verification email sent" , HttpStatus.OK);
+
+        // Imposta l'header Authorization
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            emailService.sendEmail(user.getEmail(), Constants.VERIFICATION_EMAIL_SUBJECT, Constants.VERIFICATION_EMAIL_TEXT + url);
+            return new ResponseEntity<>("verification email sent", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("failed to send verification email", response.getStatusCode());
+        }
     }
 
     @Override
