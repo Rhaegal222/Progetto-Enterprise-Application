@@ -32,7 +32,7 @@ public class UserImageController {
         }
     }
 
-    @GetMapping(path = "getImage/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(path = "/getImage/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<?> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name ,@PathVariable("file_name") String file_name) {
         try {
             Resource resource = userImageService.getImage(type+"/"+folder_name+"/"+file_name);

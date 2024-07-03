@@ -7,26 +7,26 @@ import retrofit2.http.*
 
 interface PaymentService {
 
-    @POST("/api/v1/payment-methods/addPaymentMethod")
+    @POST("/api/v1/paymentMethods/addPaymentMethod")
     fun addPaymentMethod(
         @Header("Authorization") authorization: String,
         @Body paymentMethodCreateDTO: PaymentMethodCreateDTO,
     ): Call<PaymentMethodDTO>
 
-    @PUT("/api/v1/payment-methods/setDefaultPaymentMethod/{id}")
+    @PUT("/api/v1/paymentMethods/setDefaultPaymentMethod/{id}")
     fun setDefaultPaymentMethod(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
     ): Call<Void>
 
-    @PUT("/api/v1/payment-methods/updatePaymentMethod/{id}")
+    @PUT("/api/v1/paymentMethods/updatePaymentMethod/{id}")
     fun updatePaymentMethod(
         @Header("Authorization") authorization: String,
         @Path("id") id: String,
         @Body paymentMethodDTO: PaymentMethodDTO
     ): Call<Void>
 
-    @DELETE("/api/v1/payment-methods/deletePaymentMethod/{id}")
+    @DELETE("/api/v1/paymentMethods/deletePaymentMethod/{id}")
     fun deletePaymentMethod(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
@@ -37,12 +37,12 @@ interface PaymentService {
         @Path("id") id: String
     ): Call<PaymentMethodDTO>
 
-    @GET("/api/v1/payment-methods/getAllPaymentMethods")
+    @GET("/api/v1/paymentMethods/getAllPaymentMethods")
     fun getAllPaymentMethods(
         @Header("Authorization") authorization: String
     ): Call<List<PaymentMethodDTO>>
 
-    @GET("/api/v1/payment-methods/getAllLoggedUserPaymentMethods")
+    @GET("/api/v1/paymentMethods/getAllLoggedUserPaymentMethods")
     fun getAllLoggedUserPaymentMethods(
         @Header("Authorization") authorization: String
     ): Call<List<PaymentMethodDTO>>
