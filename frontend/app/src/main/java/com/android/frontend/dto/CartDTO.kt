@@ -1,7 +1,7 @@
 package com.android.frontend.dto
 
 data class CartDTO(
-    val id: kotlin.String,
-    val userId: kotlin.String,
-    val cartItems: List<CartItemDTO>
+    var id: String,
+    var userId: String,
+    var items: List<CartItemDTO>
 )

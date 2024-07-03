@@ -1,12 +1,20 @@
 package com.android.frontend.dto
 
-import com.android.frontend.dto.basic.UserBasicDTO
+import java.time.LocalDateTime
 
 data class OrderDTO(
-    val id: String,
-    val cart: CartDTO,
-    val user: UserBasicDTO,
-    val deliveryAddress: AddressDTO?,
-    val paymentMethod: PaymentMethodDTO?
+    var id: String,
+    var items: List<CartItemDTO>,
+    var status: OrderStatus,
+    var createdAt: LocalDateTime,
+    var updatedAt: LocalDateTime
 ){
+    enum class OrderStatus {
+        CREATED,
+        PROCESSING,
+        SHIPPED,
+        DELIVERED,
+        CANCELLED,
+        RETURNED
+    }
 }

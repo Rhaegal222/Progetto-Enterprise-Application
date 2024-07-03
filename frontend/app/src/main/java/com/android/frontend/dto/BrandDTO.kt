@@ -1,7 +1,7 @@
 package com.android.frontend.dto
 
-data class BrandDTO (
-    val id: Int,
-    val name: String,
-    val description: String
+data class BrandDTO(
+    var id: String,
+    var name: String,
+    var description: String
 )

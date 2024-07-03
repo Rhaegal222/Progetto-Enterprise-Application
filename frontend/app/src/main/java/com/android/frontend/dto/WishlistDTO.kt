@@ -1,17 +1,19 @@
 package com.android.frontend.dto
 
+import java.time.LocalDateTime
+
 data class WishlistDTO (
-    val id: Long,
-    val wishlistName: String,
-    val userId: String,
-    val visibility: Visibility,
-    val products: List<ProductDTO>? = null
+    var id: String,
+    var wishlistName: String,
+    var wishlistVisibility: WishlistVisibility,
+    var products: List<ProductDTO>? = null,
+    var createdAt: LocalDateTime? = null
 ) {
 
-    enum class Visibility(val value:String){
-        PUBLIC("PUBLIC"),
-        PRIVATE("PRIVATE"),
-        SHARED("SHARED");
+    enum class WishlistVisibility{
+        PUBLIC,
+        PRIVATE,
+        SHARED
     }
 }
 

@@ -1,45 +1,37 @@
 package com.android.frontend.dto
 
 data class UserDTO (
+    var id: String,
+    var firstName: String,
+    var lastName: String,
+    var username: String,
+    var email: String,
+    var phoneNumber: String? = null,
+    var image: UserImageDTO? = null,
+    var role: UserRole,
+    var status: UserStatus,
+    var provider: Provider,
+    var cart: CartDTO
+){
 
-    val id: kotlin.String, //
-    val firstName: kotlin.String, //
-    val lastName: kotlin.String, //
-    val username: kotlin.String, //
-    val email: kotlin.String, //
-    val phoneNumber: String? = null, //
-    val photoProfile: UserImageDTO? = null, //
-    val provider: Provider, //
-    val status: Status, //
-    val addresses: kotlin.Array<AddressDTO>? = null, //
-    val paymentMethods: kotlin.Array<PaymentMethodDTO>? = null, //
-    val role: UserRole, //
-) {
-    /**
-     *
-     * Values: LOCAL,GOOGLE
-     */
-    enum class Provider(val value: kotlin.String){
-        LOCAL("LOCAL"),
-        GOOGLE("GOOGLE");
+    enum class UserRole {
+        USER,
+        ADMIN,
+        SUPPLIER
     }
-    /**
-     *
-     * Values: ACTIVE,BANNED,HIDDEN,CANCELLED
-     */
-    enum class Status(val value: kotlin.String){
-        ACTIVE("ACTIVE"),
-        BANNED("BANNED"),
-        HIDDEN("HIDDEN"),
-        CANCELLED("CANCELLED");
+
+    enum class UserStatus {
+        ACTIVE,
+        INACTIVE,
+        BANNED,
+        SUSPENDED,
+        CANCELLED
     }
-    /**
-     *
-     * Values: ADMIN,USER
-     */
-    enum class UserRole(val value: kotlin.String){
-        ADMIN("ADMIN"),
-        USER("USER");
+
+    enum class Provider {
+        LOCAL,
+        KEYCLOAK,
+        GOOGLE
     }
 
     override fun equals(other: Any?): Boolean {
@@ -54,17 +46,9 @@ data class UserDTO (
         if (username != other.username) return false
         if (email != other.email) return false
         if (phoneNumber != other.phoneNumber) return false
-        if (photoProfile != other.photoProfile) return false
+        if (image != other.image) return false
         if (provider != other.provider) return false
         if (status != other.status) return false
-        if (addresses != null) {
-            if (other.addresses == null) return false
-            if (!addresses.contentEquals(other.addresses)) return false
-        } else if (other.addresses != null) return false
-        if (paymentMethods != null) {
-            if (other.paymentMethods == null) return false
-            if (!paymentMethods.contentEquals(other.paymentMethods)) return false
-        } else if (other.paymentMethods != null) return false
         if (role != other.role) return false
 
         return true
@@ -77,11 +61,9 @@ data class UserDTO (
         result = 31 * result + username.hashCode()
         result = 31 * result + email.hashCode()
         result = 31 * result + (phoneNumber?.hashCode() ?: 0)
-        result = 31 * result + (photoProfile?.hashCode() ?: 0)
+        result = 31 * result + (image?.hashCode() ?: 0)
         result = 31 * result + provider.hashCode()
         result = 31 * result + status.hashCode()
-        result = 31 * result + (addresses?.contentHashCode() ?: 0)
-        result = 31 * result + (paymentMethods?.contentHashCode() ?: 0)
         result = 31 * result + role.hashCode()
         return result
     }
