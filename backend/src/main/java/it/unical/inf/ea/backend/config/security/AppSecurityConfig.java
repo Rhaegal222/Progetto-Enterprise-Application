@@ -111,7 +111,7 @@ public class AppSecurityConfig {
 
 
                         // Richieste dove non è richiesta l'autenticazione
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication",
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication",
                                 "/api/v1/users/activate").permitAll()
 
                         // USER IMAGE
