@@ -42,7 +42,7 @@ interface PaymentService {
         @Header("Authorization") authorization: String
     ): Call<List<PaymentMethodDTO>>
 
-    @GET("/api/v1/paymentMethodss/getAllLoggedUserPaymentMethods")
+    @GET("/api/v1/paymentMethods/getAllLoggedUserPaymentMethods")
     fun getAllLoggedUserPaymentMethods(
         @Header("Authorization") authorization: String
     ): Call<List<PaymentMethodDTO>>
