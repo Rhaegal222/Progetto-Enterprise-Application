@@ -43,7 +43,7 @@ public class UserImageController {
     }
 
     @DeleteMapping("/deleteImage/{id}")
-    public ResponseEntity<?> deleteImage(@PathVariable("id") UUID id){
+    public ResponseEntity<?> deleteImage(@PathVariable("id") String id){
         try {
             userImageService.deleteImage(id);
             return ResponseEntity.ok("{\"message\": \"Image deleted successfully\"}");

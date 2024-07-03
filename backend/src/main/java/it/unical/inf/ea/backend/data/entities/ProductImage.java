@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Builder
@@ -14,10 +15,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "products_image")
 public class ProductImage {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_image_seq")
-    @SequenceGenerator(name = "product_image_seq", sequenceName = "product_image_sequence", allocationSize = 1)
-    @Column(name = "id", updatable = false, nullable = false)
-    private Long id;
+    @GenericGenerator(name = "uuid2", strategy="uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @Column(length = 36, nullable = false, updatable = false)
+    private String id;
 
     private String description;
 

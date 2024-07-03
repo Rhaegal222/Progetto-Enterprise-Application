@@ -12,7 +12,7 @@ public interface UserImageService {
 
     void uploadImage(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException;
 
-    void deleteImage(UUID id) throws IllegalAccessException;
+    void deleteImage(String id) throws IllegalAccessException;
 
 
     void saveUserImage(UserImage userImage);

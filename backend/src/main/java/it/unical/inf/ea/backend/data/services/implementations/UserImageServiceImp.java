@@ -73,7 +73,7 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public void deleteImage(UUID id) throws IllegalAccessException {
+    public void deleteImage(String id) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         UserImage userImage = userImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
 

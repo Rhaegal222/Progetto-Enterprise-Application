@@ -77,7 +77,7 @@ public class ProductImageServiceImp implements ProductImageService {
     }
 
     @Override
-    public void deletePhotoProduct(UUID id) throws IllegalAccessException, IOException {
+    public void deletePhotoProduct(String id) throws IllegalAccessException, IOException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         ProductImage productImage = productImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
         Product product = productImage.getProduct();
