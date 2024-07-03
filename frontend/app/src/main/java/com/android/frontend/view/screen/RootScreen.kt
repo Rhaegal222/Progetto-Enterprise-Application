@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.UserDTO
 import com.android.frontend.navigation.Screen
 import com.android.frontend.persistence.SecurePreferences
 
@@ -18,7 +19,7 @@ fun RootScreen(navController: NavHostController) {
 
     LaunchedEffect(Unit) {
         if (TokenManager.getInstance().isUserLoggedIn(context)) {
-            if (SecurePreferences.getUser(context)?.role == "ADMIN") {
+            if (SecurePreferences.getUser(context)?.role == UserDTO.UserRole.ADMIN) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} User is authenticated as ADMIN. Navigating to AdminScreen")
                 navController.navigate(Screen.AdminScreen.route)
             } else {
