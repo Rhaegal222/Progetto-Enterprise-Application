@@ -2,29 +2,29 @@ package com.android.frontend.dto
 
 import java.math.BigDecimal
 
-data class ProductDTO (
-
-    val id: String,
-    val title: String,
-    val description: String,
-    val ingredients:String,
-    val nutritionalValues: String,
-    val productPrice: BigDecimal,
-    val deliveryPrice: BigDecimal,
-    val brand: BrandDTO,
-    val productWeight: String,
-    val quantity: Int,
-    val availability: Availability,
-    val productCategory: ProductCategoryDTO,
-    val photoProduct: ProductImageDTO? = null,
-    val onSale: Boolean,
-    val discountedPrice: BigDecimal?
+data class ProductDTO(
+    var id: String,
+    var name: String,
+    var description: String? = null,
+    var ingredients: String? = null,
+    var nutritionalValues: String? = null,
+    var weight: String,
+    var quantity: Int,
+    var price: BigDecimal,
+    var shippingCost: BigDecimal,
+    var productAvailability: ProductAvailability,
+    var brand: BrandDTO,
+    var category: CategoryDTO,
+    var image: ProductImageDTO? = null,
+    var onSale: Boolean,
+    var discountedPrice: BigDecimal? = null
 ) {
 
 
-    enum class Availability(val value:String){
-        AVAILABLE("AVAILABLE"),
-        PENDING("PENDING"),
-        UNAVAILABLE("UNAVAILABLE");
+    enum class ProductAvailability{
+        IN_STOCK,
+        OUT_OF_STOCK,
+        PRE_ORDER,
+        DISCONTINUED
     }
 }

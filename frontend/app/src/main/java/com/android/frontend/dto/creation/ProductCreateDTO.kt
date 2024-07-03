@@ -1,7 +1,6 @@
 package com.android.frontend.dto.creation
 
 import com.android.frontend.dto.BrandDTO
-import com.android.frontend.dto.ProductCategoryDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.ProductImageDTO
 import java.math.BigDecimal

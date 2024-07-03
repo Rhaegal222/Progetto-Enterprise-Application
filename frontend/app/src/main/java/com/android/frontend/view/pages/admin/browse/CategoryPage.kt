@@ -3,7 +3,6 @@ package com.android.frontend.view.pages.admin.browse
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -21,7 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
-import com.android.frontend.dto.ProductCategoryDTO
 import com.android.frontend.navigation.Navigation
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")

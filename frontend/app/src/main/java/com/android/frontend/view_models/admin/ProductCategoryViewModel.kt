@@ -10,7 +10,6 @@ import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
-import com.android.frontend.dto.ProductCategoryDTO
 import com.android.frontend.dto.creation.ProductCategoryCreateDTO
 import kotlinx.coroutines.launch
 
