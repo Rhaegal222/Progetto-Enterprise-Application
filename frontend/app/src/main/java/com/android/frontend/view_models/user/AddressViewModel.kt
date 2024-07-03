@@ -67,7 +67,7 @@ class AddressViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let { shippingAddresses ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Added shipping address: $shippingAddresses")
-                    getAllShippingAddresses(context)
+                    getAllLoggedUserShippingAddresses(context)
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to add shipping address: ${response?.errorBody()?.string() ?: "Empty response"}")
@@ -77,7 +77,7 @@ class AddressViewModel : ViewModel() {
         }
     }
 
-    fun getAllShippingAddresses(context: Context) {
+    fun getAllLoggedUserShippingAddresses(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -90,8 +90,8 @@ class AddressViewModel : ViewModel() {
             }
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
-                Log.d("DEBUG", "${getCurrentStackTrace()} Getting shipping addresses")
-                addressService.getAllShippingAddresses("Bearer $accessToken")
+                Log.d("DEBUG", "${getCurrentStackTrace()} Getting shipping addresses for logged user")
+                addressService.getAllLoggedUserShippingAddresses("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Got shipping addresses")
@@ -126,7 +126,7 @@ class AddressViewModel : ViewModel() {
                 viewModelScope.launch {
                     pagerState.scrollToPage(0)
                 }
-                getAllShippingAddresses(context)
+                getAllLoggedUserShippingAddresses(context)
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to set default shipping address: ${response?.errorBody()?.string()}")
                 _hasError.value = true
@@ -152,7 +152,7 @@ class AddressViewModel : ViewModel() {
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Deleted shipping address with id: $id")
-                getAllShippingAddresses(context)
+                getAllLoggedUserShippingAddresses(context)
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to delete shipping address: ${response?.errorBody()?.string()}")
                 _hasError.value = true

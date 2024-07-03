@@ -13,4 +13,5 @@ public interface AddressService {
     void deleteAddress(String id) throws IllegalAccessException;
     AddressDTO getAddressById(String id) throws IllegalAccessException;
     List<AddressDTO> getAllAddresses();
+    List<AddressDTO> getAllLoggedUserShippingAddresses();
 }
