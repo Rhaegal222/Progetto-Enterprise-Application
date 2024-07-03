@@ -52,7 +52,8 @@ public class UserImageServiceImp implements UserImageService {
     @Override
     public void savePhotoUser(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        if (loggedUser.getPhotoProfile() != null) {
+
+        if (userImageDao.existsByUser(loggedUser)){
             throw new IllegalAccessException("Cannot upload more photos, replace the previous photo.");
         }
 
@@ -62,7 +63,7 @@ public class UserImageServiceImp implements UserImageService {
         userImage.setDescription(description);
         userImage.setUrlPhoto("images/user_photos/" + loggedUser.getId() + "/" + fileName);
         userImage.setUser(loggedUser);
-        loggedUser.setPhotoProfile(userImage);
+        loggedUser.setImage(userImage);
 
         FileUploadUtil.saveMultipartFile(localStorageDir, fileName, multipartFile);
         userImage = userImageDao.save(userImage);
@@ -77,13 +78,13 @@ public class UserImageServiceImp implements UserImageService {
 
         // Check if the logged user has permissions to delete the image
         if(loggedUser.getRole().equals(UserRole.USER) &&
-                !loggedUser.getPhotoProfile().getId().equals(userImage.getId())) {
+                !loggedUser.getImage().getId().equals(userImage.getId())) {
             throw new IllegalAccessException("Cannot delete image of others");
         }
 
         // Unlink user and photo
         userImage.setUser(null);
-        loggedUser.setPhotoProfile(null);
+        loggedUser.setImage(null);
 
         Path userDirPath = Paths.get(userDir + loggedUser.getId());
         try {

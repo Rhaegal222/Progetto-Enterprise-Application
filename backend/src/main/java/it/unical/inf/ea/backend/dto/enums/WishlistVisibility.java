@@ -1,6 +1,6 @@
 package it.unical.inf.ea.backend.dto.enums;
 
-public enum Visibility {
+public enum WishlistVisibility {
     PUBLIC,
     PRIVATE,
     SHARED

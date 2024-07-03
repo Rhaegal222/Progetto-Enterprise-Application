@@ -1,6 +1,6 @@
 package it.unical.inf.ea.backend.data.services.implementations;
 
-import it.unical.inf.ea.backend.data.dao.ProductCategoryDao;
+import it.unical.inf.ea.backend.data.dao.CategoryDao;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.*;
@@ -13,12 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -31,7 +26,7 @@ public class ProductServiceImp implements ProductService {
     private final ProductDao productDao;
     private final ModelMapper modelMapper;
     private final UserDao userDao;
-    private final ProductCategoryDao productCategoryDao;
+    private final CategoryDao categoryDao;
     private final TokenStore tokenStore;
     private final Clock clock;
     private final JwtContextUtils jwtContextUtils;
@@ -42,21 +37,21 @@ public class ProductServiceImp implements ProductService {
     public ProductDTO addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
         LocalDateTime now = getTimeNow();
         Product product = new Product();
-        product.setTitle(productCreateDTO.getTitle());
+        product.setName(productCreateDTO.getTitle());
         product.setBrand(modelMapper.map(productCreateDTO.getBrand(), Brand.class));
-        product.setProductPrice(productCreateDTO.getProductPrice());
+        product.setPrice(productCreateDTO.getProductPrice());
         product.setDescription(productCreateDTO.getDescription());
         product.setIngredients(productCreateDTO.getIngredients());
-        product.setProductWeight(productCreateDTO.getProductWeight());
+        product.setWeight(productCreateDTO.getProductWeight());
         product.setNutritionalValues(productCreateDTO.getNutritionalValues());
         product.setQuantity(productCreateDTO.getQuantity());
-        product.setDeliveryPrice(productCreateDTO.getDeliveryPrice());
-        product.setAvailability(productCreateDTO.getAvailability());
-        product.setUploadDate(now);
-        product.setLastUpdateDate(now);
+        product.setShippingCost(productCreateDTO.getDeliveryPrice());
+        product.setAvailability(productCreateDTO.getProductAvailability());
+        product.setCreatedAt(now);
+        product.setUpdatedAt(now);
         product.setOnSale(productCreateDTO.isOnSale());
-        product.setDiscountedPrice(productCreateDTO.getDiscountedPrice());
-        product.setProductCategory(modelMapper.map(productCreateDTO.getProductCategory(), ProductCategory.class));
+        product.setSalePrice(productCreateDTO.getDiscountedPrice());
+        product.setCategory(modelMapper.map(productCreateDTO.getCategory(), Category.class));
         productDao.save(product);
         return modelMapper.map(product, ProductDTO.class);
 
@@ -76,8 +71,8 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProductsByCategory(ProductCategory productCategory) {
-        List<Product> products = productDao.findProductByProductCategory(productCategory);
+    public List<ProductDTO> getProductsByCategory(Category category) {
+        List<Product> products = productDao.findProductByCategory(category);
         return products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
@@ -115,25 +110,24 @@ public class ProductServiceImp implements ProductService {
     @Override
     public ProductDTO updateProduct(String id, ProductDTO productDTO) {
 
-            Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
-            LocalDateTime now = getTimeNow();
-            product.setId(id);
-            product.setTitle(productDTO.getTitle());
-            product.setDescription(productDTO.getDescription());
-            product.setBrand(modelMapper.map(productDTO.getBrand(), Brand.class));
-            product.setIngredients(productDTO.getIngredients());
-            product.setNutritionalValues(productDTO.getNutritionalValues());
-            product.setProductPrice(productDTO.getProductPrice());
-            product.setDeliveryPrice(productDTO.getDeliveryPrice());
-            product.setAvailability(productDTO.getAvailability());
-            product.setQuantity(productDTO.getQuantity());
-            product.setProductWeight(productDTO.getProductWeight());
-            product.setUploadDate(now);
-            product.setLastUpdateDate(now);
-            product.setProductCategory(modelMapper.map(productDTO.getProductCategory(), ProductCategory.class));
-            productDao.save(product);
-            return modelMapper.map(product, ProductDTO.class);
-
+        Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
+        LocalDateTime now = getTimeNow();
+        product.setName(productDTO.getName());
+        product.setBrand(modelMapper.map(productDTO.getBrand(), Brand.class));
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        product.setIngredients(productDTO.getIngredients());
+        product.setWeight(productDTO.getWeight());
+        product.setNutritionalValues(productDTO.getNutritionalValues());
+        product.setQuantity(productDTO.getQuantity());
+        product.setShippingCost(productDTO.getShippingCost());
+        product.setAvailability(productDTO.getProductAvailability());
+        product.setUpdatedAt(now);
+        product.setOnSale(productDTO.isOnSale());
+        product.setSalePrice(productDTO.getDiscountedPrice());
+        product.setCategory(modelMapper.map(productDTO.getCategory(), Category.class));
+        productDao.save(product);
+        return modelMapper.map(product, ProductDTO.class);
     }
 
     @Override

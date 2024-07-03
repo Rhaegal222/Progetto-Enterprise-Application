@@ -1,8 +1,6 @@
 package it.unical.inf.ea.backend.data.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,24 +11,23 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "productCategories")
-public class ProductCategory {
+public class Category {
     @Id
-    @GeneratedValue
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid2")
     @Column(length = 36, nullable = false, updatable = false)
-    private Integer id;
+    private String id;
 
     @Column(nullable = false,unique = true)
-    private String categoryName;
+    private String name;
 
-
-    @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
     private List<Product> products;
-
 
     @PrePersist
     @PreUpdate
     public void capitalizeNames() {
-        this.categoryName = capitalize(this.categoryName);
+        this.name = capitalize(this.name);
     }
 
     private String capitalize(String name) {

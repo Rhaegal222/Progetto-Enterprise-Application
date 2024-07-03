@@ -1,11 +1,12 @@
 package it.unical.inf.ea.backend.data.entities;
 
+import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,26 +18,32 @@ public class Order {
 
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid2")
     @Column(length = 36, nullable = false, updatable = false)
-    private String id;
-
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_cart", nullable = false)
-    private Cart cart;
+    private String orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_user", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="order_address",nullable = false)
-    private Address deliveryAddress;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="order_payment",nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id", nullable = false)
     private PaymentMethod paymentMethod;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<CartItem> items;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }

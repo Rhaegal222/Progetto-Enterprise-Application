@@ -24,8 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
-
-
+import java.util.Objects;
 
 
 @Service
@@ -51,7 +50,6 @@ public class ProductImageServiceImp implements ProductImageService {
 
             return new FileSystemResource(filePath);
         }catch (Exception e){
-            e.printStackTrace();
             throw new IOException("Something gone wrong, try again.");
         }
     }
@@ -65,9 +63,9 @@ public class ProductImageServiceImp implements ProductImageService {
         Product product = productDao.findById(product_id).orElseThrow(EntityNotFoundException::new);
         ProductImage productImage = new ProductImage();
 
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename()).replace(":", "");
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename())).replace(":", "");
 
-        String localStorageDir = prodDir +product.getId();
+        String localStorageDir = prodDir + product.getId() + "/";
         productImage.setDescription(description);
         productImage.setUrlPhoto("images/product_photos/"+product.getId()+"/"+fileName);
         productImage.setProduct(product);
@@ -78,7 +76,7 @@ public class ProductImageServiceImp implements ProductImageService {
     }
 
     @Override
-    public void deletePhotoProduct(String id) throws IllegalAccessException {
+    public void deletePhotoProduct(String id) throws IllegalAccessException, IOException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         ProductImage productImage = productImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
         Product product = productImage.getProduct();
@@ -90,28 +88,21 @@ public class ProductImageServiceImp implements ProductImageService {
 
         // Unlink product and photo
         productImage.setProduct(null);
-        product.setPhotoProduct(null);
+        product.setImage(null);
 
         Path productDirPath = Paths.get(userDir + product.getId());
         try {
-            // Delete all files in the directory
             Files.walk(productDirPath)
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(file -> {
                         if (!file.delete()) {
                             System.err.println("Failed to delete " + file);
-                        }
-                    });
-
-            // Finally, delete the directory itself if it's empty
+                        }});
             Files.deleteIfExists(productDirPath);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalAccessException("Failed to delete product's photo directory");
+            throw new IOException("Something gone wrong, try again.");
         }
-
-        // Remove the image record from the database
         productImageDao.delete(productImage);
     }
 

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class BrandDTO {
 
     @NotNull
-    private Integer id;
+    private String id;
 
     @NotNull
     @NotEmpty

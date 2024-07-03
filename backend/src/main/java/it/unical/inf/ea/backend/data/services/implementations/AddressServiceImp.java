@@ -69,7 +69,7 @@ public class AddressServiceImp implements AddressService {
         address.setCountry(patch.getCountry());
         address.setCity(patch.getCity());
         address.setStreet(patch.getStreet());
-        address.setZipCode(patch.getZipCode());
+        address.setPostalCode(patch.getPostalCode());
 
         if (patch.getIsDefault() && !address.getIsDefault()) {
             for (Address existingAddress : loggedUser.getAddresses()) {
@@ -129,7 +129,6 @@ public class AddressServiceImp implements AddressService {
         if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(address.getUser().getId())) {
             throw new IllegalAccessException("User cannot get address");
         }
-
         return mapToDTO(address);
     }
 

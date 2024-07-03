@@ -3,7 +3,7 @@ package it.unical.inf.ea.backend.dto.creation;
 
 import it.unical.inf.ea.backend.data.entities.ProductImage;
 import it.unical.inf.ea.backend.dto.*;
-import it.unical.inf.ea.backend.dto.enums.Availability;
+import it.unical.inf.ea.backend.dto.enums.ProductAvailability;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +40,7 @@ public class ProductCreateDTO {
     private String productWeight;
 
     @NotNull
-    private Availability availability;
+    private ProductAvailability productAvailability;
 
     @NotNull
     private int quantity;
@@ -49,7 +49,7 @@ public class ProductCreateDTO {
     private BrandDTO brand;
 
     @NotNull
-    private ProductCategoryDTO productCategory;
+    private CategoryDTO category;
 
     private ProductImage photoProduct;
 

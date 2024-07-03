@@ -13,13 +13,14 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class OrderCreateDTO {
-    @NotNull
-    private CartDTO cart;
 
     @NotNull
-    private AddressDTO deliveryAddress;
+    private String cartId;
 
     @NotNull
-    private PaymentMethodDTO paymentMethod;
+    private String addressId;
+
+    @NotNull
+    private String paymentMethodId;
 }
 

@@ -31,7 +31,7 @@ public class WishlistController {
         }
     }
     @GetMapping(path = "/getWishlistById/{id}")
-    public ResponseEntity<?> getWishlistById(@PathVariable Long id){
+    public ResponseEntity<?> getWishlistById(@PathVariable String id){
         try {
             WishlistDTO wishlist = wishlistService.getWishlistById(id);
             return ResponseEntity.ok(wishlist);
@@ -51,7 +51,7 @@ public class WishlistController {
 
 
     @DeleteMapping(path = "/deleteWishlist/{id}")
-    public ResponseEntity<?> deleteWishlist(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteWishlist(@PathVariable("id") String id) {
         try {
             wishlistService.deleteWishlist(id);
             return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
@@ -61,9 +61,9 @@ public class WishlistController {
     }
 
     @PostMapping("/{wishlistId}/products")
-    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @RequestBody String productId) {
+    public ResponseEntity<?> addProductsToWishlist(@PathVariable String wishlistId, @RequestBody String productId) {
         try {
-            wishlistService.addProductsToWishlist(productId, wishlistId);
+            wishlistService.addProductToWishlist(wishlistId, productId);
             return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -71,9 +71,9 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{wishlistId}/products")
-    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @RequestBody String productId) {
+    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable String wishlistId, @RequestBody String productId) {
         try {
-            wishlistService.removeProductsFromWishlist(productId, wishlistId);
+            wishlistService.removeProductFromWishlist(productId, wishlistId);
             return ResponseEntity.ok("{\"message\": \"Product removed from wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");

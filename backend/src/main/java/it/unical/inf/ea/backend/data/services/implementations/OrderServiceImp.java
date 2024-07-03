@@ -1,7 +1,10 @@
 package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
+import it.unical.inf.ea.backend.data.dao.AddressDao;
+import it.unical.inf.ea.backend.data.dao.CartDao;
 import it.unical.inf.ea.backend.data.dao.OrderDao;
+import it.unical.inf.ea.backend.data.dao.PaymentMethodDao;
 import it.unical.inf.ea.backend.data.entities.*;
 import it.unical.inf.ea.backend.data.services.interfaces.OrderService;
 import it.unical.inf.ea.backend.dto.OrderDTO;
@@ -13,6 +16,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,63 +27,86 @@ import java.util.stream.Collectors;
 public class OrderServiceImp implements OrderService {
 
     private final OrderDao orderDao;
+    private final CartDao cartDao;
+    private final AddressDao addressDao;
+    private final PaymentMethodDao paymentMethodDao;
     private final ModelMapper modelMapper;
     private final JwtContextUtils jwtContextUtils;
 
     @Override
+    @Transactional
     public void createOrder(OrderCreateDTO orderCreateDTO) throws IllegalAccessException {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
-                throw new IllegalStateException("L'utente loggato non può essere nullo");
+                throw new IllegalStateException("Accesso non autorizzato");
             }
 
-            Order order = modelMapper.map(orderCreateDTO, Order.class);
-            order.setUser(loggedUser);
+            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Carrello non trovato"));
+            if (cart.getCartItems().isEmpty()) {
+                throw new IllegalAccessException("Il carrello è vuoto");
+            }
+
+            Address address = addressDao.findById(orderCreateDTO.getAddressId())
+                    .orElseThrow(() -> new EntityNotFoundException("Indirizzo non trovato"));
+
+            PaymentMethod paymentMethod = paymentMethodDao.findById(orderCreateDTO.getPaymentMethodId())
+                    .orElseThrow(() -> new EntityNotFoundException("Metodo di pagamento non trovato"));
+
+            Order order = Order.builder()
+                    .user(loggedUser)
+                    .address(address)
+                    .paymentMethod(paymentMethod)
+                    .items(cart.getCartItems())
+                    .status(OrderStatus.CREATED)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+
             orderDao.save(order);
+
+            // Clear the cart after creating the order
+            cartDao.delete(cart);
         } catch (Exception e) {
-            throw new IllegalAccessException("Impossibile creare l'ordine");
+            throw new IllegalAccessException("Impossibile creare l'ordine: " + e.getMessage());
         }
     }
 
     @Override
     @Transactional
     public OrderDTO updateOrder(String id, OrderDTO patch) throws IllegalAccessException {
-        throwOnIdMismatch(id,patch);
-        Order order = orderDao.findById(id).orElseThrow(EntityNotFoundException::new);
+        throwOnIdMismatch(id, patch);
+        Order order = orderDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Ordine non trovato"));
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !order.getUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !order.getUser().equals(loggedUser)) {
             throw new IllegalAccessException("L'utente non può aggiornare l'ordine");
         }
 
-        order.setCart(modelMapper.map(patch.getCart(), Cart.class));
-        order.setDeliveryAddress(modelMapper.map(patch.getDeliveryAddress(), Address.class));
-        order.setPaymentMethod(modelMapper.map(patch.getPaymentMethod(), PaymentMethod.class));
+        modelMapper.map(patch, order);
+        order.setUpdatedAt(LocalDateTime.now());
 
         orderDao.save(order);
         return mapToDTO(order);
     }
 
     @Override
+    @Transactional
     public void deleteOrder(String id) throws IllegalAccessException {
-        try{
-            Order order = orderDao.findById(id).orElseThrow(EntityNotFoundException::new);
-            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if(loggedUser.getRole().equals(UserRole.USER) && !order.getUser().getId().equals(loggedUser.getId()))
-                throw new IllegalAccessException("Impossibile cancellare l'ordine");
-            orderDao.deleteById(id);
-        }catch (Exception e){
-            throw new IllegalAccessException("Impossibile cancellare l'ordine");
+        Order order = orderDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Ordine non trovato"));
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser.getRole().equals(UserRole.USER) && !order.getUser().equals(loggedUser)) {
+            throw new IllegalAccessException("L'utente non può cancellare l'ordine");
         }
+        orderDao.deleteById(id);
     }
 
     @Override
     public OrderDTO getOrderById(String id) throws IllegalAccessException {
-        Order order = orderDao.findById(id).orElseThrow(EntityNotFoundException::new);
+        Order order = orderDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Ordine non trovato"));
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(order.getUser().getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.equals(order.getUser())) {
             throw new IllegalAccessException("L'utente non può ottenere l'ordine");
         }
 
@@ -90,16 +118,13 @@ public class OrderServiceImp implements OrderService {
         return orderDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public Order mapToEntity(OrderDTO orderDTO) {
-        return modelMapper.map(orderDTO, Order.class);
-    }
-
-    public OrderDTO mapToDTO(Order order) {
+    private OrderDTO mapToDTO(Order order) {
         return modelMapper.map(order, OrderDTO.class);
     }
 
     private void throwOnIdMismatch(String id, OrderDTO orderDTO) {
-        if (!orderDTO.getId().equals(id))
+        if (!orderDTO.getId().equals(id)) {
             throw new IdMismatchException();
+        }
     }
 }

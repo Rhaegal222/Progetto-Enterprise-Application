@@ -1,7 +1,7 @@
 package it.unical.inf.ea.backend.dto.basics;
 
 import it.unical.inf.ea.backend.dto.CartDTO;
-import it.unical.inf.ea.backend.dto.enums.OrderState;
+import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.*;

@@ -1,7 +1,7 @@
 package it.unical.inf.ea.backend.dto.basics;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
+import it.unical.inf.ea.backend.dto.CategoryDTO;
 import it.unical.inf.ea.backend.dto.ProductImageDTO;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -53,7 +53,7 @@ public class ProductBasicDTO {
     private String brand;
 
     private List<ProductImageDTO> productImages;
-    private ProductCategoryDTO productCategory;
+    private CategoryDTO category;
 
     @JsonSetter
     public void setProductImages(List<ProductImageDTO> productImages) {

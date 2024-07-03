@@ -18,5 +18,5 @@ public class CartDTO {
     private String userId;
 
     @NotNull
-    private List<CartItemDTO> cartItems;
+    private List<CartItemDTO> items;
 }

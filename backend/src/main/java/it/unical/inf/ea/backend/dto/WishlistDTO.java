@@ -1,11 +1,11 @@
 package it.unical.inf.ea.backend.dto;
 
-import it.unical.inf.ea.backend.data.entities.User;
-import it.unical.inf.ea.backend.dto.enums.Visibility;
+import it.unical.inf.ea.backend.dto.enums.WishlistVisibility;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @ToString
@@ -14,16 +14,15 @@ import java.util.Set;
 public class WishlistDTO {
 
     @NonNull
-    private Long id;
+    private String id;
 
     @NonNull
     private String wishlistName;
 
     @NonNull
-    private String  userId;
-
-    @NonNull
-    private Visibility visibility;
+    private WishlistVisibility wishlistVisibility;
 
     private List<ProductDTO> products;
+
+    private LocalDateTime createdAt;
 }

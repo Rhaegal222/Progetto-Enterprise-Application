@@ -9,7 +9,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface PaymentMethodDao extends JpaRepository<PaymentMethod, String>, JpaSpecificationExecutor<PaymentMethod>, PagingAndSortingRepository<PaymentMethod, String> {
-    //Page<PaymentMethodDTO> findAllByDefaultUser_Id(String id, Pageable pageable);
-    List<PaymentMethod> findByUserEquals(User user);
 
 }

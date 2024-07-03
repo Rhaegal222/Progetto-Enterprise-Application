@@ -12,7 +12,7 @@ public interface ProductImageService {
 
     ProductImageDTO savePhotoProduct(MultipartFile multipartFile, String product_id, String description) throws IOException, IllegalAccessException;
 
-    void deletePhotoProduct(String id) throws IllegalAccessException;
+    void deletePhotoProduct(String id) throws IllegalAccessException, IOException;
 
 
     void saveProductImage(ProductImage productImage);

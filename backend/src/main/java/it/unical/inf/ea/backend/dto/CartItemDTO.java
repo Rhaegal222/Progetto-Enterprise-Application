@@ -19,14 +19,4 @@ public class CartItemDTO {
 
     @NotNull
     private int quantity;
-
-    @NotNull
-    private String productName;
-
-    @NotNull
-    private BigDecimal productPrice;
-
-    @NotNull
-    private BigDecimal deliveryPrice;
-
 }

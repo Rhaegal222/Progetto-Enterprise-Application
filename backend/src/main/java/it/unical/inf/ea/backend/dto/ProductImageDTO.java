@@ -10,7 +10,9 @@ import lombok.*;
 @Builder
 @ToString
 public class ProductImageDTO {
+    @NotNull
     private String id;
+
     private String description;
 
     @NotNull

@@ -1,135 +1,123 @@
 package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
-import it.unical.inf.ea.backend.data.dao.CartDao;
-import it.unical.inf.ea.backend.data.dao.CartItemDao;
 import it.unical.inf.ea.backend.data.entities.Cart;
 import it.unical.inf.ea.backend.data.entities.CartItem;
 import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.User;
+import it.unical.inf.ea.backend.data.dao.CartItemDao;
+import it.unical.inf.ea.backend.data.dao.CartDao;
+import it.unical.inf.ea.backend.data.dao.ProductDao;
+import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.services.interfaces.CartService;
 import it.unical.inf.ea.backend.dto.CartDTO;
 import it.unical.inf.ea.backend.dto.CartItemDTO;
-import it.unical.inf.ea.backend.data.dao.ProductDao;
-import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.dto.creation.CartCreateDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.Collections;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class CartServiceImp implements CartService {
 
     private final CartDao cartDao;
-
     private final CartItemDao cartItemDao;
-
-    private final UserDao userDao;
-
     private final ProductDao productDao;
-
+    private final UserDao userDao;
+    private final ModelMapper modelMapper;
     private final JwtContextUtils jwtContextUtils;
 
-
     @Override
-    @Transactional(readOnly = true)
     public CartDTO getCartByUserId(String userId) {
-        User user = userDao.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Cart cart = cartDao.findByUser(user)
-                .orElseGet(() -> {
-                    Cart newCart = Cart.builder().user(user).cartItems(Collections.emptyList()).build();
-                    cartDao.save(newCart);
-                    return newCart;
-                });
-        return convertToDTO(cart);
+        User user = userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        Cart cart = cartDao.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        return modelMapper.map(cart, CartDTO.class);
     }
 
     @Override
-    @Transactional
-    public CartDTO addProductToCart(CartCreateDTO cartCreateDTO) {
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        User user = userDao.findById(loggedUser.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public CartDTO addItemToCart(CartCreateDTO cartCreateDTO) {
+        try {
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser == null) {
+                throw new IllegalStateException("Logged user cannot be null");
+            }
 
-        Product product = productDao.findById(cartCreateDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+            Product product = productDao.findById(cartCreateDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
-        Cart cart = cartDao.findByUser(user)
-                .orElseGet(() -> {
-                    Cart newCart = Cart.builder().user(user).build();
-                    cartDao.save(newCart);
-                    return newCart;
-                });
+            CartItem cartItem = new CartItem();
+            cartItem.setCart(cart);
+            cartItem.setProduct(product);
+            cartItem.setQuantity(cartCreateDTO.getQuantity());
 
-        Optional<CartItem> existingCartItem = cart.getCartItems().stream()
-                .filter(item -> item.getProduct().getId().equals(product.getId()))
-                .findFirst();
-
-        BigDecimal price = product.isOnSale() ? product.getDiscountedPrice() : product.getProductPrice();
-
-        CartItem cartItem;
-        if (existingCartItem.isPresent()) {
-            cartItem = existingCartItem.get();
-            cartItem.setQuantity(cartItem.getQuantity() + cartCreateDTO.getQuantity());
-        } else {
-            cartItem = CartItem.builder()
-                    .cart(cart)
-                    .product(product)
-                    .quantity(cartCreateDTO.getQuantity())
-                    .productName(product.getTitle())
-                    .productPrice(price)
-                    .deliveryPrice(product.getDeliveryPrice())
-                    .build();
             cart.getCartItems().add(cartItem);
+
+            return mapToDTO(cartDao.save(cart));
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot add item to cart");
         }
-
-        cartItemDao.save(cartItem);
-        return convertToDTO(cart);
-    }
-
-
-    @Override
-    @Transactional
-    public void removeProductFromCart(String cartItemId) {
-        CartItem cartItem = cartItemDao.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
-        cartItemDao.delete(cartItem);
     }
 
     @Override
-    @Transactional
+    public void removeItemFromCart(String cartItemId) {
+        try {
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser == null) {
+                throw new IllegalStateException("Logged user cannot be null");
+            }
+
+            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+            List<CartItem> cartItems = cart.getCartItems();
+
+            for (CartItem cartItem : cartItems) {
+                if (cartItem.getId().equals(cartItemId)) {
+                    cartItems.remove(cartItem);
+                    cartItemDao.deleteById(cartItemId);
+                    break;
+                }
+            }
+
+            cart.setCartItems(cartItems);
+            cartDao.save(cart);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot remove item from cart");
+        }
+    }
+
+    @Override
     public CartDTO updateCartItem(String cartItemId, int quantity) {
-        CartItem cartItem = cartItemDao.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart item not found"));
-        cartItem.setQuantity(quantity);
-        cartItemDao.save(cartItem);
-        return convertToDTO(cartItem.getCart());
+        try {
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser == null) {
+                throw new IllegalStateException("Logged user cannot be null");
+            }
+
+            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+            List<CartItem> cartItems = cart.getCartItems();
+
+            for (CartItem cartItem : cartItems) {
+                if (cartItem.getId().equals(cartItemId)) {
+                    cartItem.setQuantity(quantity);
+                    cartItemDao.save(cartItem);
+                    break;
+                }
+            }
+
+            cart.setCartItems(cartItems);
+            return mapToDTO(cartDao.save(cart));
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot update cart item");
+        }
     }
 
-    private CartDTO convertToDTO(Cart cart) {
-        return CartDTO.builder()
-                .id(cart.getId())
-                .userId(cart.getUser().getId())
-                .cartItems(cart.getCartItems().stream().map(this::convertToDTO).collect(Collectors.toList()))
-                .build();
-    }
-
-    private CartItemDTO convertToDTO(CartItem cartItem) {
-        return CartItemDTO.builder()
-                .id(cartItem.getId())
-                .productId(cartItem.getProduct().getId())
-                .quantity(cartItem.getQuantity())
-                .productName(cartItem.getProductName())
-                .productPrice(cartItem.getProductPrice())
-                .deliveryPrice(cartItem.getDeliveryPrice())
-                .build();
-    }
+    Cart mapToEntity(CartDTO cartDTO) { return modelMapper.map(cartDTO, Cart.class); }
+    CartDTO mapToDTO(Cart cart) { return modelMapper.map(cart, CartDTO.class); }
 }
+

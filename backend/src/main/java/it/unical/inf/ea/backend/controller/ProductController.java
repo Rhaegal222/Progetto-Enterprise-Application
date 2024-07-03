@@ -3,12 +3,10 @@ package it.unical.inf.ea.backend.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.entities.Brand;
-import it.unical.inf.ea.backend.data.entities.Product;
-import it.unical.inf.ea.backend.data.entities.ProductCategory;
+import it.unical.inf.ea.backend.data.entities.Category;
 import it.unical.inf.ea.backend.data.services.interfaces.BrandService;
-import it.unical.inf.ea.backend.data.services.interfaces.ProductCategoryService;
+import it.unical.inf.ea.backend.data.services.interfaces.CategoryService;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
-import it.unical.inf.ea.backend.dto.ProductCategoryDTO;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,11 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
@@ -36,7 +32,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductDao productDao;
-    private final ProductCategoryService productCategoryService;
+    private final CategoryService categoryService;
     private final BrandService brandService;
 
     @PostMapping("/addProduct")
@@ -79,7 +75,7 @@ public class ProductController {
     @GetMapping("/getProductsByCategory/")
     public ResponseEntity<?> getProductsByCategory(@RequestParam String categoryName) {
         try {
-            ProductCategory category = productCategoryService.findByCategoryName(categoryName)
+            Category category = categoryService.findByCategoryName(categoryName)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
             List<ProductDTO> products = productService.getProductsByCategory(category);
             return ResponseEntity.ok(products);

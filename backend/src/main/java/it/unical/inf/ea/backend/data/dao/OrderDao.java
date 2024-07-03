@@ -9,5 +9,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface OrderDao extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order>, PagingAndSortingRepository<Order, String> {
-    List<Order> findByUserEquals(User user);
+
 }

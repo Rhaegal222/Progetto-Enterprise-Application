@@ -10,10 +10,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class UserImageDTO {
+
+    @NotNull
     private String id;
+
     private String description;
 
     @NotNull
     private String urlPhoto;
-
 }

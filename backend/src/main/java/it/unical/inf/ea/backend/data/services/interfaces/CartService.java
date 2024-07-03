@@ -6,7 +6,7 @@ import it.unical.inf.ea.backend.dto.creation.CartCreateDTO;
 public interface CartService {
 
     CartDTO getCartByUserId(String userId);
-    CartDTO addProductToCart(CartCreateDTO cartCreateDTO);
-    void removeProductFromCart(String cartItemId);
+    CartDTO addItemToCart(CartCreateDTO cartCreateDTO);
+    void removeItemFromCart(String cartItemId);
     CartDTO updateCartItem(String cartItemId, int quantity);
 }

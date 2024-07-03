@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartItemDao extends JpaRepository<CartItem, String> {
+
 }

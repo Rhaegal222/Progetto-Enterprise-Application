@@ -11,11 +11,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserDao extends JpaRepository<User,String>, JpaSpecificationExecutor<User> {
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     Page<User> findAllByUsernameContainingIgnoreCase(Pageable pageable, String username);
 

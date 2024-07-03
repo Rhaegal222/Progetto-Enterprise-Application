@@ -58,7 +58,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().equals(loggedUser)) {
             throw new IllegalAccessException("User cannot update payment method");
         }
 
@@ -91,7 +91,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().equals(loggedUser)) {
             throw new IllegalAccessException("User cannot set default payment method");
         }
 
@@ -111,7 +111,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         try{
             PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId()))
+            if(loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().equals(loggedUser))
                 throw new IllegalAccessException("Cannot delete payment method");
             paymentMethodDao.deleteById(id);
         }catch (Exception e){
@@ -125,7 +125,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.getId().equals(paymentMethod.getUser().getId())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.equals(paymentMethod.getUser())) {
             throw new IllegalAccessException("User cannot get payment method");
         }
 

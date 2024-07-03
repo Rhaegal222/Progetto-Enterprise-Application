@@ -27,7 +27,6 @@ public class UserDTO {
     @NotNull
     private String lastName;
 
-    @Length(min = 3, max = 25)
     @NotNull
     private String username;
 
@@ -37,20 +36,17 @@ public class UserDTO {
 
     private String phoneNumber;
 
-    private UserImageDTO photoProfile;
+    private UserImageDTO image;
+
+    @NotNull
+    private UserRole role;
+
+    @NotNull
+    private UserStatus status;
 
     @NotNull
     private Provider provider;
 
     @NotNull
-    private UserStatus status;
-
-    private List<AddressDTO> addresses;
-
-    private List<PaymentMethodDTO> paymentMethods;
-
-    @NotNull
-    private UserRole role;
-
     private CartDTO cart;
 }

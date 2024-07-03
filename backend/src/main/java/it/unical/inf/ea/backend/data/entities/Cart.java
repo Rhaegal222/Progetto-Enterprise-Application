@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "cart")
+@Entity
+@Table(name = "carts")
 public class Cart {
 
     @Id
@@ -26,6 +26,11 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<CartItem> cartItems = Collections.emptyList();
+    private List<CartItem> items;
+
+    public List<CartItem> getCartItems() {
+        return items;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) { this.items = cartItems; }
 }

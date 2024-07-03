@@ -2,6 +2,7 @@ package it.unical.inf.ea.backend.config.security;
 
 import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.entities.User;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,7 +42,7 @@ public class JwtContextUtils {
         }
 
         if (authentication.getPrincipal() instanceof UserDetails userDetails) {
-            return userRepository.findByUsername(userDetails.getUsername());
+            return userRepository.findByUsername(userDetails.getUsername()).orElseThrow(EntityNotFoundException::new);
         }
 
         return null;

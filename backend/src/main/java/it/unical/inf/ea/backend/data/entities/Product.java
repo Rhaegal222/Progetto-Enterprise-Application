@@ -1,82 +1,76 @@
 package it.unical.inf.ea.backend.data.entities;
 
-import it.unical.inf.ea.backend.dto.enums.Availability;
-
+import it.unical.inf.ea.backend.dto.enums.ProductAvailability;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "products")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Product {
+
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid2")
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
 
-    @Column(name = "title", length = 100, nullable = false)
-    private String title;
+    @Column(nullable = false)
+    private String name;
 
-    @Column(name = "description", length = 1000)
+    @Column(nullable = false)
     private String description;
 
-    @Column(name = "ingredients", length = 1000)
+    @Column(nullable = false)
     private String ingredients;
 
-    @Column(name = "nutritionalValues", length = 1000)
+    @Column(nullable = false)
     private String nutritionalValues;
 
-    @Column(name = "productPrice", nullable = false)
-    private BigDecimal productPrice;
+    @Column(nullable = false)
+    private String weight;
 
-    @Column(name = "deliveryPrice", nullable = false)
-    private BigDecimal deliveryPrice;
+    @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    @Column(nullable = false)
+    private BigDecimal shippingCost;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductAvailability availability;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    @Column(name = "upload_date", nullable = false)
-    private LocalDateTime uploadDate;
-
-    @Column(name = "last_update_date", nullable = false)
-    private LocalDateTime lastUpdateDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "availability", nullable = false)
-    private Availability availability;
-
-    @Column(name = "productWeight")
-    private String productWeight;
-
-    @Column(name = "quantity",nullable = false)
-    @Min(0)
-    @Max(1000)
-    private int quantity;
-
-    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
-    private ProductImage photoProduct;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    private ProductCategory productCategory;
+    private Category category;
 
-    @Column(name = "on_sale", nullable = false)
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ProductImage image;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
     private boolean onSale;
 
-    @DecimalMin(value = "0.0", inclusive = false)
-    @Column(name = "discounted_price", nullable = true)
-    private BigDecimal discountedPrice;
-
-
+    @Column
+    private BigDecimal salePrice;
 }

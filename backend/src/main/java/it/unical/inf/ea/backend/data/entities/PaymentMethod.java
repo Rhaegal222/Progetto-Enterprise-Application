@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
@@ -24,6 +25,7 @@ public class PaymentMethod {
     private String id;
 
     @Column(nullable = false)
+    @Length(min = 19, max = 19)
     private String cardNumber;
 
     @Column(nullable = false)

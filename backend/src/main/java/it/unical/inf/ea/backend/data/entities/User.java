@@ -4,6 +4,7 @@ import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,19 +17,17 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
-@Builder
-@AllArgsConstructor
 public class User implements UserDetails {
+
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
     @Column(length = 36, nullable = false, updatable = false)
     private String id;
-
-    @Column(unique = true, nullable = false)
-    private String username;
 
     @Column(nullable = false)
     private String firstName;
@@ -36,32 +35,56 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Email
+    @Column(unique = true, nullable = false)
+    private String email;
+
     @Column(nullable = false)
     private String password;
-
-    @Column(unique = true, nullable = false, length = 100)
-    private String email;
 
     @Column
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private UserImage photoProfile;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Provider provider;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private UserImage image;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Provider provider;
+
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private UserStatus status;
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_payment_methods",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "payment_method_id")
+    )
+    private List<PaymentMethod> paymentMethods;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Address> addresses;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Wishlist> wishlists;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Order> orders;
 
     public Boolean isAdministrator() {
         return role.equals(UserRole.ADMIN);
@@ -69,7 +92,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        switch (role){
+        switch (role) {
             case USER -> {
                 return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
             }
@@ -79,17 +102,6 @@ public class User implements UserDetails {
         }
         return null;
     }
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Cart cart;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<PaymentMethod> paymentMethods;
-
-    @Getter
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Address> addresses;
-
 
     @Override
     public boolean isAccountNonExpired() {

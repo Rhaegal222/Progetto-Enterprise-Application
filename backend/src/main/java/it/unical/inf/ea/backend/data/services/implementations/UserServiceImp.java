@@ -2,7 +2,6 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
-import it.unical.inf.ea.backend.config.FileUploadUtil;
 import it.unical.inf.ea.backend.config.security.*;
 import it.unical.inf.ea.backend.data.dao.CartDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
@@ -151,15 +150,15 @@ public class UserServiceImp implements UserService{
     }
 
     public Optional<UserDTO> findByUsername(String username) {
-        User user= userDao.findByUsername(username);
-        if (user==null || user.getStatus().equals(UserStatus.BANNED) || user.getStatus().equals(UserStatus.CANCELLED) || user.getStatus().equals(UserStatus.HIDDEN))
+        User user= userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        if (user==null || !user.getStatus().equals(UserStatus.ACTIVE))
             return Optional.empty();
         return Optional.of(mapToDto(user));
     }
 
     @Override
     public Optional<UserBasicDTO> findBasicByUsername(String username) {
-        User user= userDao.findByUsername(username);
+        User user= userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
         if (user==null)
             return Optional.empty();
         return Optional.of(mapToBasicDto(user));
@@ -203,10 +202,10 @@ public class UserServiceImp implements UserService{
     private Pair<Boolean,UserDTO> processOAuthPostGoogleLogin(Map<String, String> userInfo) {
 
         String email = userInfo.get("email");
-        User existUser = userDao.findByEmail(email);
+        User existUser = userDao.findByEmail(email).orElseThrow(EntityNotFoundException::new);
 
         if (existUser == null) {
-            if (userDao.findByUsername(email) != null)
+            if (userDao.findByUsername(email).isPresent())
                 throw new IllegalArgumentException("Username already exists");
             User newUser = new User();
             newUser.setUsername(email);
@@ -249,7 +248,7 @@ public class UserServiceImp implements UserService{
     @Override
     public Map<String, String> authenticateUser(String username, String password, Provider provider) throws JOSEException {
 
-        User u = userDao.findByUsername(username);
+        User u = userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
 
         if(!provider.equals(Provider.GOOGLE) && password.equals(Constants.STANDARD_GOOGLE_ACCOUNT_PASSWORD)
                 && u.getProvider().equals(Provider.GOOGLE))
@@ -280,7 +279,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public ResponseEntity<String> sendVerificationEmail(String username) throws MessagingException {
-        User user = userDao.findByUsername(username);
+        User user = userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
         if(user == null)
             return new ResponseEntity<>( "user not found" , HttpStatus.NOT_FOUND);
         if(user.isEmailVerified())
@@ -335,7 +334,7 @@ public class UserServiceImp implements UserService{
             String accessToken = authorizationHeader.substring("Bearer ".length());
             tokenStore.verifyToken(accessToken, Constants.RESET_PASSWORD_CLAIM);
             String username = tokenStore.getUser(accessToken);
-            User user = userDao.findByUsername(username);
+            User user = userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
             if(user == null)
                 throw new RuntimeException("User not found");
             if (newPassword.length() < 8)
@@ -368,7 +367,7 @@ public class UserServiceImp implements UserService{
     public void getNewPasswordByEmail(String token) throws ParseException, JOSEException, MessagingException {
         tokenStore.verifyToken(token, Constants.RESET_PASSWORD_CLAIM);
         String username = tokenStore.getUser(token);
-        User user = userDao.findByUsername(username);
+        User user = userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
         if(user == null)
             throw new RuntimeException("User not found");
         String newPassword = RandomStringUtils.randomAlphanumeric(12);
@@ -389,7 +388,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public void resetPassword(String email) throws MessagingException {
-        User user = userDao.findByEmail(email);
+        User user = userDao.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         if(user == null)
             throw new RuntimeException("User not found");
         String token = tokenStore.createEmailToken(user.getUsername(), Constants.RESET_PASSWORD_CLAIM);
@@ -400,10 +399,7 @@ public class UserServiceImp implements UserService{
     @Override
     public UserDTO getUserDTO() {
         User user = jwtContextUtils.getUserLoggedFromContext();
-        if (user == null ||
-                user.getStatus() == UserStatus.BANNED ||
-                user.getStatus() == UserStatus.CANCELLED ||
-                user.getStatus() == UserStatus.HIDDEN) {
+        if (user == null || !user.getStatus().equals(UserStatus.ACTIVE)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not allowed to access the profile");
         }
         return mapToDto(user);
@@ -412,10 +408,7 @@ public class UserServiceImp implements UserService{
     @Override
     public UserBasicDTO getUserBasicDTO() {
         User user = jwtContextUtils.getUserLoggedFromContext();
-        if (user == null ||
-                user.getStatus() == UserStatus.BANNED ||
-                user.getStatus() == UserStatus.CANCELLED ||
-                user.getStatus() == UserStatus.HIDDEN) {
+        if (user == null || !user.getStatus().equals(UserStatus.ACTIVE)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not allowed to access the profile");
         }
         return modelMapper.map(user, UserBasicDTO.class);
@@ -449,7 +442,7 @@ public class UserServiceImp implements UserService{
         tokenStore.verifyToken(token, Constants.EMAIL_VERIFICATION_CLAIM);
         String username = tokenStore.getUser(token);
 
-        User user = userDao.findByUsername(username);
+        User user = userDao.findByUsername(username).orElseThrow(EntityNotFoundException::new);
         user.setEmailVerified(true);
         userDao.save(user);
 

@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name = "addresses_shipping")
+@Table(name = "addresses")
 @Entity
 public class Address {
     @Id
@@ -33,7 +33,7 @@ public class Address {
     private String additionalInfo;
 
     @Column(nullable = false)
-    private String zipCode;
+    private String postalCode;
 
     @Column(nullable = false)
     private String city;

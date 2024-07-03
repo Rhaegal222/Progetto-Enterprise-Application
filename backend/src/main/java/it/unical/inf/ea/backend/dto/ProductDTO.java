@@ -1,8 +1,8 @@
 package it.unical.inf.ea.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.unical.inf.ea.backend.data.entities.ProductImage;
-import it.unical.inf.ea.backend.dto.enums.Availability;
+import it.unical.inf.ea.backend.dto.enums.ProductAvailability;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class ProductDTO {
 
     @Length(max = 100)
     @NotNull
-    private String title;
+    private String name;
 
     @Length(max = 1000)
     private String description;
@@ -34,30 +34,30 @@ public class ProductDTO {
     private String nutritionalValues;
 
     @NotNull
-    private BigDecimal productPrice;
-
-    @NotNull
-    private BigDecimal deliveryPrice;
-
-    @NotNull
-    private BrandDTO brand;
-
-    private String productWeight;
+    private String weight;
 
     @NotNull
     private int quantity;
 
     @NotNull
-    private Availability availability;
+    private BigDecimal price;
 
     @NotNull
-    private ProductCategoryDTO productCategory;
+    private BigDecimal shippingCost;
 
-    private ProductImage photoProduct;
+    @NotNull
+    private ProductAvailability productAvailability;
+
+    @NotNull
+    private BrandDTO brand;
+
+    @NotNull
+    private CategoryDTO category;
+
+    private ProductImageDTO image;
 
     @NotNull
     private boolean onSale;
 
     private BigDecimal discountedPrice;
-
 }

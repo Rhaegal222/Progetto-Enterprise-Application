@@ -6,7 +6,6 @@ import it.unical.inf.ea.backend.dto.CartDTO;
 import it.unical.inf.ea.backend.dto.creation.CartCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +34,7 @@ public class CartController {
     @PostMapping("/addProduct")
     public ResponseEntity<?> addProductToCart(@RequestBody CartCreateDTO cartCreateDTO) {
         try {
-            CartDTO cart = cartService.addProductToCart(cartCreateDTO);
+            CartDTO cart = cartService.addItemToCart(cartCreateDTO);
             return ResponseEntity.ok(cart);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -45,7 +44,7 @@ public class CartController {
     @DeleteMapping("/removeProduct/{cartItemId}")
     public ResponseEntity<?> removeProductFromCart(@PathVariable String cartItemId) {
         try {
-            cartService.removeProductFromCart(cartItemId);
+            cartService.removeItemFromCart(cartItemId);
             return ResponseEntity.ok("{\"message\": \"Product removed from cart\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");

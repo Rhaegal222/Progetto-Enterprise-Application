@@ -43,7 +43,7 @@ public class ProductImageController {
 
     @DeleteMapping("/products/photo-product/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePhotoUser(@PathVariable("id") String id) throws IllegalAccessException {
+    public void deletePhotoUser(@PathVariable("id") String id) throws IllegalAccessException, IOException {
         productImageService.deletePhotoProduct(id);
     }
 

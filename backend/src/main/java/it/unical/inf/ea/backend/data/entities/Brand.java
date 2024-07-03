@@ -15,9 +15,10 @@ import java.util.List;
 @Table(name = "brands")
 public class Brand {
     @Id
-    @GeneratedValue
-    @Column(length = 36, nullable = false, updatable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_seq")
+    @SequenceGenerator(name = "cart_seq", sequenceName = "cart_sequence", allocationSize = 1)
+    @Column(name = "cart_id", nullable = false, updatable = false)
+    private Long id;
 
     @NotNull
     @NotEmpty

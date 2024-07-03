@@ -1,41 +1,41 @@
 package it.unical.inf.ea.backend.data.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import it.unical.inf.ea.backend.dto.enums.Visibility;
+import it.unical.inf.ea.backend.dto.enums.WishlistVisibility;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity
-@Table(name = "wishlist")
-@Builder
 @AllArgsConstructor
+@Builder
+@Entity
+@Table(name = "wishlists")
 public class Wishlist {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
+    @Column(length = 36, nullable = false, updatable = false)
+    private String id;
 
     @Column(nullable = false)
     private String wishlistName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Visibility visibility;
+    private WishlistVisibility visibility;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "wishlist_products", joinColumns = @JoinColumn(name = "wishlist_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> products;
+    @OneToMany(mappedBy = "wishlist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<WishlistItem> items;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 }

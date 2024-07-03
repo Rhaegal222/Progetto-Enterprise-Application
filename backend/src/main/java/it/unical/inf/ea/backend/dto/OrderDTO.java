@@ -1,13 +1,12 @@
 package it.unical.inf.ea.backend.dto;
 
-import it.unical.inf.ea.backend.dto.basics.ProductBasicDTO;
-import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
-import it.unical.inf.ea.backend.dto.enums.OrderState;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import lombok.*;
 
-import java.time.LocalDateTime;
+import it.unical.inf.ea.backend.dto.enums.OrderStatus;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.springframework.cglib.core.Local;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,12 +19,14 @@ public class OrderDTO {
     private String id;
 
     @NotNull
-    private CartDTO cart;
+    private List<CartItemDTO> items;
 
     @NotNull
-    private UserBasicDTO user;
+    private OrderStatus status;
 
-    private AddressDTO deliveryAddress;
+    @NotNull
+    private Local createdAt;
 
-    private PaymentMethodDTO paymentMethod;
+    @NotNull
+    private Local updatedAt;
 }
