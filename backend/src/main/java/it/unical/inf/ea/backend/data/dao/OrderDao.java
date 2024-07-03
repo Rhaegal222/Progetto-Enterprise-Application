@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface OrderDao extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order>, PagingAndSortingRepository<Order, String> {
+public interface OrderDao extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order>, PagingAndSortingRepository<Order, UUID> {
 
 }

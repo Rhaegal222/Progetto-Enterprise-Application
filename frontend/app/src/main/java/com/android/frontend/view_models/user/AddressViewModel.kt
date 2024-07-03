@@ -62,7 +62,7 @@ class AddressViewModel : ViewModel() {
             val shippingAddress = AddressCreateDTO(fullName, phoneNumber, street, additionalInfo, zipCode, city, province, country, isDefault)
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
-                addressService.addShippingAddress("Bearer $accessToken", shippingAddress)
+                addressService.addAddress("Bearer $accessToken", shippingAddress)
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { shippingAddresses ->
@@ -91,7 +91,7 @@ class AddressViewModel : ViewModel() {
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Getting shipping addresses for logged user")
-                addressService.getAllLoggedUserShippingAddresses("Bearer $accessToken")
+                addressService.getAllLoggedUserAddresses("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Got shipping addresses")
@@ -119,7 +119,7 @@ class AddressViewModel : ViewModel() {
             }
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
-                addressService.setDefaultShippingAddress("Bearer $accessToken", id)
+                addressService.setAddress("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Set default shipping address with id: $id")
@@ -148,7 +148,7 @@ class AddressViewModel : ViewModel() {
             }
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
-                addressService.deleteShippingAddress("Bearer $accessToken", id)
+                addressService.deleteAddress("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Deleted shipping address with id: $id")

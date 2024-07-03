@@ -32,7 +32,7 @@ public class ProductCategoryController {
     }
 
     @DeleteMapping("/deleteCategory")
-    public ResponseEntity<String> deleteCategory(@RequestParam Integer id) {
+    public ResponseEntity<String> deleteCategory(@RequestParam Long id) {
         try {
             categoryService.deleteCategory(id);
             return ResponseEntity.ok("{\"message\": \"Category deleted successfully\"}");

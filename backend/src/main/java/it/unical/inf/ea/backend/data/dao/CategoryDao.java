@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CategoryDao extends JpaRepository<Category,String>, JpaSpecificationExecutor<Category> {
+public interface CategoryDao extends JpaRepository<Category,Long>, JpaSpecificationExecutor<Category> {
 
     @Query("SELECT c FROM Category c WHERE c.name = :categoryName")
     Optional<Category> findByCategoryName(String categoryName);

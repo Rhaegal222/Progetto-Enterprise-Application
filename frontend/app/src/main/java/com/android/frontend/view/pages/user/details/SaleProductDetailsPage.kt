@@ -52,7 +52,7 @@ fun SaleProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: Ca
                     DetailButtonAddCartWithDiscount(
                         productItem = it,
                         onClickToCart = { productItem ->
-                            cartViewModel.addProductToCart(userId, productItem.id, 1, context)
+                            cartViewModel.addProductToCart(productItem.id, 1, context)
                         }
                     )
                 }

@@ -9,14 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface BrandDao extends JpaRepository<Brand,String>, JpaSpecificationExecutor<Brand> {
-
+public interface BrandDao extends JpaRepository<Brand, Long>, JpaSpecificationExecutor<Brand> {
     @Query("select p from Brand p where p.name = :brandName")
-    Optional<Brand> findByBrandName(String brandName);
-
-
-    @Query("select p from Brand p where p.id = :id")
-    Optional<Brand> findByBrandId(Integer id);
-
-
+    Optional<Brand> findByName(String brandName);
 }

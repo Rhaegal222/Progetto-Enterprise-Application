@@ -38,7 +38,7 @@ import androidx.lifecycle.MutableLiveData
 import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.dto.creation.CategoryCreateDTO
 
-class ProductCategoryBrandViewModel() : ViewModel() {
+class ProductCategoryBrandViewModel : ViewModel() {
 
     val name = MutableLiveData<String>()
     val description = MutableLiveData<String>()
@@ -179,7 +179,7 @@ class ProductCategoryBrandViewModel() : ViewModel() {
     }
 
 
-    fun deleteBrand(id: Int, context: Context) {
+    fun deleteBrand(context: Context, id: String) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {

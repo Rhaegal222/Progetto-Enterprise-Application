@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
 @RestController
@@ -34,7 +36,7 @@ public class PaymentMethodController {
     }
 
     @PutMapping(path = "/setDefaultPaymentMethod/{id}")
-    public ResponseEntity<?> setDefaultPaymentMethod(@PathVariable("id") String id) {
+    public ResponseEntity<?> setDefaultPaymentMethod(@PathVariable("id") UUID id) {
         try {
             paymentMethodService.setDefaultPaymentMethod(id);
             return ResponseEntity.noContent().build();
@@ -44,7 +46,7 @@ public class PaymentMethodController {
     }
 
     @PutMapping(path = "/updatePaymentMethod/{id}")
-    public ResponseEntity<?> updatePaymentMethod(@PathVariable("id") String id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) {
+    public ResponseEntity<?> updatePaymentMethod(@PathVariable("id") UUID id, @Valid @RequestBody PaymentMethodDTO paymentMethodDTO) {
         try {
             paymentMethodService.updatePaymentMethod(id, paymentMethodDTO);
             return ResponseEntity.ok("{\"message\": \"Payment method updated successfully\"}");
@@ -54,7 +56,7 @@ public class PaymentMethodController {
     }
 
     @DeleteMapping(path = "/deletePaymentMethod/{id}")
-    public ResponseEntity<?> deletePaymentMethod(@PathVariable("id") String id) {
+    public ResponseEntity<?> deletePaymentMethod(@PathVariable("id") UUID id) {
         try {
             paymentMethodService.deletePaymentMethod(id);
             return ResponseEntity.ok("{\"message\": \"Payment method deleted successfully\"}");
@@ -64,7 +66,7 @@ public class PaymentMethodController {
     }
 
     @GetMapping(path = "/getPaymentMethod/{id}")
-    public ResponseEntity<?> getPaymentMethod(@PathVariable("id") String id) {
+    public ResponseEntity<?> getPaymentMethodById(@PathVariable("id") UUID id) {
         try {
             PaymentMethodDTO paymentMethod = paymentMethodService.getPaymentMethodById(id);
             return ResponseEntity.ok(paymentMethod);
@@ -78,7 +80,7 @@ public class PaymentMethodController {
         try {
             return ResponseEntity.ok(paymentMethodService.getAllPaymentMethods());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 

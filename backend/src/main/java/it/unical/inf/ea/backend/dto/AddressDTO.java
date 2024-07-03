@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
 @ToString
 public class AddressDTO {
 
-    private String id;
+    private UUID id;
 
     @NotNull
     @Length(max = 100)

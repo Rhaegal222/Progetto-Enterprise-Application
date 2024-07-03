@@ -21,17 +21,48 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 public class WishlistController {
     private final WishlistService wishlistService;
 
-    @PostMapping("/createWishlist")
-    public ResponseEntity<?> createWishlist(@Valid @RequestBody WishlistCreateDTO wishListCreateDTO){
+    @PostMapping("/addWishlist")
+    public ResponseEntity<?> addWishlist(@Valid @RequestBody WishlistCreateDTO wishListCreateDTO){
         try {
-            wishlistService.createWishlist(wishListCreateDTO);
+            wishlistService.addWishlist(wishListCreateDTO);
             return ResponseEntity.ok("{\"message\": \"Wishlist created successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
+
+    @DeleteMapping(path = "/deleteWishlist/{id}")
+    public ResponseEntity<?> deleteWishlist(@PathVariable("id") Long id) {
+        try {
+            wishlistService.deleteWishlist(id);
+            return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/{wishlistId}/products")
+    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
+        try {
+            wishlistService.addProductToWishlist(productId, wishlistId);
+            return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @DeleteMapping("/{wishlistId}/products")
+    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
+        try {
+            wishlistService.removeProductFromWishlist(wishlistId, productId);
+            return ResponseEntity.ok("{\"message\": \"Product removed from wishlist successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
     @GetMapping(path = "/getWishlistById/{id}")
-    public ResponseEntity<?> getWishlistById(@PathVariable String id){
+    public ResponseEntity<?> getWishlistById(@PathVariable Long id){
         try {
             WishlistDTO wishlist = wishlistService.getWishlistById(id);
             return ResponseEntity.ok(wishlist);
@@ -48,41 +79,4 @@ public class WishlistController {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
-
-
-    @DeleteMapping(path = "/deleteWishlist/{id}")
-    public ResponseEntity<?> deleteWishlist(@PathVariable("id") String id) {
-        try {
-            wishlistService.deleteWishlist(id);
-            return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @PostMapping("/{wishlistId}/products")
-    public ResponseEntity<?> addProductsToWishlist(@PathVariable String wishlistId, @RequestBody String productId) {
-        try {
-            wishlistService.addProductToWishlist(wishlistId, productId);
-            return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @DeleteMapping("/{wishlistId}/products")
-    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable String wishlistId, @RequestBody String productId) {
-        try {
-            wishlistService.removeProductFromWishlist(productId, wishlistId);
-            return ResponseEntity.ok("{\"message\": \"Product removed from wishlist successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-
-
-
-
-
 }

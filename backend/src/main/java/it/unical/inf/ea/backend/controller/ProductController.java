@@ -46,14 +46,33 @@ public class ProductController {
         }
     }
 
-
     @DeleteMapping("/deleteProduct/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         try {
-            productService.deleteProduct(productService.getProductById(id).getId());
+            productService.deleteProduct(id);
             return ResponseEntity.ok("{\"message\": \"Product deleted successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("\"message\":" + e + "\""); // JSON response
+        }
+    }
+
+    @PutMapping("/updateProduct/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product) {
+        try {
+            productService.updateProduct(id, product);
+            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+        }
+    }
+
+    @GetMapping("/getProductById/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) throws IllegalAccessException {
+        try {
+            ProductDTO product = productService.getProductById(id);
+            return ResponseEntity.ok(product);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
         }
     }
 
@@ -63,16 +82,6 @@ public class ProductController {
     }
 
 
-
-    @PutMapping("/updateProduct/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody ProductDTO product) {
-        try {
-            productService.updateProduct(id, product);
-            return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
-        }
-    }
     @GetMapping("/getProductsByCategory/")
     public ResponseEntity<?> getProductsByCategory(@RequestParam String categoryName) {
         try {
@@ -97,16 +106,6 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getProductById/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable String id) throws IllegalAccessException {
-        try {
-            ProductDTO product = productService.getProductById(id);
-            return ResponseEntity.ok(product);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
-        }
-    }
-
     @GetMapping("/getProductsByPriceRange/")
     public ResponseEntity<?> getProductsByPriceRange(@RequestParam Double min, @RequestParam Double max) {
         try {
@@ -126,5 +125,4 @@ public class ProductController {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
         }
     }
-
 }

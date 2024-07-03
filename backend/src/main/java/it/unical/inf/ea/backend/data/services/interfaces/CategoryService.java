@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface CategoryService {
 
     void addCategory(CategoryCreateDTO category);
-    void deleteCategory(Integer id);
+    void deleteCategory(Long id);
     List<CategoryDTO> getAllCategories();
-    Optional<Category> findByCategoryId(Integer id);
+    Optional<Category> findByCategoryId(Long id);
     Optional<Category> findByCategoryName(String categoryName);
 }

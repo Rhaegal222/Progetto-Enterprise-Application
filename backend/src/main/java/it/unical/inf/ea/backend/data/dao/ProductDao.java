@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductDao extends JpaRepository<Product,String>, JpaSpecificationExecutor<Product> {
+public interface ProductDao extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
     @Query("SELECT p FROM Product p,Category pc WHERE p.category = :category")
     List<Product> findProductByCategory(Category category);

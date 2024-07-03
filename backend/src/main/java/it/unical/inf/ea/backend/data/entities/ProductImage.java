@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Builder
@@ -15,10 +14,10 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "products_image")
 public class ProductImage {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "uuid2")
-    @Column(length = 36, nullable = false, updatable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_image_seq")
+    @SequenceGenerator(name = "product_image_seq", sequenceName = "product_image_sequence", allocationSize = 1)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     private String description;
 
@@ -28,5 +27,4 @@ public class ProductImage {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
-
 }

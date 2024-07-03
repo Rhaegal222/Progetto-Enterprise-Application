@@ -4,12 +4,13 @@ import it.unical.inf.ea.backend.dto.OrderDTO;
 import it.unical.inf.ea.backend.dto.creation.OrderCreateDTO;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OrderService {
 
-    void createOrder(OrderCreateDTO orderCreateDTO) throws IllegalAccessException;
-    OrderDTO updateOrder(String id, OrderDTO orderDTO) throws IllegalAccessException;
-    void deleteOrder(String id) throws IllegalAccessException;
-    OrderDTO getOrderById(String id) throws IllegalAccessException;
+    void addOrder(OrderCreateDTO orderCreateDTO) throws IllegalAccessException;
+    OrderDTO updateOrder(UUID id, OrderDTO orderDTO) throws IllegalAccessException;
+    void deleteOrder(UUID id) throws IllegalAccessException;
+    OrderDTO getOrderById(UUID id) throws IllegalAccessException;
     List<OrderDTO> getAllOrders();
 }

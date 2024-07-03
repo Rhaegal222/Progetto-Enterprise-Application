@@ -12,10 +12,16 @@ import retrofit2.http.Path
 
 interface WishlistService {
 
-    @POST("/api/v1/wishlist/createWishlist")
-    fun createWishlist(
+    @POST("/api/v1/wishlist/addWishlist")
+    fun addWishlist(
         @Header("Authorization") authorization: String,
         @Body wishlistCreateDTO: WishlistCreateDTO
+    ): Call<Void>
+
+    @DELETE("/api/v1/wishlist/deleteWishlist/{id}")
+    fun deleteWishlist(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: Long
     ): Call<Void>
 
     @POST("/api/v1/wishlist/{wishlistId}/products")
@@ -25,17 +31,6 @@ interface WishlistService {
         @Body productId: String
     ): Call<Void>
 
-    @GET("/api/v1/wishlist/getAllLoggedUserWishlists")
-    fun getAllLoggedUserWishlists(
-        @Header("Authorization") authorization: String
-    ): Call<List<WishlistDTO>>
-
-    @GET("/api/v1/wishlist/getWishlistById/{id}")
-    fun getWishlistById(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: Long
-    ): Call<WishlistDTO>
-
     @DELETE("/api/v1/wishlist/{wishlistId}/products/{productId}")
     fun removeProductsFromWishlist(
         @Header("Authorization") authorization: String,
@@ -43,13 +38,14 @@ interface WishlistService {
         @Body productId: String
     ): Call<Void>
 
-
-    @DELETE("/api/v1/wishlist/deleteWishlist/{id}")
-    fun deleteWishlist(
+    @GET("/api/v1/wishlist/getWishlistById/{id}")
+    fun getWishlistById(
         @Header("Authorization") authorization: String,
         @Path("id") id: Long
-    ): Call<Void>
+    ): Call<WishlistDTO>
 
-
-
+    @GET("/api/v1/wishlist/getAllLoggedUserWishlists")
+    fun getAllLoggedUserWishlists(
+        @Header("Authorization") authorization: String
+    ): Call<List<WishlistDTO>>
 }

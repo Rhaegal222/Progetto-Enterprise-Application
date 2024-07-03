@@ -2,16 +2,14 @@ package it.unical.inf.ea.backend.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.services.interfaces.UserImageService;
-import it.unical.inf.ea.backend.dto.UserImageDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.UUID;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
@@ -45,7 +43,7 @@ public class UserImageController {
     }
 
     @DeleteMapping("/users/photo-profile/{id}")
-    public ResponseEntity<?> deletePhotoUser(@PathVariable("id") String id){
+    public ResponseEntity<?> deletePhotoUser(@PathVariable("id") UUID id){
         try {
             userImageService.deletePhotoUser(id);
             return ResponseEntity.ok("{\"message\": \"Image deleted successfully\"}");

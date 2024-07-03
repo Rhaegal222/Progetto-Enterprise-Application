@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface UserImageDao extends JpaRepository<UserImage,String>, JpaSpecificationExecutor<UserImage> {
+public interface UserImageDao extends JpaRepository<UserImage, UUID>, JpaSpecificationExecutor<UserImage> {
     boolean existsByUser(User user);
 }

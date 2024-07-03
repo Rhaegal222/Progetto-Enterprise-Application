@@ -33,21 +33,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Integer id) {
-        this.categoryDao.deleteById(String.valueOf(id));
+    public void deleteCategory(Long id) {
+        this.categoryDao.deleteById(id);
     }
 
     @Override
     public List<CategoryDTO> getAllCategories() {
-        List<Category> ProductCategories = categoryDao.findAll();
-        return ProductCategories.stream()
-                .map(ProductCategory -> modelMapper.map(ProductCategory, CategoryDTO.class))
+        List<Category> categories = categoryDao.findAll();
+        return categories.stream()
+                .map(Category -> modelMapper.map(Category, CategoryDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Category> findByCategoryId(Integer id) {
-        return categoryDao.findById(String.valueOf(id));
+    public Optional<Category> findByCategoryId(Long id) {
+        return categoryDao.findById(id);
     }
 
     @Override

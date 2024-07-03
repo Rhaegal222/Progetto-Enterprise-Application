@@ -31,8 +31,6 @@ public class ProductServiceImp implements ProductService {
     private final Clock clock;
     private final JwtContextUtils jwtContextUtils;
 
-
-
     @Override
     public Map<String, String> addProduct(ProductCreateDTO productCreateDTO) throws IllegalAccessException {
         LocalDateTime now = getTimeNow();
@@ -53,7 +51,7 @@ public class ProductServiceImp implements ProductService {
         product.setSalePrice(productCreateDTO.getSalePrice());
         product.setCategory(modelMapper.map(productCreateDTO.getCategory(), Category.class));
         productDao.save(product);
-        return Map.of("message", "Product added successfully", "productId", product.getId());
+        return Map.of("message", "Product added successfully", "productId", product.getId().toString());
     }
 
     public void save(ProductDTO productDTO) {
@@ -85,13 +83,6 @@ public class ProductServiceImp implements ProductService {
                 .collect(Collectors.toList());
     }
 
-//    @Override
-//    public List<String> getAllProductsBrands() {
-//        List<String> brands = productDao.findAllProductsBrands();
-//        return new ArrayList<>(brands);
-//    }
-
-
     @Override
     public List<ProductDTO> getProductsByPriceRange(Double min, Double max) {
         List<Product> products = productDao.findProductsByPriceRange(min, max);
@@ -101,14 +92,13 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(String id) {
-        Product product = productDao.findById(String.valueOf(id)).orElse(null);
+    public ProductDTO getProductById(Long id) {
+        Product product = productDao.findById(id).orElse(null);
         return product != null ? modelMapper.map(product, ProductDTO.class) : null;
     }
 
     @Override
-    public ProductDTO updateProduct(String id, ProductDTO productDTO) {
-
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
         LocalDateTime now = getTimeNow();
         product.setName(productDTO.getName());
@@ -130,7 +120,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public void deleteProduct(String id) throws IllegalAccessException{
+    public void deleteProduct(Long id) throws IllegalAccessException {
         Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
         productDao.delete(product);
     }

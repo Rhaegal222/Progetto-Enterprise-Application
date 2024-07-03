@@ -62,7 +62,7 @@ fun BrandPage(navController: NavHostController, viewModel: ProductCategoryBrandV
         ) {
             items(brands) { brand ->
                 BrandCard(brand = brand, onDelete = {
-                    viewModel.deleteBrand(it.id, context)
+                    viewModel.deleteBrand(context, it.id)
                     viewModel.fetchAllBrands(context)
                 })
             }
@@ -81,7 +81,7 @@ fun BrandCard(brand: BrandDTO, onDelete: (BrandDTO) -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = brand.name, style = MaterialTheme.typography.h6)
+            Text(text = "${brand.name}")
             IconButton(onClick = { onDelete(brand) }) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(id = R.string.delete), tint = Color.Red)
             }

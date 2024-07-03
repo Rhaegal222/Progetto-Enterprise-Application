@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.dto.CartDTO
-import com.android.frontend.dto.CartItemDTO
-import com.android.frontend.dto.creation.CartCreateDTO
+import com.android.frontend.dto.creation.CartItemCreateDTO
 import com.android.frontend.persistence.SecurePreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +27,7 @@ class CartViewModel : ViewModel() {
             if (response.isSuccessful) {
                 response.body()?.let {
                     _cart.value = it
-                    _cartItemCount.value = it.cartItems.size
+                    _cartItemCount.value = it.items.size
                 }
             }
         }
@@ -44,11 +43,11 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    fun addProductToCart(userId: String, productId: String, quantity: Int, context: Context) {
+    fun addProductToCart(productId: String, quantity: Int, context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)
-        val cartCreateDTO = CartCreateDTO(userId, productId, quantity)
+        val cartItemCreateDTO = CartItemCreateDTO(productId, quantity)
         viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.addProductToCart(cartCreateDTO).execute()
+            val response = cartService.addProductToCart(cartItemCreateDTO).execute()
             if (response.isSuccessful) {
                 loadCart(context)
             }

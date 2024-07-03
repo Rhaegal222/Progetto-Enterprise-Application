@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
 @RestController
@@ -22,7 +24,7 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping("/getCartByUserId/{userId}")
-    public ResponseEntity<?> getCartByUserId(@PathVariable String userId) {
+    public ResponseEntity<?> getCartByUserId(@PathVariable UUID userId) {
         try {
             CartDTO cart = cartService.getCartByUserId(userId);
             return ResponseEntity.ok(cart);
@@ -42,7 +44,7 @@ public class CartController {
     }
 
     @DeleteMapping("/removeProduct/{cartItemId}")
-    public ResponseEntity<?> removeProductFromCart(@PathVariable String cartItemId) {
+    public ResponseEntity<?> removeProductFromCart(@PathVariable Long cartItemId) {
         try {
             cartService.removeItemFromCart(cartItemId);
             return ResponseEntity.ok("{\"message\": \"Product removed from cart\"}");
@@ -52,7 +54,7 @@ public class CartController {
     }
 
     @PutMapping("/updateProduct/{cartItemId}")
-    public ResponseEntity<?> updateCartItem(@PathVariable String cartItemId, @RequestParam int quantity) {
+    public ResponseEntity<?> updateCartItem(@PathVariable Long cartItemId, @RequestParam int quantity) {
         try {
             cartService.updateCartItem(cartItemId, quantity);
             return ResponseEntity.ok("{\"message\": \"Cart updated successfully\"}");

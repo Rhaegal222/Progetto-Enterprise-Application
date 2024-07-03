@@ -22,22 +22,17 @@ interface UserService {
         @Query("password") password: String
     ): Call<Map<String, String>>
 
-    @GET("/api/v1/users/getAllUsers")
-    suspend fun getAllUsers(
-        @Header("Authorization") token: String
-    ): Response<List<UserDTO>>
-
-    @DELETE("/api/v1/users/deleteUser/{id}")
-    suspend fun deleteUser(
-        @Header("Authorization") token: String,
-        @Path("id") userId: String
-    ): Response<Void>
-
     @POST("/api/v1/users/changeRole/{userId}")
     suspend fun changeRole(
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
         @Query("role") role: String
+    ): Response<Void>
+
+    @DELETE("/api/v1/users/deleteUser/{id}")
+    suspend fun deleteUser(
+        @Header("Authorization") token: String,
+        @Path("id") userId: String
     ): Response<Void>
 
     @GET("/api/v1/users/refreshToken")
@@ -65,17 +60,22 @@ interface UserService {
         @Header("Authorization") authorization: String
     ): Call<UserDTO>
 
-    @GET("/api/v1/users/{id}")
-    fun userById(
+    @GET("/api/v1/users/getAllUsers")
+    suspend fun getAllUsers(
+        @Header("Authorization") token: String
+    ): Response<List<UserDTO>>
+
+    @GET("/api/v1/users/findUserById/{id}")
+    fun findUserById(
         @Path("id") id: String
     ): Call<UserDTO>
 
-    @GET("/api/v1/users/find-by-username")
+    @GET("/api/v1/users/findByUsername")
     fun findByUsername(
         @Query("username") username: String
     ): Call<UserBasicDTO>
 
-    @PATCH("/api/v1/users/{id}")
+    @PATCH("/api/v1/updateUser/{id}")
     fun updateUser(
         @Header("Authorization") authorization: String,
         @Path("id") id: String,

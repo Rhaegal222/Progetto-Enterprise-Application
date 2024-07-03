@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
 @RestController
@@ -22,8 +24,8 @@ public class AddressController {
 
     private final AddressService addressService;
 
-    @PostMapping(path="/addShippingAddress")
-    public ResponseEntity<?> addShippingAddress(@Valid @RequestBody AddressCreateDTO addressCreateDTO) {
+    @PostMapping(path= "/addAddress")
+    public ResponseEntity<?> addAddress(@Valid @RequestBody AddressCreateDTO addressCreateDTO) {
         try {
             AddressDTO createdAddress = addressService.createAddress(addressCreateDTO);
             return ResponseEntity.ok(createdAddress);
@@ -32,28 +34,8 @@ public class AddressController {
         }
     }
 
-    @PutMapping(path = "/setDefaultShippingAddress/{id}")
-    public ResponseEntity<?> setDefaultShippingAddress(@PathVariable("id") String id) {
-        try {
-            addressService.setDefaultAddress(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @PutMapping(path = "/updateShippingAddress/{id}")
-    public ResponseEntity<?> updateShippingAddress(@PathVariable("id") String id, @Valid @RequestBody AddressDTO addressDTO) throws IllegalAccessException {
-        try {
-            AddressDTO updatedAddress = addressService.updateAddress(id, addressDTO);
-            return ResponseEntity.ok(updatedAddress);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @DeleteMapping(path = "/deleteShippingAddress/{id}")
-    public ResponseEntity<?> deleteShippingAddress(@PathVariable("id") String id) {
+    @DeleteMapping(path = "/deleteAddress/{id}")
+    public ResponseEntity<?> deleteAddress(@PathVariable("id") UUID id) {
         try {
             addressService.deleteAddress(id);
             return ResponseEntity.noContent().build();
@@ -62,8 +44,37 @@ public class AddressController {
         }
     }
 
-    @GetMapping(path = "/getShippingAddress/{id}")
-    public ResponseEntity<?> getShippingAddress(@PathVariable("id") String id) {
+    @PutMapping(path = "/setDefaultAddress/{id}")
+    public ResponseEntity<?> setDefaultAddress(@PathVariable("id") UUID id) {
+        try {
+            addressService.setDefaultAddress(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @PutMapping(path = "/updateAddress/{id}")
+    public ResponseEntity<?> updateAddress(@PathVariable("id") UUID id, @Valid @RequestBody AddressDTO addressDTO) {
+        try {
+            AddressDTO updatedAddress = addressService.updateAddress(id, addressDTO);
+            return ResponseEntity.ok(updatedAddress);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping(path = "/getAllLoggedUserAddresses")
+    public ResponseEntity<?> getAllLoggedUserAddresses() {
+        try {
+            return ResponseEntity.ok(addressService.getAllLoggedUserAddresses());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping(path = "/getAddress/{id}")
+    public ResponseEntity<?> getAddress(@PathVariable("id") UUID id) {
         try {
             return ResponseEntity.ok(addressService.getAddressById(id));
         } catch (Exception e) {
@@ -71,19 +82,10 @@ public class AddressController {
         }
     }
 
-    @GetMapping(path = "/getAllShippingAddresses")
-    public ResponseEntity<?> getAllShippingAddresses() {
+    @GetMapping(path = "/getAllAddresses")
+    public ResponseEntity<?> getAllAddresses() {
         try {
             return ResponseEntity.ok(addressService.getAllAddresses());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @GetMapping(path = "/getAllLoggedUserShippingAddresses")
-    public ResponseEntity<?> getAllLoggedUserShippingAddresses() {
-        try {
-            return ResponseEntity.ok(addressService.getAllLoggedUserShippingAddresses());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

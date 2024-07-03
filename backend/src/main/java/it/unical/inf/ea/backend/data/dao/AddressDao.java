@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface AddressDao extends JpaRepository<Address, String>, JpaSpecificationExecutor<Address>, PagingAndSortingRepository<Address, String> {
+public interface AddressDao extends JpaRepository<Address, UUID>, JpaSpecificationExecutor<Address> {
 
-    List<Address> findAllByUserId(String id);
+    List<Address> findAllByUserId(UUID id);
 }

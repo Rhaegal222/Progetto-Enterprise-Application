@@ -35,7 +35,7 @@ public class BrandController {
     }
 
     @DeleteMapping("/deleteBrand")
-    public ResponseEntity<String> deleteBrand(@RequestParam Integer id) {
+    public ResponseEntity<String> deleteBrand(@RequestParam Long id) {
         try {
             brandService.deleteBrand(id);
             return ResponseEntity.ok("{\"message\": \"Brand deleted successfully\"}");
@@ -49,15 +49,14 @@ public class BrandController {
         try {
             return ResponseEntity.ok(brandService.getAllBrands());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
     @GetMapping("/getBrandById")
-    public ResponseEntity<?> getBrandById(@RequestParam Integer id) {
+    public ResponseEntity<?> getBrandById(@RequestParam Long id) {
         try {
-            Optional<Brand> brand = brandService.findBrandById(id);
-            return ResponseEntity.ok(brand);
+            return ResponseEntity.ok(brandService.findBrandById(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

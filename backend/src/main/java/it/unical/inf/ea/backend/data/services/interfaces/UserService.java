@@ -19,16 +19,15 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
     UserDTO createUser(User user);
-    UserDTO partialUpdateUser(String id, Map<String, Object> updates) throws IllegalAccessException;
-    void deleteUser(String id);
-    UserBasicDTO findUserById(String id);
+    UserDTO partialUpdateUser(UUID id, Map<String, Object> updates) throws IllegalAccessException;
+    void deleteUser(UUID id);
+    UserBasicDTO findUserById(UUID id);
 
     Optional<UserBasicDTO> findBasicByUsername(String username);
-
-    Page<UserBasicDTO> searchUsersByUsername(String usernameQuery, int page, int size);
 
     Page<UserDTO> findAll(int page, int size, UserRole userRole, String username) throws IllegalAccessException;
 
@@ -54,11 +53,11 @@ public interface UserService {
     void activateUser(String token) throws ParseException, JOSEException;
 
 
-    UserDTO changeRole(String userId, UserRole role) throws IllegalAccessException;
+    UserDTO changeRole(UUID userId, UserRole role) throws IllegalAccessException;
 
-    UserDTO banUser(String userId);
+    UserDTO banUser(UUID userId);
 
-    UserDTO unBanUser(String userId);
+    UserDTO unBanUser(UUID userId);
 
 
     void logout(HttpServletRequest request) throws ParseException, JOSEException;

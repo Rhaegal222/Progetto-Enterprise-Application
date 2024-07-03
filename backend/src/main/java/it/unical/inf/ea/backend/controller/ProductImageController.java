@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
@@ -35,17 +36,14 @@ public class ProductImageController {
     public ProductImageDTO savePhotoProduct(
             @RequestPart("file") MultipartFile multipartFile,
             @RequestParam("description") String description,
-            @RequestParam("product_id") String product_id
+            @RequestParam("productId") Long productId
     ) throws IOException, IllegalAccessException {
-        return productImageService.savePhotoProduct(multipartFile, product_id, description);
+        return productImageService.savePhotoProduct(multipartFile, productId, description);
     }
-
 
     @DeleteMapping("/products/photo-product/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePhotoUser(@PathVariable("id") String id) throws IllegalAccessException, IOException {
+    public void deletePhotoUser(@PathVariable("id") UUID id) throws IllegalAccessException, IOException {
         productImageService.deletePhotoProduct(id);
     }
-
-
 }

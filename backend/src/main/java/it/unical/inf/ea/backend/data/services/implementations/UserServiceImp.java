@@ -36,10 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
@@ -81,7 +78,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserDTO partialUpdateUser(String id, Map<String, Object> updates) throws IllegalAccessException {
+    public UserDTO partialUpdateUser(UUID id, Map<String, Object> updates) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         User user = userDao.findById(id).orElseThrow();
 
@@ -120,7 +117,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     @Transactional
-    public void  deleteUser(String id) {
+    public void  deleteUser(UUID id) {
         try{
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if(loggedUser.getRole().equals(UserRole.USER))
@@ -140,7 +137,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserBasicDTO findUserById(String id) {
+    public UserBasicDTO findUserById(UUID id) {
         User user = userDao.findById(id).orElseThrow(EntityNotFoundException::new);
         if (!user.getStatus().equals(UserStatus.ACTIVE)){
             throw new EntityNotFoundException();
@@ -162,12 +159,6 @@ public class UserServiceImp implements UserService{
         if (user==null)
             return Optional.empty();
         return Optional.of(mapToBasicDto(user));
-    }
-
-    @Override
-    public Page<UserBasicDTO> searchUsersByUsername(String usernameQuery, int page, int size) {
-        Page<User> allByUsernameContainingIgnoreCase = userDao.findAllByUsernameContainingIgnoreCase(PageRequest.of(page, size), usernameQuery);
-        return allByUsernameContainingIgnoreCase.map(this::mapToBasicDto);
     }
 
     public Page<UserDTO> findAll(int page, int size, UserRole userRole, String username) throws IllegalAccessException {
@@ -349,7 +340,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserDTO changeRole(String userId, UserRole role) throws IllegalAccessException {
+    public UserDTO changeRole(UUID userId, UserRole role) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
         if(!loggedUser.getRole().equals(UserRole.ADMIN))
@@ -416,7 +407,7 @@ public class UserServiceImp implements UserService{
 
     public void throwOnIdMismatch(String id, UserDTO userDTO){
         if(userDTO.getId() != null && !userDTO.getId().equals(id))
-            throw new IdMismatchException();
+            throw new IdMismatchException("L'id dell'ordine non corrisponde");
     }
 
     @Override
@@ -451,7 +442,7 @@ public class UserServiceImp implements UserService{
 
 
     @Override
-    public UserDTO banUser(String userId) {
+    public UserDTO banUser(UUID userId) {
         User user = userDao.findById(userId).orElseThrow(EntityNotFoundException::new);
         if(user.getRole().equals(UserRole.ADMIN)){
             throw new IllegalArgumentException("Admins cannot be banned");
@@ -461,7 +452,7 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public UserDTO unBanUser(String userId) {
+    public UserDTO unBanUser(UUID userId) {
         User user = userDao.findById(userId).orElseThrow(EntityNotFoundException::new);
 
         user.setStatus(UserStatus.ACTIVE);

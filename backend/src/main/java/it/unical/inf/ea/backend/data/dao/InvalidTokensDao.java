@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface InvalidTokensDao extends JpaRepository<InvalidToken,String>, JpaSpecificationExecutor<InvalidToken> {
+public interface InvalidTokensDao extends JpaRepository<InvalidToken,Long>, JpaSpecificationExecutor<InvalidToken> {
 
     Optional<InvalidToken> findByToken(String token);
 

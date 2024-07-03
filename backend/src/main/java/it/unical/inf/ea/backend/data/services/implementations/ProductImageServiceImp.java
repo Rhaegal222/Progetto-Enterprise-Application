@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @Service
@@ -55,12 +56,12 @@ public class ProductImageServiceImp implements ProductImageService {
     }
 
     @Override
-    public ProductImageDTO savePhotoProduct(MultipartFile multipartFile, String product_id, String description) throws IOException, IllegalAccessException {
+    public ProductImageDTO savePhotoProduct(MultipartFile multipartFile, Long productId, String description) throws IOException, IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if(loggedUser.getRole().equals(UserRole.USER) )
             throw new IllegalAccessException("only admin can upload photos");
 
-        Product product = productDao.findById(product_id).orElseThrow(EntityNotFoundException::new);
+        Product product = productDao.findById(productId).orElseThrow(EntityNotFoundException::new);
         ProductImage productImage = new ProductImage();
 
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename())).replace(":", "");
@@ -76,7 +77,7 @@ public class ProductImageServiceImp implements ProductImageService {
     }
 
     @Override
-    public void deletePhotoProduct(String id) throws IllegalAccessException, IOException {
+    public void deletePhotoProduct(UUID id) throws IllegalAccessException, IOException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         ProductImage productImage = productImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
         Product product = productImage.getProduct();

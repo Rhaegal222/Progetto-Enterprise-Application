@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,8 +54,8 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
 
     @Override
     @Transactional
-    public PaymentMethodDTO updatePaymentMethod(String id, PaymentMethodDTO patch) throws IllegalAccessException {
-        throwOnIdMismatch(id,patch);
+    public PaymentMethodDTO updatePaymentMethod(UUID id, PaymentMethodDTO patch) throws IllegalAccessException {
+
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -87,7 +88,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
 
     @Override
     @Transactional
-    public void setDefaultPaymentMethod(String id) throws IllegalAccessException {
+    public void setDefaultPaymentMethod(UUID id) throws IllegalAccessException {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -107,7 +108,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
-    public void deletePaymentMethod(String id) throws IllegalAccessException {
+    public void deletePaymentMethod(UUID id) throws IllegalAccessException {
         try{
             PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
@@ -121,7 +122,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
     }
 
     @Override
-    public PaymentMethodDTO getPaymentMethodById(String id) throws IllegalAccessException {
+    public PaymentMethodDTO getPaymentMethodById(UUID id) throws IllegalAccessException {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -147,11 +148,6 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         return paymentMethods.stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
-    }
-
-    private void throwOnIdMismatch(String id, PaymentMethodDTO paymentMethodDTO){
-        if(!paymentMethodDTO.getId().equals(id))
-            throw new IdMismatchException();
     }
 
     private PaymentMethodDTO mapToDTO(PaymentMethod paymentMethod) {

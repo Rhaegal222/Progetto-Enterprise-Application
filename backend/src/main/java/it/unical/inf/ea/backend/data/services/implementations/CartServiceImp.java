@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class CartServiceImp implements CartService {
     private final JwtContextUtils jwtContextUtils;
 
     @Override
-    public CartDTO getCartByUserId(String userId) {
+    public CartDTO getCartByUserId(UUID userId) {
         User user = userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
         Cart cart = cartDao.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
         return modelMapper.map(cart, CartDTO.class);
@@ -46,7 +47,7 @@ public class CartServiceImp implements CartService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-            Product product = productDao.findById(cartItemCreateDTO.getId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+            Product product = productDao.findById(cartItemCreateDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
@@ -62,7 +63,7 @@ public class CartServiceImp implements CartService {
     }
 
     @Override
-    public void removeItemFromCart(String cartItemId) {
+    public void removeItemFromCart(Long cartItemId) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -88,7 +89,7 @@ public class CartServiceImp implements CartService {
     }
 
     @Override
-    public CartDTO updateCartItem(String cartItemId, int quantity) {
+    public CartDTO updateCartItem(Long cartItemId, int quantity) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {

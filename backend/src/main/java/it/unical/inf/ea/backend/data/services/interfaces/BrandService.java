@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface BrandService{
 
     void addBrand(BrandCreateDTO brandDTO);
-    void deleteBrand(Integer id);
+    void deleteBrand(Long id);
     List<BrandDTO> getAllBrands();
-    Optional<Brand> findBrandById(Integer id);
+    Optional<Brand> findBrandById(Long id);
     Optional<Brand> findBrandByName(String brandName);
 }

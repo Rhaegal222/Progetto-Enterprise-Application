@@ -10,7 +10,6 @@ import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
-import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.dto.creation.WishlistCreateDTO
 import kotlinx.coroutines.launch
@@ -44,7 +43,7 @@ class WishlistViewModel : ViewModel() {
             val wishlistService = RetrofitInstance.getWishlistApi(context)
             val wishlistCreateDTO = WishlistCreateDTO(wishlistName, visibility)
             val response = Request().executeRequest(context) {
-                wishlistService.createWishlist("Bearer $accessToken", wishlistCreateDTO)
+                wishlistService.addWishlist("Bearer $accessToken", wishlistCreateDTO)
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { shippingAddresses ->

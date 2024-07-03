@@ -7,31 +7,47 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface AddressService {
+
+    @POST("/api/v1/shipping-addresses/addAddress")
+    fun addAddress(
+        @Header("Authorization") authorization: String,
+        @Body addressCreateDTO: AddressCreateDTO,
+    ): Call<AddressDTO>
+
+    @DELETE("/api/v1/shipping-addresses/deleteAddress/{id}")
+    fun deleteAddress(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Call<Void>
+
+    @PUT("/api/v1/shipping-addresses/setAddress/{id}")
+    fun setAddress(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Call<Void>
+
+    @PUT("/api/v1/shipping-addresses/updateAddress/{id}")
+    fun updateAddress(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String,
+        @Body shippingAddressDTO: AddressDTO
+    ): Call<AddressDTO>
+
+    @GET("/api/v1/shipping-addresses/getShippingAddress/{id}")
+    fun getShippingAddress(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Call<AddressDTO>
+
     @GET("/api/v1/shipping-addresses/getAllShippingAddresses")
     fun getAllShippingAddresses(
         @Header("Authorization") authorization: String
     ): Call<List<AddressDTO>>
 
-    @POST("/api/v1/shipping-addresses/addShippingAddress")
-    fun addShippingAddress(
-        @Header("Authorization") authorization: String,
-        @Body shippingAddressCreateDTO: AddressCreateDTO,
-    ): Call<AddressDTO>
 
-    @DELETE("/api/v1/shipping-addresses/deleteShippingAddress/{id}")
-    fun deleteShippingAddress(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: String
-    ): Call<Void>
 
-    @PUT("/api/v1/shipping-addresses/setDefaultShippingAddress/{id}")
-    fun setDefaultShippingAddress(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: String
-    ): Call<Void>
-
-    @GET("/api/v1/shipping-addresses/getAllLoggedUserShippingAddresses")
-    fun getAllLoggedUserShippingAddresses(
+    @GET("/api/v1/shipping-addresses/getAllLoggedUserAddresses")
+    fun getAllLoggedUserAddresses(
         @Header("Authorization") authorization: String
     ): Call<List<AddressDTO>>
 }

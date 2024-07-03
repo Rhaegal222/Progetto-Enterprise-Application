@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +57,7 @@ public class AddressServiceImp implements AddressService {
 
     @Override
     @Transactional
-    public AddressDTO updateAddress(String id, AddressDTO patch) throws IllegalAccessException {
+    public AddressDTO updateAddress(UUID id, AddressDTO patch) throws IllegalAccessException {
         throwOnIdMismatch(id, patch);
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
@@ -88,7 +89,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    public void setDefaultAddress(String id) throws IllegalAccessException {
+    public void setDefaultAddress(UUID id) throws IllegalAccessException {
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -108,7 +109,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    public void deleteAddress(String id) throws IllegalAccessException {
+    public void deleteAddress(UUID id) throws IllegalAccessException {
         try {
             Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
@@ -122,7 +123,7 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    public AddressDTO getAddressById(String id) throws IllegalAccessException {
+    public AddressDTO getAddressById(UUID id) throws IllegalAccessException {
         Address address = addressDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -139,17 +140,17 @@ public class AddressServiceImp implements AddressService {
     }
 
     @Override
-    public List<AddressDTO> getAllLoggedUserShippingAddresses() {
+    public List<AddressDTO> getAllLoggedUserAddresses() {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         List<Address> addresses = addressDao.findAllByUserId(loggedUser.getId());
         return addresses.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    private void throwOnIdMismatch(String id, AddressDTO patch) {
+    private void throwOnIdMismatch(UUID id, AddressDTO patch) {
         if (patch.getId() == null) {
             patch.setId(id);
         } else if (!id.equals(patch.getId())) {
-            throw new IdMismatchException();
+            throw new IdMismatchException("L'id dell'ordine non corrisponde");
         }
     }
 

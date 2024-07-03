@@ -7,9 +7,10 @@ import it.unical.inf.ea.backend.dto.creation.OrderCreateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
@@ -26,7 +27,7 @@ public class OrderController {
     @PostMapping(path="/addOrder")
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderCreateDTO orderCreateDTO) {
         try {
-            orderService.createOrder(orderCreateDTO);
+            orderService.addOrder(orderCreateDTO);
             return ResponseEntity.ok("{\"message\": \"Ordine registrato con successo\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
@@ -34,7 +35,7 @@ public class OrderController {
     }
 
     @PutMapping(path = "/updateOrder/{id}")
-    public ResponseEntity<?> updateOrder(@PathVariable("id") String id, @Valid @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<?> updateOrder(@PathVariable("id") UUID id, @Valid @RequestBody OrderDTO orderDTO) {
         try {
             orderService.updateOrder(id, orderDTO);
             return ResponseEntity.ok("{\"message\": \"Ordine aggiornato con successo\"}");
@@ -44,7 +45,7 @@ public class OrderController {
     }
 
     @DeleteMapping(path = "/deleteOrder/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable("id") String id) {
+    public ResponseEntity<?> deleteOrder(@PathVariable("id") UUID id) {
         try {
             orderService.deleteOrder(id);
             return ResponseEntity.ok("{\"message\": \"Ordine cancellato con successo\"}");
@@ -54,7 +55,7 @@ public class OrderController {
     }
 
     @GetMapping(path = "/getOrder/{id}")
-    public ResponseEntity<?> getOrder(@PathVariable("id") String id) {
+    public ResponseEntity<?> getOrder(@PathVariable("id") UUID id) {
         try {
             OrderDTO order = orderService.getOrderById(id);
             return ResponseEntity.ok(order);
@@ -68,7 +69,7 @@ public class OrderController {
         try {
             return ResponseEntity.ok(orderService.getAllOrders());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
         }
     }
 }

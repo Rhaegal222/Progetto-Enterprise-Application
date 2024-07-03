@@ -226,7 +226,7 @@ fun ProductsCard(
                 shape = RoundedCornerShape(14.dp),
                 contentPadding = PaddingValues(10.dp),
                 onClick = {
-                    cartViewModel.addProductToCart(userId, productDTO.id, 1, context)
+                    cartViewModel.addProductToCart(productDTO.id, 1, context)
                 }
             ) {
                 Icon(

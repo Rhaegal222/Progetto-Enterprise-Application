@@ -3,7 +3,6 @@ package it.unical.inf.ea.backend.data.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
@@ -14,15 +13,14 @@ import java.time.LocalDateTime;
 public class InvalidToken {
 
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-    @Column(length = 36, nullable = false, updatable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invalid_token_seq")
+    @SequenceGenerator(name = "invalid_token_seq", sequenceName = "invalid_token_sequence", allocationSize = 1)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Column(name = "token", nullable = false, unique = true)
     private String token;
 
     @Column(name = "expiration_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime expirationDate;
-
 }

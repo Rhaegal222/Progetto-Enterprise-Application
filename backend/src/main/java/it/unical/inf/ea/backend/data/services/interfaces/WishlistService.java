@@ -8,10 +8,10 @@ import java.util.List;
 
 @Service
 public interface WishlistService {
-    void createWishlist(WishlistCreateDTO wishListCreateDTO) throws IllegalAccessException;
+    void addWishlist(WishlistCreateDTO wishListCreateDTO) throws IllegalAccessException;
     List<WishlistDTO> getAllLoggedUserWishlists();
-    WishlistDTO getWishlistById(String id);
-    void deleteWishlist(String id) throws IllegalAccessException;
-    WishlistDTO addProductToWishlist(String productId, String wishlistId) throws IllegalAccessException;
-    WishlistDTO removeProductFromWishlist(String wishlistId, String productId) throws IllegalAccessException;
+    WishlistDTO getWishlistById(Long id);
+    void deleteWishlist(Long id) throws IllegalAccessException;
+    WishlistDTO addProductToWishlist(Long wishlistId, Long productId) throws IllegalAccessException;
+    WishlistDTO removeProductFromWishlist(Long wishlistId, Long productId) throws IllegalAccessException;
 }

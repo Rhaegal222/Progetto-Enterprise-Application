@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CartDao extends JpaRepository<Cart, String> {
+public interface CartDao extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUser(User user);
-    Optional<Cart> findById(String id);
+    Optional<Cart> findById(Long id);
 }

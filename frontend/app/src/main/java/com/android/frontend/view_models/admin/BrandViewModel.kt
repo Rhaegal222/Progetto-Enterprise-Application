@@ -85,7 +85,7 @@ class BrandViewModel : ViewModel() {
         }
     }
 
-    fun deleteBrand(context: Context, id: Int) {
+    fun deleteBrand(context: Context, id: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false

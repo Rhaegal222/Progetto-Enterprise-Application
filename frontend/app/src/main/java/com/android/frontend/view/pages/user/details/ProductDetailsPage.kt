@@ -85,7 +85,7 @@ fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartVi
                         DetailButtonAddCart(
                             productItem = it,
                             onClickToCart = { productItem ->
-                                cartViewModel.addProductToCart(userId, productItem.id, 1, context)
+                                cartViewModel.addProductToCart(productItem.id, 1, context)
                             }
                         )
                     }

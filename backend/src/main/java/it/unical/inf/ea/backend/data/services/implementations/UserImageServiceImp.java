@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +73,7 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public void deletePhotoUser(String id) throws IllegalAccessException {
+    public void deletePhotoUser(UUID id) throws IllegalAccessException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         UserImage userImage = userImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
 

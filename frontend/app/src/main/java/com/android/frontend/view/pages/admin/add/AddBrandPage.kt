@@ -2,7 +2,7 @@ package com.android.frontend.view.pages.admin.add
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.*
@@ -19,11 +19,12 @@ import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
     val context = LocalContext.current
-    val brandName by viewModel.title.observeAsState("")
+    val brandName by viewModel.name.observeAsState("")
     val brandDescription by viewModel.description.observeAsState("")
     var showSuccessDialog by remember { mutableStateOf(false) }
 
@@ -47,7 +48,7 @@ fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBra
         ) {
             TextField(
                 value = brandName,
-                onValueChange = { viewModel.title.value = it },
+                onValueChange = { viewModel.name.value = it },
                 label = { Text("Brand Name") },
                 modifier = Modifier.fillMaxWidth()
             )

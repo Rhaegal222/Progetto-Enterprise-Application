@@ -17,10 +17,10 @@ public interface ProductService {
     List<ProductDTO> getProductsByCategory(Category category);
     List<ProductDTO> getProductsByBrand(Brand brand);
     List<ProductDTO> getProductsByPriceRange(Double min, Double max);
-    ProductDTO getProductById(String id) throws IllegalAccessException;
-    ProductDTO updateProduct(String id, ProductDTO productDTO) throws IllegalAccessException ;
+    ProductDTO getProductById(Long id) throws IllegalAccessException;
+    ProductDTO updateProduct(Long id, ProductDTO productDTO) throws IllegalAccessException ;
     void save(ProductDTO product);
-    void deleteProduct(String id) throws IllegalAccessException;
+    void deleteProduct(Long id) throws IllegalAccessException;
     List<ProductDTO> getSalesProducts();
 
 }

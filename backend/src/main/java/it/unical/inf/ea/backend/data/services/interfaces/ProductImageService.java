@@ -6,13 +6,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public interface ProductImageService {
     Resource getImage(String url) throws IOException;
 
-    ProductImageDTO savePhotoProduct(MultipartFile multipartFile, String product_id, String description) throws IOException, IllegalAccessException;
+    ProductImageDTO savePhotoProduct(MultipartFile multipartFile, Long productId, String description) throws IOException, IllegalAccessException;
 
-    void deletePhotoProduct(String id) throws IllegalAccessException, IOException;
+    void deletePhotoProduct(UUID id) throws IllegalAccessException, IOException;
 
 
     void saveProductImage(ProductImage productImage);

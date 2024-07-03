@@ -32,8 +32,8 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public void deleteBrand(Integer id) {
-        this.brandDao.deleteById(String.valueOf(id));
+    public void deleteBrand(Long id) {
+        this.brandDao.deleteById(id);
 
     }
 
@@ -46,12 +46,12 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Optional<Brand> findBrandById(Integer id) {
-        return brandDao.findByBrandId(id);
+    public Optional<Brand> findBrandById(Long id) {
+        return brandDao.findById(id);
     }
 
     @Override
     public Optional<Brand> findBrandByName(String brandName) {
-        return brandDao.findByBrandName(brandName);
+        return brandDao.findByName(brandName);
     }
 }

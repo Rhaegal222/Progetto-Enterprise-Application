@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     @Transactional
-    public void createOrder(OrderCreateDTO orderCreateDTO) throws IllegalAccessException {
+    public void addOrder(OrderCreateDTO orderCreateDTO) throws IllegalAccessException {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -47,8 +48,7 @@ public class OrderServiceImp implements OrderService {
                 throw new IllegalAccessException("Il carrello è vuoto");
             }
 
-            Address address = addressDao.findById(orderCreateDTO.getAddressId())
-                    .orElseThrow(() -> new EntityNotFoundException("Indirizzo non trovato"));
+            Address address = addressDao.findById(orderCreateDTO.getAddressId()).orElseThrow(() -> new EntityNotFoundException("Indirizzo non trovato"));
 
             PaymentMethod paymentMethod = paymentMethodDao.findById(orderCreateDTO.getPaymentMethodId())
                     .orElseThrow(() -> new EntityNotFoundException("Metodo di pagamento non trovato"));
@@ -74,8 +74,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     @Transactional
-    public OrderDTO updateOrder(String id, OrderDTO patch) throws IllegalAccessException {
-        throwOnIdMismatch(id, patch);
+    public OrderDTO updateOrder(UUID id, OrderDTO patch) throws IllegalAccessException {
         Order order = orderDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Ordine non trovato"));
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -92,7 +91,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     @Transactional
-    public void deleteOrder(String id) throws IllegalAccessException {
+    public void deleteOrder(UUID id) throws IllegalAccessException {
         Order order = orderDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Ordine non trovato"));
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (loggedUser.getRole().equals(UserRole.USER) && !order.getUser().equals(loggedUser)) {
@@ -102,7 +101,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public OrderDTO getOrderById(String id) throws IllegalAccessException {
+    public OrderDTO getOrderById(UUID id) throws IllegalAccessException {
         Order order = orderDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Ordine non trovato"));
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
@@ -120,11 +119,5 @@ public class OrderServiceImp implements OrderService {
 
     private OrderDTO mapToDTO(Order order) {
         return modelMapper.map(order, OrderDTO.class);
-    }
-
-    private void throwOnIdMismatch(String id, OrderDTO orderDTO) {
-        if (!orderDTO.getId().equals(id)) {
-            throw new IdMismatchException();
-        }
     }
 }

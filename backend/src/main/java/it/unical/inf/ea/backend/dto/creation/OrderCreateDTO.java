@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -22,13 +23,13 @@ public class OrderCreateDTO {
     private List<CartItemDTO> items;
 
     @NotNull
-    private String addressId;
+    private UUID addressId;
 
     @NotNull
-    private String paymentMethodId;
+    private UUID paymentMethodId;
 
     @NotNull
-    private String userId;
+    private UUID userId;
 
 }
 

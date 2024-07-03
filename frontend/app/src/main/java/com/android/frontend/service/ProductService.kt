@@ -27,6 +27,12 @@ interface ProductService {
         @Path("id") id: String
     ): Call<Void>
 
+    @PUT("/api/v1/products/updateProduct/{id}")
+    fun updateProduct(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String,
+        @Body product: ProductDTO
+    ): Call<ProductDTO>
 
     @GET("/api/v1/products/getProductById/{id}")
     fun getProductById(
@@ -38,13 +44,6 @@ interface ProductService {
     fun getAllProducts(
         @Header("Authorization") authorization: String
     ): Call<List<ProductDTO>>
-
-    @PUT("/api/v1/products/updateProduct/{id}")
-    fun updateProduct(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: String,
-        @Body product: ProductDTO
-    ): Call<ProductDTO>
 
     @GET("/api/v1/products/getProductsByCategory")
     fun getProductsByCategory(

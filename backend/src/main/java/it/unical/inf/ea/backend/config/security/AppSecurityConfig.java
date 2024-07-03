@@ -81,10 +81,10 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/getPaymentMethod/{id}", "/api/v1/payment-methods/getAllPaymentMethods").authenticated()
 
                         // ADDRESS METHOD
-                        .requestMatchers(HttpMethod.POST, "/api/v1/shipping-addresses/addShippingAddress").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/shipping-addresses/setDefaultShippingAddress/{id}", "/api/v1/shipping-addresses/updateShippingAddress/{id}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/shipping-addresses/deleteShippingAddress/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/shipping-addresses/getShippingAddress/{id}", "/api/v1/shipping-addresses/getAllShippingAddresses").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/shipping-addresses/addAddress").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/shipping-addresses/setDefaultAddress/{id}", "/api/v1/shipping-addresses/updateAddress/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/shipping-addresses/deleteAddress/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/shipping-addresses/getAddress/{id}", "/api/v1/shipping-addresses/getAllAddresses").authenticated()
 
                         // CART
                         .requestMatchers(HttpMethod.POST, "/api/v1/cart/addProduct").authenticated()
