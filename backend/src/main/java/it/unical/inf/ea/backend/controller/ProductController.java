@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
@@ -40,12 +41,11 @@ public class ProductController {
     private final BrandService brandService;
 
     @PostMapping("/addProduct")
-    public ResponseEntity<?> addProduct(@RequestBody ProductCreateDTO productCreateDTO) {
+    public ResponseEntity<Map<String,String>> addProduct(@RequestBody ProductCreateDTO productCreateDTO) {
         try {
-            ProductDTO createdProduct = productService.addProduct(productCreateDTO);
-            return ResponseEntity.ok("{\"message\": \"Product registered successfully\", \"productId\": \"" + createdProduct.getId() + "\"}");
+            return ResponseEntity.ok(productService.addProduct(productCreateDTO));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }
     }
 

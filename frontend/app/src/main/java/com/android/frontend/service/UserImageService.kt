@@ -9,7 +9,7 @@ import retrofit2.http.*
 
 interface UserImageService {
 
-    @GET("api/v1/images/{type}/{folder_name}/{file_name}")
+    @GET("/api/v1/images/{type}/{folder_name}/{file_name}")
     @Streaming
     fun getImage(
         @Path("type") type: String,
@@ -18,14 +18,14 @@ interface UserImageService {
     ): Call<ResponseBody>
 
     @Multipart
-    @POST("api/v1/images/users/photo-profile")
+    @POST("/api/v1/images/users/photo-profile")
     fun savePhotoUser(
         @Header("Authorization") authHeader: String,
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody
     ): Call<UserImageDTO>
 
-    @DELETE("api/v1/images/users/photo-profile/{id}")
+    @DELETE("/api/v1/images/users/photo-profile/{id}")
     fun deletePhotoUser(
         @Header("Authorization") authHeader: String,
         @Path("id") id: String

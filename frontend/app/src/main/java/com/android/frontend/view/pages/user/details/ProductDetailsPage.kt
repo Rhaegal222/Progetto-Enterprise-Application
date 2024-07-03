@@ -1,6 +1,7 @@
 package com.android.frontend.view.pages.user.details
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
@@ -38,6 +40,7 @@ import com.android.frontend.view_models.user.ProductViewModel
 fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel, navController: NavController) {
     val context = LocalContext.current
     val productId = CurrentDataUtils.currentProductId
+    val productUri = CurrentDataUtils.currentProductImageUri
     val productDetails = productViewModel.productDetailsLiveData.observeAsState().value
     val userId = SecurePreferences.getUser(context)?.id ?: ""
 
@@ -71,7 +74,7 @@ fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartVi
                         .padding(padding)
                 ) {
                     productDetails?.let { productItem ->
-                        DetailContentImageHeader(productItem = productItem)
+                        DetailContentImageHeader(productItem = productItem, productUri)
                         Spacer(modifier = Modifier.height(24.dp))
                         DetailContentDescription(productItem = productItem)
                     }
@@ -95,7 +98,8 @@ fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartVi
 
 @Composable
 fun DetailContentImageHeader(
-    productItem: ProductDTO
+    productItem: ProductDTO,
+    imageUri: Uri?
 ) {
     Card(
         shape = RoundedCornerShape(bottomEnd = 24.dp, bottomStart = 24.dp),
@@ -103,8 +107,14 @@ fun DetailContentImageHeader(
             .blur(1.dp)
             .fillMaxWidth(),
     ) {
+        val painter = if (imageUri != null) {
+            rememberImagePainter(data = imageUri)
+        } else {
+            painterResource(id = R.drawable.product_placeholder)
+        }
         Image(
-            painter = painterResource(id = R.drawable.product_placeholder), // Usa l'immagine del prodotto reale
+
+            painter = painter,
             contentDescription = "Product Image",
             modifier = Modifier
                 .height(350.dp)

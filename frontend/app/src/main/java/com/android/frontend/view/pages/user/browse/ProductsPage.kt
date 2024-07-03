@@ -1,6 +1,7 @@
 package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.android.frontend.R
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.dto.ProductDTO
@@ -38,6 +40,7 @@ import com.android.frontend.view_models.user.ProductViewModel
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
     val context = LocalContext.current
     val products by productViewModel.productsLiveData.observeAsState()
+    val productImages by productViewModel.productImagesLiveData.observeAsState()
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
@@ -64,7 +67,7 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                         .padding(innerPadding)
                 ) {
                     items(products ?: emptyList()) { productDTO ->
-                        ProductsCard(productDTO, navController, productViewModel, cartViewModel)
+                        ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
                     }
                 }
             }
@@ -77,7 +80,8 @@ fun ProductsCard(
     productDTO: ProductDTO,
     navController: NavController,
     productViewModel: ProductViewModel,
-    cartViewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    imageUri: Uri?
 ) {
     val context = LocalContext.current
     val userId = SecurePreferences.getUser(context)?.id ?: ""
@@ -90,6 +94,7 @@ fun ProductsCard(
             .height(250.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
+                CurrentDataUtils.currentProductImageUri = imageUri
                 val route = if (productDTO.onSale) {
                     Navigation.SaleProductDetailsPage.route
                 } else {
@@ -103,8 +108,13 @@ fun ProductsCard(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
+            val painter = if (imageUri != null) {
+                rememberImagePainter(data = imageUri)
+            } else {
+                painterResource(id = R.drawable.product_placeholder)
+            }
             Image(
-                painter = painterResource(id = R.drawable.product_placeholder), // Usa l'immagine del prodotto reale
+                painter = painter,
                 contentDescription = "Product Image",
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

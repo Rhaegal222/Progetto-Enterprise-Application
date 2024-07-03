@@ -1,5 +1,8 @@
 package com.android.frontend.view.pages.admin.add
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -52,6 +55,15 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
     var selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
     var selectedCategory by remember { mutableStateOf<ProductCategoryDTO?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
+    var showImageUploadDialog by remember { mutableStateOf(false) }
+    var showImageSuccessDialog by remember { mutableStateOf(false) }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            viewModel.uploadProductImage(context, productId, it)
+            showImageSuccessDialog = true
+        }
+    }
 
     if (isLoading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
@@ -61,7 +73,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
                 TopAppBar(
                     title = { Text("Add Product") },
                     navigationIcon = {
-                        IconButton(onClick = { navController.navigate(Navigation.ProductPage.route)  }) {
+                        IconButton(onClick = { navController.navigate(Navigation.ProductPage.route) }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                         }
                     }
@@ -255,12 +267,40 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
                 title = { Text("Success") },
-                text = { Text("Product added successfully! ${productId}") },
+                text = { Text("Product added successfully! Do you want to upload an image for the product?") },
                 confirmButton = {
                     TextButton(onClick = {
                         showSuccessDialog = false
-                        navController.navigate(Navigation.AdminMenu.route)
-                        // Navigate back or perform other actions
+                        showImageUploadDialog = true
+                    }) {
+                        Text("Yes")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showSuccessDialog = false
+                        navController.navigate(Navigation.ProductPage.route)
+                    }) {
+                        Text("No")
+                    }
+                }
+            )
+        }
+
+        if (showImageUploadDialog) {
+            launcher.launch("image/*")
+            showImageUploadDialog = false
+        }
+
+        if (showImageSuccessDialog) {
+            AlertDialog(
+                onDismissRequest = { showImageSuccessDialog = false },
+                title = { Text("Success") },
+                text = { Text("Product image uploaded successfully!") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showImageSuccessDialog = false
+                        navController.navigate(Navigation.ProductPage.route)
                     }) {
                         Text("OK")
                     }

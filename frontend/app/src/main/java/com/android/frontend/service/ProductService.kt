@@ -19,7 +19,7 @@ interface ProductService {
     fun addProduct(
         @Header("Authorization") authorization: String,
         @Body productCreateDTO: ProductCreateDTO
-    ): Call<Void>
+    ): Call<Map<String, String>>
 
     @DELETE("/api/v1/products/deleteProduct/{id}")
     fun deleteProduct(

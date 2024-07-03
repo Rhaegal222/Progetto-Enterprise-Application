@@ -1,6 +1,7 @@
 package com.android.frontend.view.pages.admin.browse
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
@@ -39,6 +41,7 @@ import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
     val context = LocalContext.current
     val products by viewModel.productsLiveData.observeAsState()
+    val productImages by viewModel.productImagesLiveData.observeAsState()
 
     LaunchedEffect(Unit) {
         viewModel.fetchAllProducts(context)
@@ -76,7 +79,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, viewModel)
+                    ProductsCard(productDTO, navController, viewModel, productImages?.get(productDTO.id))
                 }
             }
         }
@@ -84,7 +87,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
 }
 
 @Composable
-fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel: ProductCategoryBrandViewModel) {
+fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel: ProductCategoryBrandViewModel, imageUri: Uri?) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
 
@@ -100,8 +103,13 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
+            val painter = if (imageUri != null) {
+                rememberImagePainter(data = imageUri)
+            } else {
+                painterResource(id = R.drawable.product_placeholder)
+            }
             Image(
-                painter = painterResource(id = R.drawable.product_placeholder),
+                painter = painter,
                 contentDescription = "Product Image",
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -148,7 +156,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                         shape = RoundedCornerShape(14.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
-                            // funzione per modificare il prodotto
+                            // function to modify the product
                         }
                     ) {
                         Icon(
