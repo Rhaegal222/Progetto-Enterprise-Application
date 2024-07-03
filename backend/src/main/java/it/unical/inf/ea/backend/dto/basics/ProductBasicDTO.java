@@ -25,34 +25,14 @@ public class ProductBasicDTO {
     @Length(max = 100)
     private String title;
 
-    @Length(max = 1000)
-    private String description;
-
-    @Length(max = 1000)
-    private String descriptionBrand;
-
-    @Length(max = 1000)
-    private String ingredients;
-
-    @Length(max = 1000)
-    private String nutritionalValues;
-
-    @Past
-    private LocalDateTime uploadDate;
-
     @NotNull
-    private BigDecimal productCost;
-
-    @NotNull
-    private BigDecimal deliveryCost;
-
-    @NotNull
-    private int quantity;
+    private BigDecimal price;
 
     @Length(max = 100)
     private String brand;
 
     private List<ProductImageDTO> productImages;
+
     private CategoryDTO category;
 
     @JsonSetter

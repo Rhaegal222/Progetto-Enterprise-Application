@@ -11,17 +11,13 @@ import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.services.interfaces.CartService;
 import it.unical.inf.ea.backend.dto.CartDTO;
-import it.unical.inf.ea.backend.dto.CartItemDTO;
-import it.unical.inf.ea.backend.dto.creation.CartCreateDTO;
+import it.unical.inf.ea.backend.dto.creation.CartItemCreateDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +38,7 @@ public class CartServiceImp implements CartService {
     }
 
     @Override
-    public CartDTO addItemToCart(CartCreateDTO cartCreateDTO) {
+    public CartDTO addItemToCart(CartItemCreateDTO cartItemCreateDTO) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -50,12 +46,12 @@ public class CartServiceImp implements CartService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-            Product product = productDao.findById(cartCreateDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+            Product product = productDao.findById(cartItemCreateDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
             CartItem cartItem = new CartItem();
             cartItem.setCart(cart);
             cartItem.setProduct(product);
-            cartItem.setQuantity(cartCreateDTO.getQuantity());
+            cartItem.setQuantity(cartItemCreateDTO.getQuantity());
 
             cart.getCartItems().add(cartItem);
 

@@ -15,9 +15,5 @@ public class PaymentMethodBasicDTO {
     private String id;
 
     @NotNull
-    @Length(min = 19, max = 19)
-    private String cardNumber;
-
-    @NotNull
     private boolean isDefault;
 }

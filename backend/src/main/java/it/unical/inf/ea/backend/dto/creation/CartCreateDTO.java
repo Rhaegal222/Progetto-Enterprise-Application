@@ -1,7 +1,10 @@
 package it.unical.inf.ea.backend.dto.creation;
 
+import it.unical.inf.ea.backend.dto.CartItemDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -10,8 +13,8 @@ import lombok.*;
 public class CartCreateDTO {
 
     @NotNull
-    private String productId;
+    private String userId;
 
     @NotNull
-    private int quantity;
+    private List<CartItemDTO> items;
 }

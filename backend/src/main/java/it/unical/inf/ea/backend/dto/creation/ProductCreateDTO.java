@@ -17,9 +17,9 @@ import java.math.BigDecimal;
 @ToString
 public class ProductCreateDTO {
 
-    @NotNull
     @Length(max = 100)
-    private String title;
+    @NotNull
+    private String name;
 
     @Length(max = 1000)
     private String description;
@@ -31,19 +31,19 @@ public class ProductCreateDTO {
     private String nutritionalValues;
 
     @NotNull
-    private BigDecimal productPrice;
-
-    @NotNull
-    private BigDecimal deliveryPrice;
-
-    @Length(max = 1000)
-    private String productWeight;
-
-    @NotNull
-    private ProductAvailability productAvailability;
+    private String weight;
 
     @NotNull
     private int quantity;
+
+    @NotNull
+    private BigDecimal price;
+
+    @NotNull
+    private BigDecimal shippingCost;
+
+    @NotNull
+    private ProductAvailability productAvailability;
 
     @NotNull
     private BrandDTO brand;
@@ -51,7 +51,7 @@ public class ProductCreateDTO {
     @NotNull
     private CategoryDTO category;
 
-    private ProductImage photoProduct;
+    private ProductImageDTO image;
 
     @NotNull
     private boolean onSale;

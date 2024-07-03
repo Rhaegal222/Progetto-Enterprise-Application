@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void addCategory(CategoryCreateDTO createCategoryDTO) {
 
         Category category = new Category();
-        category.setName(createCategoryDTO.getCategoryName());
+        category.setName(createCategoryDTO.getName());
 
         Category newCategory = categoryDao.save(category);
         modelMapper.map(newCategory, CategoryDTO.class);

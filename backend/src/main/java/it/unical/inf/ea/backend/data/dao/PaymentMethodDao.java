@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface PaymentMethodDao extends JpaRepository<PaymentMethod, String>, JpaSpecificationExecutor<PaymentMethod>, PagingAndSortingRepository<PaymentMethod, String> {
 
+    List<PaymentMethod> findAllByUserId(String id);
 }

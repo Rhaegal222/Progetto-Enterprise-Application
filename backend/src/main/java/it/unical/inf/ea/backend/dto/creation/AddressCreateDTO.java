@@ -15,7 +15,6 @@ public class AddressCreateDTO {
     @Length(max = 100)
     private String fullName;
 
-    @NotNull
     @Length(max = 100)
     private String phoneNumber;
 
@@ -28,15 +27,15 @@ public class AddressCreateDTO {
 
     @NotNull
     @Length(max = 10)
-    private String zipCode;
-
-    @NotNull
-    @Length(max = 100)
-    private String city;
+    private String postalCode;
 
     @NotNull
     @Length(max = 100)
     private String province;
+
+    @NotNull
+    @Length(max = 100)
+    private String city;
 
     @NotNull
     @Length(max = 100)

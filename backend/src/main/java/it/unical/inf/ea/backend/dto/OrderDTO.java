@@ -1,10 +1,8 @@
 package it.unical.inf.ea.backend.dto;
 
 
-import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.cglib.core.Local;
 
 import java.util.List;
 
@@ -22,11 +20,11 @@ public class OrderDTO {
     private List<CartItemDTO> items;
 
     @NotNull
-    private OrderStatus status;
+    private String addressId;
 
     @NotNull
-    private Local createdAt;
+    private String paymentMethodId;
 
     @NotNull
-    private Local updatedAt;
+    private String userId;
 }

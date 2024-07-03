@@ -1,6 +1,7 @@
 package it.unical.inf.ea.backend.dto.basics;
 
 import it.unical.inf.ea.backend.dto.UserImageDTO;
+import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
 import jakarta.validation.constraints.Email;
@@ -30,9 +31,11 @@ public class UserBasicDTO {
 
     private String phoneNumber;
 
-    private UserImageDTO photoProfile;
+    private UserImageDTO image;
 
     private UserStatus status;
+
+    private Provider provider;
 
     private UserRole role;
 

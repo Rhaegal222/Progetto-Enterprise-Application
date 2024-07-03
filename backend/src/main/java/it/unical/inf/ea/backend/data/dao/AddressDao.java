@@ -9,4 +9,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface AddressDao extends JpaRepository<Address, String>, JpaSpecificationExecutor<Address>, PagingAndSortingRepository<Address, String> {
+
+    List<Address> findAllByUserId(String id);
 }

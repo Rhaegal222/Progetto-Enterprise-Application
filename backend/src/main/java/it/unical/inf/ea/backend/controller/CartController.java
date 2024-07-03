@@ -3,7 +3,7 @@ package it.unical.inf.ea.backend.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.services.interfaces.CartService;
 import it.unical.inf.ea.backend.dto.CartDTO;
-import it.unical.inf.ea.backend.dto.creation.CartCreateDTO;
+import it.unical.inf.ea.backend.dto.creation.CartItemCreateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +32,9 @@ public class CartController {
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<?> addProductToCart(@RequestBody CartCreateDTO cartCreateDTO) {
+    public ResponseEntity<?> addProductToCart(@RequestBody CartItemCreateDTO cartItemDTO) {
         try {
-            CartDTO cart = cartService.addItemToCart(cartCreateDTO);
+            CartDTO cart = cartService.addItemToCart(cartItemDTO);
             return ResponseEntity.ok(cart);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");

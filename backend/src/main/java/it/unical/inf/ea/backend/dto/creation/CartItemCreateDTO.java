@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.dto.creation;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryCreateDTO {
+public class CartItemCreateDTO {
 
     @NotNull
-    @NotEmpty
-    private String name;
+    private String productId;
+
+    @NotNull
+    private int quantity;
+
 }
