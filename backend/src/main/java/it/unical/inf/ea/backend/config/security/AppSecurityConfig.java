@@ -89,7 +89,7 @@ public class AppSecurityConfig {
 
                         // PRODUCT
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/addProduct").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/updateProduct/").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/products/updateProduct/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/products/deleteProduct/{id}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/getProductById/","/api/v1/products/getProductsByCategory/" ,
                                 "/api/v1/products/getProductsByCategory/", "/api/v1/products/getAllProducts",
