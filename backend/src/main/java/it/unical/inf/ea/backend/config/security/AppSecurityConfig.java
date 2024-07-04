@@ -69,10 +69,10 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/category/getCategoryById", "/api/v1/category/getAllCategories").authenticated()
 
                         // CART
-                        .requestMatchers(HttpMethod.POST, "/api/v1/cart/addProduct").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/cart/updateProduct/{cartItemId}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cart/removeProduct/{cartItemId}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/cart/getCartByUserId/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/cart/addItem").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/cart/updateProduct/{cartItemId}", "/api/v1/cart//editItem").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cart/removeItem/{cartItemId}", "/api/v1/cart/clearCart").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/cart/getCartByUserId/{userId}", "/api/v1/cart/getCartForLoggedUser" ).authenticated()
 
                         //ORDER
                         .requestMatchers(HttpMethod.POST, "/api/v1/orders/addOrder").authenticated()

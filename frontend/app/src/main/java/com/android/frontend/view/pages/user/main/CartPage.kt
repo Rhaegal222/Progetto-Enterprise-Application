@@ -23,6 +23,14 @@ import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.CartViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import java.math.BigDecimal
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+
 
 @Composable
 fun CartPage(
@@ -48,6 +56,20 @@ fun CartPage(
                 }
             }
             CartSummary(cartItems = it.items, cartViewModel)
+            Button(
+                onClick = {
+                    cartViewModel.clearCart(context)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text("Svuota Carrello")
+            }
             Button(
                 onClick = {
                     navController.navigate(Navigation.CheckoutPage.route)

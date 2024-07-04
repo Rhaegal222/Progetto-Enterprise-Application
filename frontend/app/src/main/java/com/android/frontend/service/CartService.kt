@@ -5,18 +5,42 @@ import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.creation.CartItemCreateDTO
 import retrofit2.Call
 import retrofit2.http.*
+import java.util.UUID
 
 interface CartService {
 
     @GET("/api/v1/cart/getCartByUserId/{userId}")
-    fun getCartByUserId(@Path("userId") userId: String): Call<CartDTO>
+    fun getCartByUserId(
+        @Path("userId") userId: UUID
+    ): Call<CartDTO>
 
-    @POST("/api/v1/cart/addProduct")
-    fun addProductToCart(@Body cartItemCreateDTO: CartItemCreateDTO): Call<CartDTO>
+    @GET("/api/v1/cart/getCartForLoggedUser")
+    fun getCartForLoggedUser(
+        @Header("Authorization") token: String
+    ): Call<CartDTO>
 
-    @DELETE("/api/v1/cart/removeProduct/{cartItemId}")
-    fun removeProductFromCart(@Path("cartItemId") cartItemId: String): Call<Void>
 
-    @PUT("/api/v1/cart/updateProduct/{cartItemId}")
-    fun updateCartItem(@Path("cartItemId") cartItemId: String, @Query("quantity") quantity: Int): Call<CartDTO>
+    @PUT("/api/v1/cart/editItem")
+    fun editItemInCart(
+        @Header("Authorization") token: String,
+        @Query("cartItemId") cartItemId: UUID,
+        @Query("quantity") quantity: Int
+    ): Call<CartDTO>
+
+    @POST("/api/v1/cart/addItem")
+    fun addItemToCart(
+        @Header("Authorization") token: String,
+        @Body cartItemCreateDTO: CartItemCreateDTO
+    ): Call<CartDTO>
+
+    @DELETE("/api/v1/cart/removeItem/{cartItemId}")
+    fun removeItemFromCart(
+        @Header("Authorization") token: String,
+        @Path("cartItemId") cartItemId: UUID
+    ): Call<CartDTO>
+
+    @DELETE("/api/v1/cart/clearCart")
+    fun clearCart(
+        @Header("Authorization") token: String
+    ): Call<CartDTO>
 }

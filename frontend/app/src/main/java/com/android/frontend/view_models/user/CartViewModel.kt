@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
+import java.util.UUID
 
 class CartViewModel : ViewModel() {
     private val _cart = MutableStateFlow<CartDTO?>(null)
@@ -67,9 +68,9 @@ class CartViewModel : ViewModel() {
 
     fun loadCart(context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)
-        val userId = SecurePreferences.getUser(context)?.id ?: ""
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
         viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.getCartByUserId(userId).execute()
+            val response = cartService.getCartForLoggedUser("Bearer ${accessToken}").execute()
             if (response.isSuccessful) {
                 response.body()?.let {
                     _cart.value = it
@@ -79,31 +80,48 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    fun updateCartItem(cartItemId: String, quantity: Int, context: Context) {
+    fun updateCartItem(cartItemId: UUID, quantity: Int, context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
         viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.updateCartItem(cartItemId, quantity).execute()
+            val response = cartService.editItemInCart("Bearer ${accessToken}",cartItemId, quantity).execute()
             if (response.isSuccessful) {
                 loadCart(context)
             }
         }
     }
 
-    fun addProductToCart(productId: Long, quantity: Int, context: Context) {
+    fun addProductToCart(productId: Long , quantity: Int, context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)
         val cartItemCreateDTO = CartItemCreateDTO(productId, quantity)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
+
         viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.addProductToCart(cartItemCreateDTO).execute()
+            val response = cartService.addItemToCart("Bearer ${accessToken}",cartItemCreateDTO).execute()
             if (response.isSuccessful) {
                 loadCart(context)
             }
         }
     }
 
-    fun removeCartItem(cartItemId: String, context: Context) {
+    fun removeCartItem(cartItemId: UUID, context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
+
         viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.removeProductFromCart(cartItemId).execute()
+            val response = cartService.removeItemFromCart("Bearer ${accessToken}", cartItemId).execute()
+            if (response.isSuccessful) {
+                loadCart(context)
+            }
+        }
+    }
+
+    fun clearCart(context: Context) {
+        val cartService = RetrofitInstance.getCartApi(context)
+        val accessToken = TokenManager.getInstance().getAccessToken(context)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = cartService.clearCart("Bearer ${accessToken}").execute()
             if (response.isSuccessful) {
                 loadCart(context)
             }

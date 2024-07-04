@@ -19,17 +19,17 @@ import com.android.frontend.view.pages.user.browse.AboutPage
 import com.android.frontend.view.pages.user.browse.PersonalInformationPage
 import com.android.frontend.view.pages.user.browse.ThemePage
 import com.android.frontend.view.pages.user.browse.CountryLanguagePage
+import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view.pages.user.main.CartPage
 import com.android.frontend.view.pages.user.browse.CheckoutPage
+import com.android.frontend.view.pages.user.details.ProductDetailsPage
+import com.android.frontend.view.pages.user.details.SaleProductDetailsPage
 import com.android.frontend.view.pages.user.main.SalesProductsPage
 import com.android.frontend.view.pages.user.add.AddAddressPage
 import com.android.frontend.view.pages.profile.AddWishlistPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
-import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view.pages.user.browse.ShippingAddressesPage
 import com.android.frontend.view.pages.user.browse.WishlistsPage
-import com.android.frontend.view.pages.user.details.ProductDetailsPage
-import com.android.frontend.view.pages.user.details.SaleProductDetailsPage
 import com.android.frontend.view.pages.user.details.WishlistDetailsPage
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.WishlistViewModel
@@ -47,6 +47,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
         composable(Navigation.ProductsPage.route) { ProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
@@ -56,12 +57,10 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AddAddressPage.route) { AddAddressPage(navController) }
         composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
         composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.SaleProductDetailsPage.route) { SaleProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
         composable(Navigation.WishlistsPage.route) { WishlistsPage(navController, WishlistViewModel()) }
         composable(Navigation.AddWishlistPage.route) { AddWishlistPage(navController, WishlistViewModel()) }
         composable(Navigation.CheckoutPage.route) { CheckoutPage(cartViewModel = cartViewModel, navController = navController) }
         composable(Navigation.WishlistDetailsPage.route) { WishlistDetailsPage(wishlistViewModel = WishlistViewModel(), navController = navController)}
-        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
-        composable(Navigation.SaleProductDetailsPage.route) { SaleProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
-
     }
 }
