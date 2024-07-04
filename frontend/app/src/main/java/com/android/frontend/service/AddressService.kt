@@ -20,7 +20,7 @@ interface AddressService {
         @Path("id") id: String
     ): Call<Void>
 
-    @PUT("/api/v1/addresses/setAddress/{id}")
+    @PUT("/api/v1/addresses/setDefaultAddress/{id}")
     fun setAddress(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
@@ -33,18 +33,16 @@ interface AddressService {
         @Body shippingAddressDTO: AddressDTO
     ): Call<AddressDTO>
 
-    @GET("/api/v1/addresses/getShippingAddress/{id}")
+    @GET("/api/v1/addresses/getAddress/{id}")
     fun getShippingAddress(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
     ): Call<AddressDTO>
 
-    @GET("/api/v1/addresses/getAllShippingAddresses")
+    @GET("/api/v1/addresses/getAllAddresses")
     fun getAllShippingAddresses(
         @Header("Authorization") authorization: String
     ): Call<List<AddressDTO>>
-
-
 
     @GET("/api/v1/addresses/getAllLoggedUserAddresses")
     fun getAllLoggedUserAddresses(

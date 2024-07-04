@@ -254,16 +254,26 @@ public class UserServiceImp implements UserService{
 
     @Override
     public ResponseEntity<String> registerUser(String firstname, String lastname, String email, String password) {
-        if (firstname == null || lastname == null || email == null || password == null)
-            throw new IllegalArgumentException("firstname, lastname, email and password cannot be null");
-        if(findByUsername(email).isPresent())
-            throw new IllegalArgumentException("username already exists");
-        if(userDao.findByEmail(email).isPresent())
-            throw new IllegalArgumentException("email already exists");
+        if (firstname == null || lastname == null || email == null || password == null) {
+            throw new IllegalArgumentException("Firstname, lastname, email, and password cannot be null");
+        }
+        if (findByUsername(email).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (userDao.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        // Validate password
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%^&+=])(?=\\S+$).{8,}$")) {
+            throw new IllegalArgumentException("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+        }
+
         createUser(lastname, firstname, email, passwordEncoder.encode(password));
         log.info("User created: {}", firstname);
-        return new ResponseEntity<>( "user created" , HttpStatus.CREATED);
+        return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
+
+
 
     @Override
     public ResponseEntity<String> sendVerificationEmail(String username) throws MessagingException {

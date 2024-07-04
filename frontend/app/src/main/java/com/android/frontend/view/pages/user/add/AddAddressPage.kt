@@ -44,19 +44,19 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
     val provinceFocusRequester = remember { FocusRequester() }
     val countryFocusRequester = remember { FocusRequester() }
 
-    var fullName by remember { mutableStateOf("") }
-    var phoneNum by remember { mutableStateOf("") }
-    var street by remember { mutableStateOf("") }
-    var additionalInfo by remember { mutableStateOf("") }
-    var postalCode by remember { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
-    var province by remember { mutableStateOf("") }
-    var country by remember { mutableStateOf("") }
+    val fullName by addressViewModel::fullName
+    val phoneNum by addressViewModel::phoneNumber
+    val street by addressViewModel::street
+    val additionalInfo by addressViewModel::additionalInfo
+    val zipCode by addressViewModel::zipCode
+    val city by addressViewModel::city
+    val province by addressViewModel::province
+    val country by addressViewModel::country
 
     val allFieldsValid by derivedStateOf {
-        fullName.isNotBlank() && street.isNotBlank() &&
-        postalCode.isNotBlank() && city.isNotBlank() &&
-        province.isNotBlank() && country.isNotBlank()
+        fullName.isNotBlank() && phoneNum.isNotBlank() && street.isNotBlank() &&
+                zipCode.isNotBlank() && city.isNotBlank() &&
+                province.isNotBlank() && country.isNotBlank()
     }
 
     Scaffold (
@@ -94,7 +94,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.fullName,
+                        value = fullName,
                         onValueChange = {
                             addressViewModel.fullName = it
                         },
@@ -115,7 +115,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.phoneNumber,
+                        value = phoneNum,
                         onValueChange = {
                             addressViewModel.phoneNumber = it
                         },
@@ -136,7 +136,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.street,
+                        value = street,
                         onValueChange = {
                             addressViewModel.street = it
                         },
@@ -157,7 +157,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.additionalInfo,
+                        value = additionalInfo,
                         onValueChange = {
                             addressViewModel.additionalInfo = it
                         },
@@ -178,7 +178,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.postalCode,
+                        value = zipCode,
                         onValueChange = {
                             addressViewModel.postalCode = it
                         },
@@ -199,7 +199,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.city,
+                        value = city,
                         onValueChange = {
                             addressViewModel.city = it
                         },
@@ -220,7 +220,7 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
-                        value = addressViewModel.province,
+                        value = province,
                         onValueChange = {
                             addressViewModel.province = it
                         },
@@ -234,6 +234,27 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(provinceFocusRequester)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        colors = OutlinedTextFieldColorScheme.colors(),
+                        singleLine = true,
+                        value = country,
+                        onValueChange = {
+                            addressViewModel.country = it
+                        },
+                        label = { Text("Country") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() }
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(countryFocusRequester)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -260,14 +281,14 @@ fun AddAddressPage(navController: NavHostController, addressViewModel: AddressVi
                             try {
                                 addressViewModel.addShippingAddress(
                                     context = context,
-                                    fullName = addressViewModel.fullName,
-                                    phoneNumber = addressViewModel.phoneNumber,
-                                    street = addressViewModel.street,
-                                    additionalInfo = addressViewModel.additionalInfo,
-                                    postalCode = addressViewModel.postalCode,
-                                    city = addressViewModel.city,
-                                    province = addressViewModel.province,
-                                    country = addressViewModel.country,
+                                    fullName = fullName,
+                                    phoneNumber = phoneNum,
+                                    street = street,
+                                    additionalInfo = additionalInfo,
+                                    zipCode = zipCode,
+                                    city = city,
+                                    province = province,
+                                    country = country,
                                     isDefault = addressViewModel.isDefault
                                 )
                                 navController.popBackStack()
