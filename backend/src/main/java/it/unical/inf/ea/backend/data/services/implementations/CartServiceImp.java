@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -74,23 +73,28 @@ public class CartServiceImp implements CartService {
         } else {
             cart.getItems().add(cartItem);
         }
-
         return mapToDTO(cartDao.save(cart));
     }
 
     @Override
-    public void removeItemFromCart(UUID cartItemId) {
+    public CartDTO removeItemFromCart(UUID cartItemId) {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (loggedUser == null) {
             throw new IllegalStateException("Accesso non autorizzato");
         }
-        cartItemDao.findById(cartItemId).ifPresent(cartItem -> {
-            if (cartItem.getCart().getUser().getId().equals(loggedUser.getId())) {
-                cartItemDao.deleteById(cartItemId);
-            } else {
-                throw new IllegalStateException("Accesso non autorizzato");
-            }
-        });
+
+        Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+
+        Optional<CartItem> existingItem = cart.getItems().stream()
+                .filter(item -> item.getId().equals(cartItemId))
+                .findFirst();
+
+        if (existingItem.isPresent()) {
+            cart.getItems().remove(existingItem.get());
+            return mapToDTO(cartDao.save(cart));
+        } else {
+            throw new EntityNotFoundException("Product not found in cart");
+        }
     }
 
     @Override

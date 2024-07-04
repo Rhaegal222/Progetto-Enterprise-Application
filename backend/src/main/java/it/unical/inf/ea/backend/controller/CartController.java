@@ -46,8 +46,8 @@ public class CartController {
     @DeleteMapping("/removeProduct/{cartItemId}")
     public ResponseEntity<?> removeProductFromCart(@PathVariable UUID cartItemId) {
         try {
-            cartService.removeItemFromCart(cartItemId);
-            return ResponseEntity.ok("{\"message\": \"Product removed from cart\"}");
+            CartDTO cart = cartService.removeItemFromCart(cartItemId);
+            return ResponseEntity.ok(cart);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
