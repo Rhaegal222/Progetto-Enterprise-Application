@@ -18,7 +18,7 @@ public interface ProductService {
     List<ProductDTO> getProductsByBrand(Brand brand);
     List<ProductDTO> getProductsByPriceRange(Double min, Double max);
     ProductDTO getProductById(Long id) throws IllegalAccessException;
-    ProductDTO updateProduct(Long id, ProductDTO productDTO) throws IllegalAccessException ;
+    ProductDTO partialUpdateProduct(Long id, Map<String, Object> updates) throws IllegalAccessException ;
     void save(ProductDTO product);
     void deleteProduct(Long id) throws IllegalAccessException;
     List<ProductDTO> getSalesProducts();

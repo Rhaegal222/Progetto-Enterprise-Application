@@ -156,7 +156,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                         shape = RoundedCornerShape(14.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
-                            // function to modify the product
+                            navController.navigate("${Navigation.EditProductPage}/${productDTO.id}")
                         }
                     ) {
                         Icon(

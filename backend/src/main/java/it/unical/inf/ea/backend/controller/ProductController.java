@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
@@ -56,13 +57,13 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/updateProduct/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product) {
+    @PatchMapping(path = "/updateProduct/{id}")
+    public ResponseEntity<?> partialUpdateUser(@PathVariable("id") Long id, @RequestBody Map<String, Object> updates) {
         try {
-            productService.updateProduct(id, product);
+            productService.partialUpdateProduct(id, updates);
             return ResponseEntity.ok("{\"message\": \"Product updated successfully\"}");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e + "\"}");
+            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }
     }
 

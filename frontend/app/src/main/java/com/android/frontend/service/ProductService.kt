@@ -1,6 +1,9 @@
 package com.android.frontend.service
 
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.dto.ProductUpdateRequest
+import com.android.frontend.dto.UserDTO
+import com.android.frontend.dto.UserUpdateRequest
 import com.android.frontend.dto.creation.ProductCreateDTO
 import retrofit2.Call
 import retrofit2.http.Body
@@ -27,11 +30,11 @@ interface ProductService {
         @Path("id") id: Long
     ): Call<Void>
 
-    @PUT("/api/v1/products/updateProduct/{id}")
+    @PATCH("/api/v1/updateProduct/{id}")
     fun updateProduct(
         @Header("Authorization") authorization: String,
         @Path("id") id: Long,
-        @Body product: ProductDTO
+        @Body patch: ProductUpdateRequest
     ): Call<ProductDTO>
 
     @GET("/api/v1/products/getProductById/{id}")

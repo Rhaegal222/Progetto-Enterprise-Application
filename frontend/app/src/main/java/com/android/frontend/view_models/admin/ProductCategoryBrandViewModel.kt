@@ -36,7 +36,12 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import androidx.lifecycle.MutableLiveData
 import com.android.frontend.dto.CategoryDTO
+import com.android.frontend.dto.ProductImageDTO
+import com.android.frontend.dto.ProductUpdateRequest
+import com.android.frontend.dto.UserDTO
+import com.android.frontend.dto.UserUpdateRequest
 import com.android.frontend.dto.creation.CategoryCreateDTO
+import com.android.frontend.persistence.SecurePreferences
 
 class ProductCategoryBrandViewModel : ViewModel() {
 
@@ -68,6 +73,95 @@ class ProductCategoryBrandViewModel : ViewModel() {
     val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
 
     val productId = MutableLiveData<Long?>()
+
+    val currentProduct = MutableLiveData<ProductDTO>()
+
+    val productDetails = MutableLiveData<ProductDTO>()
+
+    private val prodImag = MutableLiveData<Uri?>(null)
+    val prodImagLiveData : LiveData<Uri?> get() = prodImag
+
+
+    fun getProductDetails(context: Context, id: Long) {
+        viewModelScope.launch {
+            val productService = RetrofitInstance.getProductApi(context)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val call = productService.getProductById("Bearer $accessToken", id)
+            call.enqueue(object : retrofit2.Callback<ProductDTO> {
+                override fun onResponse(
+                    call: retrofit2.Call<ProductDTO>,
+                    response: retrofit2.Response<ProductDTO>
+                ) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { product ->
+                            Log.d("DEBUG", "Product details: $product")
+                            productDetails.value = product
+                        }
+                    } else {
+                        Log.e("DEBUG", "Failed to fetch product: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
+                    if (t is SocketTimeoutException) {
+                        Log.e("DEBUG", "Timeout error fetching product details", t)
+                    } else {
+                        Log.e("DEBUG", "Error fetching product details", t)
+                    }
+                }
+            })
+        }
+    }
+
+    fun updateProduct(context: Context, productId: Long, updateRequest: ProductUpdateRequest) {
+        viewModelScope.launch {
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+
+            val productService = RetrofitInstance.getProductApi(context)
+            val call = productService.updateProduct("Bearer $accessToken", productId, updateRequest)
+            call.enqueue(object : Callback<ProductDTO> {
+                override fun onResponse(call: Call<ProductDTO>, response: Response<ProductDTO>) {
+                    if (response.isSuccessful) {
+                        Log.e("DEBUG", "${getCurrentStackTrace()}, User profile updated successfully: ${response.body()}")
+
+                    } else {
+                        Log.e("DEBUG", "${getCurrentStackTrace()},Failed to update user profile: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ProductDTO>, t: Throwable) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Error updating user profile", t)
+                }
+            })
+        }
+    }
+
+    fun getProductImage(context: Context, productId: Long) {
+        viewModelScope.launch {
+            try {
+                val type = "product_photos"
+                val folderName = productId.toString()
+                val fileName = "photoProduct.png"
+                val responseBody = fetchImage(context, type, folderName, fileName)
+                responseBody?.let {
+                    val tempFile = saveImageToFile(context, responseBody)
+                    prodImag.postValue(Uri.fromFile(tempFile))
+                } ?: run {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
+                }
+            } catch (e: Exception) {
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
+            }
+        }
+    }
+
+    fun updatePhotoUser(context: Context, imageUri: Uri, productId: Long) {
+        viewModelScope.launch {
+            deletePhotoProduct(context, productId)
+            uploadImage(context, productId, imageUri)
+        }
+    }
+
 
     fun fetchAllData(context: Context) {
         viewModelScope.launch {
