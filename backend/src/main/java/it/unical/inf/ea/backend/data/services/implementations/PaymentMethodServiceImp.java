@@ -126,7 +126,7 @@ public class PaymentMethodServiceImp implements PaymentMethodService {
         PaymentMethod paymentMethod = paymentMethodDao.findById(id).orElseThrow(EntityNotFoundException::new);
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
 
-        if (loggedUser.getRole().equals(UserRole.USER) && !loggedUser.equals(paymentMethod.getUser())) {
+        if (loggedUser.getRole().equals(UserRole.USER) && !paymentMethod.getUser().getId().equals(loggedUser.getId())) {
             throw new IllegalAccessException("User cannot get payment method");
         }
 

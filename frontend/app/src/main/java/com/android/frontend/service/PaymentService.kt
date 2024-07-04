@@ -32,7 +32,7 @@ interface PaymentService {
         @Path("id") id: String
     ): Call<Void>
 
-    @GET("/api/v1/getPaymentMethodById/{id}")
+    @GET("/api/v1/paymentMethods/getPaymentMethod/{id}")
     fun getPaymentMethodById(
         @Path("id") id: String
     ): Call<PaymentMethodDTO>
