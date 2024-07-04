@@ -48,19 +48,19 @@ interface ProductService {
         @Header("Authorization") authorization: String
     ): Call<List<ProductDTO>>
 
-    @GET("/api/v1/products/getProductsByCategory")
+    @GET("/api/v1/products/getProductsByCategory/")
     fun getProductsByCategory(
         @Header("Authorization") authorization: String,
         @Query("categoryName") categoryName: String
     ): Call<List<ProductDTO>>
 
-    @GET("/api/v1/products/getProductsByBrand")
+    @GET("/api/v1/products/getProductsByBrand/")
     fun getProductsByBrand(
         @Header("Authorization") authorization: String,
         @Query("brandName") brandName: String
     ): Call<List<ProductDTO>>
 
-    @GET("/api/v1/products/getProductsByPriceRange")
+    @GET("/api/v1/products/getProductsByPriceRange/")
     fun getProductsByPriceRange(
         @Header("Authorization") authorization: String,
         @Query("min") min: Double,
