@@ -30,7 +30,7 @@ sealed class Navigation(val route: String) {
     object AccountMenu : Navigation(route = "account_menu")
     object SecurityMenu : Navigation(route = "security_menu")
     object ChangePasswordPage : Navigation(route = "change_password_page")
-    object AllProductsPage : Navigation(route = "products_page")
+    object ProductsPage : Navigation(route = "products_page")
     object ProductDetailsPage : Navigation(route = "productDetails_page")
     object PaymentsPage : Navigation(route = "payments_page")
     object AddPaymentPage : Navigation(route = "addpayment_page")
@@ -55,7 +55,7 @@ sealed class Navigation(val route: String) {
     object UserPage : Navigation(route = "user_page")
     object CheckoutPage : Navigation(route = "checkout_page")
 
-    object WishlistsPage : Navigation(route = "allWishlists")
+    object WishlistsPage : Navigation(route = "wishlists")
     object AddWishlistPage : Navigation(route = "addWishlist")
     object WishlistDetailsPage : Navigation(route = "wishlistDetails")
 }
