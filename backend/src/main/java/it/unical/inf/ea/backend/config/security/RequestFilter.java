@@ -52,10 +52,16 @@ public class RequestFilter extends OncePerRequestFilter {
         }
 
         try {
+            if ("activation".equals(tokenStore.getClaim(token)) && !request.getRequestURI().equals("/api/v1/users/activate")) {
+                token = "invalid";
+                response.addHeader("invalid_token", "true");
+            }
+
             if("refresh".equals(tokenStore.getClaim(token)) && !request.getRequestURI().equals("/api/v1/users/refreshToken")) {
                 token = "invalid";
                 response.addHeader("invalid_token", "true");
             }
+
         } catch (Exception e) {
             token = "invalid";
             response.addHeader("invalid_token", "true");
@@ -85,7 +91,7 @@ public class RequestFilter extends OncePerRequestFilter {
         String responseBody = getStringValue(responseWrapper.getContentAsByteArray(),
                 response.getCharacterEncoding());
         logger.info(String.format("\nFINISHED PROCESSING : METHOD={%s}; REQUESTURI={%s}; REMOTEADDR={%S};\nREQUEST PAYLOAD={%s};\nLOGGED USERNAME={%s}; RESPONSE CODE={%d};\nRESPONSE={%s}; TIME TAKEN={%d}",
-                request.getMethod(), request.getRequestURI(), request.getRemoteAddr(), requestBody, loggedUser,response.getStatus(), responseBody, timeTaken));
+                request.getMethod(), request.getRequestURI(), request.getRemoteAddr(), requestBody, loggedUser, response.getStatus(), responseBody, timeTaken));
         responseWrapper.copyBodyToResponse();
     }
 

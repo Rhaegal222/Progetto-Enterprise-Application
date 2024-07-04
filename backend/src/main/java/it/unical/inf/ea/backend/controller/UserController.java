@@ -46,7 +46,7 @@ public class UserController {
         try {
             userService.registerUser(firstname, lastname, email, password);
             userService.sendVerificationEmail(email);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("{\"message\": \"User registered successfully\"}");
         } catch (MessagingException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }
@@ -90,10 +90,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("/activate")
-    public ResponseEntity<?> activate(@RequestParam("token") String unique_code) {
+    @PostMapping("/activate")
+    public ResponseEntity<?> activate(@RequestParam String token) {
         try {
-            userService.activateUser(unique_code);
+            userService.activateUser(token);
             return ResponseEntity.ok().build();
         } catch (ParseException | JOSEException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
