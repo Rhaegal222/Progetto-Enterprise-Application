@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import javax.net.ssl.SSLSession;
 import java.util.UUID;
 
 @Data
@@ -25,7 +26,9 @@ public class CartItem {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    @Column(nullable = false)
     private Long productId;
-    private int quantity;
 
+    @Column(nullable = false)
+    private int quantity;
 }

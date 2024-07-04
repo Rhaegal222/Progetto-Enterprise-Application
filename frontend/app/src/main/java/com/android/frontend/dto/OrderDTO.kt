@@ -1,13 +1,17 @@
 package com.android.frontend.dto
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class OrderDTO(
-    var id: String,
-    var items: List<CartItemDTO>,
-    var status: OrderStatus,
-    var createdAt: LocalDateTime,
-    var updatedAt: LocalDateTime
+    val id: UUID,
+    val userId: Long,
+    val addressId: Long,
+    val paymentMethodId: Long,
+    val items: List<CartItemDTO>,
+    val status: OrderStatus,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 ){
     enum class OrderStatus {
         CREATED,

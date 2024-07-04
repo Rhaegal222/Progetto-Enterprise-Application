@@ -1,5 +1,6 @@
 package com.android.frontend.view.pages.user.details
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -98,7 +99,7 @@ fun DetailContentDescriptionWithDiscount(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (productItem.onSale && productItem.discountedPrice != null) {
+        if (productItem.onSale && productItem.salePrice != null) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
@@ -111,7 +112,7 @@ fun DetailContentDescriptionWithDiscount(
                 )
 
                 Text(
-                    text = "${productItem.discountedPrice}€",
+                    text = "${productItem.salePrice}€",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )

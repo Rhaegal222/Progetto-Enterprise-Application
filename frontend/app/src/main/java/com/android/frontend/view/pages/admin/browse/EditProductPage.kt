@@ -56,7 +56,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
     var price by remember { mutableStateOf(BigDecimal.ZERO) }
     var shippingCost by remember { mutableStateOf(BigDecimal.ZERO) }
     var onSale by remember { mutableStateOf(false) }
-    var discountedPrice by remember { mutableStateOf(BigDecimal.ZERO) }
+    var salePrice by remember { mutableStateOf(BigDecimal.ZERO) }
 
     // Update state variables when product details are available
     LaunchedEffect(productDetails) {
@@ -70,7 +70,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
             price = it.price
             shippingCost = it.shippingCost
             onSale = it.onSale
-            discountedPrice = it.discountedPrice
+            salePrice = it.salePrice
         }
     }
 
@@ -302,15 +302,15 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                     onCheckedChange = {
                         onSale = it
                         if (!it) {
-                            discountedPrice = BigDecimal.ZERO
+                            salePrice = BigDecimal.ZERO
                         }
                     }
                 )
 
                 if (onSale) {
                     TextField(
-                        value = discountedPrice.toPlainString(),
-                        onValueChange = { discountedPrice = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
+                        value = salePrice.toPlainString(),
+                        onValueChange = { salePrice = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
                         label = { Text("Discounted Price") },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -330,7 +330,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                             price,
                             shippingCost,
                             onSale,
-                            discountedPrice
+                            salePrice
                         )
                         showSuccessDialog = true
                     },

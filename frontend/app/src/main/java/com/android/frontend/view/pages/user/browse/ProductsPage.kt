@@ -181,7 +181,7 @@ fun ProductsCard(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if (productDTO.onSale && productDTO.discountedPrice != null) {
+            if (productDTO.onSale && productDTO.salePrice != null) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
@@ -195,7 +195,7 @@ fun ProductsCard(
                     )
 
                     Text(
-                        text = "${productDTO.discountedPrice}€",
+                        text = "${productDTO.salePrice}€",
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.align(Alignment.CenterVertically),
                         fontSize = 18.sp

@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -25,23 +22,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.R
@@ -55,42 +48,35 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.dto.ProductDTO
-import com.android.frontend.persistence.SecurePreferences
-import com.android.frontend.ui.theme.colors.ButtonColorScheme
-import com.android.frontend.view.pages.user.browse.ProductsCard
-import com.android.frontend.view_models.user.CartViewModel
-import com.android.frontend.view_models.user.ProductViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: NavController) {
     val context = LocalContext.current
     val wishlistId = CurrentDataUtils.currentWishlistId
+    val wishlistName = CurrentDataUtils.CurrentWishlistName
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
     val products = wishlistViewModel.productsLiveData.observeAsState().value
-    wishlistViewModel.getWishlistDetails(context, wishlistId)
+    wishlistViewModel.getWishlistDetails(context, wishlistId, wishlistName )
+
     LaunchedEffect(Unit) {
-        wishlistViewModel.getWishlistDetails(context, wishlistId)
+        wishlistViewModel.getWishlistDetails(context, wishlistId, wishlistName )
     }
+    Log.d("DEBUG", "Wishlist ID: $wishlistId")
+    Log.d("DEBUG", "Wishlist Name: $wishlistName")
     Scaffold(
         topBar = {
-            androidx.compose.material.TopAppBar(
-                title = {},
+            TopAppBar(title = {
+                Text(text= wishlistName) },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigate(Navigation.AllWishlistsPage.route)
-                    }) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.back)
-                        )
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                },
-                backgroundColor = Color.Transparent,
-                elevation = 0.dp
-            )
+                })
         },
+
         content = { innerPadding ->
             if (wishlistDetails != null) {
                 Column(
@@ -98,18 +84,6 @@ fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: Nav
                         .padding(innerPadding)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    Text(
-                        text = wishlistDetails.wishlistName,
-                        style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Text(
-                        text =wishlistDetails.visibility.toString(),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(16.dp)
-                    )
-
 
                 }
             }
@@ -121,12 +95,112 @@ fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: Nav
             ) {
                 items(products ?: emptyList()) { productDTO ->
                     Log.d("DEBUG", "Product: $productDTO")
-                    ProductsCard(productDTO = productDTO, navController = navController, productViewModel = ProductViewModel(), cartViewModel = CartViewModel(), imageUri = null)
+                    ProductsWishlistCard(productDTO = productDTO, navController = navController, imageUri = null)
                 }
             }
 
         }
     )
+}
+@Composable
+fun ProductsWishlistCard(
+    productDTO: ProductDTO,
+    navController: NavController,
+    imageUri: Uri?
+) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth()
+            .height(250.dp)
+            .clickable {
+                CurrentDataUtils.currentProductId = productDTO.id
+                CurrentDataUtils.currentProductImageUri = imageUri
+                val route = if (productDTO.onSale) {
+                    Navigation.SaleProductDetailsPage.route
+                } else {
+                    Navigation.ProductDetailsPage.route
+                }
+                navController.navigate(route)
+            }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            val painter = if (imageUri != null) {
+                rememberAsyncImagePainter(model = imageUri)
+            } else {
+                painterResource(id = R.drawable.product_placeholder)
+            }
+            Image(
+                painter = painter,
+                contentDescription = "Product Image",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth()
+                    .height(80.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = productDTO.name,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                maxLines = 2,
+                modifier = Modifier.heightIn(min = 40.dp)
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = productDTO.brand.name,
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            if (productDTO.onSale && productDTO.discountedPrice != null) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "${productDTO.price}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+
+                    Text(
+                        text = "${productDTO.discountedPrice}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp
+                    )
+                }
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "${productDTO.price}€",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        fontSize = 18.sp
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+        }
+    }
 }
 
 

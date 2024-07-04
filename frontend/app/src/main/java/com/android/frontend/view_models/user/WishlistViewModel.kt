@@ -1,7 +1,6 @@
 package com.android.frontend.view_models.user
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,9 +13,7 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.dto.creation.WishlistCreateDTO
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -95,14 +92,14 @@ class WishlistViewModel : ViewModel() {
         })
     }
 
-    fun getWishlistDetails(context: Context, wishlistId: Long) {
+    fun getWishlistDetails(context: Context, wishlistId: Long,wishlistName: String) {
         viewModelScope.launch {
             try {
                 val wishlistService = RetrofitInstance.getWishlistApi(context)
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 val call = wishlistService.getProductByWishlistId("Bearer $accessToken", wishlistId)
 
-                Log.d("DEBUG", "Starting API call for Wishlist ID: $wishlistId with token: $accessToken")
+                Log.d("DEBUG", "Starting API call for Wishlist ID: $wishlistId, $wishlistName with token: $accessToken")
 
                 call.enqueue(object : Callback<List<ProductDTO>> {
                     override fun onResponse(
@@ -131,6 +128,39 @@ class WishlistViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("DEBUG", "Exception in getWishlistDetails: ${e.message}", e)
             }
+        }
+    }
+
+    fun addProductToWishlist(context: Context, productId: Long, wishlistId: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.addProductToWishlist("Bearer $accessToken", productId, wishlistId)
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let { wishlist ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Added product to wishlist: $wishlist")
+                    fetchAllWishlists(context)
+                }
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to add product to wishlist: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 

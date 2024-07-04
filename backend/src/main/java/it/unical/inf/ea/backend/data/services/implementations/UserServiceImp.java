@@ -269,7 +269,6 @@ public class UserServiceImp implements UserService{
         }
 
         createUser(lastname, firstname, email, passwordEncoder.encode(password));
-        log.info("User created: {}", firstname);
         return new ResponseEntity<>("User created", HttpStatus.CREATED);
     }
 

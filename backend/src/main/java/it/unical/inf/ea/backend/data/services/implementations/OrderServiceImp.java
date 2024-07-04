@@ -45,7 +45,7 @@ public class OrderServiceImp implements OrderService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Carrello non trovato"));
-            Set<CartItem> cartItems = cart.getItems();
+            List<CartItem> cartItems = cart.getItems();
             if (cartItems.isEmpty()) {
                 throw new IllegalAccessException("Il carrello è vuoto");
             }
@@ -115,6 +115,13 @@ public class OrderServiceImp implements OrderService {
     @Override
     public List<OrderDTO> getAllOrders() {
         return orderDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDTO> getAllLoggedUserOrders() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        List<Order> orders = orderDao.findAllByUserId(loggedUser.getId());
+        return orders.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     private OrderDTO mapToDTO(Order order) {
