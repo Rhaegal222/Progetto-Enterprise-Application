@@ -44,11 +44,11 @@ class ProductCategoryBrandViewModel : ViewModel() {
     val description = MutableLiveData<String>()
     val ingredients = MutableLiveData<String>()
     val nutritionalValues = MutableLiveData<String>()
+    val weight = MutableLiveData<String>()
+    val quantity = MutableLiveData<Int>()
     val price = MutableLiveData<BigDecimal>()
     val shippingCost = MutableLiveData<BigDecimal>()
-    val weight = MutableLiveData<String>()
     val availability = MutableLiveData<ProductDTO.Availability>()
-    val quantity = MutableLiveData<Int>()
     val brand = MutableLiveData<BrandDTO>()
     val category = MutableLiveData<CategoryDTO>()
     val onSale = MutableLiveData<Boolean>()
@@ -67,7 +67,7 @@ class ProductCategoryBrandViewModel : ViewModel() {
     private val _productImagesLiveData = MutableLiveData<Map<String, Uri>>()
     val productImagesLiveData: LiveData<Map<String, Uri>> = _productImagesLiveData
 
-    val productId = MutableLiveData<String>()
+    val productId = MutableLiveData<Long?>()
 
     fun fetchAllData(context: Context) {
         viewModelScope.launch {
@@ -248,11 +248,11 @@ class ProductCategoryBrandViewModel : ViewModel() {
                 description = description.value?: "",
                 ingredients = ingredients.value,
                 nutritionalValues = nutritionalValues.value,
+                weight = weight.value,
+                quantity = quantity.value,
                 price = price.value,
                 shippingCost = shippingCost.value,
-                weight = weight.value,
                 availability = availability.value,
-                quantity = quantity.value,
                 brand = brand.value,
                 category = category.value,
                 onSale = onSale.value ?: false,
@@ -271,7 +271,8 @@ class ProductCategoryBrandViewModel : ViewModel() {
                 val tokenMap = response.body()
                 if (tokenMap != null) {
                     val message = tokenMap["message"]
-                    productId.postValue(tokenMap["productId"])
+                    val prodId = tokenMap["productId"]?.toLong()
+                    productId.postValue(prodId)
                     Log.d("DEBUG", "${getCurrentStackTrace()} ${message}: ${productId.value}")
                 }
             } else {
@@ -281,7 +282,7 @@ class ProductCategoryBrandViewModel : ViewModel() {
     }
 
 
-    fun deleteProduct(productId: String, context: Context) {
+    fun deleteProduct(productId: Long, context: Context) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
@@ -333,7 +334,7 @@ class ProductCategoryBrandViewModel : ViewModel() {
         })
     }
 
-    fun uploadProductImage(context: Context, productId: String, imageUri: Uri) {
+    fun uploadProductImage(context: Context, productId: Long, imageUri: Uri) {
         viewModelScope.launch {
             //stampa nel log productId e imageUri
             Log.d("DEBUG", "${getCurrentStackTrace()} productId: $productId, imageUri: $imageUri")
@@ -342,7 +343,7 @@ class ProductCategoryBrandViewModel : ViewModel() {
         }
     }
 
-    private suspend fun uploadImage(context: Context, productId: String, imageUri: Uri) {
+    private suspend fun uploadImage(context: Context, productId: Long, imageUri: Uri) {
         withContext(Dispatchers.IO) {
             val file = getFileFromUri(context, imageUri) ?: return@withContext
 
@@ -352,12 +353,11 @@ class ProductCategoryBrandViewModel : ViewModel() {
 
             // Prepare other parts
             val descriptionPart = "Product Image".toRequestBody("text/plain".toMediaTypeOrNull())
-            val productIdPart = productId.toRequestBody("text/plain".toMediaTypeOrNull())
 
             try {
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 val productImageService = RetrofitInstance.getProductImageApi(context)
-                val call = productImageService.savePhotoProduct("Bearer $accessToken", body, productIdPart, descriptionPart)
+                val call = productImageService.savePhotoProduct("Bearer $accessToken", body, productId, descriptionPart)
                 val response = call.execute()
 
                 if (response.isSuccessful) {
@@ -375,7 +375,7 @@ class ProductCategoryBrandViewModel : ViewModel() {
 
 
 
-    private fun deletePhotoProduct(context: Context, productId: String) {
+    private fun deletePhotoProduct(context: Context, productId: Long) {
         val accessToken = TokenManager.getInstance().getAccessToken(context)
 
         val productImageService = RetrofitInstance.getProductImageApi(context)
@@ -429,19 +429,19 @@ class ProductCategoryBrandViewModel : ViewModel() {
         }
     }
 
-    private fun fetchProductImage(context: Context, productId: String) {
+    private fun fetchProductImage(context: Context, productId: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
                     val type = "product_photos"
-                    val folderName = productId
+                    val folderName = productId.toString()
                     val fileName = "photoProduct.png"
                     val responseBody = fetchImage(context, type, folderName, fileName)
                     responseBody?.let {
                         val tempFile = saveImageToFile(context, responseBody)
                         val imageUri = Uri.fromFile(tempFile)
                         val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
-                        currentImages[productId] = imageUri
+                        currentImages[productId.toString()] = imageUri
                         _productImagesLiveData.postValue(currentImages)
                     } ?: run {
                         Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")

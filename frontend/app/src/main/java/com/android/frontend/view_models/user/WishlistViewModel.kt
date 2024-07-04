@@ -1,6 +1,7 @@
 package com.android.frontend.view_models.user
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,14 +11,23 @@ import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.dto.creation.WishlistCreateDTO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.net.SocketTimeoutException
 
 class WishlistViewModel : ViewModel() {
     private val wishlist = MutableLiveData<List<WishlistDTO>>()
     val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = wishlist
 
+    private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
+    val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
     private val _hasError = MutableLiveData(false)
@@ -46,7 +56,7 @@ class WishlistViewModel : ViewModel() {
                 wishlistService.addWishlist("Bearer $accessToken", wishlistCreateDTO)
             }
             if (response?.isSuccessful == true) {
-                response.body()?.let { shippingAddresses ->
+                response.body()?.let { wishlist ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Added wishlist: $wishlist")
                     fetchAllWishlists(context)
                 }
@@ -85,33 +95,43 @@ class WishlistViewModel : ViewModel() {
         })
     }
 
-    fun getWishlistDetails(context: Context,wishlistId: Long) {
+    fun getWishlistDetails(context: Context, wishlistId: Long) {
         viewModelScope.launch {
-            val wishlistService = RetrofitInstance.getWishlistApi(context)
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val call = wishlistService.getWishlistById("Bearer $accessToken", wishlistId)
-            call.enqueue(object : retrofit2.Callback<WishlistDTO> {
-                override fun onResponse(
-                    call: retrofit2.Call<WishlistDTO>,
-                    response: retrofit2.Response<WishlistDTO>
-                ) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { wishlist ->
-                            wishlistDetails.value = wishlist
+            try {
+                val wishlistService = RetrofitInstance.getWishlistApi(context)
+                val accessToken = TokenManager.getInstance().getAccessToken(context)
+                val call = wishlistService.getProductByWishlistId("Bearer $accessToken", wishlistId)
+
+                Log.d("DEBUG", "Starting API call for Wishlist ID: $wishlistId with token: $accessToken")
+
+                call.enqueue(object : Callback<List<ProductDTO>> {
+                    override fun onResponse(
+                        call: Call<List<ProductDTO>>,
+                        response: Response<List<ProductDTO>>
+                    ) {
+                        Log.d("DEBUG", "API Response received for Wishlist ID: $wishlistId")
+                        if (response.isSuccessful) {
+                            val products = response.body() ?: emptyList()
+                            _productsLiveData.postValue(products)
+                            Log.d("DEBUG", "Successfully fetched products: $products")
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            Log.e("DEBUG", "Failed to fetch products: $errorBody")
                         }
-                    } else {
-                        Log.e(
-                            "DEBUG",
-                            "Error fetching wishlist details: ${response.errorBody()?.string()}"
-                        )
                     }
-                }
-                override fun onFailure(call: retrofit2.Call<WishlistDTO>, t: Throwable) {
-                    Log.e("DEBUG", "Error fetching wishlist details", t)
-                }
-            })
+
+                    override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
+                        if (t is SocketTimeoutException) {
+                            Log.e("DEBUG", "Timeout fetching products for Wishlist ID: $wishlistId", t)
+                        } else {
+                            Log.e("DEBUG", "Error fetching products for Wishlist ID: $wishlistId", t)
+                        }
+                    }
+                })
+            } catch (e: Exception) {
+                Log.e("DEBUG", "Exception in getWishlistDetails: ${e.message}", e)
+            }
         }
-
-
     }
+
 }

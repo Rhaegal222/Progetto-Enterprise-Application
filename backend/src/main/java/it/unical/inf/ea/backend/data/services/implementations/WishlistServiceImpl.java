@@ -2,14 +2,13 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
-import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.dao.WishlistDao;
 import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.entities.Wishlist;
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
+import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
-
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,11 +25,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WishlistServiceImpl implements WishlistService {
 
-    private final UserDao userDao;
     private final WishlistDao wishlistDao;
     private final ModelMapper modelMapper;
     private final ProductDao productDao;
     private final JwtContextUtils jwtContextUtils;
+    private final Clock clock;
+
 
     @Override
     public void addWishlist(WishlistCreateDTO wishlistCreateDTO) {
@@ -37,8 +39,12 @@ public class WishlistServiceImpl implements WishlistService {
             if (loggedUser == null) {
                 throw new IllegalStateException("Logged user cannot be null");
             }
+            LocalDateTime now = getTimeNow();
 
             Wishlist wishlist = mapToEntity(wishlistCreateDTO);
+            wishlist.setWishlistName(wishlistCreateDTO.getWishlistName());
+            wishlist.setVisibility(wishlistCreateDTO.getVisibility());
+            wishlist.setCreatedAt(now);
             wishlist.setUser(loggedUser);
 
             wishlistDao.save(wishlist);
@@ -65,6 +71,15 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    public List<ProductDTO> getProductByWishlistId(Long wishlistId) throws IllegalAccessException {
+        Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
+            throw new IllegalAccessException("User cannot get products from this wishlist");
+        return wishlist.getProducts().stream().map(product -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteWishlist(Long id) {
         try {
             Wishlist wishlist = wishlistDao.findById(id).orElseThrow();
@@ -78,7 +93,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public WishlistDTO addProductToWishlist(Long productId, Long wishlistId) {
+    public void addProductToWishlist(Long wishlistId, Long productId) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -94,14 +109,14 @@ public class WishlistServiceImpl implements WishlistService {
                 throw new IllegalArgumentException("Product is already in this wishlist.");
             }
 
-            return mapToDto(wishlistDao.save(wishlist));
+            mapToDto(wishlistDao.save(wishlist));
         } catch (Exception e) {
             throw new RuntimeException("Cannot add product to wishlist");
         }
     }
 
     @Override
-    public WishlistDTO removeProductFromWishlist(Long productId, Long wishlistId) {
+    public void removeProductFromWishlist(Long wishlistId, Long productId) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -117,12 +132,14 @@ public class WishlistServiceImpl implements WishlistService {
                 throw new IllegalArgumentException("Product is not in this wishlist.");
             }
 
-            return mapToDto(wishlistDao.save(wishlist));
+            mapToDto(wishlistDao.save(wishlist));
         } catch (Exception e) {
             throw new RuntimeException("Cannot remove product from wishlist");
         }
     }
-
+    private LocalDateTime getTimeNow() {
+        return LocalDateTime.now(clock);
+    }
 
     public Wishlist mapToEntity(WishlistCreateDTO wishlistCreateDTO) { return modelMapper.map(wishlistCreateDTO, Wishlist.class);}
     public WishlistDTO mapToDto(Wishlist wishlist) { return modelMapper.map(wishlist, WishlistDTO.class); }

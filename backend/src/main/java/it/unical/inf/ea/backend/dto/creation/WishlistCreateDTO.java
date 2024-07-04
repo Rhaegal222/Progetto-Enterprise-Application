@@ -10,7 +10,7 @@ import lombok.*;
 public class WishlistCreateDTO {
 
     @NonNull
-    private String name;
+    private String wishlistName;
 
     @NonNull
     private WishlistVisibility visibility;

@@ -108,7 +108,7 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                         .padding(innerPadding)
                 ) {
                     items(sortedProducts ?: emptyList()) { productDTO ->
-                        ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
+                        ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id.toString()))
                     }
                 }
             }

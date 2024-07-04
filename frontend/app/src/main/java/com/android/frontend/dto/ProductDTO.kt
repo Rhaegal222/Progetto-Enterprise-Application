@@ -3,7 +3,7 @@ package com.android.frontend.dto
 import java.math.BigDecimal
 
 data class ProductDTO(
-    var id: String,
+    var id: Long,
     var name: String,
     var description: String? = null,
     var ingredients: String? = null,

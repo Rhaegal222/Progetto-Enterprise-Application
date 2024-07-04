@@ -1,13 +1,33 @@
 package com.android.frontend.view.pages.user.details
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -15,9 +35,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -26,7 +49,17 @@ import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.view_models.user.WishlistViewModel
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
+import com.android.frontend.dto.ProductDTO
+import com.android.frontend.persistence.SecurePreferences
+import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.view.pages.user.browse.ProductsCard
+import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.ProductViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -35,9 +68,11 @@ fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: Nav
     val context = LocalContext.current
     val wishlistId = CurrentDataUtils.currentWishlistId
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
-
+    val products = wishlistViewModel.productsLiveData.observeAsState().value
     wishlistViewModel.getWishlistDetails(context, wishlistId)
-
+    LaunchedEffect(Unit) {
+        wishlistViewModel.getWishlistDetails(context, wishlistId)
+    }
     Scaffold(
         topBar = {
             androidx.compose.material.TopAppBar(
@@ -70,14 +105,29 @@ fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: Nav
                         modifier = Modifier.padding(16.dp)
                     )
                     Text(
-                        text = wishlistDetails.wishlistVisibility.toString(),
+                        text =wishlistDetails.visibility.toString(),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(16.dp)
                     )
-                    }
+
+
                 }
+            }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                items(products ?: emptyList()) { productDTO ->
+                    Log.d("DEBUG", "Product: $productDTO")
+                    ProductsCard(productDTO = productDTO, navController = navController, productViewModel = ProductViewModel(), cartViewModel = CartViewModel(), imageUri = null)
+                }
+            }
 
         }
     )
 }
+
+
 

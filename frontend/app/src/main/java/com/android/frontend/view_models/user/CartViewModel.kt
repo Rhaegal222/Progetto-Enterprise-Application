@@ -26,11 +26,11 @@ class CartViewModel : ViewModel() {
     private val _cartItemCount = MutableStateFlow(0)
     val cartItemCount: StateFlow<Int> = _cartItemCount
 
-    private val productDetailsCache = mutableMapOf<String, ProductDTO>()
-    private val productDetails = MutableLiveData<Map<String, ProductDTO>>()
-    val productDetailsLiveData: LiveData<Map<String, ProductDTO>> get() = productDetails
+    private val productDetailsCache = mutableMapOf<Long, ProductDTO>()
+    private val productDetails = MutableLiveData<Map<Long, ProductDTO>>()
+    val productDetailsLiveData: LiveData<Map<Long, ProductDTO>> get() = productDetails
 
-    fun getProductDetails(context: Context, id: String) {
+    fun getProductDetails(context: Context, id: Long) {
         if (productDetailsCache.containsKey(id)) {
             productDetails.value = productDetailsCache
             return
@@ -91,7 +91,7 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    fun addProductToCart(productId: String, quantity: Int, context: Context) {
+    fun addProductToCart(productId: Long, quantity: Int, context: Context) {
         val cartService = RetrofitInstance.getCartApi(context)
         val cartItemCreateDTO = CartItemCreateDTO(productId, quantity)
         viewModelScope.launch(Dispatchers.IO) {

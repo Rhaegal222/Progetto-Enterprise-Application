@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class ProductDTO {
 
     @NotNull
-    private String id;
+    private Long id;
 
     @Length(max = 100)
     @NotNull

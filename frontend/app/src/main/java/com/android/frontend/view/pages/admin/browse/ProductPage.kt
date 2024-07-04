@@ -79,7 +79,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, viewModel, productImages?.get(productDTO.id))
+                    ProductsCard(productDTO, navController, viewModel, productImages?.get(productDTO.id.toString()))
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.android.frontend.service
 
+import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.dto.creation.WishlistCreateDTO
 import retrofit2.Call
@@ -28,21 +29,21 @@ interface WishlistService {
     fun addProductToWishlist(
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: Long,
-        @Body productId: String
+        @Body productId: Long
     ): Call<Void>
 
     @DELETE("/api/v1/wishlist/{wishlistId}/products/{productId}")
     fun removeProductsFromWishlist(
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: Long,
-        @Body productId: String
+        @Body productId: Long
     ): Call<Void>
 
-    @GET("/api/v1/wishlist/getWishlistById/{id}")
-    fun getWishlistById(
+    @GET("/api/v1/wishlist/getProductByWishlistId/{id}")
+    fun getProductByWishlistId(
         @Header("Authorization") authorization: String,
         @Path("id") id: Long
-    ): Call<WishlistDTO>
+    ): Call<List<ProductDTO>>
 
     @GET("/api/v1/wishlist/getAllLoggedUserWishlists")
     fun getAllLoggedUserWishlists(
