@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.dto.CartItemDTO
 import com.android.frontend.dto.ProductDTO
@@ -24,7 +25,11 @@ import kotlinx.coroutines.flow.firstOrNull
 import java.math.BigDecimal
 
 @Composable
-fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
+fun CartPage(
+    navController: NavController,
+    cartViewModel: CartViewModel = viewModel()
+) {
+
     val context = LocalContext.current
     val cart by cartViewModel.cart.collectAsState()
 

@@ -30,7 +30,9 @@ import com.android.frontend.view_models.user.AddressViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
-fun AddAddressPage(navController: NavHostController, addressViewModel: AddressViewModel = viewModel()) {
+fun AddAddressPage(
+    navController: NavHostController,
+    addressViewModel: AddressViewModel = viewModel()) {
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current

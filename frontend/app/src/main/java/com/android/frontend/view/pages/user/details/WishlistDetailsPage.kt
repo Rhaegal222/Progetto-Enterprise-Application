@@ -46,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.dto.ProductDTO
 
@@ -53,7 +54,10 @@ import com.android.frontend.dto.ProductDTO
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WishlistDetailsPage(wishlistViewModel: WishlistViewModel, navController: NavController) {
+fun WishlistDetailsPage(
+    navController: NavController,
+    wishlistViewModel: WishlistViewModel = viewModel(),
+) {
     val context = LocalContext.current
     val wishlistId = CurrentDataUtils.currentWishlistId
     val wishlistName = CurrentDataUtils.CurrentWishlistName

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.android.frontend.R
@@ -37,7 +38,11 @@ import com.android.frontend.view_models.user.ProductViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProductDetailsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel, ) {
+fun ProductDetailsPage(
+    navController: NavController,
+    productViewModel: ProductViewModel = viewModel(),
+    cartViewModel: CartViewModel = viewModel()
+){
     val context = LocalContext.current
     val productId = CurrentDataUtils.currentProductId
     val productUri = CurrentDataUtils.currentProductImageUri

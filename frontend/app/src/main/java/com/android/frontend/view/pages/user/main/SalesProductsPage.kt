@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.view.pages.user.browse.ProductsCard
 import com.android.frontend.view_models.user.CartViewModel
@@ -20,7 +21,11 @@ import com.android.frontend.view_models.user.ProductViewModel
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SalesProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+fun SalesProductsPage(
+    navController: NavController,
+    productViewModel: ProductViewModel = viewModel(),
+    cartViewModel: CartViewModel = viewModel()
+) {
 
     val context = LocalContext.current
     val products = productViewModel.productsLiveData.observeAsState().value

@@ -26,11 +26,11 @@ import java.util.UUID
 
 @Composable
 fun CheckoutPage(
-    cartViewModel: CartViewModel,
+    navController: NavController,
+    cartViewModel: CartViewModel = viewModel(),
     paymentViewModel: PaymentViewModel = viewModel(),
     addressViewModel: AddressViewModel = viewModel(),
-    orderViewModel: OrderViewModel = viewModel(),
-    navController: NavController
+    orderViewModel: OrderViewModel = viewModel()
 ) {
     val context = LocalContext.current
     var paymentMethod by remember { mutableStateOf<String?>(null) }

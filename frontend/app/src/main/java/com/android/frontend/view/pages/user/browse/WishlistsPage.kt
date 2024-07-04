@@ -1,7 +1,6 @@
 package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.dto.WishlistDTO
@@ -57,9 +56,9 @@ import com.android.frontend.view_models.user.WishlistViewModel
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllWishlistsPage(
+fun WishlistsPage(
     navController: NavController,
-    wishlistViewModel: WishlistViewModel
+    wishlistViewModel: WishlistViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val wishlists by wishlistViewModel.wishlistLiveData.observeAsState(emptyList())

@@ -28,7 +28,7 @@ fun MainScreen() {
             .fillMaxWidth()
             .fillMaxHeight(),
         bottomBar = {
-            BottomBar(navController = mainNavController, cartViewModel = cartViewModel)
+            BottomBar(navController = mainNavController)
         }
     ) { innerPadding ->
         Box(
@@ -36,7 +36,7 @@ fun MainScreen() {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            MainGraph( navController = mainNavController, cartViewModel = cartViewModel, modifier = Modifier.fillMaxSize().padding(0.dp))
+            MainGraph(navController = mainNavController)
         }
     }
 }
