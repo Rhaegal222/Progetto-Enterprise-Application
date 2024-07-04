@@ -12,6 +12,7 @@ object CurrentDataUtils {
     private var _currentProductId: Long = 0
     private var _currentProductImageUri: Uri? = null
     private var _currentWishlistId: Long = 0
+    private var _currentWishlistName: String = ""
     var refreshAttempts = AtomicInteger(0)
 
     var currentProductId: Long
@@ -30,6 +31,12 @@ object CurrentDataUtils {
         get() = _currentWishlistId
         set(newValue){
             _currentWishlistId = newValue
+        }
+
+    var CurrentWishlistName: String
+        get() = _currentWishlistName
+        set(newValue){
+            _currentWishlistName = newValue
         }
 
     var baseUrl: String
