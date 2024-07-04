@@ -4,7 +4,9 @@ package it.unical.inf.ea.backend.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -14,17 +16,29 @@ import java.util.List;
 public class OrderDTO {
 
     @NotNull
-    private String id;
+    private UUID id;
 
     @NotNull
-    private List<CartItemDTO> items;
+    private List<OrderItemDTO> items;
 
     @NotNull
-    private String addressId;
+    private BigDecimal totalCost;
 
     @NotNull
-    private String paymentMethodId;
+    private String status;
 
     @NotNull
-    private String userId;
+    private String createdAt;
+
+    @NotNull
+    private String updatedAt;
+
+    @NotNull
+    private UserDTO user;
+
+    @NotNull
+    private AddressDTO address;
+
+    @NotNull
+    private PaymentMethodDTO paymentMethod;
 }

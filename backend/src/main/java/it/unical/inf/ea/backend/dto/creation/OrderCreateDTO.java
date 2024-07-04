@@ -20,16 +20,10 @@ import java.util.UUID;
 public class OrderCreateDTO {
 
     @NotNull
-    private List<CartItemDTO> items;
-
-    @NotNull
     private UUID addressId;
 
     @NotNull
     private UUID paymentMethodId;
-
-    @NotNull
-    private UUID userId;
 
 }
 

@@ -6,8 +6,6 @@ import it.unical.inf.ea.backend.data.entities.CartItem;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.dao.CartItemDao;
 import it.unical.inf.ea.backend.data.dao.CartDao;
-import it.unical.inf.ea.backend.data.dao.ProductDao;
-import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.services.interfaces.CartService;
 import it.unical.inf.ea.backend.dto.CartDTO;
 import it.unical.inf.ea.backend.dto.creation.CartItemCreateDTO;
@@ -27,8 +25,6 @@ public class CartServiceImp implements CartService {
 
     private final CartDao cartDao;
     private final CartItemDao cartItemDao;
-    private final ProductDao productDao;
-    private final UserDao userDao;
     private final ModelMapper modelMapper;
     private final JwtContextUtils jwtContextUtils;
 
@@ -48,6 +44,24 @@ public class CartServiceImp implements CartService {
         return cartDao.findByUser(loggedUser)
                 .map(this::mapToDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+    }
+
+    @Override
+    public CartDTO editItemInCart(UUID cartItemId, int quantity) {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Accesso non autorizzato");
+        }
+
+        Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        for (CartItem item : cart.getItems()) {
+            if (item.getId().equals(cartItemId)) {
+                item.setQuantity(quantity);
+                cartItemDao.save(item);
+                break;
+            }
+        }
+        return mapToDTO(cartDao.save(cart));
     }
 
     @Override
@@ -112,7 +126,6 @@ public class CartServiceImp implements CartService {
         return mapToDTO(cartDao.save(cart));
     }
 
-    Cart mapToEntity(CartDTO cartDTO) { return modelMapper.map(cartDTO, Cart.class); }
     CartDTO mapToDTO(Cart cart) { return modelMapper.map(cart, CartDTO.class); }
 }
 

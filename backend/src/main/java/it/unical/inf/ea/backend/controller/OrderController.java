@@ -3,6 +3,7 @@ package it.unical.inf.ea.backend.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.services.interfaces.OrderService;
 import it.unical.inf.ea.backend.dto.OrderDTO;
+import it.unical.inf.ea.backend.dto.OrderItemDTO;
 import it.unical.inf.ea.backend.dto.creation.OrderCreateDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +25,21 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping(path="/addOrder")
+    @PostMapping("/addOrder")
     public ResponseEntity<?> addOrder(@Valid @RequestBody OrderCreateDTO orderCreateDTO) {
         try {
-            orderService.addOrder(orderCreateDTO);
-            return ResponseEntity.ok("{\"message\": \"Ordine registrato con successo\"}");
+
+            return ResponseEntity.ok(orderService.addOrder(orderCreateDTO));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
         }
     }
 
     @PutMapping(path = "/updateOrder/{id}")
-    public ResponseEntity<?> updateOrder(@PathVariable("id") UUID id, @Valid @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<?> updateOrder(@PathVariable("id") UUID id, @Valid @RequestBody OrderItemDTO orderDTO) {
         try {
-            orderService.updateOrder(id, orderDTO);
-            return ResponseEntity.ok("{\"message\": \"Ordine aggiornato con successo\"}");
+
+            return ResponseEntity.ok( orderService.updateOrder(id, orderDTO));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
         }
@@ -47,8 +48,7 @@ public class OrderController {
     @DeleteMapping(path = "/deleteOrder/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable("id") UUID id) {
         try {
-            orderService.deleteOrder(id);
-            return ResponseEntity.ok("{\"message\": \"Ordine cancellato con successo\"}");
+            return ResponseEntity.ok(orderService.deleteOrder(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
         }

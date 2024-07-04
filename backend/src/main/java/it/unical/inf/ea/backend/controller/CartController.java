@@ -33,8 +33,28 @@ public class CartController {
         }
     }
 
-    @PostMapping("/addProduct")
-    public ResponseEntity<?> addProductToCart(@RequestBody CartItemCreateDTO cartItemDTO) {
+    @GetMapping("/getCartForLoggedUser")
+    public ResponseEntity<?> getCartForLoggedUser() {
+        try {
+            CartDTO cart = cartService.getCartForLoggedUser();
+            return ResponseEntity.ok(cart);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @PutMapping("/editItem")
+    public ResponseEntity<?> editItemInCart(@RequestParam UUID cartItemId, @RequestParam int quantity) {
+        try {
+            CartDTO cart = cartService.editItemInCart(cartItemId, quantity);
+            return ResponseEntity.ok(cart);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/addItem")
+    public ResponseEntity<?> addItemToCart(@RequestBody CartItemCreateDTO cartItemDTO) {
         try {
             CartDTO cart = cartService.addItemToCart(cartItemDTO);
             return ResponseEntity.ok(cart);
@@ -43,8 +63,8 @@ public class CartController {
         }
     }
 
-    @DeleteMapping("/removeProduct/{cartItemId}")
-    public ResponseEntity<?> removeProductFromCart(@PathVariable UUID cartItemId) {
+    @DeleteMapping("/removeItem/{cartItemId}")
+    public ResponseEntity<?> removeItemFromCart(@PathVariable UUID cartItemId) {
         try {
             CartDTO cart = cartService.removeItemFromCart(cartItemId);
             return ResponseEntity.ok(cart);
