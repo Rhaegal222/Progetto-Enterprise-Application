@@ -9,12 +9,12 @@ object CurrentDataUtils {
 
     private var _baseUrl: String = "http://10.0.2.2:8080/"
 
-    private var _currentProductId: String = ""
+    private var _currentProductId: Long = 0
     private var _currentProductImageUri: Uri? = null
     private var _currentWishlistId: Long = 0
     var refreshAttempts = AtomicInteger(0)
 
-    var currentProductId: String
+    var currentProductId: Long
         get() = _currentProductId
         set(newValue){
             _currentProductId = newValue

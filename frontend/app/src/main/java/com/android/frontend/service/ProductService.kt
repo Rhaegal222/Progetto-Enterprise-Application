@@ -24,20 +24,20 @@ interface ProductService {
     @DELETE("/api/v1/products/deleteProduct/{id}")
     fun deleteProduct(
         @Header("Authorization") authorization: String,
-        @Path("id") id: String
+        @Path("id") id: Long
     ): Call<Void>
 
     @PUT("/api/v1/products/updateProduct/{id}")
     fun updateProduct(
         @Header("Authorization") authorization: String,
-        @Path("id") id: String,
+        @Path("id") id: Long,
         @Body product: ProductDTO
     ): Call<ProductDTO>
 
     @GET("/api/v1/products/getProductById/{id}")
     fun getProductById(
         @Header("Authorization") authorization: String,
-        @Path("id") id: String
+        @Path("id") id: Long
     ): Call<ProductDTO>
 
     @GET("/api/v1/products/getAllProducts")

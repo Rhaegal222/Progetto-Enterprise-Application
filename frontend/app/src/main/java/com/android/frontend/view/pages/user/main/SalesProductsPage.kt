@@ -45,7 +45,7 @@ fun SalesProductsPage(navController: NavController, productViewModel: ProductVie
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
+                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id.toString()))
                 }
             }
         }

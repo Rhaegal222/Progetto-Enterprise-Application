@@ -15,7 +15,7 @@ public class CartItemDTO {
     private String id;
 
     @NotNull
-    private String productId;
+    private Long productId;
 
     @NotNull
     private int quantity;

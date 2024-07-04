@@ -61,7 +61,7 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
     var quantity by remember { mutableStateOf(cartItem.quantity) }
 
     LaunchedEffect(cartItem.id) {
-        cartViewModel.getProductDetails(context, cartItem.id)
+        cartViewModel.getProductDetails(context, cartItem.productId)
     }
 
     Card(
@@ -104,7 +104,7 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
 }
 
 @Composable
-fun CartSummary(cartItems: List<CartItemDTO>, productDetails: Map<String, ProductDTO>) {
+fun CartSummary(cartItems: List<CartItemDTO>, productDetails: Map<Long, ProductDTO>) {
     val total = cartItems.fold(BigDecimal.ZERO) { acc, cartItem ->
         val productPrice = productDetails[cartItem.productId]?.price ?: BigDecimal.ZERO
         val shippingCost = productDetails[cartItem.productId]?.shippingCost ?: BigDecimal.ZERO

@@ -21,7 +21,7 @@ interface ProductImageService {
     fun savePhotoProduct(
         @Header("Authorization") authHeader: String,
         @Part file: MultipartBody.Part,
-        @Part("product_id") productId: RequestBody,
+        @Query("productId") productId: Long,
         @Part("description") description: RequestBody
     ): Call<ProductImageDTO>
 
@@ -29,6 +29,6 @@ interface ProductImageService {
     @DELETE("/api/v1/productPicture/deleteImage/{id}")
     fun deletePhotoProduct(
         @Header("Authorization") authHeader: String,
-        @Path("id") id: String
+        @Path("id") id: Long
     ): Call<Void>
 }

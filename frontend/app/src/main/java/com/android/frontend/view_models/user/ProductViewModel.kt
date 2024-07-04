@@ -54,7 +54,7 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    fun getProductDetails(context: Context, id: String) {
+    fun getProductDetails(context: Context, id: Long) {
         viewModelScope.launch {
             val productService = RetrofitInstance.getProductApi(context)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
@@ -184,19 +184,19 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    private fun fetchProductImage(context: Context, productId: String) {
+    private fun fetchProductImage(context: Context, productId: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
                     val type = "product_photos"
-                    val folderName = productId
+                    val folderName = productId.toString()
                     val fileName = "photoProduct.png"
                     val responseBody = fetchImage(context, type, folderName, fileName)
                     responseBody?.let {
                         val tempFile = saveImageToFile(context, responseBody)
                         val imageUri = Uri.fromFile(tempFile)
                         val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
-                        currentImages[productId] = imageUri
+                        currentImages[productId.toString()] = imageUri
                         _productImagesLiveData.postValue(currentImages)
                     } ?: run {
                         Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")

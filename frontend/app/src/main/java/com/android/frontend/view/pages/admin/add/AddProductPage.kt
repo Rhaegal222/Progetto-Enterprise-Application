@@ -37,24 +37,26 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
     }
 
     val isLoading by viewModel.isLoading.observeAsState(true)
-    val title by viewModel.name.observeAsState("")
+
+    val name by viewModel.name.observeAsState("")
     val description by viewModel.description.observeAsState("")
     val ingredients by viewModel.ingredients.observeAsState("")
     val nutritionalValues by viewModel.nutritionalValues.observeAsState("")
+    val weight by viewModel.weight.observeAsState("")
+    val quantity by viewModel.quantity.observeAsState(0)
     val price by viewModel.price.observeAsState(BigDecimal.ZERO)
     val shippingCost by viewModel.shippingCost.observeAsState(BigDecimal.ZERO)
-    val weight by viewModel.weight.observeAsState("")
     val availability by viewModel.availability.observeAsState(ProductDTO.Availability.IN_STOCK)
-    val quantity by viewModel.quantity.observeAsState(0)
     val allBrands by viewModel.allBrands.observeAsState(emptyList())
     val allCategories by viewModel.allCategories.observeAsState(emptyList())
     val onSale by viewModel.onSale.observeAsState(false)
     val discountedPrice by viewModel.salePrice.observeAsState(BigDecimal.ZERO)
 
-    val productId by viewModel.productId.observeAsState("")
+    val productId by viewModel.productId.observeAsState(-1L)
 
     var selectedBrand by remember { mutableStateOf<BrandDTO?>(null) }
     var selectedCategory by remember { mutableStateOf<CategoryDTO?>(null) }
+    var selectedAvailability by remember { mutableStateOf<ProductDTO.Availability?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showImageUploadDialog by remember { mutableStateOf(false) }
     var showImageSuccessDialog by remember { mutableStateOf(false) }
@@ -62,7 +64,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                viewModel.uploadProductImage(context, productId, it)
+                productId?.let { it1 -> viewModel.uploadProductImage(context, it1, it) }
                 showImageSuccessDialog = true
             }
         }
@@ -92,7 +94,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
                 Text("Add New Product", fontSize = 24.sp)
 
                 TextField(
-                    value = title,
+                    value = name,
                     onValueChange = { viewModel.name.value = it },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
@@ -158,7 +160,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = availability.name,
+                        text = selectedAvailability?.name ?: "Select Availability",
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedAvailability = true })
@@ -173,6 +175,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryB
                             DropdownMenuItem(
                                 text = { Text(option.name) },
                                 onClick = {
+                                    selectedAvailability = option
                                     viewModel.availability.value = option
                                     expandedAvailability = false
                                 }

@@ -4,6 +4,6 @@ import java.math.BigDecimal
 
 data class CartItemDTO(
     var id: String,
-    var productId: String,
+    var productId: Long,
     var quantity: Int
 )
