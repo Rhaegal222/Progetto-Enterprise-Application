@@ -5,10 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Data
 @NoArgsConstructor
@@ -41,7 +41,12 @@ public class Order {
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<CartItem> items;
+    @JoinTable(
+            name = "order_cart_items",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "cart_item_id")
+    )
+    private Set<CartItem> items = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

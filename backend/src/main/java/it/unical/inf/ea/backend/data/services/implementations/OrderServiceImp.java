@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ public class OrderServiceImp implements OrderService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Carrello non trovato"));
-            List<CartItem> cartItems = cart.getItems();
+            Set<CartItem> cartItems = cart.getItems();
             if (cartItems.isEmpty()) {
                 throw new IllegalAccessException("Il carrello è vuoto");
             }

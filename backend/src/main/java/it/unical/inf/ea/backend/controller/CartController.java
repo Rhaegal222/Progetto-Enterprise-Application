@@ -44,20 +44,10 @@ public class CartController {
     }
 
     @DeleteMapping("/removeProduct/{cartItemId}")
-    public ResponseEntity<?> removeProductFromCart(@PathVariable Long cartItemId) {
+    public ResponseEntity<?> removeProductFromCart(@PathVariable UUID cartItemId) {
         try {
             cartService.removeItemFromCart(cartItemId);
             return ResponseEntity.ok("{\"message\": \"Product removed from cart\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
-        }
-    }
-
-    @PutMapping("/updateProduct/{cartItemId}")
-    public ResponseEntity<?> updateCartItem(@PathVariable Long cartItemId, @RequestParam int quantity) {
-        try {
-            cartService.updateCartItem(cartItemId, quantity);
-            return ResponseEntity.ok("{\"message\": \"Cart updated successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
