@@ -108,7 +108,6 @@ fun ProductsWishlistCard(
     navController: NavController,
     imageUri: Uri?
 ) {
-
     Card(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
@@ -199,9 +198,7 @@ fun ProductsWishlistCard(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(6.dp))
-
         }
     }
 }
