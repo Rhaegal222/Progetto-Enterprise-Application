@@ -46,7 +46,7 @@ fun CheckoutPage(
     LaunchedEffect(Unit) {
         paymentViewModel.getAllPaymentMethods(context)
         addressViewModel.getAllLoggedUserShippingAddresses(context)
-        cartViewModel.loadCart(context)  // Load the current cart
+        cartViewModel.loadCart(context)
     }
 
     LaunchedEffect(payments, addresses) {
