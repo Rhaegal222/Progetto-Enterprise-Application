@@ -12,6 +12,8 @@ import it.unical.inf.ea.backend.config.security.TokenStore;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -98,25 +100,25 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product product = productDao.findById(id).orElseThrow(EntityNotFoundException::new);
-        LocalDateTime now = getTimeNow();
-        product.setName(productDTO.getName());
-        product.setBrand(modelMapper.map(productDTO.getBrand(), Brand.class));
-        product.setPrice(productDTO.getPrice());
-        product.setDescription(productDTO.getDescription());
-        product.setIngredients(productDTO.getIngredients());
-        product.setWeight(productDTO.getWeight());
-        product.setNutritionalValues(productDTO.getNutritionalValues());
-        product.setQuantity(productDTO.getQuantity());
-        product.setShippingCost(productDTO.getShippingCost());
-        product.setAvailability(productDTO.getProductAvailability());
-        product.setUpdatedAt(now);
-        product.setOnSale(productDTO.isOnSale());
-        product.setSalePrice(productDTO.getSalePrice());
-        product.setCategory(modelMapper.map(productDTO.getCategory(), Category.class));
-        productDao.save(product);
-        return modelMapper.map(product, ProductDTO.class);
+    public ProductDTO partialUpdateProduct(Long id, Map<String, Object> updates) throws IllegalAccessException {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        Product product = productDao.findById(id).orElseThrow();
+
+        if (!loggedUser.isAdministrator()) {
+            throw new IllegalAccessException("Only administrators can update products");
+        }
+
+        // Applica gli aggiornamenti alle proprietà del prodotto
+        BeanWrapper beanWrapper = new BeanWrapperImpl(product);
+        updates.forEach((key, value) -> {
+            if (beanWrapper.isWritableProperty(key)) {
+                beanWrapper.setPropertyValue(key, value);
+            }
+        });
+
+        // Salva l'utente aggiornato
+        Product updateProduct = productDao.save(product);
+        return mapToDto(updateProduct);
     }
 
     @Override
@@ -136,4 +138,7 @@ public class ProductServiceImp implements ProductService {
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
     }
+
+    public ProductDTO mapToDto(Product product){return modelMapper.map(product, ProductDTO.class);}
+
 }

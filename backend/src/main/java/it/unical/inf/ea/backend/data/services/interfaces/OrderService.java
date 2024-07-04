@@ -13,4 +13,5 @@ public interface OrderService {
     void deleteOrder(UUID id) throws IllegalAccessException;
     OrderDTO getOrderById(UUID id) throws IllegalAccessException;
     List<OrderDTO> getAllOrders();
+    List<OrderDTO> getAllLoggedUserOrders();
 }

@@ -36,8 +36,11 @@ class OrderViewModel : ViewModel() {
                 return@launch
             }
 
-            val orderCreateDTO = OrderCreateDTO(items, addressId.toString(),
-                paymentMethodId.toString(), userId.toString()
+            val orderCreateDTO = OrderCreateDTO(
+                items,
+                addressId,
+                paymentMethodId,
+                userId
             )
             val orderService: OrderService = RetrofitInstance.getOrderApi(context)
             val response = Request().executeRequest(context) {

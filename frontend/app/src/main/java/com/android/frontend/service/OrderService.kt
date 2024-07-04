@@ -1,5 +1,6 @@
 package com.android.frontend.service
 
+import com.android.frontend.dto.AddressDTO
 import com.android.frontend.dto.OrderDTO
 import com.android.frontend.dto.creation.OrderCreateDTO
 import retrofit2.Call
@@ -35,4 +36,9 @@ interface OrderService {
     fun getAllOrders(
         @Header("Authorization") authorization: String
     ): Call<List<OrderDTO>>
+
+    @GET("/api/v1/addresses/getAllLoggedUserOrder")
+    fun getAllLoggedUserOrder(
+        @Header("Authorization") authorization: String
+    ): Call<List<AddressDTO>>
 }

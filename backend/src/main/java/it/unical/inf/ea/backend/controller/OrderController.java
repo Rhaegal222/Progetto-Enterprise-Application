@@ -72,4 +72,13 @@ public class OrderController {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
         }
     }
+
+    @GetMapping(path = "/getAllLoggedUserOrders")
+    public ResponseEntity<?> getAllLoggedUserOrders() {
+        try {
+            return ResponseEntity.ok(orderService.getAllLoggedUserOrders());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
+        }
+    }
 }
