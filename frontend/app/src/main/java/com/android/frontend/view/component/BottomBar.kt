@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ManageSearch
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ManageSearch
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -19,17 +19,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.CartViewModel
 
 @Composable
-fun BottomBar(
-    navController: NavHostController,
-    cartViewModel: CartViewModel = viewModel()
-) {
+fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
     val context = LocalContext.current
     val currentNavigation = navController
         .currentBackStackEntryFlow
@@ -56,10 +52,10 @@ fun BottomBar(
             )
 
             NavigationBarItem(
-                selected = currentNavigation.value?.destination?.route == Navigation.AllProductsPage.route,
-                onClick = { navController.navigate(Navigation.AllProductsPage.route) },
+                selected = currentNavigation.value?.destination?.route == Navigation.ProductsPage.route,
+                onClick = { navController.navigate(Navigation.ProductsPage.route) },
                 icon = {
-                    Icon(Icons.AutoMirrored.Filled.ManageSearch, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.profile))
+                    Icon(Icons.Default.ManageSearch, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.profile))
                 }
             )
 
