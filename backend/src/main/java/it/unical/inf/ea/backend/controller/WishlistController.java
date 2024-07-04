@@ -3,6 +3,7 @@ package it.unical.inf.ea.backend.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
+import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
 import jakarta.validation.Valid;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
 @RestController
@@ -34,7 +38,7 @@ public class WishlistController {
     @PostMapping("/{wishlistId}/addProductsToWishlist/{productId}")
     public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
         try {
-            wishlistService.addProductToWishlist(productId, wishlistId);
+            wishlistService.addProductToWishlist(wishlistId,productId );
             return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -66,6 +70,16 @@ public class WishlistController {
         try {
             WishlistDTO wishlist = wishlistService.getWishlistById(id);
             return ResponseEntity.ok(wishlist);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/getProductByWishlistId/{Id}")
+    public ResponseEntity<?> getProductByWishlistId(@PathVariable Long Id){
+        try {
+            List<ProductDTO> product = wishlistService.getProductByWishlistId(Id);
+            return ResponseEntity.ok(product);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }

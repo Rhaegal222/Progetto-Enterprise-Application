@@ -20,9 +20,7 @@ public class WishlistDTO {
     private String wishlistName;
 
     @NonNull
-    private WishlistVisibility wishlistVisibility;
+    private WishlistVisibility visibility;
 
     private List<ProductDTO> products;
-
-    private LocalDateTime createdAt;
 }

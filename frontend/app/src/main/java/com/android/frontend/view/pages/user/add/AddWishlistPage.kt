@@ -33,10 +33,6 @@ import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.pages.user.add.calculateNewCursorPosition
 import com.android.frontend.view_models.user.WishlistViewModel
 
-
-
-// ... (Your other imports)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
@@ -49,7 +45,7 @@ fun AddWishlistPage(
     var selectedVisibility by remember { mutableStateOf("Public") }
     val context = LocalContext.current
     val visibilityOptions = listOf("Public", "Private", "Shared")
-    val allfieldsVaild by derivedStateOf { wishlistName.text.isNotEmpty() }
+    val allFieldsValid by derivedStateOf { wishlistName.text.isNotEmpty() }
 
     Scaffold(
         topBar = {
@@ -90,7 +86,7 @@ fun AddWishlistPage(
                         singleLine = true,
                         value = wishlistName,
                         onValueChange = { wishlistName = it },
-                        label = { Text("Wishlist Name ") },
+                        label = { Text("Wishlist Name") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next
                         ),
@@ -129,9 +125,11 @@ fun AddWishlistPage(
                             }
                         }
                     }
+
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Button(
-                        enabled = allfieldsVaild,
+                        enabled = allFieldsValid,
                         onClick = {
                             try {
                                 wishlistViewModel.createWishlist(
