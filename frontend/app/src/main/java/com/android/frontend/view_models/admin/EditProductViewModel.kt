@@ -151,19 +151,21 @@ class EditProductViewModel : ViewModel() {
 
     fun getProductImage(context: Context, productId: Long) {
         viewModelScope.launch {
-            try {
-                val type = "product_photos"
-                val folderName = productId.toString()
-                val fileName = "photoProduct.png"
-                val responseBody = fetchImage(context, type, folderName, fileName)
-                responseBody?.let {
-                    val tempFile = saveImageToFile(context, responseBody)
-                    prodImag.postValue(Uri.fromFile(tempFile))
-                } ?: run {
-                    Log.e("DEBUG", "${getCurrentStackTrace()}, Image retrieval failed")
+            withContext(Dispatchers.IO) {
+                try {
+                    val type = "product_photos"
+                    val folderName = productId.toString()
+                    val fileName = "photoProduct.png"
+                    val responseBody = fetchImage(context, type, folderName, fileName)
+                    responseBody?.let {
+                        val tempFile = saveImageToFile(context, responseBody)
+                        prodImag.postValue(Uri.fromFile(tempFile))
+                    } ?: run {
+                        Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
+                    }
+                } catch (e: Exception) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Image retrieval error: ${e.message}")
             }
         }
     }

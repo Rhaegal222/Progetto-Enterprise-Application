@@ -41,14 +41,6 @@ class ProductViewModel : ViewModel() {
     private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
     val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
 
-    fun setProduct(context: Context, productCreateDTO: ProductCreateDTO) {
-        viewModelScope.launch {
-            val productService = RetrofitInstance.getProductApi(context)
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            productService.addProduct("Bearer $accessToken", productCreateDTO)
-        }
-    }
-
     fun getProductDetails(context: Context, id: Long) {
         viewModelScope.launch {
             val productService = RetrofitInstance.getProductApi(context)
@@ -82,68 +74,44 @@ class ProductViewModel : ViewModel() {
     }
 
     fun fetchAllProducts(context: Context) {
-
         viewModelScope.launch {
-            val productService = RetrofitInstance.getProductApi(context)
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val call = productService.getAllProducts("Bearer $accessToken")
-            call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
-                override fun onResponse(
-                    call: retrofit2.Call<List<ProductDTO>>,
-                    response: retrofit2.Response<List<ProductDTO>>
-                ) {
-                    if (response.isSuccessful) {
-                        val products = response.body() ?: emptyList()
-                        _productsLiveData.postValue(products)
-                        products.forEach { product ->
-                            fetchProductImage(context, product.id)
-                        }
-                    } else {
-                        Log.e("DEBUG", " ${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
+            try {
+                val accessToken = TokenManager.getInstance().getAccessToken(context)
+                val productService = RetrofitInstance.getProductApi(context)
+                val response = productService.getAllProducts("Bearer $accessToken")
+                if (response.isSuccessful) {
+                    val products = response.body() ?: emptyList()
+                    _productsLiveData.postValue(products)
+                    products.forEach { product ->
+                        fetchProductImage(context, product.id)
                     }
+                } else {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch all products: ${response.errorBody()?.string()}")
                 }
-
-                override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching products", t)
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching products", t)
-                    }
-                }
+            } catch (e: Exception) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching all products", e)
             }
-            )
         }
     }
 
     fun fetchSalesProducts(context: Context) {
         viewModelScope.launch {
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val productService = RetrofitInstance.getProductApi(context)
-            val call = productService.getSalesProducts("Bearer $accessToken")
-            call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
-                override fun onResponse(
-                    call: retrofit2.Call<List<ProductDTO>>,
-                    response: retrofit2.Response<List<ProductDTO>>
-                ) {
-                    if (response.isSuccessful) {
-                        val products = response.body() ?: emptyList()
-                        _productsLiveData.postValue(products)
-                        products.forEach { product ->
-                            fetchProductImage(context, product.id)
-                        }
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch sales products: ${response.errorBody()?.string()}")
+            try {
+                val accessToken = TokenManager.getInstance().getAccessToken(context)
+                val productService = RetrofitInstance.getProductApi(context)
+                val response = productService.getSalesProducts("Bearer $accessToken")
+                if (response.isSuccessful) {
+                    val products = response.body() ?: emptyList()
+                    _productsLiveData.postValue(products)
+                    products.forEach { product ->
+                        fetchProductImage(context, product.id)
                     }
+                } else {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch all products: ${response.errorBody()?.string()}")
                 }
-
-                override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching sales products", t)
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching sales products", t)
-                    }
-                }
-            })
+            } catch (e: Exception) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching all products", e)
+            }
         }
     }
 

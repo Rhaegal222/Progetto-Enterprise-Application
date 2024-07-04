@@ -3,15 +3,17 @@ package com.android.frontend.view_models.admin
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
-import com.android.frontend.dto.BrandDTO
-import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.CategoryDTO
+import com.android.frontend.dto.creation.CategoryCreateDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,69 +21,69 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.awaitResponse
 
-class BrandViewModel : ViewModel() {
+class CategoryViewModel : ViewModel() {
 
-    val allBrands = MutableLiveData<List<BrandDTO>>()
+    val allCategories = MutableLiveData<List<CategoryDTO>>()
     val name = MutableLiveData<String>()
-    val description = MutableLiveData<String>()
 
-    fun fetchAllBrands(context: Context) {
+
+    fun fetchAllCategories(context: Context) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 return@launch
             }
-            val brandService = RetrofitInstance.getBrandApi(context)
+            val productCategoryService = RetrofitInstance.getProductCategoryApi(context)
             val response = executeRequest(context) {
-                brandService.getAllBrands("Bearer $accessToken")
+                productCategoryService.getAllCategories("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
-                allBrands.postValue(response.body())
+                allCategories.postValue(response.body())
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching brands: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching categories: ${response?.errorBody()?.string()}")
             }
         }
     }
 
-    fun deleteBrand(id: Long, context: Context) {
+    fun deleteCategory(id: Long, context: Context) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 return@launch
             }
-            val brandService = RetrofitInstance.getBrandApi(context)
+            val categoryService = RetrofitInstance.getProductCategoryApi(context)
             val response = executeRequest(context) {
-                brandService.deleteBrand("Bearer $accessToken", id)
+                categoryService.deleteCategory("Bearer $accessToken", id)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()} Brand deleted successfully with id: $id")
-                fetchAllBrands(context)
+                Log.d("DEBUG", "${getCurrentStackTrace()} Category deleted successfully with id: $id")
+                fetchAllCategories(context)
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Error deleting brand: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error deleting category: ${response?.errorBody()?.string()}")
             }
         }
     }
 
-    fun addBrand(brandCreateDTO: BrandCreateDTO, context: Context) {
+    fun addCategory(categoryCreateDTO: CategoryCreateDTO, context: Context) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
                 return@launch
             }
-            val brandService = RetrofitInstance.getBrandApi(context)
+            val productCategoryService = RetrofitInstance.getProductCategoryApi(context)
             val response = executeRequest(context) {
-                brandService.addBrand("Bearer $accessToken", brandCreateDTO)
+                productCategoryService.addCategory("Bearer $accessToken", categoryCreateDTO)
             }
             if (response?.isSuccessful == true) {
-                response.body()?.let { brands ->
-                    Log.d("DEBUG", "${getCurrentStackTrace()} Brand added successfully: $brands")
-                    fetchAllBrands(context)
+                response.body()?.let { categories ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Category added successfully: $categories")
+                    fetchAllCategories(context)
                 }
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Error adding brand: ${response?.errorBody()?.string()}")
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error adding category: ${response?.errorBody()?.string()}")
             }
         }
     }
@@ -112,5 +114,6 @@ class BrandViewModel : ViewModel() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
     }
+
 
 }
