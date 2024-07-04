@@ -3,7 +3,6 @@ package it.unical.inf.ea.backend.data.services.implementations;
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.data.entities.Cart;
 import it.unical.inf.ea.backend.data.entities.CartItem;
-import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.dao.CartItemDao;
 import it.unical.inf.ea.backend.data.dao.CartDao;
@@ -16,8 +15,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -33,85 +34,74 @@ public class CartServiceImp implements CartService {
 
     @Override
     public CartDTO getCartByUserId(UUID userId) {
-        User user = userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Cart cart = cartDao.findByUser(user).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-        return modelMapper.map(cart, CartDTO.class);
+        return cartDao.findByUserId(userId)
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 
     @Override
-    public CartDTO addItemToCart(CartItemCreateDTO cartItemCreateDTO) {
-        try {
-            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if (loggedUser == null) {
-                throw new IllegalStateException("Logged user cannot be null");
-            }
-
-            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-            Product product = productDao.findById(cartItemCreateDTO.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-            CartItem cartItem = new CartItem();
-            cartItem.setCart(cart);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(cartItemCreateDTO.getQuantity());
-
-            cart.getCartItems().add(cartItem);
-
-            return mapToDTO(cartDao.save(cart));
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot add item to cart");
+    public CartDTO getCartForLoggedUser() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Accesso non autorizzato");
         }
+        return cartDao.findByUser(loggedUser)
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 
     @Override
-    public void removeItemFromCart(Long cartItemId) {
-        try {
-            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if (loggedUser == null) {
-                throw new IllegalStateException("Logged user cannot be null");
-            }
+    public CartDTO addItemToCart(CartItemCreateDTO cartItemCreate) {
 
-            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-            List<CartItem> cartItems = cart.getCartItems();
-
-            for (CartItem cartItem : cartItems) {
-                if (cartItem.getId().equals(cartItemId)) {
-                    cartItems.remove(cartItem);
-                    cartItemDao.deleteById(cartItemId);
-                    break;
-                }
-            }
-
-            cart.setCartItems(cartItems);
-            cartDao.save(cart);
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot remove item from cart");
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Accesso non autorizzato");
         }
+
+        CartItem cartItem = modelMapper.map(cartItemCreate, CartItem.class);
+
+        Optional<Cart> cartOptional = cartDao.findByUserId(loggedUser.getId());
+        Cart cart;
+        if (cartOptional.isPresent()) {
+            cart = cartOptional.get();
+            Set<CartItem> items = cart.getItems();
+            items.add(cartItem);
+        } else {
+            cart = new Cart();
+            cart.setUser(loggedUser);
+            cart.getItems().add(cartItem);
+        }
+        cartDao.save(cart);
+        return mapToDTO(cart);
     }
 
     @Override
-    public CartDTO updateCartItem(Long cartItemId, int quantity) {
-        try {
-            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-            if (loggedUser == null) {
-                throw new IllegalStateException("Logged user cannot be null");
-            }
-
-            Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-            List<CartItem> cartItems = cart.getCartItems();
-
-            for (CartItem cartItem : cartItems) {
-                if (cartItem.getId().equals(cartItemId)) {
-                    cartItem.setQuantity(quantity);
-                    cartItemDao.save(cartItem);
-                    break;
-                }
-            }
-
-            cart.setCartItems(cartItems);
-            return mapToDTO(cartDao.save(cart));
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot update cart item");
+    public void removeItemFromCart(UUID cartItemId) {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Accesso non autorizzato");
         }
+        cartItemDao.findById(cartItemId).ifPresent(cartItem -> {
+            if (cartItem.getCart().getUser().getId().equals(loggedUser.getId())) {
+                cartItemDao.deleteById(cartItemId);
+            } else {
+                throw new IllegalStateException("Accesso non autorizzato");
+            }
+        });
+    }
+
+    @Override
+    @Transactional
+    public void clearCart() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        if (loggedUser == null) {
+            throw new IllegalStateException("Accesso non autorizzato");
+        }
+        cartDao.findByUser(loggedUser).ifPresent(cart -> {
+            Set<CartItem> items = cart.getItems();
+            items.forEach(cartItem -> cartItemDao.deleteById(cartItem.getId()));
+            items.clear();
+        });
     }
 
     Cart mapToEntity(CartDTO cartDTO) { return modelMapper.map(cartDTO, Cart.class); }

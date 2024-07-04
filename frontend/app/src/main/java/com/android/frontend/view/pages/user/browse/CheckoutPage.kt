@@ -1,5 +1,6 @@
 package com.android.frontend.view.pages.user.browse
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -20,12 +21,15 @@ import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.PaymentViewModel
 import com.android.frontend.view_models.user.AddressViewModel
 import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.OrderViewModel
+import java.util.UUID
 
 @Composable
 fun CheckoutPage(
     cartViewModel: CartViewModel,
     paymentViewModel: PaymentViewModel = viewModel(),
     addressViewModel: AddressViewModel = viewModel(),
+    orderViewModel: OrderViewModel = viewModel(),
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -39,6 +43,10 @@ fun CheckoutPage(
 
     val cart by cartViewModel.cart.collectAsState()
 
+    val isLoadingOrder by orderViewModel.isLoading.observeAsState(false)
+    val hasErrorOrder by orderViewModel.hasError.observeAsState(false)
+    val orderCreated by orderViewModel.orderCreated.observeAsState(false)
+
     LaunchedEffect(Unit) {
         paymentViewModel.getAllPaymentMethods(context)
         addressViewModel.getAllLoggedUserShippingAddresses(context)
@@ -48,6 +56,19 @@ fun CheckoutPage(
     LaunchedEffect(payments, addresses) {
         paymentMethod = payments.find { it.isDefault }?.cardNumber
         shippingAddress = addresses.find { it.isDefault }?.street
+    }
+
+    if (orderCreated) {
+        LaunchedEffect(orderCreated) {
+            Toast.makeText(context, "Ordine creato con successo", Toast.LENGTH_SHORT).show()
+            navController.navigate(Navigation.CartPage.route)
+        }
+    }
+
+    if (hasErrorOrder) {
+        LaunchedEffect(hasErrorOrder) {
+            Toast.makeText(context, "Errore nella creazione dell'ordine", Toast.LENGTH_SHORT).show()
+        }
     }
 
     Column(modifier = Modifier
@@ -126,10 +147,13 @@ fun CheckoutPage(
 
         Button(
             onClick = {
-                cart?.items?.forEach { cartItem ->
-                    cartViewModel.removeCartItem(cartItem.id, context)
+                cart?.let {
+                    val address = addresses.find { it.street == shippingAddress }
+                    val payment = payments.find { it.cardNumber == paymentMethod }
+                    if (address != null && payment != null) {
+                        orderViewModel.addOrder(context, it.items, UUID.fromString(address.id), UUID.fromString(payment.id), UUID.fromString(it.userId))
+                    }
                 }
-                navController.navigate(Navigation.CartPage.route)
             },
             colors = ButtonDefaults.buttonColors(Color.Black),
             modifier = Modifier
@@ -137,6 +161,10 @@ fun CheckoutPage(
                 .padding(top = 16.dp)
         ) {
             Text(stringResource(id = R.string.purchase), color = Color.White)
+        }
+
+        if (isLoadingOrder) {
+            CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
         }
     }
 }

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CartDao extends JpaRepository<Cart, Long> {
+public interface CartDao extends JpaRepository<Cart, UUID> {
     Optional<Cart> findByUser(User user);
-    Optional<Cart> findById(Long id);
+    Optional<Cart> findByUserId(UUID userId);
+    Optional<Cart> findById(UUID id);
 }

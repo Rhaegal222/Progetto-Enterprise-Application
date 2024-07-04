@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import it.unical.inf.ea.backend.dto.enums.OrderStatus;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,8 @@ public class OrderServiceImp implements OrderService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Carrello non trovato"));
-            if (cart.getCartItems().isEmpty()) {
+            Set<CartItem> cartItems = cart.getItems();
+            if (cartItems.isEmpty()) {
                 throw new IllegalAccessException("Il carrello è vuoto");
             }
 
@@ -53,20 +55,18 @@ public class OrderServiceImp implements OrderService {
             PaymentMethod paymentMethod = paymentMethodDao.findById(orderCreateDTO.getPaymentMethodId())
                     .orElseThrow(() -> new EntityNotFoundException("Metodo di pagamento non trovato"));
 
-            Order order = Order.builder()
-                    .user(loggedUser)
-                    .address(address)
-                    .paymentMethod(paymentMethod)
-                    .items(cart.getCartItems())
-                    .status(OrderStatus.CREATED)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
+            Order order = new Order();
+            order.setAddress(address);
+            order.setPaymentMethod(paymentMethod);
+            order.setUser(loggedUser);
+            order.setItems(cartItems);
+            order.setCreatedAt(LocalDateTime.now());
+            order.setUpdatedAt(LocalDateTime.now());
 
             orderDao.save(order);
 
             // Clear the cart after creating the order
-            cartDao.delete(cart);
+            //cartDao.delete(cart);
         } catch (Exception e) {
             throw new IllegalAccessException("Impossibile creare l'ordine: " + e.getMessage());
         }

@@ -47,8 +47,8 @@ public class UserController {
             userService.registerUser(firstname, lastname, email, password);
             userService.sendVerificationEmail(email);
             return ResponseEntity.ok("{\"message\": \"User registered successfully\"}");
-        } catch (MessagingException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
