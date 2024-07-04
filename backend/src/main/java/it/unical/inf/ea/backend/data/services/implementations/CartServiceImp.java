@@ -99,16 +99,17 @@ public class CartServiceImp implements CartService {
 
     @Override
     @Transactional
-    public void clearCart() {
+    public CartDTO clearCart() {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (loggedUser == null) {
             throw new IllegalStateException("Accesso non autorizzato");
         }
-        cartDao.findByUser(loggedUser).ifPresent(cart -> {
-            List<CartItem> items = cart.getItems();
-            items.forEach(cartItem -> cartItemDao.deleteById(cartItem.getId()));
-            items.clear();
-        });
+
+        Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+        List<CartItem> items = cart.getItems();
+        cartItemDao.deleteAll(items);
+        cart.getItems().clear();
+        return mapToDTO(cartDao.save(cart));
     }
 
     Cart mapToEntity(CartDTO cartDTO) { return modelMapper.map(cartDTO, Cart.class); }

@@ -10,5 +10,5 @@ public interface CartService {
     CartDTO getCartForLoggedUser();
     CartDTO addItemToCart(CartItemCreateDTO cartItem);
     CartDTO removeItemFromCart(UUID cartItemId);
-    void clearCart();
+    CartDTO clearCart();
 }

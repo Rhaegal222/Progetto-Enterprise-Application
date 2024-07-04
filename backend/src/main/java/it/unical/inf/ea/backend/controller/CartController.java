@@ -52,4 +52,14 @@ public class CartController {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
+
+    @DeleteMapping("/clearCart")
+    public ResponseEntity<?> clearCart() {
+        try {
+
+            return ResponseEntity.ok(cartService.clearCart());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
 }
