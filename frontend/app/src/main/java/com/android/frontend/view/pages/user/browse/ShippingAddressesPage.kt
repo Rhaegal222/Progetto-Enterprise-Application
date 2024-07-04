@@ -1,6 +1,5 @@
 package com.android.frontend.view.pages.user.browse
 
-import ShippingAddressCard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
@@ -29,7 +28,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.unit.dp
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.TextButtonColorScheme
+import com.android.frontend.view.component.AddressCard
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -59,13 +59,13 @@ fun ShippingAddressesPage(navController: NavController, addressViewModel: Addres
             errorMessage = stringResource(id = R.string.shipping_addresses_load_failed)
         )
     } else {
-        ShippingAddressesContent(navController, addresses, addressViewModel, context)
+        AddressesContent(navController, addresses, addressViewModel, context)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShippingAddressesContent(
+fun AddressesContent(
     navController: NavController,
     addresses: List<AddressDTO>,
     addressViewModel: AddressViewModel,
@@ -83,23 +83,39 @@ fun ShippingAddressesContent(
 
     Scaffold (
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.shipping_addresses),
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigate(Navigation.ProfileMenu.route)
-                    }) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.back)
-                        )
-                    }
-                },
-            )
+            Row {
+                TopAppBar(
+                    title = {
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.shipping_addresses),
+                            )
+                            TextButton(
+                                onClick = { navController.navigate(Navigation.AddAddressPage.route) },
+                                colors = TextButtonColorScheme.textButtonColors(),
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.add_address),
+                                )
+                            }
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.navigate(Navigation.ProfileMenu.route)
+                        }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.back)
+                            )
+                        }
+                    },
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -111,18 +127,6 @@ fun ShippingAddressesContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Button(
-                onClick = {
-                    navController.navigate(Navigation.AddAddressPage.route)
-                },
-                modifier = Modifier.padding(16.dp),
-                colors = ButtonColorScheme.buttonColors()
-            ) {
-                Text(text = stringResource(id = R.string.add_address))
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             if (addresses.isEmpty()) {
                 Text(
                     text = stringResource(id = R.string.no_shipping_addresses),
@@ -131,8 +135,8 @@ fun ShippingAddressesContent(
             }
 
             for (address in addresses) {
-                ShippingAddressCard(
-                    shippingAddress = address,
+                AddressCard(
+                    address = address,
                     onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
             }
         }

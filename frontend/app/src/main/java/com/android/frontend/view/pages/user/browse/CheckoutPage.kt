@@ -1,6 +1,5 @@
 package com.android.frontend.view.pages.user.browse
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -22,30 +21,27 @@ import com.android.frontend.view_models.user.PaymentViewModel
 import com.android.frontend.view_models.user.AddressViewModel
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.OrderViewModel
+import com.android.frontend.dto.creation.OrderCreateDTO
+import com.android.frontend.dto.OrderItemDTO
 import java.util.UUID
 
 @Composable
 fun CheckoutPage(
-    navController: NavController,
-    cartViewModel: CartViewModel = viewModel(),
+    cartViewModel: CartViewModel,
     paymentViewModel: PaymentViewModel = viewModel(),
     addressViewModel: AddressViewModel = viewModel(),
-    orderViewModel: OrderViewModel = viewModel()
+    orderViewModel: OrderViewModel = viewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
-    var paymentMethod by remember { mutableStateOf<String?>(null) }
-    var shippingAddress by remember { mutableStateOf<String?>(null) }
+    var selectedPaymentMethod by remember { mutableStateOf<UUID?>(null) }
+    var selectedShippingAddress by remember { mutableStateOf<UUID?>(null) }
 
     val payments by paymentViewModel.paymentMethodsLiveData.observeAsState(emptyList())
     val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
     val isLoadingPayments by paymentViewModel.isLoading.observeAsState(false)
     val isLoadingAddresses by addressViewModel.isLoading.observeAsState(false)
 
-    val cart by cartViewModel.cart.collectAsState()
-
-    val isLoadingOrder by orderViewModel.isLoading.observeAsState(false)
-    val hasErrorOrder by orderViewModel.hasError.observeAsState(false)
-    val orderCreated by orderViewModel.orderCreated.observeAsState(false)
 
     LaunchedEffect(Unit) {
         paymentViewModel.getAllPaymentMethods(context)
@@ -54,22 +50,10 @@ fun CheckoutPage(
     }
 
     LaunchedEffect(payments, addresses) {
-        paymentMethod = payments.find { it.isDefault }?.cardNumber
-        shippingAddress = addresses.find { it.isDefault }?.street
+        selectedPaymentMethod = payments.find { it.isDefault }?.id?.let { UUID.fromString(it) }
+        selectedShippingAddress = addresses.find { it.isDefault }?.id?.let { UUID.fromString(it) }
     }
 
-    if (orderCreated) {
-        LaunchedEffect(orderCreated) {
-            Toast.makeText(context, "Ordine creato con successo", Toast.LENGTH_SHORT).show()
-            navController.navigate(Navigation.CartPage.route)
-        }
-    }
-
-    if (hasErrorOrder) {
-        LaunchedEffect(hasErrorOrder) {
-            Toast.makeText(context, "Errore nella creazione dell'ordine", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -88,7 +72,7 @@ fun CheckoutPage(
         )
         if (isLoadingPayments) {
             CircularProgressIndicator(modifier = Modifier.padding(bottom = 16.dp))
-        } else if (paymentMethod == null) {
+        } else if (selectedPaymentMethod == null) {
             Button(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
@@ -100,7 +84,7 @@ fun CheckoutPage(
             }
         } else {
             OutlinedTextField(
-                value = paymentMethod!!,
+                value = payments.find { UUID.fromString(it.id) == selectedPaymentMethod }?.cardNumber ?: "",
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
@@ -119,7 +103,7 @@ fun CheckoutPage(
         )
         if (isLoadingAddresses) {
             CircularProgressIndicator(modifier = Modifier.padding(bottom = 16.dp))
-        } else if (shippingAddress == null) {
+        } else if (selectedShippingAddress == null) {
             Button(
                 onClick = {
                     navController.navigate(Navigation.AddAddressPage.route)
@@ -131,7 +115,7 @@ fun CheckoutPage(
             }
         } else {
             OutlinedTextField(
-                value = shippingAddress!!,
+                value = addresses.find { UUID.fromString(it.id) == selectedShippingAddress }?.street ?: "",
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
@@ -147,13 +131,6 @@ fun CheckoutPage(
 
         Button(
             onClick = {
-                cart?.let {
-                    val address = addresses.find { it.street == shippingAddress }
-                    val payment = payments.find { it.cardNumber == paymentMethod }
-                    if (address != null && payment != null) {
-                        orderViewModel.addOrder(context, it.items, UUID.fromString(address.id), UUID.fromString(payment.id), UUID.fromString(it.userId))
-                    }
-                }
             },
             colors = ButtonDefaults.buttonColors(Color.Black),
             modifier = Modifier
@@ -161,10 +138,6 @@ fun CheckoutPage(
                 .padding(top = 16.dp)
         ) {
             Text(stringResource(id = R.string.purchase), color = Color.White)
-        }
-
-        if (isLoadingOrder) {
-            CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
         }
     }
 }

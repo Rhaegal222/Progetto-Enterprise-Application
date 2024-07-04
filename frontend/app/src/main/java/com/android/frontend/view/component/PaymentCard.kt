@@ -28,7 +28,6 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-
     ) {
         Card(
             modifier = Modifier

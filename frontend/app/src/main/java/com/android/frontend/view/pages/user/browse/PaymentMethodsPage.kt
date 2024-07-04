@@ -26,6 +26,7 @@ import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.view.component.PaymentCard
 import com.android.frontend.view_models.user.PaymentViewModel
 import com.android.frontend.view.component.ErrorDialog
@@ -108,11 +109,11 @@ fun PaymentMethodsContent(
             )
         },
         floatingActionButton = {
-            Button(
+            OutlinedButton(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
-                colors = ButtonColorScheme.buttonColors(),
+                colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                 modifier = Modifier
                     .padding(0.dp)
             ) {
