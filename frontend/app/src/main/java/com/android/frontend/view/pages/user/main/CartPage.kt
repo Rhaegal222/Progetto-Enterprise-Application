@@ -60,7 +60,7 @@ fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
 @Composable
 fun CartItemCard(cartItem: CartItemDTO, product: ProductDTO, cartViewModel: CartViewModel, context: Context) {
     var quantity by remember { mutableStateOf(cartItem.quantity) }
-    val price = if (product.onSale) product.discountedPrice ?: product.price else product.price
+    val price = if (product.onSale) product.salePrice ?: product.price else product.price
 
     Card(
         modifier = Modifier
