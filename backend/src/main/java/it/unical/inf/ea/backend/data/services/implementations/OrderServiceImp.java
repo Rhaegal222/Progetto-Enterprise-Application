@@ -117,6 +117,13 @@ public class OrderServiceImp implements OrderService {
         return orderDao.findAll().stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<OrderDTO> getAllLoggedUserOrders() {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        List<Order> orders = orderDao.findAllByUserId(loggedUser.getId());
+        return orders.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
     private OrderDTO mapToDTO(Order order) {
         return modelMapper.map(order, OrderDTO.class);
     }
