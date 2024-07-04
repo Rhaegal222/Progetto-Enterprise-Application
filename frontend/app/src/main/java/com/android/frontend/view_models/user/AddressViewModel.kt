@@ -32,7 +32,7 @@ class AddressViewModel : ViewModel() {
     var phoneNumber by mutableStateOf("")
     var street by mutableStateOf("")
     var additionalInfo by mutableStateOf("")
-    var zipCode by mutableStateOf("")
+    var postalCode by mutableStateOf("")
     var city by mutableStateOf("")
     var province by mutableStateOf("")
     var country by mutableStateOf("")
@@ -44,7 +44,7 @@ class AddressViewModel : ViewModel() {
         phoneNumber: String,
         street: String,
         additionalInfo: String,
-        zipCode: String, city:
+        postalCode: String, city:
         String, province: String,
         country: String,
         isDefault: Boolean)
@@ -59,7 +59,7 @@ class AddressViewModel : ViewModel() {
                 _hasError.value = true
                 return@launch
             }
-            val shippingAddress = AddressCreateDTO(fullName, phoneNumber, street, additionalInfo, zipCode, city, province, country, isDefault)
+            val shippingAddress = AddressCreateDTO(fullName, phoneNumber, street, additionalInfo, postalCode, city, province, country, isDefault)
             val addressService = RetrofitInstance.getAddressApi(context)
             val response = Request().executeRequest(context) {
                 addressService.addAddress("Bearer $accessToken", shippingAddress)
