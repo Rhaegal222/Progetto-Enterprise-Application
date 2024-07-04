@@ -5,6 +5,8 @@ import it.unical.inf.ea.backend.dto.enums.UserRole;
 import it.unical.inf.ea.backend.dto.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,6 +47,11 @@ public class User implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    @Size(min = 8, max = 32, message = "Password must be at least 8 characters long")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])(?=.{8,})$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+    )
     private String password;
 
     @Column

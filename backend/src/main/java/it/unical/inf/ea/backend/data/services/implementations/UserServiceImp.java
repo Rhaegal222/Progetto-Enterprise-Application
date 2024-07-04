@@ -256,9 +256,6 @@ public class UserServiceImp implements UserService{
     public ResponseEntity<String> registerUser(String firstname, String lastname, String email, String password) {
         if (firstname == null || lastname == null || email == null || password == null)
             throw new IllegalArgumentException("firstname, lastname, email and password cannot be null");
-        if (password.length() < 8)
-            throw new IllegalArgumentException("password must be at least 8 characters long");
-
         if(findByUsername(email).isPresent())
             throw new IllegalArgumentException("username already exists");
         if(userDao.findByEmail(email).isPresent())
