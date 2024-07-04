@@ -77,11 +77,15 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getAllProducts")
-    public ResponseEntity<?> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
-    }
 
+    @GetMapping("/getAllProducts")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return ResponseEntity.ok(productService.getAllProducts());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
+        }
+    }
 
     @GetMapping("/getProductsByCategory/")
     public ResponseEntity<?> getProductsByCategory(@RequestParam String categoryName) {

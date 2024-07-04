@@ -17,12 +17,12 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.dto.creation.CategoryCreateDTO
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
+import com.android.frontend.view_models.admin.CategoryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddCategoryPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
+fun AddCategoryPage(navController: NavHostController, viewModel: CategoryViewModel = viewModel()) {
     val context = LocalContext.current
     val categoryName by viewModel.name.observeAsState("")
     var showSuccessDialog by remember { mutableStateOf(false) }

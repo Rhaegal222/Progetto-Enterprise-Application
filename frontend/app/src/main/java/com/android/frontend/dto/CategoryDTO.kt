@@ -1,6 +1,6 @@
 package com.android.frontend.dto
 
 data class CategoryDTO(
-    var id: String,
+    var id: Long,
     var name: String
 )

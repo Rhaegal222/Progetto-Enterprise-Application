@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
@@ -45,15 +46,17 @@ enum class SortOption(val displayName: String) {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
-    val context = LocalContext.current
-    val products by productViewModel.productsLiveData.observeAsState()
+fun AllProductsPage(navController: NavController, cartViewModel: CartViewModel, viewModel: ProductViewModel = viewModel()) {
+
     var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
     var expanded by remember { mutableStateOf(false) }
-    val productImages by productViewModel.productImagesLiveData.observeAsState()
+
+    val context = LocalContext.current
+    val products by viewModel.productsLiveData.observeAsState()
+    val productImages by viewModel.productImagesLiveData.observeAsState(emptyMap())
 
     LaunchedEffect(Unit) {
-        productViewModel.fetchAllProducts(context)
+        viewModel.fetchAllProducts(context)
     }
 
     Scaffold(
@@ -101,7 +104,7 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
                     .padding(innerPadding)
             ) {
                 items(sortedProducts ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
+                    ProductsCard(productDTO, navController, viewModel, cartViewModel, productImages?.get(productDTO.id))
                 }
             }
         }
@@ -114,7 +117,7 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
 fun ProductsCard(
     productDTO: ProductDTO,
     navController: NavController,
-    productViewModel: ProductViewModel,
+    viewModel: ProductViewModel,
     cartViewModel: CartViewModel,
     imageUri: Uri?
 ) {

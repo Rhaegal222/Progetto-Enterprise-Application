@@ -33,15 +33,15 @@ import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
-import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
+import com.android.frontend.view_models.admin.ProductViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
+fun ProductPage(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
     val context = LocalContext.current
     val products by viewModel.productsLiveData.observeAsState()
-    val productImages by viewModel.productImagesLiveData.observeAsState()
+    val productImages by viewModel.productImagesLiveData.observeAsState(emptyMap())
 
     LaunchedEffect(Unit) {
         viewModel.fetchAllProducts(context)
@@ -79,7 +79,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, viewModel, productImages?.get(productDTO.id))
+                    ProductsCard(productDTO, navController, viewModel, productImages[productDTO.id])
                 }
             }
         }
@@ -87,7 +87,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
 }
 
 @Composable
-fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel: ProductCategoryBrandViewModel, imageUri: Uri?) {
+fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel: ProductViewModel, imageUri: Uri?) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
 

@@ -21,7 +21,7 @@ interface BrandService {
     @DELETE("/api/v1/brand/deleteBrand")
     fun deleteBrand(
         @Header("Authorization") token: String,
-        @Query("id") id: String
+        @Query("id") id: Long
     ): Call<String>
 
     @GET("/api/v1/brand/allBrands")
@@ -32,7 +32,7 @@ interface BrandService {
     @GET("/api/v1/brand/getBrandById")
     fun getBrandById(
         @Header("Authorization") token: String,
-        @Query("id") id: Int
+        @Query("id") id: Long
     ): Call<BrandDTO>
 
     @GET("/api/v1/brand/getBrandByName")

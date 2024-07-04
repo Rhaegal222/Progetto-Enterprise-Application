@@ -26,13 +26,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
-import com.android.frontend.dto.BrandDTO
-import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.dto.ProductDTO
-import com.android.frontend.dto.ProductUpdateRequest
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.admin.EditProductViewModel
-import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -17,12 +17,12 @@ import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
+import com.android.frontend.view_models.admin.BrandViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddBrandPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
+fun AddBrandPage(navController: NavHostController, viewModel: BrandViewModel = viewModel()) {
     val context = LocalContext.current
     val brandName by viewModel.name.observeAsState("")
     val brandDescription by viewModel.description.observeAsState("")

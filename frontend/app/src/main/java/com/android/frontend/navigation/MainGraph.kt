@@ -46,7 +46,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AccountMenu.route) { AccountMenu(navController) }
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
-        composable(Navigation.AllProductsPage.route) { AllProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.AllProductsPage.route) { AllProductsPage(navController, cartViewModel = cartViewModel) }
         composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }

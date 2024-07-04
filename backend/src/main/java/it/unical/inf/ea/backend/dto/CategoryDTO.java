@@ -12,7 +12,7 @@ import lombok.*;
 public class CategoryDTO {
 
     @NotNull
-    private String id;
+    private Long id;
 
     @NotNull
     @NotEmpty

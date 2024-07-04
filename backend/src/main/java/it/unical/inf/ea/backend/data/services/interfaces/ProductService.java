@@ -13,7 +13,7 @@ import java.util.Map;
 @Service
 public interface ProductService {
     Map<String, String> addProduct(ProductCreateDTO productCreateDTO)throws IllegalAccessException;
-    List<ProductDTO> getAllProducts();
+    List<ProductDTO> getAllProducts() throws IllegalAccessException;
     List<ProductDTO> getProductsByCategory(Category category);
     List<ProductDTO> getProductsByBrand(Brand brand);
     List<ProductDTO> getProductsByPriceRange(Double min, Double max);
