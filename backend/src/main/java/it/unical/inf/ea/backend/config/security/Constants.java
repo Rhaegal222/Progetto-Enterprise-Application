@@ -28,13 +28,9 @@ public class Constants {
     }
 
     public static final String TOKEN_SECRET_KEY = "P95KzWtUZ8NK7xVkG3TiVMCNFhpTPvDDBCKF9U3zBsFMUYnJYncgvLTJMTDnB6R";
-    public static final String KEYCLOAK_SECRET_KEY ="Mc9JcVo783pvVSTmzBiRWDMyPaJxyFiX3gWhpi94lldbrcgzQcBBxKmtlMst4wm";
     public static final String STANDARD_GOOGLE_ACCOUNT_PASSWORD = "BallSoHard-MotherfuckersWannaFineMe";
-    public static final String STANDARD_KEYCLOAK_ACCOUNT_PASSWORD = "ItWasAlwaysMeVersusTheWorld-UntilIFoundItsMeVersusMe";
-    public static final String STANDARD_USER_ACCOUNT_PHOTO_KEYCLOAK = "images/user_photos/examples/foto_profilo.png";
     public static final int JWT_EXPIRATION_TIME = 60;  // in minutes
     public static final int JWT_REFRESH_EXPIRATION_TIME = 24;  // in hours
-    public static final int JWT_CAPABILITY_EXPIRATION_TIME = 1;  // in hours
     public static final int EMAIL_VERIFICATION_TOKEN_EXPIRATION_TIME = 24;  // in hours
     public static final int BASIC_USER_RATE_LIMIT_BANDWIDTH = 3000;
     public static final int BASIC_USER_RATE_LIMIT_REFILL = 2000;

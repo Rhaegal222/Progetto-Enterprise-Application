@@ -279,20 +279,9 @@ public class UserServiceImp implements UserService{
         String token = tokenStore.createEmailToken(username, Constants.EMAIL_VERIFICATION_CLAIM);
         String url = Constants.BASE_PATH + "users/activate?token=" + token;
 
-        // Imposta l'header Authorization
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        emailService.sendEmail(user.getEmail(), Constants.VERIFICATION_EMAIL_SUBJECT, Constants.VERIFICATION_EMAIL_TEXT + url);
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            emailService.sendEmail(user.getEmail(), Constants.VERIFICATION_EMAIL_SUBJECT, Constants.VERIFICATION_EMAIL_TEXT + url);
-            return new ResponseEntity<>("verification email sent", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("failed to send verification email", response.getStatusCode());
-        }
+        return new ResponseEntity<>("verification email sent", HttpStatus.OK);
     }
 
     @Override

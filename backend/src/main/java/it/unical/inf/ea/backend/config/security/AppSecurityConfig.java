@@ -101,17 +101,13 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/productPicture/deleteImage/{id}").authenticated()
 
                         // USER
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/logout", "api/v1/users/changePassword", "/api/v1/users/changeRole/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/logout", "/api/v1/users/changePassword", "/api/v1/users/changeRole/{userId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/deleteUser/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/user/getUserById", "/api/v1/user/getUserByUsername", "/api/v1/user/getUserByEmail",
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/getUserById", "/api/v1/users/getUserByUsername", "/api/v1/users/getUserByEmail",
                                 "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken", "/api/v1/users/getAllUsers",
                                 "/api/v1/users/{id}", "/api/v1/users/find-by-username", "/api/v1/users/resetPassword",
-                                "/api/v1/users/retrieveUserProfile", "api/v1/users/findUserById/", "api/v1/users/findByUsername",
-                                "api/v1/users/updateUser/", "api/v1/users/getNewPassword").authenticated()
-
-                        // Richieste dove non è richiesta l'autenticazione
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication", "/api/v1/users/activate").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                "/api/v1/users/retrieveUserProfile", "/api/v1/users/findUserById/", "/api/v1/users/findByUsername",
+                                "/api/v1/users/updateUser/", "/api/v1/users/getNewPassword").authenticated()
 
                         // USER IMAGE
                         .requestMatchers(HttpMethod.POST, "/api/v1/profilePicture/uploadImage").authenticated()
@@ -123,6 +119,12 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/wishlist/deleteWishlist/{id}", "/{wishlistId}/removeProductFromWishlist/{productId}",
                                 "/{wishlistId}/removeProductsFromWishlist/{productId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/wishlist/getWishlistById/{id}", "/api/v1/wishlist/getAllLoggedUserWishlists").authenticated()
+
+                        // Richieste dove non è richiesta l'autenticazione
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/activate").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
                         .anyRequest().permitAll())
 
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
