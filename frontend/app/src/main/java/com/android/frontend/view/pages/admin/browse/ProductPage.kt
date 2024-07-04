@@ -79,7 +79,7 @@ fun ProductPage(navController: NavHostController, viewModel: ProductCategoryBran
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, viewModel, productImages?.get(productDTO.id.toString()))
+                    ProductsCard(productDTO, navController, viewModel, productImages?.get(productDTO.id))
                 }
             }
         }
@@ -131,7 +131,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "${productDTO.brand.name}",
+                text = productDTO.brand.name,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp
             )

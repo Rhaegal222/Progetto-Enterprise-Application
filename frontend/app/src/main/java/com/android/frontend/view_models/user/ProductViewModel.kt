@@ -37,14 +37,9 @@ class ProductViewModel : ViewModel() {
     private val productDetails = MutableLiveData<ProductDTO>()
     val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
 
-    private val _productImagesLiveData = MutableLiveData<Map<String, Uri>>()
-    val productImagesLiveData: LiveData<Map<String, Uri>> = _productImagesLiveData
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> get() = _isLoading
-
-    private val _hasError = MutableLiveData(false)
-    val hasError: LiveData<Boolean> get() = _hasError
+    private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
+    val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
 
     fun setProduct(context: Context, productCreateDTO: ProductCreateDTO) {
         viewModelScope.launch {
@@ -85,6 +80,7 @@ class ProductViewModel : ViewModel() {
             )
         }
     }
+
     fun fetchAllProducts(context: Context) {
 
         viewModelScope.launch {
@@ -118,6 +114,7 @@ class ProductViewModel : ViewModel() {
             )
         }
     }
+
     fun fetchSalesProducts(context: Context) {
         viewModelScope.launch {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
@@ -196,7 +193,7 @@ class ProductViewModel : ViewModel() {
                         val tempFile = saveImageToFile(context, responseBody)
                         val imageUri = Uri.fromFile(tempFile)
                         val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
-                        currentImages[productId.toString()] = imageUri
+                        currentImages[productId] = imageUri
                         _productImagesLiveData.postValue(currentImages)
                     } ?: run {
                         Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
@@ -207,5 +204,6 @@ class ProductViewModel : ViewModel() {
             }
         }
     }
+
 }
 

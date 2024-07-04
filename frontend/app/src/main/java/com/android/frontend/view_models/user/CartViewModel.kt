@@ -14,8 +14,10 @@ import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.creation.CartItemCreateDTO
 import com.android.frontend.persistence.SecurePreferences
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
@@ -26,45 +28,41 @@ class CartViewModel : ViewModel() {
     private val _cartItemCount = MutableStateFlow(0)
     val cartItemCount: StateFlow<Int> = _cartItemCount
 
-    private val productDetailsCache = mutableMapOf<Long, ProductDTO>()
-    private val productDetails = MutableLiveData<Map<Long, ProductDTO>>()
-    val productDetailsLiveData: LiveData<Map<Long, ProductDTO>> get() = productDetails
+    private val productDetailsCache = mutableMapOf<Long, MutableStateFlow<ProductDTO?>>()
 
-    fun getProductDetails(context: Context, id: Long) {
-        if (productDetailsCache.containsKey(id)) {
-            productDetails.value = productDetailsCache
-            return
-        }
-
-        viewModelScope.launch {
-            val productService = RetrofitInstance.getProductApi(context)
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val call = productService.getProductById("Bearer $accessToken", id)
-            call.enqueue(object : retrofit2.Callback<ProductDTO> {
-                override fun onResponse(
-                    call: retrofit2.Call<ProductDTO>,
-                    response: retrofit2.Response<ProductDTO>
-                ) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { product ->
-                            Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
-                            productDetailsCache[id] = product
-                            productDetails.value = productDetailsCache
+    fun getProductDetails(context: Context, id: Long): Flow<ProductDTO?> {
+        if (!productDetailsCache.containsKey(id)) {
+            productDetailsCache[id] = MutableStateFlow(null)
+            viewModelScope.launch {
+                val productService = RetrofitInstance.getProductApi(context)
+                val accessToken = TokenManager.getInstance().getAccessToken(context)
+                val call = productService.getProductById("Bearer $accessToken", id)
+                call.enqueue(object : retrofit2.Callback<ProductDTO> {
+                    override fun onResponse(
+                        call: retrofit2.Call<ProductDTO>,
+                        response: retrofit2.Response<ProductDTO>
+                    ) {
+                        if (response.isSuccessful) {
+                            response.body()?.let { product ->
+                                Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
+                                productDetailsCache[id]?.value = product
+                            }
+                        } else {
+                            Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
                         }
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
                     }
-                }
 
-                override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
+                    override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
+                        if (t is SocketTimeoutException) {
+                            Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
+                        } else {
+                            Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
+                        }
                     }
-                }
-            })
+                })
+            }
         }
+        return productDetailsCache[id]!!.asStateFlow()
     }
 
     fun loadCart(context: Context) {
