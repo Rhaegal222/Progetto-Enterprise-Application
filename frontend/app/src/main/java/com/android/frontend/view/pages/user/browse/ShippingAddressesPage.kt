@@ -1,6 +1,5 @@
 package com.android.frontend.view.pages.user.browse
 
-import ShippingAddressCard
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
@@ -29,8 +28,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.unit.dp
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
+import com.android.frontend.view.component.AddressCard
 import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -136,8 +135,8 @@ fun AddressesContent(
             }
 
             for (address in addresses) {
-                ShippingAddressCard(
-                    shippingAddress = address,
+                AddressCard(
+                    address = address,
                     onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
             }
         }
