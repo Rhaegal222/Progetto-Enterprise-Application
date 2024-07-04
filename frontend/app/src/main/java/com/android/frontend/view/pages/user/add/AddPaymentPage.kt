@@ -63,7 +63,10 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                         )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Navigation.PaymentsPage.route) }) {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.PaymentsPage.route)
+                        paymentViewModel.getAllPaymentMethods(context)
+                    }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null

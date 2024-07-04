@@ -48,14 +48,12 @@ enum class SortOption(val displayName: String) {
 fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
     val context = LocalContext.current
     val products by productViewModel.productsLiveData.observeAsState()
-    val productImages by productViewModel.productImagesLiveData.observeAsState()
-    var isLoading by remember { mutableStateOf(true) }
     var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
     var expanded by remember { mutableStateOf(false) }
+    val productImages by productViewModel.productImagesLiveData.observeAsState()
 
     LaunchedEffect(Unit) {
         productViewModel.fetchAllProducts(context)
-        isLoading = false
     }
 
     Scaffold(
@@ -89,32 +87,28 @@ fun AllProductsPage(navController: NavController, productViewModel: ProductViewM
             )
         },
         content = { innerPadding ->
-            if (isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                val sortedProducts = when (selectedSortOption) {
-                    SortOption.ALPHABETICAL -> products?.sortedBy { it.name }
-                    SortOption.REVERSE_ALPHABETICAL -> products?.sortedByDescending { it.name }
-                    SortOption.PRICE_ASCENDING -> products?.sortedBy { it.name }
-                    SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.price }
-                }
+            val sortedProducts = when (selectedSortOption) {
+                SortOption.ALPHABETICAL -> products?.sortedBy { it.name }
+                SortOption.REVERSE_ALPHABETICAL -> products?.sortedByDescending { it.name }
+                SortOption.PRICE_ASCENDING -> products?.sortedBy { it.price }
+                SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.price }
+            }
 
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
-                    items(sortedProducts ?: emptyList()) { productDTO ->
-                        ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id.toString()))
-                    }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                items(sortedProducts ?: emptyList()) { productDTO ->
+                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
                 }
             }
         }
     )
 }
+
+
 
 @Composable
 fun ProductsCard(
@@ -177,7 +171,7 @@ fun ProductsCard(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = "${productDTO.brand.name}",
+                text = productDTO.brand.name,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp
             )

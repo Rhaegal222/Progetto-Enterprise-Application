@@ -64,8 +64,8 @@ class ProductCategoryBrandViewModel : ViewModel() {
     private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
 
-    private val _productImagesLiveData = MutableLiveData<Map<String, Uri>>()
-    val productImagesLiveData: LiveData<Map<String, Uri>> = _productImagesLiveData
+    private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
+    val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
 
     val productId = MutableLiveData<Long?>()
 
@@ -441,7 +441,7 @@ class ProductCategoryBrandViewModel : ViewModel() {
                         val tempFile = saveImageToFile(context, responseBody)
                         val imageUri = Uri.fromFile(tempFile)
                         val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
-                        currentImages[productId.toString()] = imageUri
+                        currentImages[productId] = imageUri
                         _productImagesLiveData.postValue(currentImages)
                     } ?: run {
                         Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")

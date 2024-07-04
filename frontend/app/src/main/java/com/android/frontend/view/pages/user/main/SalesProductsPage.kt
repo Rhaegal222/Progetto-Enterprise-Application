@@ -24,8 +24,7 @@ fun SalesProductsPage(navController: NavController, productViewModel: ProductVie
 
     val context = LocalContext.current
     val products = productViewModel.productsLiveData.observeAsState().value
-    val productImages by productViewModel.productImagesLiveData.observeAsState()
-
+    val productImages = productViewModel.productImagesLiveData.observeAsState().value
 
     LaunchedEffect(Unit) {
         productViewModel.fetchSalesProducts(context)
@@ -45,7 +44,7 @@ fun SalesProductsPage(navController: NavController, productViewModel: ProductVie
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id.toString()))
+                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
                 }
             }
         }

@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,14 +20,13 @@ import com.android.frontend.dto.CartItemDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.CartViewModel
-import com.android.frontend.view_models.user.ProductViewModel
+import kotlinx.coroutines.flow.firstOrNull
 import java.math.BigDecimal
 
 @Composable
 fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
     val context = LocalContext.current
     val cart by cartViewModel.cart.collectAsState()
-    val productDetails by cartViewModel.productDetailsLiveData.observeAsState(emptyMap())
 
     LaunchedEffect(Unit) {
         cartViewModel.loadCart(context)
@@ -38,10 +36,13 @@ fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
         Column(modifier = Modifier.fillMaxSize().padding(8.dp, 0.dp)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(it.items) { cartItem ->
-                    CartItemCard(cartItem, cartViewModel, context, productDetails[cartItem.productId])
+                    val productDetails by cartViewModel.getProductDetails(context, cartItem.productId).collectAsState(null)
+                    productDetails?.let { product ->
+                        CartItemCard(cartItem, product, cartViewModel, context)
+                    }
                 }
             }
-            CartSummary(cartItems = it.items, productDetails = productDetails)
+            CartSummary(cartItems = it.items, cartViewModel)
             Button(
                 onClick = {
                     navController.navigate(Navigation.CheckoutPage.route)
@@ -57,12 +58,9 @@ fun CartPage(cartViewModel: CartViewModel, navController: NavController) {
 }
 
 @Composable
-fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: Context, productDetails: ProductDTO?) {
+fun CartItemCard(cartItem: CartItemDTO, product: ProductDTO, cartViewModel: CartViewModel, context: Context) {
     var quantity by remember { mutableStateOf(cartItem.quantity) }
-
-    LaunchedEffect(cartItem.id) {
-        cartViewModel.getProductDetails(context, cartItem.productId)
-    }
+    val price = if (product.onSale) product.discountedPrice ?: product.price else product.price
 
     Card(
         modifier = Modifier
@@ -71,11 +69,9 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            productDetails?.let {
-                Text(text = "Product: ${it.name}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-                Text(text = "Product Price: ${it.price}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-                Text(text = "Delivery Price: ${it.shippingCost}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-            }
+            Text(text = "Product: ${product.name}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Text(text = "Product Price: $price", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
+            Text(text = "Delivery Price: ${product.shippingCost}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = {
                     if (quantity > 1) {
@@ -104,11 +100,18 @@ fun CartItemCard(cartItem: CartItemDTO, cartViewModel: CartViewModel, context: C
 }
 
 @Composable
-fun CartSummary(cartItems: List<CartItemDTO>, productDetails: Map<Long, ProductDTO>) {
-    val total = cartItems.fold(BigDecimal.ZERO) { acc, cartItem ->
-        val productPrice = productDetails[cartItem.productId]?.price ?: BigDecimal.ZERO
-        val shippingCost = productDetails[cartItem.productId]?.shippingCost ?: BigDecimal.ZERO
-        acc + (productPrice * BigDecimal(cartItem.quantity)) + shippingCost
+fun CartSummary(cartItems: List<CartItemDTO>, cartViewModel: CartViewModel) {
+    val context = LocalContext.current
+    var total by remember { mutableStateOf(BigDecimal.ZERO) }
+
+    LaunchedEffect(cartItems) {
+        total = BigDecimal.ZERO
+        for (cartItem in cartItems) {
+            val product = cartViewModel.getProductDetails(context, cartItem.productId).firstOrNull()
+            product?.let {
+                total += (it.price * BigDecimal(cartItem.quantity)) + it.shippingCost
+            }
+        }
     }
 
     Card(
