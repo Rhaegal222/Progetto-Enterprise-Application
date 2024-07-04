@@ -15,10 +15,11 @@ import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 @Composable
 fun ShippingAddressCard(shippingAddress: AddressDTO, onRemove: () -> Unit) {
     Card(
+        colors = CardDefaults.cardColors(),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
         Column(
             modifier = Modifier

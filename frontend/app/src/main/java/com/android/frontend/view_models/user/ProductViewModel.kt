@@ -10,11 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
-import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.config.getCurrentStackTrace
-import com.android.frontend.dto.creation.CartItemCreateDTO
-import com.android.frontend.dto.creation.ProductCreateDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,10 +43,10 @@ class ProductViewModel : ViewModel() {
             val productService = RetrofitInstance.getProductApi(context)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val call = productService.getProductById("Bearer $accessToken",id)
-            call.enqueue(object : retrofit2.Callback<ProductDTO> {
+            call.enqueue(object : Callback<ProductDTO> {
                 override fun onResponse(
-                    call: retrofit2.Call<ProductDTO>,
-                    response: retrofit2.Response<ProductDTO>
+                    call: Call<ProductDTO>,
+                    response: Response<ProductDTO>
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let { product ->
@@ -61,7 +58,7 @@ class ProductViewModel : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
+                override fun onFailure(call: Call<ProductDTO>, t: Throwable) {
                     if (t is SocketTimeoutException) {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
                     } else {

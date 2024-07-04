@@ -65,7 +65,7 @@ fun AddAddressPage(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.add_address).uppercase())
+                    Text(text = stringResource(id = R.string.add_address))
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate(Navigation.ShippingAddressesPage.route) }) {
