@@ -264,7 +264,7 @@ public class UserServiceImp implements UserService{
             throw new IllegalArgumentException("Email already exists");
         }
         // Validate password
-        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%^&+=])(?=\\S+$).{8,}$")) {
+        if (!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@_#$%^&+=.])(?=\\S+$).{8,128}$")) {
             throw new IllegalArgumentException("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
         }
 
