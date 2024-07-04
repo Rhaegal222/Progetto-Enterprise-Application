@@ -1,4 +1,5 @@
-import androidx.compose.foundation.background
+package com.android.frontend.view.component
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -10,24 +11,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.frontend.dto.AddressDTO
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 
 @Composable
 fun ShippingAddressCard(shippingAddress: AddressDTO, onRemove: () -> Unit) {
     Card(
-        colors = CardDefaults.cardColors(),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
+        colors = CardColorScheme.cardColors()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
-                .padding(8.dp)
+                .padding(8.dp),
         ) {
-            // Intestazione "Predefinita"
             Text(
                 text = "Predefinita: amazon",
                 color = Color.Gray,
