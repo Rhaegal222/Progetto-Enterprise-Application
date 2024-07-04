@@ -45,7 +45,7 @@ public class OrderServiceImp implements OrderService {
             }
 
             Cart cart = cartDao.findByUser(loggedUser).orElseThrow(() -> new EntityNotFoundException("Carrello non trovato"));
-            Set<CartItem> cartItems = cart.getItems();
+            List<CartItem> cartItems = cart.getItems();
             if (cartItems.isEmpty()) {
                 throw new IllegalAccessException("Il carrello è vuoto");
             }

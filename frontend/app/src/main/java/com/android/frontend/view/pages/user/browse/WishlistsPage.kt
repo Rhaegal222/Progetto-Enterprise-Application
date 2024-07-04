@@ -131,6 +131,7 @@ fun WishlistCard(wishlist: WishlistDTO, navController: NavController) {
             .fillMaxWidth()
             .clickable {
                 CurrentDataUtils.currentWishlistId = wishlist.id
+                CurrentDataUtils.CurrentWishlistName = wishlist.wishlistName
                 navController.navigate(Navigation.WishlistDetailsPage.route)
             },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),

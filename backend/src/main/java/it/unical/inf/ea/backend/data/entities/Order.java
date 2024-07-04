@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.time.LocalDateTime;
@@ -46,7 +47,7 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "cart_item_id")
     )
-    private Set<CartItem> items = new HashSet<>();
+    private List<CartItem> items;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

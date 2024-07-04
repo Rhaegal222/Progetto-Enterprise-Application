@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.data.services.interfaces;
 
-import it.unical.inf.ea.backend.data.entities.CartItem;
 import it.unical.inf.ea.backend.dto.CartDTO;
 import it.unical.inf.ea.backend.dto.creation.CartItemCreateDTO;
 
@@ -10,6 +9,6 @@ public interface CartService {
     CartDTO getCartByUserId(UUID userId);
     CartDTO getCartForLoggedUser();
     CartDTO addItemToCart(CartItemCreateDTO cartItem);
-    void removeItemFromCart(UUID cartItemId);
-    void clearCart();
+    CartDTO removeItemFromCart(UUID cartItemId);
+    CartDTO clearCart();
 }

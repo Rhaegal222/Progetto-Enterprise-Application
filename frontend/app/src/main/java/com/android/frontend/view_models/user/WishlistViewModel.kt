@@ -95,14 +95,14 @@ class WishlistViewModel : ViewModel() {
         })
     }
 
-    fun getWishlistDetails(context: Context, wishlistId: Long) {
+    fun getWishlistDetails(context: Context, wishlistId: Long,wishlistName: String) {
         viewModelScope.launch {
             try {
                 val wishlistService = RetrofitInstance.getWishlistApi(context)
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 val call = wishlistService.getProductByWishlistId("Bearer $accessToken", wishlistId)
 
-                Log.d("DEBUG", "Starting API call for Wishlist ID: $wishlistId with token: $accessToken")
+                Log.d("DEBUG", "Starting API call for Wishlist ID: $wishlistId, $wishlistName with token: $accessToken")
 
                 call.enqueue(object : Callback<List<ProductDTO>> {
                     override fun onResponse(
