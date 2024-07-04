@@ -22,7 +22,6 @@ import com.android.frontend.view_models.user.AddressViewModel
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.OrderViewModel
 import com.android.frontend.dto.creation.OrderCreateDTO
-import com.android.frontend.dto.OrderItemDTO
 import java.util.UUID
 
 @Composable
@@ -34,14 +33,15 @@ fun CheckoutPage(
     navController: NavController
 ) {
     val context = LocalContext.current
-    var selectedPaymentMethod by remember { mutableStateOf<UUID?>(null) }
-    var selectedShippingAddress by remember { mutableStateOf<UUID?>(null) }
+    var paymentMethod by remember { mutableStateOf<String?>(null) }
+    var shippingAddress by remember { mutableStateOf<String?>(null) }
 
     val payments by paymentViewModel.paymentMethodsLiveData.observeAsState(emptyList())
     val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
     val isLoadingPayments by paymentViewModel.isLoading.observeAsState(false)
     val isLoadingAddresses by addressViewModel.isLoading.observeAsState(false)
 
+    val cart by cartViewModel.cart.collectAsState()
 
     LaunchedEffect(Unit) {
         paymentViewModel.getAllPaymentMethods(context)
@@ -50,10 +50,9 @@ fun CheckoutPage(
     }
 
     LaunchedEffect(payments, addresses) {
-        selectedPaymentMethod = payments.find { it.isDefault }?.id?.let { UUID.fromString(it) }
-        selectedShippingAddress = addresses.find { it.isDefault }?.id?.let { UUID.fromString(it) }
+        paymentMethod = payments.find { it.isDefault }?.cardNumber
+        shippingAddress = addresses.find { it.isDefault }?.street
     }
-
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -72,7 +71,7 @@ fun CheckoutPage(
         )
         if (isLoadingPayments) {
             CircularProgressIndicator(modifier = Modifier.padding(bottom = 16.dp))
-        } else if (selectedPaymentMethod == null) {
+        } else if (paymentMethod == null) {
             Button(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
@@ -84,7 +83,7 @@ fun CheckoutPage(
             }
         } else {
             OutlinedTextField(
-                value = payments.find { UUID.fromString(it.id) == selectedPaymentMethod }?.cardNumber ?: "",
+                value = paymentMethod!!,
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
@@ -103,7 +102,7 @@ fun CheckoutPage(
         )
         if (isLoadingAddresses) {
             CircularProgressIndicator(modifier = Modifier.padding(bottom = 16.dp))
-        } else if (selectedShippingAddress == null) {
+        } else if (shippingAddress == null) {
             Button(
                 onClick = {
                     navController.navigate(Navigation.AddAddressPage.route)
@@ -115,7 +114,7 @@ fun CheckoutPage(
             }
         } else {
             OutlinedTextField(
-                value = addresses.find { UUID.fromString(it.id) == selectedShippingAddress }?.street ?: "",
+                value = shippingAddress!!,
                 onValueChange = {},
                 readOnly = true,
                 leadingIcon = {
@@ -131,6 +130,23 @@ fun CheckoutPage(
 
         Button(
             onClick = {
+                if (paymentMethod != null && shippingAddress != null) {
+                    val paymentMethodId = payments.find { it.cardNumber == paymentMethod }?.id
+                    val addressId = addresses.find { it.street == shippingAddress }?.id
+
+                    if (paymentMethodId != null && addressId != null) {
+                        val orderCreateDTO = OrderCreateDTO(
+                            addressId = UUID.fromString(addressId),
+                            paymentMethodId = UUID.fromString(paymentMethodId)
+                        )
+                        orderViewModel.addOrder(context, orderCreateDTO)
+
+                        cart?.items?.forEach { cartItem ->
+                            cartViewModel.removeCartItem(cartItem.id, context)
+                        }
+                        navController.navigate(Navigation.CartPage.route)
+                    }
+                }
             },
             colors = ButtonDefaults.buttonColors(Color.Black),
             modifier = Modifier

@@ -4,13 +4,14 @@ import android.content.Context
 import com.android.frontend.config.TokenInterceptor
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.service.*
+import it.unical.inf.ea.backend.data.services.interfaces.OrderService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
-    private val BASE_URL = "http://192.168.169.200:8080/"
+    private val BASE_URL = CurrentDataUtils.baseUrl
 
     private fun getSimpleRetrofit(): Retrofit {
         return Retrofit.Builder()
