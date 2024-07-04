@@ -2,16 +2,14 @@ package com.android.frontend.service
 
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.ProductUpdateRequest
-import com.android.frontend.dto.UserDTO
-import com.android.frontend.dto.UserUpdateRequest
 import com.android.frontend.dto.creation.ProductCreateDTO
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.*
@@ -44,23 +42,23 @@ interface ProductService {
     ): Call<ProductDTO>
 
     @GET("/api/v1/products/getAllProducts")
-    fun getAllProducts(
+    suspend fun getAllProducts(
         @Header("Authorization") authorization: String
-    ): Call<List<ProductDTO>>
+    ): Response<List<ProductDTO>>
 
-    @GET("/api/v1/products/getProductsByCategory")
+    @GET("/api/v1/products/getProductsByCategory/")
     fun getProductsByCategory(
         @Header("Authorization") authorization: String,
         @Query("categoryName") categoryName: String
     ): Call<List<ProductDTO>>
 
-    @GET("/api/v1/products/getProductsByBrand")
+    @GET("/api/v1/products/getProductsByBrand/")
     fun getProductsByBrand(
         @Header("Authorization") authorization: String,
         @Query("brandName") brandName: String
     ): Call<List<ProductDTO>>
 
-    @GET("/api/v1/products/getProductsByPriceRange")
+    @GET("/api/v1/products/getProductsByPriceRange/")
     fun getProductsByPriceRange(
         @Header("Authorization") authorization: String,
         @Query("min") min: Double,
@@ -68,7 +66,7 @@ interface ProductService {
     ): Call<List<ProductDTO>>
 
     @GET("/api/v1/products/getSalesProducts")
-    fun getSalesProducts(
+    suspend fun getSalesProducts(
         @Header("Authorization") authorization: String
-    ): Call<List<ProductDTO>>
+    ): Response<List<ProductDTO>>
 }

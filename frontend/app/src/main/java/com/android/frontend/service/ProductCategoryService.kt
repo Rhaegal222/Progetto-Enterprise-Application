@@ -21,7 +21,7 @@ interface ProductCategoryService {
     @DELETE("/api/v1/category/deleteCategory")
     fun deleteCategory(
         @Header("Authorization") token: String,
-        @Query("id") id: String
+        @Query("id") id: Long
     ): Call<String>
 
     @GET("/api/v1/category/getAllCategories")

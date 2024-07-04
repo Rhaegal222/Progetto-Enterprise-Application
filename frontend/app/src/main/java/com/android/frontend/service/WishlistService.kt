@@ -19,17 +19,17 @@ interface WishlistService {
         @Body wishlistCreateDTO: WishlistCreateDTO
     ): Call<Void>
 
-    @DELETE("/api/v1/wishlist/deleteWishlist/{id}")
+    @DELETE("/api/v1/wishlist/deleteWishlist/{wishlistId}")
     fun deleteWishlist(
         @Header("Authorization") authorization: String,
-        @Path("id") id: Long
+        @Path("wishlistId") wishlistId: Long
     ): Call<Void>
 
-    @POST("/api/v1/wishlist/{wishlistId}/products")
+    @POST("/api/v1/wishlist/{wishlistId}/addProductsToWishlist/{productId}")
     fun addProductToWishlist(
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: Long,
-        @Body productId: Long
+        @Path("productId") productId: Long
     ): Call<Void>
 
     @DELETE("/api/v1/wishlist/{wishlistId}/products/{productId}")
@@ -39,10 +39,10 @@ interface WishlistService {
         @Body productId: Long
     ): Call<Void>
 
-    @GET("/api/v1/wishlist/getProductByWishlistId/{id}")
+    @GET("/api/v1/wishlist/getProductByWishlistId/{wishlistId}")
     fun getProductByWishlistId(
         @Header("Authorization") authorization: String,
-        @Path("id") id: Long
+        @Path("wishlistId") wishlistId: Long
     ): Call<List<ProductDTO>>
 
     @GET("/api/v1/wishlist/getAllLoggedUserWishlists")

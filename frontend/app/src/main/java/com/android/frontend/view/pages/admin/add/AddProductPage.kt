@@ -23,12 +23,12 @@ import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
+import com.android.frontend.view_models.admin.ProductViewModel
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
+fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
     val context = LocalContext.current
 
     // Fetch data when the page is opened

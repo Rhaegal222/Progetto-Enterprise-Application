@@ -9,6 +9,7 @@ import it.unical.inf.ea.backend.dto.*;
 import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.config.security.TokenStore;
+import it.unical.inf.ea.backend.dto.enums.UserRole;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -62,10 +63,11 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
+    public List<ProductDTO> getAllProducts() throws IllegalAccessException {
+
         List<Product> products = productDao.findAll();
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 

@@ -2,15 +2,14 @@ package com.android.frontend.view_models.admin
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
-import com.android.frontend.dto.ProductDTO
-import com.android.frontend.dto.creation.ProductCreateDTO
+import com.android.frontend.dto.creation.BrandCreateDTO
+import com.android.frontend.dto.creation.CategoryCreateDTO
 import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view_models.user.AddressViewModel
 import com.android.frontend.view_models.user.PaymentViewModel
@@ -22,7 +21,7 @@ class DebugViewModel : ViewModel() {
 
     private val addresViewModel = AddressViewModel()
     private val brandViewModel = BrandViewModel()
-    private val categoryViewModel = ProductCategoryViewModel()
+    private val categoryViewModel = CategoryViewModel()
     private val paymentViewModel = PaymentViewModel()
     private val productViewModel = ProductViewModel()
 
@@ -34,11 +33,13 @@ class DebugViewModel : ViewModel() {
     }
     fun generateBrand(context: Context) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Generating brand")
-        brandViewModel.addBrand(context, "Brand", "Description")
+        val brand = BrandCreateDTO("Brand", "Description")
+        brandViewModel.addBrand( brand, context)
     }
     fun generateProductCategory(context: Context) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Generating product category")
-        categoryViewModel.addProductCategory(context, "Category")
+        val category = CategoryCreateDTO("Category")
+        categoryViewModel.addCategory(category, context)
     }
     fun generatePayment(context: Context) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Generating payment")

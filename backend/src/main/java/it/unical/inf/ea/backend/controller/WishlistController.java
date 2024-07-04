@@ -1,7 +1,6 @@
 package it.unical.inf.ea.backend.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import it.unical.inf.ea.backend.data.services.interfaces.WishlistService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
@@ -11,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
 @RestController
@@ -45,10 +42,10 @@ public class WishlistController {
         }
     }
 
-    @DeleteMapping(path = "/deleteWishlist/{id}")
-    public ResponseEntity<?> deleteWishlist(@PathVariable("id") Long id) {
+    @DeleteMapping(path = "/deleteWishlist/{wishlistId}")
+    public ResponseEntity<?> deleteWishlist(@PathVariable("wishlistId") Long wishlistId) {
         try {
-            wishlistService.deleteWishlist(id);
+            wishlistService.deleteWishlist(wishlistId);
             return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -65,20 +62,20 @@ public class WishlistController {
         }
     }
 
-    @GetMapping(path = "/getWishlistById/{id}")
-    public ResponseEntity<?> getWishlistById(@PathVariable Long id){
+    @GetMapping(path = "/getWishlistById/{wishlistId}")
+    public ResponseEntity<?> getWishlistById(@PathVariable Long wishlistId){
         try {
-            WishlistDTO wishlist = wishlistService.getWishlistById(id);
+            WishlistDTO wishlist = wishlistService.getWishlistById(wishlistId);
             return ResponseEntity.ok(wishlist);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
 
-    @GetMapping("/getProductByWishlistId/{Id}")
-    public ResponseEntity<?> getProductByWishlistId(@PathVariable Long Id){
+    @GetMapping("/getProductByWishlistId/{wishlistId}")
+    public ResponseEntity<?> getProductByWishlistId(@PathVariable Long wishlistId){
         try {
-            List<ProductDTO> product = wishlistService.getProductByWishlistId(Id);
+            List<ProductDTO> product = wishlistService.getProductByWishlistId(wishlistId);
             return ResponseEntity.ok(product);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");

@@ -26,14 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
-import com.android.frontend.view_models.admin.ProductCategoryBrandViewModel
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.view_models.admin.BrandViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BrandPage(navController: NavHostController, viewModel: ProductCategoryBrandViewModel = viewModel()) {
+fun BrandPage(navController: NavHostController, viewModel: BrandViewModel = viewModel()) {
     val context = LocalContext.current
     val brands by viewModel.allBrands.observeAsState(emptyList())
 
@@ -72,7 +72,7 @@ fun BrandPage(navController: NavHostController, viewModel: ProductCategoryBrandV
             }
             items(brands) { brand ->
                 BrandCard(brand = brand, onDelete = {
-                    viewModel.deleteBrand(context,it.id)
+                    viewModel.deleteBrand(it.id, context)
                     viewModel.fetchAllBrands(context)
                 })
             }

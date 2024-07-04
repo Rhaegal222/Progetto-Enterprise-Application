@@ -1,5 +1,6 @@
 package com.android.frontend.dto
 
+import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 data class ProductDTO(
@@ -17,7 +18,7 @@ data class ProductDTO(
     var category: CategoryDTO,
     var image: ProductImageDTO? = null,
     var onSale: Boolean,
-    var discountedPrice: BigDecimal? = null
+    var salePrice: BigDecimal? = null
 ) {
 
 
