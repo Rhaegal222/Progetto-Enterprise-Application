@@ -90,11 +90,11 @@ public class UserController {
         }
     }
 
-    @PostMapping("/activate")
+    @GetMapping("/activate")
     public ResponseEntity<?> activate(@RequestParam String token) {
         try {
             userService.activateUser(token);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("{\"message\": \"User activated successfully\"}");
         } catch (ParseException | JOSEException e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }

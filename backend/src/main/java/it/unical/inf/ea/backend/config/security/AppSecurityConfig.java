@@ -101,12 +101,12 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/productPicture/deleteImage/{id}").authenticated()
 
                         // USER
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/logout", "/api/v1/users/changePassword", "/api/v1/users/changeRole/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users/logout", "/api/v1/users/changeRole/",
+                                "/api/v1/users/deleteUser/", "/api/v1/users/changePassword").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/deleteUser/{id}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/getUserById", "/api/v1/users/getUserByUsername", "/api/v1/users/getUserByEmail",
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/getUserByUsername", "/api/v1/users/getUserByEmail", "/api/v1/users/me",
                                 "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken", "/api/v1/users/getAllUsers",
-                                "/api/v1/users/{id}", "/api/v1/users/find-by-username", "/api/v1/users/resetPassword",
-                                "/api/v1/users/retrieveUserProfile", "/api/v1/users/findUserById/", "/api/v1/users/findByUsername",
+                                "/api/v1/users/resetPassword", "/api/v1/users/retrieveUserProfile", "/api/v1/users/findUserById/", "/api/v1/users/findByUsername",
                                 "/api/v1/users/updateUser/", "/api/v1/users/getNewPassword").authenticated()
 
                         // USER IMAGE
@@ -120,12 +120,11 @@ public class AppSecurityConfig {
                                 "/{wishlistId}/removeProductsFromWishlist/{productId}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/wishlist/getWishlistById/{id}", "/api/v1/wishlist/getAllLoggedUserWishlists").authenticated()
 
-                        // Richieste dove non è richiesta l'autenticazione
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users/activate").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-
-                        .anyRequest().permitAll())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/activate").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/activate").permitAll()
+                        // Autentica tutte le altre richieste
+                        .anyRequest().authenticated())
 
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(new CustomAuthenticationFilter(authenticationManager, tokenStore))
@@ -144,7 +143,8 @@ public class AppSecurityConfig {
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/", configuration);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
+
