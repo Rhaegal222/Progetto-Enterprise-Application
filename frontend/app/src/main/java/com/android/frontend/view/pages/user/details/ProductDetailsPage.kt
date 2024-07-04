@@ -37,7 +37,7 @@ import com.android.frontend.view_models.user.ProductViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel, navController: NavController) {
+fun ProductDetailsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel, ) {
     val context = LocalContext.current
     val productId = CurrentDataUtils.currentProductId
     val productUri = CurrentDataUtils.currentProductImageUri

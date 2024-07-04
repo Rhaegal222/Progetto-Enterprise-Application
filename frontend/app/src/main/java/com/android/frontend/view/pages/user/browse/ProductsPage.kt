@@ -48,7 +48,7 @@ enum class SortOption(val displayName: String) {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, productViewModel: ProductViewModel = viewModel()) {
     val context = LocalContext.current
     val products by productViewModel.productsLiveData.observeAsState()
     val productImages by productViewModel.productImagesLiveData.observeAsState()

@@ -19,7 +19,6 @@ import com.android.frontend.view.pages.user.browse.AboutPage
 import com.android.frontend.view.pages.user.browse.PersonalInformationPage
 import com.android.frontend.view.pages.user.browse.ThemePage
 import com.android.frontend.view.pages.user.browse.CountryLanguagePage
-import com.android.frontend.view.pages.user.browse.AllProductsPage
 import com.android.frontend.view.pages.user.main.CartPage
 import com.android.frontend.view.pages.user.browse.CheckoutPage
 import com.android.frontend.view.pages.user.details.ProductDetailsPage
@@ -30,6 +29,7 @@ import com.android.frontend.view.pages.profile.AddWishlistPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
 import com.android.frontend.view.pages.user.browse.ShippingAddressesPage
 import com.android.frontend.view.pages.user.browse.AllWishlistsPage
+import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view.pages.user.details.WishlistDetailsPage
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.WishlistViewModel
@@ -46,8 +46,8 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AccountMenu.route) { AccountMenu(navController) }
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
-        composable(Navigation.AllProductsPage.route) { AllProductsPage(navController, cartViewModel = cartViewModel) }
-        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
+        composable(Navigation.AllProductsPage.route) { ProductsPage(navController, CartViewModel(), ProductViewModel()) }
+        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(navController, ProductViewModel(), CartViewModel()) }
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
