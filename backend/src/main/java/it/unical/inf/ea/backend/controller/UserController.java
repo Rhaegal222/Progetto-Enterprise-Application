@@ -2,11 +2,13 @@ package it.unical.inf.ea.backend.controller;
 
 import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.unical.inf.ea.backend.data.dao.UserDao;
+import it.unical.inf.ea.backend.data.entities.User;
+import it.unical.inf.ea.backend.data.services.interfaces.UserImageService;
 import it.unical.inf.ea.backend.data.services.interfaces.UserService;
 import it.unical.inf.ea.backend.dto.basics.UserBasicDTO;
 import it.unical.inf.ea.backend.dto.enums.Provider;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
-import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +16,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.InputStream;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -31,6 +40,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @SecurityRequirement(name = SECURITY_CONFIG_NAME)
 public class UserController {
     private final UserService userService;
+    private final UserImageService userImageService;
+    private final UserDao userDao;
 
     @PostMapping("/googleAuthentication")
     public ResponseEntity<Map<String, String>> googleAuth(@RequestParam String idTokenString) {
@@ -46,6 +57,15 @@ public class UserController {
         try {
             userService.registerUser(firstname, lastname, email, password);
             userService.sendVerificationEmail(email);
+
+            Resource resource = new ClassPathResource("images/profile_placeholder.png");
+            InputStream inputStream = resource.getInputStream();
+            byte[] imageBytes = StreamUtils.copyToByteArray(inputStream);
+            MultipartFile multipartFile = new MockMultipartFile("file", "profile_placeholder.png", "image/png", imageBytes);
+
+            User user = userDao.findByEmail(email).get();
+
+            userImageService.uploadInitialPhotoProfile(user.getId(), multipartFile);
             return ResponseEntity.ok("{\"message\": \"User registered successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");

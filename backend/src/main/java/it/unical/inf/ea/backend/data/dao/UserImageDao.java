@@ -11,4 +11,5 @@ import java.util.UUID;
 @Repository
 public interface UserImageDao extends JpaRepository<UserImage, String>, JpaSpecificationExecutor<UserImage> {
     boolean existsByUser(User user);
+    UserImage findByUserId(UUID userId);
 }

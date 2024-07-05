@@ -18,7 +18,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
@@ -77,11 +76,9 @@ class EditProductViewModel : ViewModel() {
     }
 
 
-    fun uploadProductImage(context: Context, productId: Long, imageUri: Uri) {
+    fun replacePhotoProduct(context: Context, productId: Long, imageUri: Uri) {
         viewModelScope.launch {
-            deletePhotoProduct(context, productId)
             uploadImage(context, productId, imageUri)
-
         }
     }
 
@@ -128,11 +125,20 @@ class EditProductViewModel : ViewModel() {
     }
 
 
-    private suspend fun fetchImage(context: Context, type: String, folderName: String, fileName: String): ResponseBody? {
+    private suspend fun getPhotoProductById(context: Context, productId: Long): ResponseBody? {
         return withContext(Dispatchers.IO) {
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
+                return@withContext null
+            }
             val productImageService = RetrofitInstance.getProductImageApi(context)
             val response = Request().executeRequest(context) {
-                productImageService.getImage(type, folderName, fileName)
+                productImageService.getPhotoProductById("Bearer $accessToken", productId)
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Fetched image")
@@ -148,12 +154,8 @@ class EditProductViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
-
             try {
-                val type = "user_photos"
-                val folderName = productId.toString()
-                val fileName = "photoProfile.png"
-                val responseBody = fetchImage(context, type, folderName, fileName)
+                val responseBody = getPhotoProductById(context, productId)
                 responseBody?.let {
                     val tempFile = saveImageToFile(context, responseBody)
                     val imageUri = Uri.fromFile(tempFile)
@@ -170,6 +172,7 @@ class EditProductViewModel : ViewModel() {
             }
         }
     }
+
 
     fun fetchAllBrands(context: Context) {
         viewModelScope.launch {
@@ -230,24 +233,21 @@ class EditProductViewModel : ViewModel() {
             val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
-            // Prepare other parts
-            val descriptionPart = "Product Image".toRequestBody("text/plain".toMediaTypeOrNull())
-
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
 
             try {
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 if (accessToken == null) {
                     Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                    _isLoading.value = false
-                    _hasError.value = true
+                    _isLoading.postValue(false)
+                    _hasError.postValue(true)
                     return@withContext
                 }
 
                 val productImageService = RetrofitInstance.getProductImageApi(context)
                 val response = Request().executeRequest(context) {
-                    productImageService.savePhotoProduct("Bearer $accessToken", body, productId, descriptionPart)
+                    productImageService.replacePhotoProductById("Bearer $accessToken", productId, body)
                 }
 
                 if (response?.isSuccessful == true) {
@@ -267,41 +267,10 @@ class EditProductViewModel : ViewModel() {
         }
     }
 
-    private suspend fun deletePhotoProduct(context: Context, productId: Long) {
-        _isLoading.value = true
-        _hasError.value = false
-        try {
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                _isLoading.value = false
-                _hasError.value = true
-                return
-            }
-
-            val productImageService = RetrofitInstance.getProductImageApi(context)
-            val response = Request().executeRequest(context) {
-                productImageService.deletePhotoProduct("Bearer $accessToken", productId)
-            }
-
-            if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()}, Image delete success")
-            } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()}, Image delete failed: ${response?.errorBody()?.string()}")
-                _hasError.value = true
-            }
-        } catch (e: Exception) {
-            Log.e("DEBUG", "${getCurrentStackTrace()}, Image delete error: ${e.message}", e)
-            _hasError.value = true
-        } finally {
-            _isLoading.value = false
-        }
-    }
-
 
     private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {
-            val tempFile = File.createTempFile("product", "jpg", context.cacheDir)
+            val tempFile = File.createTempFile("product", "png", context.cacheDir)
             val inputStream = responseBody.byteStream()
             val outputStream = FileOutputStream(tempFile)
             inputStream.copyTo(outputStream)

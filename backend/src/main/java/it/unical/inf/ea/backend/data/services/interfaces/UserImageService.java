@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface UserImageService {
-    Resource getImage(String url) throws IOException;
+    Resource getPhotoProfileById(String userId) throws IOException;
+    Resource getMyPhotoProfile() throws IOException;
 
-    void uploadImage(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException;
+    void uploadInitialPhotoProfile(UUID userId, MultipartFile multipartFile) throws IOException, IllegalAccessException;
 
-    void deleteImage(String id) throws IllegalAccessException;
+    void replaceMyPhotoProfile(MultipartFile multipartFile) throws IOException;
 
+
+    void deleteMyPhotoProfile() throws IllegalAccessException;
 
     void saveUserImage(UserImage userImage);
 }

@@ -107,7 +107,6 @@ fun ProductContent(products : List<ProductDTO>, navController: NavHostController
         columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
     ) {
         items(products) { productDTO ->
             ProductsCard(productDTO, navController, viewModel, productImages[productDTO.id])

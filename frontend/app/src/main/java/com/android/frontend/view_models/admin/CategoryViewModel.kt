@@ -1,25 +1,18 @@
 package com.android.frontend.view_models.admin
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.dto.creation.CategoryCreateDTO
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.awaitResponse
 
 class CategoryViewModel : ViewModel() {
 
@@ -31,7 +24,6 @@ class CategoryViewModel : ViewModel() {
 
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
-
 
     fun fetchAllCategories(context: Context) {
         viewModelScope.launch {

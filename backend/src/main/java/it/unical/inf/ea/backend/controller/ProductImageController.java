@@ -24,26 +24,49 @@ import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURIT
 public class ProductImageController {
     private final ProductImageService productImageService;
 
-    @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProductImageDTO savePhotoProduct(
-            @RequestPart("file") MultipartFile multipartFile,
-            @RequestParam("description") String description,
-            @RequestParam("productId") Long productId
-    ) throws IOException, IllegalAccessException {
-        return productImageService.savePhotoProduct(multipartFile, productId, description);
+    @PostMapping(value = "/uploadInitialPhotoProductById/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadInitialPhotoProductById(@PathVariable("productId") Long productId, @RequestPart("file") MultipartFile multipartFile) throws IOException, IllegalAccessException {
+        try {
+            productImageService.uploadInitialPhotoProductById(productId, multipartFile);
+            return ResponseEntity.ok("{\"message\": \"Image uploaded successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }    }
+
+    @GetMapping(path = "/getPhotoProductById/{productId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<?> getPhotoProductById(@PathVariable("productId") Long productId) {
+        try {
+            Resource resource = productImageService.getPhotoProductById(productId);
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_PNG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
     }
 
-    @GetMapping(path = "/getImage/{type}/{folder_name}/{file_name:.*}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<Resource> getImage(@PathVariable("type" )String type, @PathVariable("folder_name")String folder_name , @PathVariable("file_name") String file_name) throws IOException {
 
-        Resource resource = productImageService.getImage(type+"/"+folder_name+"/"+file_name);
-        return ResponseEntity.ok(resource);
+    @PutMapping(value = "/replacePhotoProductById/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> replacePhotoProductById(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile multipartFile){
+        try {
+            productImageService.replacePhotoProductById(productId, multipartFile);
+            return ResponseEntity.ok("{\"message\": \"Image replaced successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 
-    @DeleteMapping("/deleteImage/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePhotoUser(@PathVariable("id") String id) throws IllegalAccessException, IOException {
-        productImageService.deletePhotoProduct(id);
+    @DeleteMapping("/deletePhotoProductById/{productId}")
+    public ResponseEntity<?> deletePhotoProductById(@PathVariable("productId") Long productId){
+        try {
+            productImageService.deletePhotoProductById(productId);
+            return ResponseEntity.ok("{\"message\": \"Image deleted successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
     }
 }

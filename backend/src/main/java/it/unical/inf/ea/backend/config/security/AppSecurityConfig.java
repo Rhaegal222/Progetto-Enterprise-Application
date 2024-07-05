@@ -96,9 +96,10 @@ public class AppSecurityConfig {
                                 "/api/v1/products/getProductsByBrand/","/api/v1/products/getProductsByPriceRange/", "/api/v1/products/getSalesProducts").authenticated()
 
                         // PRODUCT IMAGE
-                        .requestMatchers(HttpMethod.POST, "/api/v1/productPicture/uploadImage").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/productPicture/getImage/{type}/{folder_name}/{file_name:.*}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productPicture/deleteImage/{id}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/productPicture/uploadInitialPhotoProductById/{productId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/productPicture/getPhotoProductById/{productId}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/productPicture/replacePhotoProductById/{productId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productPicture/deletePhotoProductById/{productId}").authenticated()
 
                         // USER
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/logout", "/api/v1/users/changeRole/",
@@ -110,9 +111,10 @@ public class AppSecurityConfig {
                                 "/api/v1/users/updateUser/", "/api/v1/users/getNewPassword").authenticated()
 
                         // USER IMAGE
-                        .requestMatchers(HttpMethod.POST, "/api/v1/profilePicture/uploadImage").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/profilePicture/getImage/{type}/{folder_name}/{file_name:.*}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/profilePicture/deleteImage/{id}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/profilePicture/uploadInitialPhotoProfile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/profilePicture/getMyPhotoProfile", "/api/v1/profilePicture/getPhotoProfileById/{userId}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/profilePicture/replaceMyPhotoProfile").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/profilePicture/deleteMyPhotoProfile").authenticated()
 
                         // WISHLIST
                         .requestMatchers(HttpMethod.POST, "/api/v1/wishlist/addWishlist", "/{wishlistId}/addProductsToWishlist/{productId}").authenticated()

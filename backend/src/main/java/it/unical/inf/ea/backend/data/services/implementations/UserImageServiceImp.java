@@ -2,7 +2,9 @@ package it.unical.inf.ea.backend.data.services.implementations;
 
 import it.unical.inf.ea.backend.config.FileUploadUtil;
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
+import it.unical.inf.ea.backend.data.dao.UserDao;
 import it.unical.inf.ea.backend.data.dao.UserImageDao;
+import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.entities.UserImage;
 import it.unical.inf.ea.backend.data.services.interfaces.UserImageService;
@@ -29,17 +31,35 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserImageServiceImp implements UserImageService {
     private static final String userDir = System.getProperty("user.dir") + "/images/user_photos/";
+
     private static final String imagesGetDir = System.getProperty("user.dir")+"/images/";
 
-
     private final UserImageDao userImageDao;
+    private final UserDao userDao;
     private final JwtContextUtils jwtContextUtils;
     private final ModelMapper modelMapper;
 
     @Override
-    public Resource getImage(String url) throws IOException {
+    public Resource getPhotoProfileById(String userId) throws IOException {
         try{
-            String myPath=imagesGetDir+url;
+            User user = userDao.findById(UUID.fromString(userId)).orElseThrow(EntityNotFoundException::new);
+
+            String myPath=imagesGetDir+ "user_photos/" + user.getId() + "/photoProfile.png";
+
+            Path filePath = Paths.get(myPath);
+
+            return new FileSystemResource(filePath);
+        }catch (Exception e){
+            throw new IOException("Something gone wrong, try again.");
+        }
+    }
+
+    @Override
+    public Resource getMyPhotoProfile() throws IOException {
+        try{
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+
+            String myPath=imagesGetDir+ "user_photos/" + loggedUser.getId() + "/photoProfile.png";
 
             Path filePath = Paths.get(myPath);
 
@@ -51,20 +71,15 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public void uploadImage(MultipartFile multipartFile, String description) throws IOException, IllegalAccessException {
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-
-        if (userImageDao.existsByUser(loggedUser)){
-            throw new IllegalAccessException("Cannot upload more photos, replace the previous photo.");
-        }
-
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename())).replace(":", "");
-        String localStorageDir = userDir + loggedUser.getId();
+    public void uploadInitialPhotoProfile(UUID userId, MultipartFile multipartFile) throws IOException {
+        User user = userDao.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        String fileName = "photoProfile.png";
+        String localStorageDir = userDir + userId + "/";
         UserImage userImage = new UserImage();
-        userImage.setDescription(description);
-        userImage.setUrlPhoto("images/user_photos/" + loggedUser.getId() + "/" + fileName);
-        userImage.setUser(loggedUser);
-        loggedUser.setImage(userImage);
+        userImage.setDescription("Profile photo of user " + user.getUsername());
+        userImage.setUrlPhoto("images/user_photos/" + user.getId() + "/" + fileName);
+        userImage.setUser(user);
+        user.setImage(userImage);
 
         FileUploadUtil.saveMultipartFile(localStorageDir, fileName, multipartFile);
         userImage = userImageDao.save(userImage);
@@ -73,23 +88,33 @@ public class UserImageServiceImp implements UserImageService {
     }
 
     @Override
-    public void deleteImage(String id) throws IllegalAccessException {
+    public void replaceMyPhotoProfile(MultipartFile multipartFile) throws IOException {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        UserImage userImage = userImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
+        String fileName = "photoProfile.png";
 
-        // Check if the logged user has permissions to delete the image
-        if(loggedUser.getRole().equals(UserRole.USER) &&
-                !loggedUser.getImage().getId().equals(userImage.getId())) {
-            throw new IllegalAccessException("Cannot delete image of others");
-        }
+        UserImage userImage = loggedUser.getImage();
 
-        // Unlink user and photo
+        String uploadDir = userDir + loggedUser.getId();
+
+        FileUploadUtil.saveMultipartFile(uploadDir, fileName, multipartFile);
+
+        String relativePath = "images/user_photos/" + loggedUser.getId() + "/" + fileName;
+        userImage.setUrlPhoto(relativePath);
+        userImageDao.save(userImage);
+
+        modelMapper.map(userImage, UserImageDTO.class);
+    }
+
+    @Override
+    public void deleteMyPhotoProfile() throws IllegalAccessException {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        UserImage userImage = loggedUser.getImage();
+
         userImage.setUser(null);
         loggedUser.setImage(null);
 
         Path userDirPath = Paths.get(userDir + loggedUser.getId());
         try {
-            // Delete all files in the directory
             Files.walk(userDirPath)
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
@@ -99,14 +124,11 @@ public class UserImageServiceImp implements UserImageService {
                         }
                     });
 
-            // Finally, delete the directory itself if it's empty
             Files.deleteIfExists(userDirPath);
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalAccessException("Failed to delete user's photo directory");
         }
-
-        // Remove the image record from the database
         userImageDao.delete(userImage);
     }
 

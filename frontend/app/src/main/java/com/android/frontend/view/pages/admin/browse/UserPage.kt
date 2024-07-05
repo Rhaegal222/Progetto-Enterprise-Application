@@ -117,7 +117,6 @@ fun UserContent(navController: NavHostController, deletedUsers: List<UserDTO>, s
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
-                .verticalScroll(rememberScrollState()),
         ) {
             items(sortedActiveUsers) { userDTO ->
                 UserCard(

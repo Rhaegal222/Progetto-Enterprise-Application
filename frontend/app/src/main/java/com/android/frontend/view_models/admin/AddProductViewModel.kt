@@ -54,7 +54,6 @@ class AddProductViewModel : ViewModel() {
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
-
     fun fetchAllCategories(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -80,7 +79,6 @@ class AddProductViewModel : ViewModel() {
             _isLoading.value = false
         }
     }
-
 
     fun fetchAllBrands(context: Context) {
         viewModelScope.launch {
@@ -108,7 +106,6 @@ class AddProductViewModel : ViewModel() {
         }
     }
 
-
     fun addProduct(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -123,7 +120,7 @@ class AddProductViewModel : ViewModel() {
 
             val productCreateDTO = ProductCreateDTO(
                 name = name.value ?: "",
-                description = description.value?: "",
+                description = description.value ?: "",
                 ingredients = ingredients.value ?: "",
                 nutritionalValues = nutritionalValues.value ?: "",
                 weight = weight.value ?: "",
@@ -131,8 +128,8 @@ class AddProductViewModel : ViewModel() {
                 price = price.value ?: BigDecimal.ZERO,
                 shippingCost = shippingCost.value ?: BigDecimal.ZERO,
                 availability = availability.value ?: ProductDTO.Availability.IN_STOCK,
-                brand = brand.value ?: BrandDTO(1,"",""),
-                category = category.value ?: CategoryDTO(1,""),
+                brand = brand.value ?: BrandDTO(1, "", ""),
+                category = category.value ?: CategoryDTO(1, ""),
                 onSale = onSale.value ?: false,
                 salePrice = salePrice.value
             )
@@ -158,13 +155,11 @@ class AddProductViewModel : ViewModel() {
         }
     }
 
-
     fun uploadProductImage(context: Context, productId: Long, imageUri: Uri) {
         viewModelScope.launch {
             //stampa nel log productId e imageUri
             Log.d("DEBUG", "${getCurrentStackTrace()} productId: $productId, imageUri: $imageUri")
             uploadImage(context, productId, imageUri)
-
         }
     }
 
@@ -176,24 +171,21 @@ class AddProductViewModel : ViewModel() {
             val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
-            // Prepare other parts
-            val descriptionPart = "Product Image".toRequestBody("text/plain".toMediaTypeOrNull())
-
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
 
             try {
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 if (accessToken == null) {
                     Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                    _isLoading.value = false
-                    _hasError.value = true
+                    _isLoading.postValue(false)
+                    _hasError.postValue(true)
                     return@withContext
                 }
 
                 val productImageService = RetrofitInstance.getProductImageApi(context)
                 val response = Request().executeRequest(context) {
-                    productImageService.savePhotoProduct("Bearer $accessToken", body, productId, descriptionPart)
+                    productImageService.replacePhotoProductById("Bearer $accessToken", productId, body)
                 }
 
                 if (response?.isSuccessful == true) {
@@ -228,5 +220,4 @@ class AddProductViewModel : ViewModel() {
         }
         return tempFile
     }
-
 }

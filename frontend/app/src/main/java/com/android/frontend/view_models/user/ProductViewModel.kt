@@ -1,6 +1,5 @@
 package com.android.frontend.view_models.user
 
-
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -23,18 +22,14 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.net.SocketTimeoutException
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class ProductViewModel : ViewModel() {
 
     private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
 
-
     private val productDetails = MutableLiveData<ProductDTO>()
     val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
-
 
     private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
     val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
@@ -47,14 +42,13 @@ class ProductViewModel : ViewModel() {
 
     fun getProductDetails(context: Context, id: Long) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val productService = RetrofitInstance.getProductApi(context)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val call = productService.getProductById("Bearer $accessToken",id)
+            val call = productService.getProductById("Bearer $accessToken", id)
             call.enqueue(object : Callback<ProductDTO> {
-                override fun onResponse(
-                    call: Call<ProductDTO>,
-                    response: Response<ProductDTO>
-                ) {
+                override fun onResponse(call: Call<ProductDTO>, response: Response<ProductDTO>) {
                     if (response.isSuccessful) {
                         response.body()?.let { product ->
                             Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
@@ -62,7 +56,9 @@ class ProductViewModel : ViewModel() {
                         }
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
+                        _hasError.value = true
                     }
+                    _isLoading.value = false
                 }
 
                 override fun onFailure(call: Call<ProductDTO>, t: Throwable) {
@@ -71,9 +67,10 @@ class ProductViewModel : ViewModel() {
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
                     }
+                    _isLoading.value = false
+                    _hasError.value = true
                 }
-            }
-            )
+            })
         }
     }
 
@@ -89,7 +86,7 @@ class ProductViewModel : ViewModel() {
                 return@launch
             }
             val productService = RetrofitInstance.getProductApi(context)
-            val response = Request().executeRequest(context){
+            val response = Request().executeRequest(context) {
                 productService.getAllProducts("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
@@ -109,6 +106,8 @@ class ProductViewModel : ViewModel() {
 
     fun fetchSalesProducts(context: Context) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             try {
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
                 val productService = RetrofitInstance.getProductApi(context)
@@ -120,39 +119,43 @@ class ProductViewModel : ViewModel() {
                         fetchProductImage(context, product.id)
                     }
                 } else {
-                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch all products: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch sales products: ${response.errorBody()?.string()}")
+                    _hasError.value = true
                 }
             } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching all products", e)
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching sales products", e)
+                _hasError.value = true
             }
+            _isLoading.value = false
         }
     }
 
-    private suspend fun fetchImage(context: Context, type: String, folderName: String, fileName: String): ResponseBody? {
+    private suspend fun getPhotoProductById(context: Context, productId: Long): ResponseBody? {
         return withContext(Dispatchers.IO) {
-            suspendCoroutine { continuation ->
-                val productImageService = RetrofitInstance.getProductImageApi(context)
-                val call = productImageService.getImage(type, folderName, fileName)
-                call.enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                        if (response.isSuccessful) {
-                            continuation.resume(response.body())
-                        } else {
-                            continuation.resume(null)
-                        }
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        continuation.resume(null)
-                    }
-                })
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _hasError.postValue(true)
+                return@withContext null
+            }
+            val productImageService = RetrofitInstance.getProductImageApi(context)
+            val response = Request().executeRequest(context) {
+                productImageService.getPhotoProductById("Bearer $accessToken", productId)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Fetched image")
+                response.body()
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching image: ${response?.errorBody()?.string()}")
+                _hasError.postValue(true)
+                null
             }
         }
     }
 
     private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {
-            val tempFile = File.createTempFile("product", "jpg", context.cacheDir)
+            val tempFile = File.createTempFile("product", "png", context.cacheDir)
             val inputStream = responseBody.byteStream()
             val outputStream = FileOutputStream(tempFile)
             inputStream.copyTo(outputStream)
@@ -164,38 +167,34 @@ class ProductViewModel : ViewModel() {
 
     private fun fetchProductImage(context: Context, productId: Long) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    val type = "product_photos"
-                    val folderName = productId.toString()
-                    val fileName = "photoProduct.png"
-                    val responseBody = fetchImage(context, type, folderName, fileName)
-                    responseBody?.let {
-                        val tempFile = saveImageToFile(context, responseBody)
-                        val imageUri = Uri.fromFile(tempFile)
-                        val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
-                        currentImages[productId] = imageUri
-                        _productImagesLiveData.postValue(currentImages)
-                    } ?: run {
-                        Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
-                    }
-                } catch (e: Exception) {
-                    Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
+            try {
+                val responseBody = getPhotoProductById(context, productId)
+                responseBody?.let {
+                    val tempFile = saveImageToFile(context, responseBody)
+                    val imageUri = Uri.fromFile(tempFile)
+                    val currentImages = _productImagesLiveData.value?.toMutableMap() ?: mutableMapOf()
+                    currentImages[productId] = imageUri
+                    _productImagesLiveData.postValue(currentImages)
+                } ?: run {
+                    Log.e("DEBUG", "${getCurrentStackTrace()}, Image retrieval failed")
+                    _hasError.value = true
                 }
+            } catch (e: Exception) {
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Image retrieval error: ${e.message}")
+                _hasError.value = true
             }
         }
     }
 
     fun fetchProductsByCategory(context: Context, categoryName: String) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductsByCategory("Bearer $accessToken", categoryName)
             call.enqueue(object : Callback<List<ProductDTO>> {
-                override fun onResponse(
-                    call: Call<List<ProductDTO>>,
-                    response: Response<List<ProductDTO>>
-                ) {
+                override fun onResponse(call: Call<List<ProductDTO>>, response: Response<List<ProductDTO>>) {
                     if (response.isSuccessful) {
                         val products = response.body() ?: emptyList()
                         _productsLiveData.postValue(products)
@@ -204,7 +203,9 @@ class ProductViewModel : ViewModel() {
                         }
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products by category: ${response.errorBody()?.string()}")
+                        _hasError.value = true
                     }
+                    _isLoading.value = false
                 }
 
                 override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
@@ -213,6 +214,8 @@ class ProductViewModel : ViewModel() {
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching products by category", t)
                     }
+                    _isLoading.value = false
+                    _hasError.value = true
                 }
             })
         }
@@ -220,14 +223,13 @@ class ProductViewModel : ViewModel() {
 
     fun fetchProductsByBrand(context: Context, brandName: String) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductsByBrand("Bearer $accessToken", brandName)
             call.enqueue(object : Callback<List<ProductDTO>> {
-                override fun onResponse(
-                    call: Call<List<ProductDTO>>,
-                    response: Response<List<ProductDTO>>
-                ) {
+                override fun onResponse(call: Call<List<ProductDTO>>, response: Response<List<ProductDTO>>) {
                     if (response.isSuccessful) {
                         val products = response.body() ?: emptyList()
                         _productsLiveData.postValue(products)
@@ -236,7 +238,9 @@ class ProductViewModel : ViewModel() {
                         }
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products by brand: ${response.errorBody()?.string()}")
+                        _hasError.value = true
                     }
+                    _isLoading.value = false
                 }
 
                 override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
@@ -245,6 +249,8 @@ class ProductViewModel : ViewModel() {
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching products by brand", t)
                     }
+                    _isLoading.value = false
+                    _hasError.value = true
                 }
             })
         }
@@ -252,14 +258,13 @@ class ProductViewModel : ViewModel() {
 
     fun fetchProductsByPriceRange(context: Context, min: Double, max: Double) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductsByPriceRange("Bearer $accessToken", min, max)
             call.enqueue(object : Callback<List<ProductDTO>> {
-                override fun onResponse(
-                    call: Call<List<ProductDTO>>,
-                    response: Response<List<ProductDTO>>
-                ) {
+                override fun onResponse(call: Call<List<ProductDTO>>, response: Response<List<ProductDTO>>) {
                     if (response.isSuccessful) {
                         val products = response.body() ?: emptyList()
                         _productsLiveData.postValue(products)
@@ -268,7 +273,9 @@ class ProductViewModel : ViewModel() {
                         }
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products by price range: ${response.errorBody()?.string()}")
+                        _hasError.value = true
                     }
+                    _isLoading.value = false
                 }
 
                 override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
@@ -277,10 +284,10 @@ class ProductViewModel : ViewModel() {
                     } else {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching products by price range", t)
                     }
+                    _isLoading.value = false
+                    _hasError.value = true
                 }
             })
         }
     }
-
 }
-

@@ -14,7 +14,6 @@ import com.android.frontend.dto.creation.BrandCreateDTO
 import com.android.frontend.config.getCurrentStackTrace
 import kotlinx.coroutines.launch
 
-
 class BrandViewModel : ViewModel() {
 
     val allBrands = MutableLiveData<List<BrandDTO>>()

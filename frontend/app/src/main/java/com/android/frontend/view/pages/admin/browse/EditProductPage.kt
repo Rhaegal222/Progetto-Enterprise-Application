@@ -100,7 +100,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            viewModel.uploadProductImage(context, productId, it)
+            viewModel.replacePhotoProduct(context, productId, it)
         }
     }
 

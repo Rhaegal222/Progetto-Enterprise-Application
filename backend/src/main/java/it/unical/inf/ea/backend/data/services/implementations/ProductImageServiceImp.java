@@ -7,12 +7,16 @@ import it.unical.inf.ea.backend.data.dao.ProductImageDao;
 import it.unical.inf.ea.backend.data.entities.Product;
 import it.unical.inf.ea.backend.data.entities.ProductImage;
 import it.unical.inf.ea.backend.data.entities.User;
+import it.unical.inf.ea.backend.data.entities.UserImage;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductImageService;
 import it.unical.inf.ea.backend.dto.ProductImageDTO;
+import it.unical.inf.ea.backend.dto.UserImageDTO;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -31,8 +35,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProductImageServiceImp implements ProductImageService {
-    private static final String userDir = System.getProperty("user.dir") + "/images/user_photos/";
-
     private static final String prodDir = System.getProperty("user.dir") + "/images/product_photos/";
     private static final String imagesGetDir = System.getProperty("user.dir")+"/images/";
 
@@ -43,55 +45,74 @@ public class ProductImageServiceImp implements ProductImageService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Resource getImage(String url) throws IOException {
-        try{
-            String myPath=imagesGetDir+url;
+    public Resource getPhotoProductById(Long productId) throws IOException {
+        try {
+            Product product = productDao.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
+
+            String myPath = imagesGetDir + "product_photos/" + product.getId() + "/photoProduct.png";
 
             Path filePath = Paths.get(myPath);
+            Resource resource = new FileSystemResource(filePath);
 
-            return new FileSystemResource(filePath);
-        }catch (Exception e){
-            throw new IOException("Something gone wrong, try again.");
+            if (resource.exists() && resource.isReadable()) {
+                return resource;
+            } else {
+                throw new IOException("File not found or not readable at path: " + myPath);
+            }
+        } catch (Exception e) {
+            // Log detailed error message
+            Logger logger = LoggerFactory.getLogger(getClass());
+            logger.error("Error getting photo for product id: " + productId, e);
+            throw new IOException("Something went wrong, try again.", e);
         }
     }
 
+
+
     @Override
-    public ProductImageDTO savePhotoProduct(MultipartFile multipartFile, Long productId, String description) throws IOException, IllegalAccessException {
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        if(loggedUser.getRole().equals(UserRole.USER) )
-            throw new IllegalAccessException("only admin can upload photos");
-
+    public void uploadInitialPhotoProductById(Long productId, MultipartFile multipartFile) throws IOException {
         Product product = productDao.findById(productId).orElseThrow(EntityNotFoundException::new);
+        String fileName = "photoProduct.png";
+        String localStorageDir = prodDir + productId + "/";
         ProductImage productImage = new ProductImage();
-
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename())).replace(":", "");
-
-        String localStorageDir = prodDir + product.getId() + "/";
-        productImage.setDescription(description);
+        productImage.setDescription("Photo of product " + product.getName());
         productImage.setUrlPhoto("images/product_photos/"+product.getId()+"/"+fileName);
         productImage.setProduct(product);
+
         FileUploadUtil.saveMultipartFile(localStorageDir, fileName, multipartFile);
+        productImage = productImageDao.save(productImage);
+
+        modelMapper.map(productImage,ProductImageDTO.class);
+    }
+
+
+    @Override
+    public void replacePhotoProductById(Long productId, MultipartFile multipartFile) throws IOException {
+        Product product = productDao.findById(productId).orElseThrow(EntityNotFoundException::new);
+        String fileName = "photoProduct.png";
+
+        ProductImage productImage = product.getImage();
+
+        String uploadDir = prodDir + product.getId();
+
+        FileUploadUtil.saveMultipartFile(uploadDir, fileName, multipartFile);
+
+        String relativePath = "images/product_photos/" + product.getId() + "/" + fileName;
+        productImage.setUrlPhoto(relativePath);
         productImageDao.save(productImage);
 
-        return modelMapper.map(productImage,ProductImageDTO.class);
+        modelMapper.map(productImage, UserImageDTO.class);
     }
 
     @Override
-    public void deletePhotoProduct(String id) throws IllegalAccessException, IOException {
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
-        ProductImage productImage = productImageDao.findById(id).orElseThrow(EntityNotFoundException::new);
-        Product product = productImage.getProduct();
+    public void deletePhotoProductById(Long productId) throws IllegalAccessException, IOException {
+        Product product = productDao.findById(productId).orElseThrow(EntityNotFoundException::new);
+        ProductImage productImage = product.getImage();
 
-        // Check if the logged user has permissions to delete the image
-        if(loggedUser.getRole().equals(UserRole.USER) ) {
-            throw new IllegalAccessException("only admin can delete photos");
-        }
-
-        // Unlink product and photo
         productImage.setProduct(null);
         product.setImage(null);
 
-        Path productDirPath = Paths.get(userDir + product.getId());
+        Path productDirPath = Paths.get(prodDir + product.getId());
         try {
             Files.walk(productDirPath)
                     .sorted(Comparator.reverseOrder())

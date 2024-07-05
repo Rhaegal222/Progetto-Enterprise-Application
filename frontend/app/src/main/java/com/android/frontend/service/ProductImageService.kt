@@ -1,34 +1,38 @@
 package com.android.frontend.service
 
-import com.android.frontend.dto.ProductImageDTO
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ProductImageService {
-    @GET("/api/v1/productPicture/getImage/{type}/{folder_name}/{file_name}")
+
+    @Multipart
+    @POST("/api/v1/productPicture/uploadInitialPhotoProductById/{productId}")
+    fun uploadInitialPhotoProductById(
+        @Header("Authorization") authHeader: String,
+        @Path("productId") productId: Long,
+        @Part file: MultipartBody.Part
+    ): Call<ResponseBody>
+
+    @GET("/api/v1/productPicture/getPhotoProductById/{productId}")
     @Streaming
-    fun getImage(
-        @Path("type") type: String,
-        @Path("folder_name") folderName: String,
-        @Path("file_name") fileName: String
+    fun getPhotoProductById(
+        @Header("Authorization") authHeader: String,
+        @Path("productId") productId: Long
     ): Call<ResponseBody>
 
     @Multipart
-    @POST("/api/v1/productPicture/uploadImage")
-    fun savePhotoProduct(
+    @PUT("/api/v1/productPicture/replacePhotoProductById/{productId}")
+    fun replacePhotoProductById(
         @Header("Authorization") authHeader: String,
-        @Part file: MultipartBody.Part,
-        @Query("productId") productId: Long,
-        @Part("description") description: RequestBody
-    ): Call<ProductImageDTO>
+        @Path("productId") productId: Long,
+        @Part file: MultipartBody.Part
+    ): Call<ResponseBody>
 
-
-    @DELETE("/api/v1/productPicture/deleteImage/{id}")
-    fun deletePhotoProduct(
+    @DELETE("/api/v1/productPicture/deletePhotoProductById/{productId}")
+    fun deletePhotoProductById(
         @Header("Authorization") authHeader: String,
-        @Path("id") id: Long
-    ): Call<Void>
+        @Path("productId") productId: Long
+    ): Call<ResponseBody>
 }

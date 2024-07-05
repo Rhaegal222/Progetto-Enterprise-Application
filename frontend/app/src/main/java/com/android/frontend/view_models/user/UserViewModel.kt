@@ -11,14 +11,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.android.frontend.MainActivity
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.dto.UserDTO
-import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.dto.UserUpdateRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +24,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,8 +31,7 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val _user = MutableLiveData<UserDTO>()
@@ -45,7 +41,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     val profileLiveData: LiveData<UserBasicDTO> get() = _profile
 
     private val profileImage = MutableLiveData<Uri?>(null)
-    val profileImageLiveData : LiveData<Uri?> get() = profileImage
+    val profileImageLiveData: LiveData<Uri?> get() = profileImage
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -107,21 +103,51 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    private suspend fun getMyPhotoProfile(context: Context): ResponseBody? {
+        return withContext(Dispatchers.IO) {
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
+                return@withContext null
+            }
+            val userImageService = RetrofitInstance.getUserImageApi(context)
+            val response = Request().executeRequest(context) {
+                userImageService.getMyPhotoProfile("Bearer $accessToken")
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Fetched image")
+                response.body()
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching image: ${response?.errorBody()?.string()}")
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
+                null
+            }
+        }
+    }
+
     fun getProfileImage(context: Context) {
         viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
             try {
-                val type = "user_photos"
-                val folderName = SecurePreferences.getUser(context)?.id ?: ""
-                val fileName = "photoProfile.png"
-                val responseBody = fetchImage(type, folderName, fileName)
+                val responseBody = getMyPhotoProfile(context)
                 responseBody?.let {
                     val tempFile = saveImageToFile(context, responseBody)
                     profileImage.postValue(Uri.fromFile(tempFile))
                 } ?: run {
                     Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
+                    _hasError.value = true
                 }
             } catch (e: Exception) {
                 Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
+                _isLoading.value = false
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -174,10 +200,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updatePhotoUser(context: Context, imageUri: Uri) {
         viewModelScope.launch {
-            val photoProfileId = SecurePreferences.getUser(getApplication())?.photoProfile?.id ?: ""
-            if (photoProfileId.isNotEmpty()) {
-                deletePhotoUser(context)
-            }
             uploadImage(context, imageUri)
         }
     }
@@ -186,77 +208,47 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         withContext(Dispatchers.IO) {
             val file = getFileFromUri(context, imageUri) ?: return@withContext
 
-            val requestFile = file
-                .asRequestBody("image/*".toMediaTypeOrNull())
-
+            // Prepare the file part
+            val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
             val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
-            val description = "Profile Image".toRequestBody("text/plain".toMediaTypeOrNull())
+
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
 
             try {
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
-                val userImageService = RetrofitInstance.getUserImageApi(context)
-                val call = userImageService.savePhotoUser("Bearer $accessToken", body, description)
-                val response = call.execute()
+                if (accessToken == null) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                    _isLoading.postValue(false)
+                    _hasError.postValue(true)
+                    return@withContext
+                }
 
-                if (response.isSuccessful) {
+                val userImageService = RetrofitInstance.getUserImageApi(context)
+                val response = Request().executeRequest(context) {
+                    userImageService.replaceMyPhotoProfile("Bearer $accessToken", body)
+                }
+
+                if (response?.isSuccessful == true) {
                     response.body()?.let { userImageDTO ->
-                        profileImage.postValue(Uri.parse(userImageDTO.urlPhoto))
-                        SecurePreferences.saveUser(context, _profile.value!!.copy(photoProfile = userImageDTO))
-                        getUserBasicDTO(context)
+                        Log.d("DEBUG", "${getCurrentStackTrace()}, Image upload success: $userImageDTO")
                     }
                 } else {
-                    Log.e("DEBUG", "${getCurrentStackTrace()},Image upload failed: ${response.errorBody()?.string()}")
+                    Log.e("DEBUG", "${getCurrentStackTrace()}, Image upload failed: ${response?.errorBody()?.string()}")
+                    _hasError.postValue(true)
                 }
             } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()},Image upload error", e)
-            }
-        }
-    }
-
-    private fun deletePhotoUser(context: Context) {
-        val photoProfileId = SecurePreferences.getUser(context)?.photoProfile?.id ?: ""
-        val accessToken = TokenManager.getInstance().getAccessToken(context)
-
-        val userImageService = RetrofitInstance.getUserImageApi(context)
-        val call = userImageService.deletePhotoUser("Bearer $accessToken", photoProfileId)
-
-        call.enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (!response.isSuccessful) {
-                    Log.e("DEBUG", "${getCurrentStackTrace()},Image delete failed: ${response.errorBody()?.string()}")
-                }
-            }
-
-            override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e("DEBUG", "${getCurrentStackTrace()},Image delete error: ${t.message}")
-            }
-        })
-    }
-
-    private suspend fun fetchImage(type: String, folderName: String, fileName: String): ResponseBody? {
-        return withContext(Dispatchers.IO) {
-            suspendCoroutine { continuation ->
-                val userImageService = RetrofitInstance.getUserImageApi(getApplication())
-                val call = userImageService.getImage(type, folderName, fileName)
-                call.enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                        if (response.isSuccessful) {
-                            continuation.resume(response.body())
-                        } else {
-                            continuation.resume(null)
-                        }
-                    }
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        continuation.resume(null)
-                    }
-                })
+                Log.e("DEBUG", "${getCurrentStackTrace()}, Image upload error: ${e.message}", e)
+                _hasError.postValue(true)
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }
 
     private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {
-            val tempFile = File.createTempFile("profile", "jpg", context.cacheDir)
+            val tempFile = File.createTempFile("profile", "png", context.cacheDir)
             val inputStream = responseBody.byteStream()
             val outputStream = FileOutputStream(tempFile)
             inputStream.copyTo(outputStream)
@@ -281,5 +273,4 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
         return tempFile
     }
-
 }

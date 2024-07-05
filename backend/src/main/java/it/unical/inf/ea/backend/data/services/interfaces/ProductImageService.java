@@ -9,12 +9,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface ProductImageService {
-    Resource getImage(String url) throws IOException;
-
-    ProductImageDTO savePhotoProduct(MultipartFile multipartFile, Long productId, String description) throws IOException, IllegalAccessException;
-
-    void deletePhotoProduct(String id) throws IllegalAccessException, IOException;
-
-
+    Resource getPhotoProductById(Long productId) throws IOException;
+    void uploadInitialPhotoProductById(Long productId, MultipartFile multipartFile) throws IOException;
+    void replacePhotoProductById(Long productId, MultipartFile multipartFile) throws IOException;
+    void deletePhotoProductById(Long productId) throws IllegalAccessException, IOException;
     void saveProductImage(ProductImage productImage);
 }

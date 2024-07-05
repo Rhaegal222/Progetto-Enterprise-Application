@@ -4,19 +4,28 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unical.inf.ea.backend.data.dao.ProductDao;
 import it.unical.inf.ea.backend.data.entities.Brand;
 import it.unical.inf.ea.backend.data.entities.Category;
+import it.unical.inf.ea.backend.data.entities.Product;
+import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.interfaces.BrandService;
 import it.unical.inf.ea.backend.data.services.interfaces.CategoryService;
+import it.unical.inf.ea.backend.data.services.interfaces.ProductImageService;
 import it.unical.inf.ea.backend.data.services.interfaces.ProductService;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.creation.ProductCreateDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,11 +46,24 @@ public class ProductController {
     private final ProductDao productDao;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final ProductImageService productImageService;
 
     @PostMapping("/addProduct")
     public ResponseEntity<Map<String,String>> addProduct(@RequestBody ProductCreateDTO productCreateDTO) {
         try {
-            return ResponseEntity.ok(productService.addProduct(productCreateDTO));
+            Map<String, String> response = productService.addProduct(productCreateDTO);
+
+            Resource resource = new ClassPathResource("images/product_placeholder.png");
+            InputStream inputStream = resource.getInputStream();
+            byte[] imageBytes = StreamUtils.copyToByteArray(inputStream);
+            MultipartFile multipartFile = new MockMultipartFile("file", "product_placeholder.png", "image/png", imageBytes);
+
+            Product product = productDao.findByName(productCreateDTO.getName())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
+            productImageService.uploadInitialPhotoProductById(product.getId(), multipartFile);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
         }
@@ -51,6 +73,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         try {
             productService.deleteProduct(id);
+            productImageService.deletePhotoProductById(id);
             return ResponseEntity.ok("{\"message\": \"Product deleted successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("\"message\":" + e + "\""); // JSON response

@@ -67,7 +67,7 @@ public class FileUploadUtil {
         BufferedImage finalImage = resizeImage(bufferedImage, targetSize, targetSize);
 
         Path filePath = uploadPath.resolve(fileName);
-        ImageIO.write(finalImage, "jpg", filePath.toFile());
+        ImageIO.write(finalImage, "png", filePath.toFile());
     }
 
     public static void saveBufferedImage(String uploadDir, String fileName, BufferedImage bufferedImage) throws IOException {
@@ -75,7 +75,7 @@ public class FileUploadUtil {
 
         // Convert the image to a byte array to compress it
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpg", outputStream);
+        ImageIO.write(bufferedImage, "png", outputStream);
         byte[] imageBytes = outputStream.toByteArray();
         byte[] compressedImage = compressImage(imageBytes);
 
@@ -84,7 +84,7 @@ public class FileUploadUtil {
         bufferedImage = ImageIO.read(inputStream);
 
         Path filePath = uploadPath.resolve(fileName);
-        ImageIO.write(bufferedImage, "jpg", filePath.toFile());
+        ImageIO.write(bufferedImage, "png", filePath.toFile());
     }
 
 

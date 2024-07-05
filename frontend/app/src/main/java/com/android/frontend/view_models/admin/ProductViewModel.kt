@@ -4,9 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.ProductDTO
@@ -16,8 +18,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
-import androidx.lifecycle.MutableLiveData
-import com.android.frontend.config.Request
 
 class ProductViewModel : ViewModel() {
 
@@ -45,7 +45,7 @@ class ProductViewModel : ViewModel() {
                 return@launch
             }
             val productService = RetrofitInstance.getProductApi(context)
-            val response = Request().executeRequest(context){
+            val response = Request().executeRequest(context) {
                 productService.getAllProducts("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
@@ -63,7 +63,6 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-
     fun deleteProduct(productId: Long, context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -80,18 +79,10 @@ class ProductViewModel : ViewModel() {
                 productService.deleteProduct("Bearer $accessToken", productId)
             }
             if (response?.isSuccessful == true) {
-                Log.d(
-                    "DEBUG",
-                    "${getCurrentStackTrace()} Product deleted successfully with id: $productId"
-                )
+                Log.d("DEBUG", "${getCurrentStackTrace()} Product deleted successfully with id: $productId")
                 fetchAllProducts(context)
             } else {
-                Log.e(
-                    "DEBUG",
-                    "${getCurrentStackTrace()} Error deleting product: ${
-                        response?.errorBody()?.string()
-                    }"
-                )
+                Log.e("DEBUG", "${getCurrentStackTrace()} Error deleting product: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false
@@ -102,12 +93,8 @@ class ProductViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
-
             try {
-                val type = "user_photos"
-                val folderName = productId.toString()
-                val fileName = "photoProfile.png"
-                val responseBody = fetchImage(context, type, folderName, fileName)
+                val responseBody = getPhotoProductById(context, productId)
                 responseBody?.let {
                     val tempFile = saveImageToFile(context, responseBody)
                     val imageUri = Uri.fromFile(tempFile)
@@ -127,11 +114,20 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    private suspend fun fetchImage(context: Context, type: String, folderName: String, fileName: String): ResponseBody? {
+    private suspend fun getPhotoProductById(context: Context, productId: Long): ResponseBody? {
         return withContext(Dispatchers.IO) {
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
+                return@withContext null
+            }
             val productImageService = RetrofitInstance.getProductImageApi(context)
             val response = Request().executeRequest(context) {
-                productImageService.getImage(type, folderName, fileName)
+                productImageService.getPhotoProductById("Bearer $accessToken", productId)
             }
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Fetched image")
@@ -145,7 +141,7 @@ class ProductViewModel : ViewModel() {
 
     private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {
-            val tempFile = File.createTempFile("profile", "jpg", context.cacheDir)
+            val tempFile = File.createTempFile("product", "png", context.cacheDir)
             val inputStream = responseBody.byteStream()
             val outputStream = FileOutputStream(tempFile)
             inputStream.copyTo(outputStream)
@@ -154,5 +150,4 @@ class ProductViewModel : ViewModel() {
             tempFile
         }
     }
-
 }
