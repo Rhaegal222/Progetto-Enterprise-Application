@@ -62,12 +62,11 @@ fun WishlistsPage(
 ) {
     val context = LocalContext.current
     val wishlists by wishlistViewModel.wishlistLiveData.observeAsState(emptyList())
-    var isLoading by remember { mutableStateOf(true) }
+    val isLoading by remember { mutableStateOf(true) }
 
     // Fetch wishlists when the composable enters composition
     LaunchedEffect(Unit) {
         wishlistViewModel.getAllLoggedUserWishlists(context)
-        isLoading = false
     }
 
     Scaffold(

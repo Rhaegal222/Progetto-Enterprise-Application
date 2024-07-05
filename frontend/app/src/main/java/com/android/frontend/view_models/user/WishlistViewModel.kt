@@ -19,8 +19,8 @@ class WishlistViewModel : ViewModel() {
     private val _wishlist = MutableLiveData<List<WishlistDTO>>()
     val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = _wishlist
 
-    private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
-    val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
+    private val _product = MutableLiveData<List<ProductDTO>>()
+    val productsLiveData: LiveData<List<ProductDTO>> = _product
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -120,23 +120,17 @@ class WishlistViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlists ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Fetched wishlists: $wishlists")
-                    wishlistLiveData.postValue(wishlists)
-                    _isLoading.value = false
+                    _wishlist.value = wishlists
                 }
             } else {
-                Log.e(
-                    "DEBUG",
-                    "${getCurrentStackTrace()} Failed to fetch wishlists: ${
-                        response?.errorBody()?.string() ?: "Empty response"
-                    }"
-                )
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch wishlists: ${response?.errorBody()?.string() ?: "Empty response"}")
                 _hasError.value = true
-                _isLoading.value = false
             }
+            _isLoading.value = false
         }
     }
 
-    fun getWishlistDetails(context: Context, wishlistId: Long,wishlistName: String) {
+    fun getWishlistDetails(context: Context, wishlistId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -152,20 +146,13 @@ class WishlistViewModel : ViewModel() {
                 wishlistService.getProductByWishlistId("Bearer $accessToken", wishlistId)
             }
             if (response?.isSuccessful == true) {
-                response.body()?.let { products ->
-                    Log.d("DEBUG", "${getCurrentStackTrace()} Fetched products: $products")
-                    _productsLiveData.postValue(products)
-                    _isLoading.value = false
+                response.body()?.let {product -> Log.d("DEBUG", "${getCurrentStackTrace()} Fetched products: $product")
+                    _product.value = product
                 }
             } else {
-                Log.e(
-                    "DEBUG",
-                    "${getCurrentStackTrace()} Failed to fetch products: ${
-                        response?.errorBody()?.string() ?: "Empty response"
-                    }"
-                )
+                Log.e("DEBUG",
+                    "${getCurrentStackTrace()} Failed to fetch products: ${ response?.errorBody()?.string() ?: "Empty response"}")
                 _hasError.value = true
-                _isLoading.value = false
             }
         }
     }
