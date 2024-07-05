@@ -186,7 +186,11 @@ class OrderViewModel : ViewModel() {
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let {
+                    Log.d("DEBUG", "Fetched orders: $it")
                     _orders.value = it
+                } ?: run {
+                    Log.e("DEBUG", "Response body is null")
+                    _hasError.value = true
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch logged user orders: ${response?.errorBody()?.string()}")
@@ -195,6 +199,7 @@ class OrderViewModel : ViewModel() {
             _isLoading.value = false
         }
     }
+
 
     fun getOrderItems(context: Context, orderId: UUID) {
         viewModelScope.launch {

@@ -1,7 +1,7 @@
 package com.android.frontend.dto
 
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
 import java.util.UUID
 
 data class OrderDTO(
@@ -9,8 +9,8 @@ data class OrderDTO(
     val items: List<OrderItemDTO>,
     val totalCost: BigDecimal,
     val status: String,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: String,
+    val updatedAt: String,
     val user: UserDTO,
     val address: AddressDTO,
     val paymentMethod: PaymentMethodDTO

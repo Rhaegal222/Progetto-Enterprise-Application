@@ -27,6 +27,7 @@ import com.android.frontend.view.pages.user.main.SalesProductsPage
 import com.android.frontend.view.pages.user.add.AddAddressPage
 import com.android.frontend.view.pages.profile.AddWishlistPage
 import com.android.frontend.view.pages.user.browse.AddressesPage
+import com.android.frontend.view.pages.user.browse.OrdersPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
 import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view.pages.user.browse.WishlistsPage
@@ -62,5 +63,6 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AddWishlistPage.route) { AddWishlistPage(navController, WishlistViewModel()) }
         composable(Navigation.CheckoutPage.route) { CheckoutPage(cartViewModel = cartViewModel, navController = navController) }
         composable(Navigation.WishlistDetailsPage.route) { WishlistDetailsPage(wishlistViewModel = WishlistViewModel(), navController = navController)}
+        composable(Navigation.OrdersPage.route) { OrdersPage(navController)}
     }
 }

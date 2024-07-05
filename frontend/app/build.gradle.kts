@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.jakewharton.threetenabp:threetenabp:1.3.1")
     implementation("androidx.room:room-runtime:2.7.0-alpha04")
     implementation("androidx.compose.material:material:1.7.0-beta03")
     implementation("androidx.compose.material3:material3:1.3.0-beta03")
