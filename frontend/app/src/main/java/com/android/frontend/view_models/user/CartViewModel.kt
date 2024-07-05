@@ -75,82 +75,149 @@ class CartViewModel : ViewModel() {
         if (!productDetailsCache.containsKey(id)) {
             productDetailsCache[id] = MutableStateFlow(null)
             viewModelScope.launch {
-                val productService = RetrofitInstance.getProductApi(context)
+                _isLoading.value = true
+                _hasError.value = false
                 val accessToken = TokenManager.getInstance().getAccessToken(context)
-                val call = productService.getProductById("Bearer $accessToken", id)
-                call.enqueue(object : retrofit2.Callback<ProductDTO> {
-                    override fun onResponse(
-                        call: retrofit2.Call<ProductDTO>,
-                        response: retrofit2.Response<ProductDTO>
-                    ) {
-                        if (response.isSuccessful) {
-                            response.body()?.let { product ->
-                                Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
-                                productDetailsCache[id]?.value = product
-                            }
-                        } else {
-                            Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
-                        }
-                    }
+                if (accessToken == null) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                    _isLoading.value = false
+                    _hasError.value = true
+                    return@launch
+                }
 
-                    override fun onFailure(call: retrofit2.Call<ProductDTO>, t: Throwable) {
-                        if (t is SocketTimeoutException) {
-                            Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
-                        } else {
-                            Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
-                        }
+                val productService = RetrofitInstance.getProductApi(context)
+                val response = Request().executeRequest(context){
+                    productService.getProductById("Bearer $accessToken", id)
+                }
+                if (response?.isSuccessful == true){
+                    response.body()?.let { product ->
+                        Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
+                        productDetailsCache[id]?.value = product
                     }
-                })
+                }
+                else {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response?.errorBody()?.string()}")
+                    _hasError.value = true
+                }
+                _isLoading.value = false
             }
         }
         return productDetailsCache[id]!!.asStateFlow()
     }
 
+
     fun updateCartItem(cartItemId: UUID, quantity: Int, context: Context) {
-        val cartService = RetrofitInstance.getCartApi(context)
-        val accessToken = TokenManager.getInstance().getAccessToken(context)
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.editItemInCart("Bearer ${accessToken}",cartItemId, quantity).execute()
-            if (response.isSuccessful) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+
+            val cartService = RetrofitInstance.getCartApi(context)
+            val response = Request().executeRequest(context) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Updating cart item")
+                cartService.editItemInCart("Bearer ${accessToken}", cartItemId, quantity)
+            }
+            if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)
             }
+            else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to update cart item: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
     fun addProductToCart(productId: Long , quantity: Int, context: Context) {
-        val cartService = RetrofitInstance.getCartApi(context)
-        val cartItemCreateDTO = CartItemCreateDTO(productId, quantity)
-        val accessToken = TokenManager.getInstance().getAccessToken(context)
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.addItemToCart("Bearer ${accessToken}",cartItemCreateDTO).execute()
-            if (response.isSuccessful) {
+            val cartService = RetrofitInstance.getCartApi(context)
+            val cartItemCreateDTO = CartItemCreateDTO(productId, quantity)
+            val response = Request().executeRequest(context) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Adding product to cart")
+                cartService.addItemToCart("Bearer ${accessToken}",cartItemCreateDTO)
+            }
+
+            if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)
             }
+            else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to add product to cart: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
     fun removeCartItem(cartItemId: UUID, context: Context) {
-        val cartService = RetrofitInstance.getCartApi(context)
-        val accessToken = TokenManager.getInstance().getAccessToken(context)
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = true
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.removeItemFromCart("Bearer ${accessToken}", cartItemId).execute()
-            if (response.isSuccessful) {
+            val cartService = RetrofitInstance.getCartApi(context)
+            val response = Request().executeRequest(context) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Removing item from cart")
+                cartService.removeItemFromCart("Bearer ${accessToken}", cartItemId)
+            }
+            if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)
             }
+            else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to remove item from cart: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
     fun clearCart(context: Context) {
-        val cartService = RetrofitInstance.getCartApi(context)
-        val accessToken = TokenManager.getInstance().getAccessToken(context)
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = cartService.clearCart("Bearer ${accessToken}").execute()
-            if (response.isSuccessful) {
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+
+            val cartService = RetrofitInstance.getCartApi(context)
+            val response = Request().executeRequest(context) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Clearing cart")
+                cartService.clearCart("Bearer ${accessToken}")
+            }
+            if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)
             }
+            else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to clear cart: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 }
