@@ -20,9 +20,11 @@ public class OrderItemDTO {
     private Long productId;
 
     @NotNull
+    private String productName;
+
+    @NotNull
     private int quantity;
 
     @NotNull
     private BigDecimal partialCost;
-
 }

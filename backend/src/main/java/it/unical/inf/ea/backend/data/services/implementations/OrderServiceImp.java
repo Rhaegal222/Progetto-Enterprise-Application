@@ -71,6 +71,7 @@ public class OrderServiceImp implements OrderService {
 
                 OrderItem orderItem = new OrderItem();
                 orderItem.setProductId(product.getId());
+                orderItem.setProductName(product.getName());
                 orderItem.setQuantity(cartItem.getQuantity());
                 orderItem.setPartialCost(product.getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
                 items.add(orderItem);

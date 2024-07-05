@@ -208,4 +208,5 @@
     <string name="Ask_remove_product_wishlist">Sei sicuro di voler rimuovere questo prodotto dalla lista dei desideri?</string>
     <string name="remove_from_wishlist">Rimuovi dalla lista dei desideri</string>
     <string name="Ask_Remove_wishlist">Sei sicuro di voler eliminare questa lista dei desideri?</string>
+    <string name="product_name_">Product Name:</string>
 </resources>

@@ -99,7 +99,7 @@ fun OrderCard(
 
                     Row {
                         Text(
-                            text = stringResource(id = R.string.product_id),
+                            text = stringResource(id = R.string.product_name_),
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(start = 32.dp)
@@ -107,9 +107,9 @@ fun OrderCard(
                     }
                     Row {
                         Text(
-                            text = item.productId.toString(),
+                            text = item.productName,
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 64.dp)
+                            modifier = Modifier.padding(start = 32.dp)
                         )
                     }
 
@@ -125,7 +125,7 @@ fun OrderCard(
                         Text(
                             text = item.quantity.toString(),
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(start = 64.dp)
+                            modifier = Modifier.padding(start = 32.dp)
                         )
                     }
                 }
