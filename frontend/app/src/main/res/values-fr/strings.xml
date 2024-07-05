@@ -136,4 +136,5 @@
     <string name="remove">Supprimer</string>
     <string name="add_additional_info">Ajouter des informations supplémentaires</string>
     <string name="cart_load_failed">Échec du chargement du panier</string>
+    <string name="order_details">Order details</string>
 </resources>

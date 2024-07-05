@@ -160,7 +160,6 @@ class OrderViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let { order ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Fetched order: $order")
-                    // Handle the fetched order as needed
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch order: ${response?.errorBody()?.string()}")
@@ -191,6 +190,34 @@ class OrderViewModel : ViewModel() {
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch logged user orders: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun getOrderItems(context: Context, orderId: UUID) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val orderService: OrderService = RetrofitInstance.getOrderApi(context)
+            val response = Request().executeRequest(context) {
+                orderService.getOrderItems("Bearer $accessToken", orderId.toString())
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let { orderItems ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Fetched order items: $orderItems")
+                    this@OrderViewModel.orderItems = orderItems
+                }
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch order items: ${response?.errorBody()?.string()}")
                 _hasError.value = true
             }
             _isLoading.value = false

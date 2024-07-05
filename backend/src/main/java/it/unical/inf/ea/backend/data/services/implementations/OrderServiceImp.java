@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImp implements OrderService {
 
     private final OrderDao orderDao;
+    private final OrderItemDao orderItemDao;
     private final CartDao cartDao;
     private final AddressDao addressDao;
     private final PaymentMethodDao paymentMethodDao;
@@ -56,7 +57,7 @@ public class OrderServiceImp implements OrderService {
                 throw new IllegalAccessException("Il carrello è vuoto");
             }
 
-            List<OrderItem> Item = new ArrayList<>();
+            List<OrderItem> items = new ArrayList<>();
             for (CartItem cartItem : cartItems) {
                 Product product = productDao.findById(cartItem.getProductId())
                         .orElseThrow(() -> new EntityNotFoundException("Prodotto non trovato"));
@@ -65,7 +66,6 @@ public class OrderServiceImp implements OrderService {
                     throw new IllegalAccessException("Quantità non disponibile");
                 }
 
-                // DA SPOSTARE DOVE SVUOTO IL CARRELLO
                 product.setQuantity(product.getQuantity() - cartItem.getQuantity());
                 productDao.save(product);
 
@@ -73,13 +73,13 @@ public class OrderServiceImp implements OrderService {
                 orderItem.setProductId(product.getId());
                 orderItem.setQuantity(cartItem.getQuantity());
                 orderItem.setPartialCost(product.getPrice().multiply(new BigDecimal(cartItem.getQuantity())));
-                Item.add(orderItem);
+                items.add(orderItem);
             }
 
-            BigDecimal totalCost = Item.stream().map(OrderItem::getPartialCost).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal totalCost = items.stream().map(OrderItem::getPartialCost).reduce(BigDecimal.ZERO, BigDecimal::add);
 
             Order order = new Order();
-            order.setItems(Item);
+            order.setItems(items);
             order.setTotalCost(totalCost);
             order.setStatus(OrderStatus.CREATED);
             order.setCreatedAt(LocalDateTime.now());
@@ -88,11 +88,16 @@ public class OrderServiceImp implements OrderService {
             order.setAddress(address);
             order.setPaymentMethod(paymentMethod);
 
+            for (OrderItem orderItem : items) {
+                orderItem.setOrder(order);
+            }
+
             return mapToDTO(orderDao.save(order));
         } catch (Exception e) {
             throw new IllegalAccessException("Impossibile creare l'ordine: " + e.getMessage());
         }
     }
+
 
     @Override
     @Transactional
@@ -144,6 +149,12 @@ public class OrderServiceImp implements OrderService {
         User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         List<Order> orders = orderDao.findAllByUserId(loggedUser.getId());
         return orders.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderItemDTO> findAllOrderItemsByOrderId(UUID orderId) {
+        List<OrderItem> orderItems = orderItemDao.findAllByOrderId(orderId);
+        return orderItems.stream().map(item -> modelMapper.map(item, OrderItemDTO.class)).collect(Collectors.toList());
     }
 
     private OrderDTO mapToDTO(Order order) {
