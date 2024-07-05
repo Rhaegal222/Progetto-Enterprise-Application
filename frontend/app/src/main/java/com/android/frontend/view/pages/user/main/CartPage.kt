@@ -1,6 +1,5 @@
 package com.android.frontend.view.pages.user.main
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,9 +44,7 @@ fun CartPage(
 ) {
 
     val context = LocalContext.current
-    val cart by cartViewModel.cart.observeAsState(null)
     val cartItems by cartViewModel.cartItems.observeAsState()
-    val cartItemCount by cartViewModel.cartItemCount.collectAsState(null)
     val isLoading by cartViewModel.isLoading.observeAsState(false)
     val hasError by cartViewModel.hasError.observeAsState(false)
 
@@ -68,17 +65,20 @@ fun CartPage(
             errorMessage = stringResource(id = R.string.cart_load_failed)
         )
     } else {
-        cartItems?.let { CartContent(navController, it, cartViewModel, context) }
+        cartItems?.let { CartContent(navController, it, cartViewModel) }
     }
 }
 
 @Composable
-fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewModel: CartViewModel, context: Context) {
+fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewModel: CartViewModel) {
+    val context = LocalContext.current
     Column {
         cart.let {
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp, 0.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp, 0.dp)
+            ) {
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     items(it) { cartItem ->
                         val productDetails by cartViewModel.getProductDetails(
@@ -86,13 +86,13 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                             cartItem.productId
                         ).collectAsState(null)
                         productDetails?.let { product ->
-                            CartItemCard(cartItem, product, cartViewModel, context)
+                            CartItemCard(cartItem, product, cartViewModel)
                         }
                     }
                 }
                 Column {
-                    CartSummary(cartItems = it.items, cartViewModel)
-                    Row() {
+                    CartSummary(cart, cartViewModel)
+                    Row {
                         Button(
                             onClick = {
                                 cartViewModel.clearCart(context)
@@ -119,11 +119,15 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                 }
             }
         }
+    }
 }
 
 @Composable
-fun CartItemCard(cartItem: CartItemDTO, product: ProductDTO, cartViewModel: CartViewModel, context: Context) {
-    var quantity by remember { mutableStateOf(cartItem.quantity) }
+fun CartItemCard(cartItem: CartItemDTO, product: ProductDTO, cartViewModel: CartViewModel) {
+
+    val context = LocalContext.current
+
+    var quantity by remember { mutableIntStateOf(cartItem.quantity) }
     val price = if (product.onSale) product.salePrice ?: product.price else product.price
 
     Card(
@@ -169,6 +173,7 @@ fun CartItemCard(cartItem: CartItemDTO, product: ProductDTO, cartViewModel: Cart
 
 @Composable
 fun CartSummary(cartItems: List<CartItemDTO>, cartViewModel: CartViewModel) {
+
     val context = LocalContext.current
     var total by remember { mutableStateOf(BigDecimal.ZERO) }
 
