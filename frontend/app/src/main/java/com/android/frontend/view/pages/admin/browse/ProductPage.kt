@@ -2,12 +2,15 @@ package com.android.frontend.view.pages.admin.browse
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -30,12 +33,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
+import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.admin.ProductViewModel
 
-@SuppressLint("SuspiciousIndentation")
+
+@SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductPage(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
@@ -43,7 +49,11 @@ fun ProductPage(navController: NavHostController, viewModel: ProductViewModel = 
     val products by viewModel.productsLiveData.observeAsState()
     val productImages by viewModel.productImagesLiveData.observeAsState(emptyMap())
 
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val hasError by viewModel.hasError.observeAsState(false)
+
     LaunchedEffect(Unit) {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Fetching all products")
         viewModel.fetchAllProducts(context)
     }
 
@@ -70,20 +80,39 @@ fun ProductPage(navController: NavHostController, viewModel: ProductViewModel = 
                     }
                 }
             )
-        },
-        content = { innerPadding ->
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, viewModel, productImages[productDTO.id])
-                }
-            }
         }
-    )
+    ){
+        if (isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (hasError) {
+            ErrorDialog(
+                title = stringResource(id = R.string.fetching_error),
+                onDismiss = { navController.popBackStack() },
+                onRetry = { viewModel.fetchAllProducts(context) },
+                errorMessage = stringResource(id = R.string.products_load_failed)
+            )
+        } else {
+            products?.let { it1 -> ProductContent(it1, navController, viewModel, productImages) }
+        }
+    }
+}
+
+
+@Composable
+fun ProductContent(products : List<ProductDTO>, navController: NavHostController, viewModel: ProductViewModel, productImages: Map<Long, Uri>) {
+    Spacer(modifier = Modifier.height(70.dp))
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        items(products) { productDTO ->
+            ProductsCard(productDTO, navController, viewModel, productImages[productDTO.id])
+        }
+    }
 }
 
 @Composable
@@ -110,7 +139,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             }
             Image(
                 painter = painter,
-                contentDescription = "Product Image",
+                contentDescription = stringResource(id = R.string.product_image),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
@@ -153,7 +182,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                     Button(
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.size(46.dp),
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
                             navController.navigate("${Navigation.EditProductPage}/${productDTO.id}")
@@ -161,7 +190,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                     ) {
                         Icon(
                             imageVector = Icons.Default.ModeEdit,
-                            contentDescription = "Modify",
+                            contentDescription = stringResource(id = R.string.edit_product),
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -171,7 +200,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                     Button(
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.size(46.dp),
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
                             showDialog = true
@@ -179,7 +208,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete",
+                            contentDescription = stringResource(id = R.string.delete),
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -193,21 +222,25 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         viewModel.deleteProduct(productDTO.id, context)
                         showDialog = false
                     }
                 ) {
-                    Text("Continua")
+                    Text(stringResource(id = R.string.continuee))
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("Annulla")
+                Button(
+                    onClick = { showDialog = false },
+                    shape = RoundedCornerShape(12.dp),
+                ) {
+                    Text(stringResource(id = R.string.cancel))
                 }
             },
-            title = { Text("Elimina Prodotto") },
-            text = { Text("Sei sicuro di voler eliminare questo prodotto?") }
+            title = { Text(stringResource(id = R.string.delete_product)) },
+            text = { Text(stringResource(id = R.string.sure_delete_product)) }
         )
     }
 }

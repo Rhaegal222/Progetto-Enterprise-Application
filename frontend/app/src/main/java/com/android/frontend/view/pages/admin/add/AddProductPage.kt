@@ -1,11 +1,13 @@
 package com.android.frontend.view.pages.admin.add
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
@@ -15,28 +17,33 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.android.frontend.R
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.CategoryDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.view_models.admin.ProductViewModel
+import com.android.frontend.view.component.ErrorDialog
+import com.android.frontend.view_models.admin.AddProductViewModel
 import java.math.BigDecimal
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
+fun AddProductPage(navController: NavHostController, viewModel: AddProductViewModel = viewModel()) {
     val context = LocalContext.current
 
-    // Fetch data when the page is opened
-    LaunchedEffect(Unit) {
-        viewModel.fetchAllData(context)
-    }
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val hasError by viewModel.hasError.observeAsState(false)
 
-    val isLoading by viewModel.isLoading.observeAsState(true)
+    LaunchedEffect(Unit) {
+        viewModel.fetchAllBrands(context)
+        viewModel.fetchAllCategories(context)
+    }
 
     val name by viewModel.name.observeAsState("")
     val description by viewModel.description.observeAsState("")
@@ -46,7 +53,6 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
     val quantity by viewModel.quantity.observeAsState(0)
     val price by viewModel.price.observeAsState(BigDecimal.ZERO)
     val shippingCost by viewModel.shippingCost.observeAsState(BigDecimal.ZERO)
-    val availability by viewModel.availability.observeAsState(ProductDTO.Availability.IN_STOCK)
     val allBrands by viewModel.allBrands.observeAsState(emptyList())
     val allCategories by viewModel.allCategories.observeAsState(emptyList())
     val onSale by viewModel.onSale.observeAsState(false)
@@ -70,27 +76,40 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
         }
 
     if (isLoading) {
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (hasError) {
+        ErrorDialog(
+            title = stringResource(id = R.string.fetching_error),
+            onDismiss = { navController.popBackStack() },
+            onRetry = {
+                viewModel.fetchAllBrands(context)
+                viewModel.fetchAllCategories(context)
+            },
+            errorMessage = stringResource(id = R.string.add_product_load_failed)
+        )
     } else {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Add Product") },
+                    title = { Text(stringResource(id = R.string.add_product)) },
                     navigationIcon = {
                         IconButton(onClick = { navController.navigate(Navigation.ProductPage.route) }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back))
                         }
                     }
                 )
             }
-        ) { innerPadding ->
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Spacer(modifier = Modifier.height(50.dp))
+
                 Text("Add New Product", fontSize = 24.sp)
 
                 // Availability ChoiceBox
@@ -99,7 +118,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedAvailability?.name ?: "Select Availability",
+                        text = selectedAvailability?.name ?: stringResource(id = R.string.select_availability),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedAvailability = true })
@@ -128,7 +147,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedBrand?.name ?: "Select Brand",
+                        text = selectedBrand?.name ?: stringResource(id = R.string.select_brand),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedBrand = true })
@@ -157,7 +176,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedCategory?.name ?: "Select Category",
+                        text = selectedCategory?.name ?: stringResource(id = R.string.select_category),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedCategory = true })
@@ -184,28 +203,28 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                 TextField(
                     value = name,
                     onValueChange = { viewModel.name.value = it },
-                    label = { Text("Title") },
+                    label = { Text(stringResource(id = R.string.product_name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = description,
                     onValueChange = { viewModel.description.value = it },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(id = R.string.product_description)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = ingredients,
                     onValueChange = { viewModel.ingredients.value = it },
-                    label = { Text("Ingredients") },
+                    label = { Text(stringResource(id = R.string.ingredients)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = nutritionalValues,
                     onValueChange = { viewModel.nutritionalValues.value = it },
-                    label = { Text("Nutritional Values") },
+                    label = { Text(stringResource(id = R.string.nutritional_values)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -214,7 +233,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                     onValueChange = {
                         viewModel.price.value = it.toBigDecimalOrNull() ?: BigDecimal.ZERO
                     },
-                    label = { Text("Product Price") },
+                    label = { Text(stringResource(id = R.string.product_price)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -224,21 +243,21 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                         viewModel.shippingCost.value =
                             it.toBigDecimalOrNull() ?: BigDecimal.ZERO
                     },
-                    label = { Text("Delivery Price") },
+                    label = { Text(stringResource(id = R.string.shipping_cost)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = weight,
                     onValueChange = { viewModel.weight.value = it },
-                    label = { Text("Product Weight") },
+                    label = { Text(stringResource(id = R.string.product_weight)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = quantity.toString(),
                     onValueChange = { viewModel.quantity.value = it.toIntOrNull() ?: 0 },
-                    label = { Text("Quantity") },
+                    label = { Text(stringResource(id = R.string.quantity_availabile)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -247,7 +266,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("On Sale", modifier = Modifier.weight(1f))
+                    Text(stringResource(id = R.string.on_sale), modifier = Modifier.weight(1f))
                     Switch(
                         checked = onSale,
                         onCheckedChange = { viewModel.onSale.value = it }
@@ -258,7 +277,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                     TextField(
                         value = discountedPrice.toString(),
                         onValueChange = { viewModel.salePrice.value = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
-                        label = { Text("Discounted Price") },
+                        label = { Text(stringResource(id = R.string.discounted_price)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -268,9 +287,10 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                         viewModel.addProduct(context)
                         showSuccessDialog = true
                     },
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Add Product")
+                    Text(stringResource(id = R.string.add_product))
                 }
             }
         }
@@ -278,14 +298,14 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
         if (showSuccessDialog) {
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
-                title = { Text("Success") },
-                text = { Text("Product added successfully! Do you want to upload an image for the product?") },
+                title = { Text(stringResource(id = R.string.success)) },
+                text = { Text(stringResource(id = R.string.add_image_product)) },
                 confirmButton = {
                     TextButton(onClick = {
                         showSuccessDialog = false
                         showImageUploadDialog = true
                     }) {
-                        Text("Yes")
+                        Text(stringResource(id = R.string.yes))
                     }
                 },
                 dismissButton = {
@@ -293,7 +313,7 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
                         showSuccessDialog = false
                         navController.navigate(Navigation.ProductPage.route)
                     }) {
-                        Text("No")
+                        Text(stringResource(id = R.string.no))
                     }
                 }
             )
@@ -307,14 +327,14 @@ fun AddProductPage(navController: NavHostController, viewModel: ProductViewModel
         if (showImageSuccessDialog) {
             AlertDialog(
                 onDismissRequest = { showImageSuccessDialog = false },
-                title = { Text("Success") },
-                text = { Text("Product image uploaded successfully!") },
+                title = { Text(stringResource(id = R.string.success)) },
+                text = { Text(stringResource(id = R.string.add_product_image_successfully)) },
                 confirmButton = {
                     TextButton(onClick = {
                         showImageSuccessDialog = false
                         navController.navigate(Navigation.ProductPage.route)
                     }) {
-                        Text("OK")
+                        Text(stringResource(id = R.string.okay))
                     }
                 }
             )

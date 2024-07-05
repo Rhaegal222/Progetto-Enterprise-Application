@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -129,6 +130,7 @@ fun AddWishlistPage(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
+                        shape = RoundedCornerShape(12.dp),
                         enabled = allFieldsValid,
                         onClick = {
                             try {

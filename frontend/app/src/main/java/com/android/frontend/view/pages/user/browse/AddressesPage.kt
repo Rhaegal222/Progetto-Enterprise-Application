@@ -1,7 +1,6 @@
 package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -59,7 +58,7 @@ fun AddressesPage(navController: NavController, addressViewModel: AddressViewMod
             errorMessage = stringResource(id = R.string.shipping_addresses_load_failed)
         )
     } else {
-        AddressesContent(navController, addresses, addressViewModel, context)
+        AddressesContent(navController, addresses, addressViewModel)
     }
 }
 
@@ -68,9 +67,11 @@ fun AddressesPage(navController: NavController, addressViewModel: AddressViewMod
 fun AddressesContent(
     navController: NavController,
     addresses: List<AddressDTO>,
-    addressViewModel: AddressViewModel,
-    context: Context
+    addressViewModel: AddressViewModel
 ) {
+
+    val context = LocalContext.current
+
     var selectedAddress by remember { mutableStateOf<AddressDTO?>(null) }
     var isDefaultAddress by remember { mutableStateOf(false) }
 
@@ -139,10 +140,7 @@ fun AddressesContent(
                         address = address,
                         onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
-
-
         }
     }
 }

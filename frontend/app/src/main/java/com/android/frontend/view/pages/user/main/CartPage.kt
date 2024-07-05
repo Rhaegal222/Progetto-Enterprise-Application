@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import java.math.BigDecimal
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -102,6 +103,7 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                                 containerColor = Color.Red,
                                 contentColor = Color.White
                             ),
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .padding(8.dp)
                         ) {
@@ -111,6 +113,7 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                             onClick = {
                                 navController.navigate(Navigation.CheckoutPage.route)
                             },
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .padding(8.dp)
                         ) {

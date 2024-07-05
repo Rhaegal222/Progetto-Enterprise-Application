@@ -1,5 +1,6 @@
 package com.android.frontend.view.pages.admin.browse
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -8,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,20 +31,23 @@ import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.admin.EditProductViewModel
 import java.math.BigDecimal
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProductPage(navController: NavHostController, viewModel: EditProductViewModel = viewModel(), productId: Long) {
     val context = LocalContext.current
 
-    // Fetch data when the page is opened
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val hasError by viewModel.hasError.observeAsState(false)
+
     LaunchedEffect(Unit) {
         viewModel.getProductDetails(context, productId)
         viewModel.fetchAllBrands(context)
         viewModel.fetchAllCategories(context)
-        viewModel.getProductImage(context, productId)
     }
 
     val productDetails by viewModel.productDetails.observeAsState()
@@ -52,13 +58,12 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
     var ingredients by remember { mutableStateOf("") }
     var nutritionalValues by remember { mutableStateOf("") }
     var weight by remember { mutableStateOf("") }
-    var quantity by remember { mutableStateOf(0) }
+    var quantity by remember { mutableIntStateOf(0) }
     var price by remember { mutableStateOf(BigDecimal.ZERO) }
     var shippingCost by remember { mutableStateOf(BigDecimal.ZERO) }
     var onSale by remember { mutableStateOf(false) }
     var salePrice by remember { mutableStateOf(BigDecimal.ZERO) }
 
-    // Update state variables when product details are available
     LaunchedEffect(productDetails) {
         productDetails?.let {
             name = it.name
@@ -82,7 +87,6 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
     val selectedAvailability by viewModel.availability.observeAsState()
     var showSuccessDialog by remember { mutableStateOf(false) }
 
-    // Update brand, category, and availability when product details are available
     LaunchedEffect(productDetails) {
         productDetails?.let {
             viewModel.brand.value = it.brand
@@ -91,7 +95,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
         }
     }
 
-    val prodImag by viewModel.prodImagLiveData.observeAsState()
+    val prodImage by viewModel.prodImageLiveData.observeAsState()
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -101,34 +105,48 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
         }
     }
 
-    if (productDetails == null) {
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (hasError) {
+        ErrorDialog(
+            title = stringResource(id = R.string.fetching_error),
+            onDismiss = { navController.popBackStack() },
+            onRetry = {
+                // Retry fetching data
+                viewModel.getProductDetails(context, productId)
+                viewModel.fetchAllBrands(context)
+                viewModel.fetchAllCategories(context)
+            },
+            errorMessage = stringResource(id = R.string.edit_product_load_failed)
+        )
     } else {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Edit Product") },
+                    title = { Text(stringResource(id = R.string.edit_product)) },
                     navigationIcon = {
                         IconButton(onClick = { navController.navigate(Navigation.ProductPage.route) }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back))
                         }
                     }
                 )
             }
-        ) { innerPadding ->
+        ) {
+            Spacer(modifier = Modifier.height(70.dp))
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Edit Product", fontSize = 24.sp)
+                Text(stringResource(id = R.string.edit_product), fontSize = 24.sp)
 
-                if (prodImag != null) {
+                if (prodImage != null) {
                     Image(
-                        painter = rememberAsyncImagePainter(model = prodImag),
-                        contentDescription = "Profile Image",
+                        painter = rememberAsyncImagePainter(model = prodImage),
+                        contentDescription = stringResource(id = R.string.product_image),
                         modifier = Modifier
                             .size(160.dp)
                             .clip(CircleShape)
@@ -136,7 +154,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.product_placeholder),
-                        contentDescription = "Profile Image",
+                        contentDescription = stringResource(id = R.string.product_image),
                         modifier = Modifier
                             .size(160.dp)
                             .clip(CircleShape)
@@ -151,7 +169,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Profile Image"
+                        contentDescription = stringResource(id = R.string.edit_product_image)
                     )
                 }
 
@@ -161,7 +179,8 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedAvailability?.name ?: "Select Availability",
+                        text = selectedAvailability?.name
+                            ?: stringResource(id = R.string.select_availability),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedAvailability = true })
@@ -189,7 +208,9 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedBrand?.name ?: productDetails?.brand?.name ?: "Select Brand",
+                        text = selectedBrand?.name ?: productDetails?.brand?.name ?: stringResource(
+                            id = R.string.select_brand
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedBrand = true })
@@ -217,7 +238,8 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedCategory?.name ?: productDetails?.category?.name ?: "Select Category",
+                        text = selectedCategory?.name ?: productDetails?.category?.name
+                        ?: stringResource(id = R.string.select_category),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedCategory = true })
@@ -243,60 +265,60 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                 TextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Title") },
+                    label = { Text(stringResource(id = R.string.product_name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Description") },
+                    label = { Text(stringResource(id = R.string.product_description)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = ingredients,
                     onValueChange = { ingredients = it },
-                    label = { Text("Ingredients") },
+                    label = { Text(stringResource(id = R.string.ingredients)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = nutritionalValues,
                     onValueChange = { nutritionalValues = it },
-                    label = { Text("Nutritional Values") },
+                    label = { Text(stringResource(id = R.string.nutritional_values)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = weight,
                     onValueChange = { weight = it },
-                    label = { Text("Weight") },
+                    label = { Text(stringResource(id = R.string.product_weight)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = quantity.toString(),
                     onValueChange = { quantity = it.toIntOrNull() ?: 0 },
-                    label = { Text("Quantity") },
+                    label = { Text(stringResource(id = R.string.quantity_availabile)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = price.toPlainString(),
                     onValueChange = { price = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
-                    label = { Text("Price") },
+                    label = { Text(stringResource(id = R.string.product_price)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 TextField(
                     value = shippingCost.toPlainString(),
                     onValueChange = { shippingCost = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
-                    label = { Text("Shipping Cost") },
+                    label = { Text(stringResource(id = R.string.shipping_cost)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Text("On Sale", modifier = Modifier.padding(top = 8.dp))
+                Text(stringResource(id = R.string.on_sale), modifier = Modifier.padding(top = 8.dp))
                 Switch(
                     checked = onSale,
                     onCheckedChange = {
@@ -311,7 +333,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                     TextField(
                         value = salePrice.toPlainString(),
                         onValueChange = { salePrice = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
-                        label = { Text("Discounted Price") },
+                        label = { Text(stringResource(id = R.string.discounted_price)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -334,9 +356,10 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                         )
                         showSuccessDialog = true
                     },
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
-                    Text("Save")
+                    Text(stringResource(id = R.string.save_changes))
                 }
 
                 if (showSuccessDialog) {
@@ -344,10 +367,10 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                         onDismissRequest = { showSuccessDialog = false },
                         confirmButton = {
                             TextButton(onClick = { showSuccessDialog = false }) {
-                                Text("OK")
+                                Text(stringResource(id = R.string.okay))
                             }
                         },
-                        text = { Text("Product updated successfully") }
+                        text = { Text(stringResource(id = R.string.product_update_successfully)) }
                     )
                 }
             }

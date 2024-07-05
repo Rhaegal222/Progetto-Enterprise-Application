@@ -23,17 +23,17 @@ interface UserService {
     ): Call<Map<String, String>>
 
     @POST("/api/v1/users/changeRole/{userId}")
-    suspend fun changeRole(
+    fun changeRole(
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
         @Query("role") role: String
-    ): Response<Void>
+    ): Call<Void>
 
     @DELETE("/api/v1/users/deleteUser/{id}")
-    suspend fun deleteUser(
+    fun deleteUser(
         @Header("Authorization") token: String,
         @Path("id") userId: String
-    ): Response<Void>
+    ): Call<Void>
 
     @GET("/api/v1/users/refreshToken")
     fun refreshToken(
@@ -61,9 +61,9 @@ interface UserService {
     ): Call<UserDTO>
 
     @GET("/api/v1/users/getAllUsers")
-    suspend fun getAllUsers(
+     fun getAllUsers(
         @Header("Authorization") token: String
-    ): Response<List<UserDTO>>
+    ): Call<List<UserDTO>>
 
     @GET("/api/v1/users/findUserById/{id}")
     fun findUserById(

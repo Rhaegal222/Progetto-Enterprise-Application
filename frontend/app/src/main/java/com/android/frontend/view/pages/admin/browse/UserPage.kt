@@ -2,6 +2,7 @@ package com.android.frontend.view.pages.admin.browse
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,8 +10,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -33,12 +36,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
+import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.UserDTO
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.admin.UserViewModel
 
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewModel()) {
@@ -47,7 +52,11 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
     val userImages by viewModel.userImagesLiveData.observeAsState(emptyMap())
     val currentUserId = SecurePreferences.getUser(context)?.id ?: ""
 
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val hasError by viewModel.hasError.observeAsState(false)
+
     LaunchedEffect(Unit) {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Loading users")
         viewModel.fetchAllUsers(context)
     }
 
@@ -57,10 +66,14 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
     val currentUser = activeUsers.find { it.id == currentUserId }
     val sortedActiveUsers = listOfNotNull(currentUser) + activeUsers.filter { it.id != currentUserId }
 
+
+
+
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("All Users") },
+                title = { Text(stringResource(id = R.string.all_users)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
@@ -70,36 +83,81 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
                     }
                 }
             )
-        },
-        content = { innerPadding ->
-            Column(modifier = Modifier.padding(innerPadding)) {
-                Text("Active Users", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(8.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                ) {
-                    items(sortedActiveUsers) { userDTO ->
-                        UserCard(userDTO, navController, viewModel, userImages[userDTO.id], isDeleted = false, isCurrentUser = currentUserId == userDTO.id)
-                    }
-                }
+        }
+    ) {
+        if (isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else if (hasError) {
+            ErrorDialog(
+                title = stringResource(id = R.string.fetching_error),
+                onDismiss = { navController.popBackStack() },
+                onRetry = { viewModel.fetchAllUsers(context) },
+                errorMessage = stringResource(id = R.string.users_load_failed)
+            )
+        } else {
+            UserContent(navController, deletedUsers, sortedActiveUsers, userImages, currentUserId, viewModel)
+        }
+    }
+}
 
-                Text("Deleted Users", fontWeight = FontWeight.Bold, fontSize = 18.sp, modifier = Modifier.padding(8.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                ) {
-                    items(deletedUsers) { userDTO ->
-                        UserCard(userDTO, navController, viewModel, userImages[userDTO.id], isDeleted = true, isCurrentUser = currentUserId == userDTO.id)
-                    }
-                }
+@Composable
+fun UserContent(navController: NavHostController, deletedUsers: List<UserDTO>, sortedActiveUsers: List<UserDTO>, userImages: Map<String, Uri>, currentUserId: String, viewModel: UserViewModel) {
+    Column{
+        Text(
+            text = stringResource(id = R.string.active_users),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.height(70.dp))
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            items(sortedActiveUsers) { userDTO ->
+                UserCard(
+                    userDTO,
+                    navController,
+                    viewModel,
+                    userImages[userDTO.id],
+                    isDeleted = false,
+                    isCurrentUser = currentUserId == userDTO.id
+                )
             }
         }
-    )
+
+        Text(
+            text = stringResource(id = R.string.deleted_users),
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            modifier = Modifier.padding(8.dp)
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        ) {
+            items(deletedUsers) { userDTO ->
+                UserCard(
+                    userDTO,
+                    navController,
+                    viewModel,
+                    userImages[userDTO.id],
+                    isDeleted = true,
+                    isCurrentUser = currentUserId == userDTO.id
+                )
+            }
+        }
+    }
+
 }
+
 
 @Composable
 fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: UserViewModel, imageUri: Uri?, isDeleted: Boolean, isCurrentUser: Boolean) {
@@ -113,7 +171,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
         modifier = Modifier
             .padding(8.dp)
             .width(180.dp)
-            .height(260.dp) // Increased height to accommodate larger button
+            .height(260.dp)
     ) {
         Column(
             modifier = Modifier
@@ -129,7 +187,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 Image(
                     painter = painter,
-                    contentDescription = "User Image",
+                    contentDescription = stringResource(id = R.string.user_image),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(80.dp),
@@ -185,7 +243,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                         .background(Color.DarkGray, RoundedCornerShape(8.dp))
                 ) {
                     Text(
-                        text = "Role: ${userDTO.role}",
+                        text = "${stringResource(id = R.string.user_role)}: ${userDTO.role}",
                         fontWeight = FontWeight.Medium,
                         fontSize = 12.sp,
                         modifier = Modifier
@@ -194,8 +252,8 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                         color = Color.White
                     )
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown, // Icon to indicate clickable
-                        contentDescription = "Change Role",
+                        imageVector = Icons.Default.ArrowDropDown, 
+                        contentDescription = stringResource(id = R.string.change_user_role),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -208,8 +266,8 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                 ) {
                     Button(
                         colors = ButtonColorScheme.buttonColors(),
-                        modifier = Modifier.size(60.dp), // Increased button size
-                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier.size(60.dp),
+                        shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
                             showDialog = true
@@ -217,8 +275,8 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete",
-                            modifier = Modifier.size(32.dp) // Increased icon size
+                            contentDescription = stringResource(id = R.string.delete_user),
+                            modifier = Modifier.size(32.dp) 
                         )
                     }
                 }
@@ -232,22 +290,26 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         viewModel.deleteUser(userDTO.id, context)
                         println("User ${userDTO.firstName} ${userDTO.lastName} ${userDTO.id} deleted")
                         showDialog = false
                     }
                 ) {
-                    Text("Continua")
+                    Text(stringResource(id = R.string.continuee))
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("Annulla")
+                Button(
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = { showDialog = false
+                    }) {
+                    Text(stringResource(id = R.string.cancel))
                 }
             },
-            title = { Text("Elimina Utente") },
-            text = { Text("Sei sicuro di voler eliminare questo utente?") }
+            title = { Text(stringResource(id = R.string.delete_user)) },
+            text = { Text(stringResource(id = R.string.sure_delete_user)) }
         )
     }
 
@@ -258,37 +320,42 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             onDismissRequest = { showRoleDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         viewModel.changeUserRole(userDTO.id, selectedRole.toString(), context)
                         showRoleDialog = false
                     }
                 ) {
-                    Text("Salva")
+                    Text(stringResource(id = R.string.save_changes))
                 }
             },
             dismissButton = {
-                Button(onClick = { showRoleDialog = false }) {
-                    Text("Annulla")
+                Button(
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = { showRoleDialog = false }
+                )
+                {
+                    Text(stringResource(id = R.string.cancel))
                 }
             },
-            title = { Text("Modifica Ruolo") },
+            title = { Text(stringResource(id = R.string.change_user_role)) },
             text = {
                 Column {
-                    Text("Seleziona il nuovo ruolo:")
+                    Text(stringResource(id = R.string.select_new_role))
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {
                         RadioButton(
                             selected = selectedRole.toString() == "USER",
                             onClick = { selectedRole = UserDTO.UserRole.USER }
                         )
-                        Text("USER", modifier = Modifier.align(Alignment.CenterVertically))
+                        Text(stringResource(id = R.string.user), modifier = Modifier.align(Alignment.CenterVertically))
                     }
                     Row {
                         RadioButton(
                             selected = selectedRole.toString() == "ADMIN",
                             onClick = { selectedRole = UserDTO.UserRole.ADMIN }
                         )
-                        Text("ADMIN", modifier = Modifier.align(Alignment.CenterVertically))
+                        Text(stringResource(id = R.string.admin), modifier = Modifier.align(Alignment.CenterVertically))
                     }
                 }
             }
@@ -302,38 +369,42 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             onDismissRequest = { showSelfRoleChangeDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         viewModel.changeUserRole(userDTO.id, selectedRole.toString(), context)
                         viewModel.logout(context)
-                        navController.navigate("login_screen") // Navigate to login screen after logout
+                        navController.navigate("login_screen")
                     }
                 ) {
-                    Text("Continua")
+                    Text(stringResource(id = R.string.continuee))
                 }
             },
             dismissButton = {
-                Button(onClick = { showSelfRoleChangeDialog = false }) {
-                    Text("Annulla")
+                Button(
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = { showSelfRoleChangeDialog = false }
+                ) {
+                    Text(stringResource(id = R.string.cancel))
                 }
             },
-            title = { Text("Modifica Ruolo") },
+            title = { Text(stringResource(id = R.string.change_user_role)) },
             text = {
                 Column {
-                    Text("Sei sicuro di voler cambiare il tuo ruolo? Dovrai rieffettuare l'accesso.")
+                    Text(stringResource(id = R.string.sure_change_your_role))
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {
                         RadioButton(
                             selected = selectedRole.toString() == "USER",
                             onClick = { selectedRole = UserDTO.UserRole.USER }
                         )
-                        Text("USER", modifier = Modifier.align(Alignment.CenterVertically))
+                        Text(stringResource(id = R.string.user), modifier = Modifier.align(Alignment.CenterVertically))
                     }
                     Row {
                         RadioButton(
                             selected = selectedRole.toString() == "ADMIN",
                             onClick = { selectedRole = UserDTO.UserRole.ADMIN }
                         )
-                        Text("ADMIN", modifier = Modifier.align(Alignment.CenterVertically))
+                        Text(stringResource(id = R.string.admin), modifier = Modifier.align(Alignment.CenterVertically))
                     }
                 }
             }

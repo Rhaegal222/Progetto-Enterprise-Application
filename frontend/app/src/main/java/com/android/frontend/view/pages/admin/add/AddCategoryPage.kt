@@ -2,6 +2,7 @@ package com.android.frontend.view.pages.admin.add
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -50,7 +51,7 @@ fun AddCategoryPage(navController: NavHostController, viewModel: CategoryViewMod
             TextField(
                 value = categoryName,
                 onValueChange = { viewModel.name.value = it },
-                label = { Text("Category Name") },
+                label = { Text(stringResource(id = R.string.category_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
@@ -59,22 +60,22 @@ fun AddCategoryPage(navController: NavHostController, viewModel: CategoryViewMod
                     viewModel.addCategory(categoryCreateDTO, context)
                     showSuccessDialog = true
                 },
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Add Category")
+                Text(stringResource(id = R.string.add_category))
             }
             if (showSuccessDialog) {
                 AlertDialog(
                     onDismissRequest = { showSuccessDialog = false },
-                    title = { Text("Success") },
-                    text = { Text("Category added successfully!") },
+                    title = { Text(stringResource(id = R.string.success)) },
+                    text = { Text(stringResource(id = R.string.add_category_successfully)) },
                     confirmButton = {
                         TextButton(onClick = {
                             showSuccessDialog = false
                             navController.navigate(Navigation.CategoryPage.route)
-                            // Navigate back or perform other actions
                         }) {
-                            Text("OK")
+                            Text(stringResource(id = R.string.okay))
                         }
                     }
                 )

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FilterList
@@ -193,12 +194,19 @@ fun InputDialog(
             }
         },
         confirmButton = {
-            Button(onClick = onConfirm) {
+            Button(
+                shape = RoundedCornerShape(12.dp),
+                onClick = onConfirm
+            )
+            {
                 Text(stringResource(id = R.string.confirm))
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            Button(
+                shape = RoundedCornerShape(12.dp),
+                onClick = onDismiss
+            ) {
                 Text(stringResource(id = R.string.dismiss))
             }
         }

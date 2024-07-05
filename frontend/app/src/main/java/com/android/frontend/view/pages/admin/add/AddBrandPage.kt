@@ -2,6 +2,7 @@ package com.android.frontend.view.pages.admin.add
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -52,13 +53,13 @@ fun AddBrandPage(navController: NavHostController, viewModel: BrandViewModel = v
             TextField(
                 value = brandName,
                 onValueChange = { viewModel.name.value = it },
-                label = { Text("Brand Name") },
+                label = { Text(stringResource(id = R.string.brand_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 value = brandDescription,
                 onValueChange = { viewModel.description.value = it },
-                label = { Text("Brand Description") },
+                label = { Text(stringResource(id = R.string.brand_description)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
@@ -67,22 +68,22 @@ fun AddBrandPage(navController: NavHostController, viewModel: BrandViewModel = v
                     viewModel.addBrand(brandCreateDTO, context)
                     showSuccessDialog = true
                 },
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Add Brand")
+                Text(stringResource(id = R.string.add_brand))
             }
             if (showSuccessDialog) {
                 AlertDialog(
                     onDismissRequest = { showSuccessDialog = false },
-                    title = { Text("Success") },
-                    text = { Text("Brand added successfully!") },
+                    title = { Text(stringResource(id = R.string.success)) },
+                    text = { Text(stringResource(id = R.string.add_brand_successfully)) },
                     confirmButton = {
                         TextButton(onClick = {
                             showSuccessDialog = false
                             navController.navigate(Navigation.BrandPage.route)
-                            // Navigate back or perform other actions
                         }) {
-                            Text("OK")
+                            Text(stringResource(id = R.string.okay))
                         }
                     }
                 )

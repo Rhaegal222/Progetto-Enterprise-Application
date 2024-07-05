@@ -42,9 +42,9 @@ interface ProductService {
     ): Call<ProductDTO>
 
     @GET("/api/v1/products/getAllProducts")
-    suspend fun getAllProducts(
+    fun getAllProducts(
         @Header("Authorization") authorization: String
-    ): Response<List<ProductDTO>>
+    ): Call<List<ProductDTO>>
 
     @GET("/api/v1/products/getProductsByCategory/")
     fun getProductsByCategory(

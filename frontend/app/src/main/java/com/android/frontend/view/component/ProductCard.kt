@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -121,12 +120,12 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
                     colors = OutlinedButtonColorScheme.outlinedButtonColors(),
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         cartViewModel.addProductToCart(productDTO.id, 1, context)
                     }
@@ -142,24 +141,7 @@ fun ProductCard(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                OutlinedButton(
-                    colors = OutlinedButtonColorScheme.outlinedButtonColors(),
-                    shape = RoundedCornerShape(14.dp),
-                    onClick = {
-                        cartViewModel.addProductToCart(productDTO.id, 1, context)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = stringResource(id = R.string.add_to_wishlist)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.add_to_wishlist),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                AddToWishlistButton()
             }
         }
     }

@@ -114,7 +114,7 @@ fun PaymentMethodsContent(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                 modifier = Modifier
                     .padding(0.dp)
