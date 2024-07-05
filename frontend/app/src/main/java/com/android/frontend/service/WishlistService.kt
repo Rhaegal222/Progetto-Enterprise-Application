@@ -32,11 +32,11 @@ interface WishlistService {
         @Path("productId") productId: Long
     ): Call<Void>
 
-    @DELETE("/api/v1/wishlist/{wishlistId}/products/{productId}")
+    @DELETE("/api/v1/wishlist/{wishlistId}/removeProductsFromWishlist/{productId}")
     fun removeProductsFromWishlist(
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: Long,
-        @Body productId: Long
+        @Path("productId") productId: Long
     ): Call<Void>
 
     @GET("/api/v1/wishlist/getProductByWishlistId/{wishlistId}")

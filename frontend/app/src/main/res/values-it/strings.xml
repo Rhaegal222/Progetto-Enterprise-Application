@@ -194,4 +194,8 @@
     <string name="fullname">Nome completo</string>
     <string name="postal_code">Codice postale</string>
     <string name="wishlist_failed_to_load">Caricamento della lista dei desideri fallito</string>
+    <string name="wishlist_empty">Nessuna lista dei desideri</string>
+    <string name="Ask_remove_product_wishlist">Sei sicuro di voler rimuovere questo prodotto dalla lista dei desideri?</string>
+    <string name="remove_from_wishlist">Rimuovi dalla lista dei desideri</string>
+    <string name="Ask_Remove_wishlist">Sei sicuro di voler eliminare questa lista dei desideri?</string>
 </resources>

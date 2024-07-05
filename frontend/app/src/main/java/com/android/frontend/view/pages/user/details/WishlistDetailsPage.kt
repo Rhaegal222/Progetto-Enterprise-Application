@@ -111,7 +111,15 @@ fun WishlistDetailsPage(
             ) {
                 items(products ?: emptyList()) { productDTO ->
                     Log.d("DEBUG", "Product: $productDTO")
-                    ProductsWishlistCard(productDTO = productDTO, navController = navController, imageUri = null)
+                    ProductsWishlistCard(
+                        productDTO = productDTO,
+                        navController = navController,
+                        imageUri = null,
+                        onRemoveFromWishlist = { product ->
+                            wishlistViewModel.removeProductFromWishlist(context, product.id, wishlistId)
+
+                        }
+                    )
                 }
             }
 
@@ -131,7 +139,7 @@ fun WishlistDetailsPage(
             ) {
                 Icon(
                     Icons.Default.Remove,
-                    contentDescription = "Remove Wishlist",
+                    contentDescription = stringResource(id = R.string.remove_wishlist),
                     modifier = Modifier
                         .width(40.dp)
                         .height(40.dp)
@@ -149,13 +157,17 @@ fun WishlistDetailsPage(
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
             title = {
-                Text(text = "Conferma")
+                Text(text = stringResource(id = R.string.confirm))
             },
             text = {
-                Text("Sei sicuro di voler cancellare questa wishlist?")
+                Text(text = stringResource(id = R.string.Ask_Remove_wishlist))
             },
             confirmButton = {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
                         showDialog.value = false
@@ -163,7 +175,7 @@ fun WishlistDetailsPage(
                         navController.popBackStack()
                     }
                 ) {
-                    Text("Conferma")
+                    Text(text = stringResource(id = R.string.confirm))
                 }
             },
             dismissButton = {
@@ -173,7 +185,7 @@ fun WishlistDetailsPage(
                         showDialog.value = false
                     }
                 ) {
-                    Text("Annulla")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
             }
         )
@@ -184,14 +196,16 @@ fun WishlistDetailsPage(
 fun ProductsWishlistCard(
     productDTO: ProductDTO,
     navController: NavController,
-    imageUri: Uri?
+    imageUri: Uri?,
+    onRemoveFromWishlist: (ProductDTO) -> Unit
 ) {
+    val showDialog = remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .padding(12.dp)
             .fillMaxWidth()
-            .height(250.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
                 CurrentDataUtils.currentProductImageUri = imageUri
@@ -276,7 +290,64 @@ fun ProductsWishlistCard(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(6.dp))
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = { showDialog.value = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.remove_from_wishlist),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
+            }
         }
+    }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = {
+                Text(text = stringResource(id = R.string.confirm))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.Ask_remove_product_wishlist))
+            },
+            confirmButton = {
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    onClick = {
+                        onRemoveFromWishlist(productDTO)
+                        showDialog.value = false
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.confirm))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDialog.value = false },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+            }
+        )
     }
 }
