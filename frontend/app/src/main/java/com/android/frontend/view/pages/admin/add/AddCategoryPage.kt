@@ -50,7 +50,7 @@ fun AddCategoryPage(navController: NavHostController, viewModel: CategoryViewMod
             TextField(
                 value = categoryName,
                 onValueChange = { viewModel.name.value = it },
-                label = { Text("Category Name") },
+                label = { Text(stringResource(id = R.string.category_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
@@ -61,20 +61,19 @@ fun AddCategoryPage(navController: NavHostController, viewModel: CategoryViewMod
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Add Category")
+                Text(stringResource(id = R.string.add_category))
             }
             if (showSuccessDialog) {
                 AlertDialog(
                     onDismissRequest = { showSuccessDialog = false },
-                    title = { Text("Success") },
-                    text = { Text("Category added successfully!") },
+                    title = { Text(stringResource(id = R.string.success)) },
+                    text = { Text(stringResource(id = R.string.add_category_successfully)) },
                     confirmButton = {
                         TextButton(onClick = {
                             showSuccessDialog = false
                             navController.navigate(Navigation.CategoryPage.route)
-                            // Navigate back or perform other actions
                         }) {
-                            Text("OK")
+                            Text(stringResource(id = R.string.okay))
                         }
                     }
                 )

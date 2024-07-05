@@ -52,13 +52,13 @@ fun AddBrandPage(navController: NavHostController, viewModel: BrandViewModel = v
             TextField(
                 value = brandName,
                 onValueChange = { viewModel.name.value = it },
-                label = { Text("Brand Name") },
+                label = { Text(stringResource(id = R.string.brand_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 value = brandDescription,
                 onValueChange = { viewModel.description.value = it },
-                label = { Text("Brand Description") },
+                label = { Text(stringResource(id = R.string.brand_description)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
@@ -69,20 +69,19 @@ fun AddBrandPage(navController: NavHostController, viewModel: BrandViewModel = v
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Add Brand")
+                Text(stringResource(id = R.string.add_brand))
             }
             if (showSuccessDialog) {
                 AlertDialog(
                     onDismissRequest = { showSuccessDialog = false },
-                    title = { Text("Success") },
-                    text = { Text("Brand added successfully!") },
+                    title = { Text(stringResource(id = R.string.success)) },
+                    text = { Text(stringResource(id = R.string.add_brand_successfully)) },
                     confirmButton = {
                         TextButton(onClick = {
                             showSuccessDialog = false
                             navController.navigate(Navigation.BrandPage.route)
-                            // Navigate back or perform other actions
                         }) {
-                            Text("OK")
+                            Text(stringResource(id = R.string.okay))
                         }
                     }
                 )

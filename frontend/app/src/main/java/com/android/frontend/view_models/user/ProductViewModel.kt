@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
+import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.config.getCurrentStackTrace
@@ -37,6 +38,12 @@ class ProductViewModel : ViewModel() {
 
     private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
     val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
+
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _hasError = MutableLiveData(false)
+    val hasError: LiveData<Boolean> get() = _hasError
 
     fun getProductDetails(context: Context, id: Long) {
         viewModelScope.launch {
@@ -72,22 +79,31 @@ class ProductViewModel : ViewModel() {
 
     fun fetchAllProducts(context: Context) {
         viewModelScope.launch {
-            try {
-                val accessToken = TokenManager.getInstance().getAccessToken(context)
-                val productService = RetrofitInstance.getProductApi(context)
-                val response = productService.getAllProducts("Bearer $accessToken")
-                if (response.isSuccessful) {
-                    val products = response.body() ?: emptyList()
-                    _productsLiveData.postValue(products)
-                    products.forEach { product ->
-                        fetchProductImage(context, product.id)
-                    }
-                } else {
-                    Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch all products: ${response.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching all products", e)
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
             }
+            val productService = RetrofitInstance.getProductApi(context)
+            val response = Request().executeRequest(context){
+                productService.getAllProducts("Bearer $accessToken")
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Fetched all products")
+                val products = response.body() ?: emptyList()
+                _productsLiveData.postValue(products)
+                products.forEach { product ->
+                    fetchProductImage(context, product.id)
+                }
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch all products: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 
@@ -175,10 +191,10 @@ class ProductViewModel : ViewModel() {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductsByCategory("Bearer $accessToken", categoryName)
-            call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
+            call.enqueue(object : Callback<List<ProductDTO>> {
                 override fun onResponse(
-                    call: retrofit2.Call<List<ProductDTO>>,
-                    response: retrofit2.Response<List<ProductDTO>>
+                    call: Call<List<ProductDTO>>,
+                    response: Response<List<ProductDTO>>
                 ) {
                     if (response.isSuccessful) {
                         val products = response.body() ?: emptyList()
@@ -191,7 +207,7 @@ class ProductViewModel : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
+                override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
                     if (t is SocketTimeoutException) {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching products by category", t)
                     } else {
@@ -207,10 +223,10 @@ class ProductViewModel : ViewModel() {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductsByBrand("Bearer $accessToken", brandName)
-            call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
+            call.enqueue(object : Callback<List<ProductDTO>> {
                 override fun onResponse(
-                    call: retrofit2.Call<List<ProductDTO>>,
-                    response: retrofit2.Response<List<ProductDTO>>
+                    call: Call<List<ProductDTO>>,
+                    response: Response<List<ProductDTO>>
                 ) {
                     if (response.isSuccessful) {
                         val products = response.body() ?: emptyList()
@@ -223,7 +239,7 @@ class ProductViewModel : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
+                override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
                     if (t is SocketTimeoutException) {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching products by brand", t)
                     } else {
@@ -239,10 +255,10 @@ class ProductViewModel : ViewModel() {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             val productService = RetrofitInstance.getProductApi(context)
             val call = productService.getProductsByPriceRange("Bearer $accessToken", min, max)
-            call.enqueue(object : retrofit2.Callback<List<ProductDTO>> {
+            call.enqueue(object : Callback<List<ProductDTO>> {
                 override fun onResponse(
-                    call: retrofit2.Call<List<ProductDTO>>,
-                    response: retrofit2.Response<List<ProductDTO>>
+                    call: Call<List<ProductDTO>>,
+                    response: Response<List<ProductDTO>>
                 ) {
                     if (response.isSuccessful) {
                         val products = response.body() ?: emptyList()
@@ -255,7 +271,7 @@ class ProductViewModel : ViewModel() {
                     }
                 }
 
-                override fun onFailure(call: retrofit2.Call<List<ProductDTO>>, t: Throwable) {
+                override fun onFailure(call: Call<List<ProductDTO>>, t: Throwable) {
                     if (t is SocketTimeoutException) {
                         Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching products by price range", t)
                     } else {
