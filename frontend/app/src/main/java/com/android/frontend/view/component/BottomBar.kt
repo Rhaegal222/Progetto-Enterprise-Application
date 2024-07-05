@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +32,7 @@ fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
         .currentBackStackEntryFlow
         .collectAsState(initial = navController.currentBackStackEntry)
 
-    val cartItemCount by cartViewModel.cartItemCount.collectAsState()
+    val cartItemCount by cartViewModel.cartItemCount.observeAsState(0)
 
     LaunchedEffect(Unit) {
         cartViewModel.getCartForLoggedUser(context)
@@ -73,12 +74,10 @@ fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
                 icon = {
                     Box {
                         Icon(Icons.Default.ShoppingCart, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.cart))
-                        if (cartItemCount > 0) {
-                            Badge(
-                                content = { Text(cartItemCount.toString(), fontSize = 10.sp) },
-                                modifier = Modifier.align(Alignment.TopEnd).offset(4.dp, (-4).dp)
-                            )
-                        }
+                        Badge(
+                            content = { Text(cartItemCount.toString(), fontSize = 10.sp) },
+                            modifier = Modifier.align(Alignment.TopEnd).offset(4.dp, (-4).dp)
+                        )
                     }
                 }
             )
