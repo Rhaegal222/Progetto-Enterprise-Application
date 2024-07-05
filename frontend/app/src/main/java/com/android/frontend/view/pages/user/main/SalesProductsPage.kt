@@ -52,7 +52,6 @@ fun SalesProductsPage(
                         productDTO,
                         navController,
                         cartViewModel,
-                        WishlistView(),
                         productImages?.get(productDTO.id)
                     )
                 }

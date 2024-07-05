@@ -20,8 +20,8 @@ import retrofit2.Response
 import java.net.SocketTimeoutException
 
 class WishlistViewModel : ViewModel() {
-    private val wishlist = MutableLiveData<List<WishlistDTO>>()
-    val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = wishlist
+    private val _wishlist = MutableLiveData<List<WishlistDTO>>()
+    val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = _wishlist
 
     private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
@@ -81,7 +81,7 @@ class WishlistViewModel : ViewModel() {
             ) {
                 if (response.isSuccessful) {
                     response.body()?.let { wishlists ->
-                        wishlist.postValue(wishlists)
+                        _wishlist.postValue(wishlists)
                     }
                 }
             }
@@ -163,5 +163,4 @@ class WishlistViewModel : ViewModel() {
             _isLoading.value = false
         }
     }
-
 }

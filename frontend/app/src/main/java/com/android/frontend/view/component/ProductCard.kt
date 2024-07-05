@@ -1,7 +1,6 @@
 package com.android.frontend.view.component
 
 import android.net.Uri
-import android.widget.PopupMenu
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -46,16 +43,12 @@ import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.view_models.user.CartViewModel
-import com.android.frontend.view_models.user.WishlistViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun ProductCard(
     productDTO: ProductDTO,
     navController: NavController,
     cartViewModel: CartViewModel,
-    wishlistViewModel: WishlistViewModel,
     imageUri: Uri?
 ) {
     val context = LocalContext.current
@@ -148,6 +141,7 @@ fun ProductCard(
                         fontWeight = FontWeight.Bold
                     )
                 }
+                AddToWishlistButton()
             }
         }
     }

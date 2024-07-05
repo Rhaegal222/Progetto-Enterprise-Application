@@ -135,7 +135,6 @@ fun ProductsPage(navController: NavController, productViewModel: ProductViewMode
                             productDTO,
                             navController,
                             cartViewModel,
-                            WishlistView(),
                             productImages?.get(productDTO.id)
                         )
                     }
