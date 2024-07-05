@@ -27,8 +27,8 @@ import com.android.frontend.view.pages.user.main.SalesProductsPage
 import com.android.frontend.view.pages.user.add.AddAddressPage
 import com.android.frontend.view.pages.profile.AddWishlistPage
 import com.android.frontend.view.pages.user.browse.AddressesPage
-import com.android.frontend.view.pages.user.browse.AllProductsPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
+import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view.pages.user.browse.WishlistsPage
 import com.android.frontend.view.pages.user.details.WishlistDetailsPage
 import com.android.frontend.view_models.user.CartViewModel
@@ -46,7 +46,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AccountMenu.route) { AccountMenu(navController) }
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
-        composable(Navigation.ProductsPage.route) { AllProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.ProductsPage.route) { ProductsPage(navController, ProductViewModel(), CartViewModel()) }
         composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
