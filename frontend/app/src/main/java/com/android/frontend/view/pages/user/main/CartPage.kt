@@ -51,7 +51,7 @@ fun CartPage(
 
     LaunchedEffect(Unit) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Loading cart")
-        cartViewModel.loadCart(context)
+        cartViewModel.getCartForLoggedUser(context)
     }
 
     if (isLoading) {
@@ -62,7 +62,7 @@ fun CartPage(
         ErrorDialog(
             title = stringResource(id = R.string.fetching_error),
             onDismiss = { navController.popBackStack() },
-            onRetry = { cartViewModel.loadCart(context) },
+            onRetry = { cartViewModel.getCartForLoggedUser(context) },
             errorMessage = stringResource(id = R.string.cart_load_failed)
         )
     } else {

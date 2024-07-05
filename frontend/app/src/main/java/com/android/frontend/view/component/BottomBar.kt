@@ -34,7 +34,7 @@ fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
     val cartItemCount by cartViewModel.cartItemCount.collectAsState()
 
     LaunchedEffect(Unit) {
-        cartViewModel.loadCart(context)
+        cartViewModel.getCartForLoggedUser(context)
     }
 
     BottomAppBar(

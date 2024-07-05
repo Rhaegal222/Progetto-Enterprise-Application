@@ -37,7 +37,7 @@ fun CheckoutPage(
     var shippingAddress by remember { mutableStateOf<String?>(null) }
 
     val payments by paymentViewModel.paymentMethodsLiveData.observeAsState(emptyList())
-    val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
+    val addresses by addressViewModel.addressesLiveData.observeAsState(emptyList())
     val isLoadingPayments by paymentViewModel.isLoading.observeAsState(false)
     val isLoadingAddresses by addressViewModel.isLoading.observeAsState(false)
 
@@ -46,7 +46,7 @@ fun CheckoutPage(
     LaunchedEffect(Unit) {
         paymentViewModel.getAllPaymentMethods(context)
         addressViewModel.getAllLoggedUserShippingAddresses(context)
-        cartViewModel.loadCart(context)
+        cartViewModel.getCartForLoggedUser(context)
     }
 
     LaunchedEffect(payments, addresses) {

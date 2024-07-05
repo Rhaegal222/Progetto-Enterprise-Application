@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 
 class AddressViewModel : ViewModel() {
 
-    private val _shippingAddresses = MutableLiveData<List<AddressDTO>>()
-    val shippingAddressesLiveData: LiveData<List<AddressDTO>> get() = _shippingAddresses
+    private val _addresses = MutableLiveData<List<AddressDTO>>()
+    val addressesLiveData: LiveData<List<AddressDTO>> get() = _addresses
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
     private val _hasError = MutableLiveData(false)
@@ -96,7 +96,7 @@ class AddressViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Got shipping addresses")
                 response.body()?.let {
-                    _shippingAddresses.value = it
+                    _addresses.value = it
                 }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to get shipping addresses: ${response?.errorBody()?.string()}")

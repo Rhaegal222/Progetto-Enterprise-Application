@@ -38,7 +38,7 @@ fun AddressesPage(navController: NavController, addressViewModel: AddressViewMod
 
     val context = LocalContext.current
 
-    val addresses by addressViewModel.shippingAddressesLiveData.observeAsState(emptyList())
+    val addresses by addressViewModel.addressesLiveData.observeAsState(emptyList())
     val isLoading by addressViewModel.isLoading.observeAsState(false)
     val hasError by addressViewModel.hasError.observeAsState(false)
 
