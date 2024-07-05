@@ -17,16 +17,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -51,13 +48,6 @@ fun SignupPage(navController: NavHostController) {
     val context = LocalContext.current
 
     var isObscured by remember { mutableStateOf(true) }
-
-    val size = with(LocalDensity.current) {
-        DpSize(
-            width = LocalConfiguration.current.screenWidthDp.dp,
-            height = LocalConfiguration.current.screenHeightDp.dp
-        )
-    }
 
     val allFielsValid by derivedStateOf {
         signUpViewModel.firstname.isNotEmpty() &&
@@ -97,7 +87,7 @@ fun SignupPage(navController: NavHostController) {
                 painter = painterResource(R.drawable.logo),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(size.height * 0.25f)
+                    .height(100.dp)
                     .fillMaxWidth()
             )
 
@@ -195,6 +185,7 @@ fun SignupPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         signUpViewModel.registerUser(context) { success, errorMessage ->
                             if (success) {

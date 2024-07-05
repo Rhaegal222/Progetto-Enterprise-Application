@@ -8,13 +8,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -27,13 +24,6 @@ import com.android.frontend.view.component.ServerSwitch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WelcomePage(navController: NavController) {
-
-    val size = with(LocalDensity.current) {
-        DpSize(
-            width = LocalConfiguration.current.screenWidthDp.dp,
-            height = LocalConfiguration.current.screenHeightDp.dp
-        )
-    }
 
     Scaffold (
         modifier = Modifier.fillMaxSize()
@@ -52,7 +42,7 @@ fun WelcomePage(navController: NavController) {
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "ChatBot Image",
                 modifier = Modifier
-                    .height(size.height * 0.4f)
+                    .height(200.dp)
                     .fillMaxWidth()
             )
 
@@ -95,6 +85,7 @@ fun WelcomePage(navController: NavController) {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         navController.navigate(Navigation.SignupPage.route)
                     },

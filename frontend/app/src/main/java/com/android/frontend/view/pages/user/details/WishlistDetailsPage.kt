@@ -125,6 +125,7 @@ fun WishlistDetailsPage(
                     containerColor = Color.Red,
                     contentColor = Color.White
                 ),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier
                     .padding(0.dp)
             ) {
@@ -155,6 +156,7 @@ fun WishlistDetailsPage(
             },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         showDialog.value = false
                         wishlistViewModel.deleteWishlist(context, wishlistId)
@@ -166,6 +168,7 @@ fun WishlistDetailsPage(
             },
             dismissButton = {
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         showDialog.value = false
                     }

@@ -222,6 +222,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         viewModel.deleteProduct(productDTO.id, context)
                         showDialog = false
@@ -231,7 +232,10 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(
+                    onClick = { showDialog = false },
+                    shape = RoundedCornerShape(14.dp),
+                ) {
                     Text(stringResource(id = R.string.cancel))
                 }
             },

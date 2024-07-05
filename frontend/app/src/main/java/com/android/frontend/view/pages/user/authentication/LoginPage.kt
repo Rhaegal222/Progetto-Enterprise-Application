@@ -19,16 +19,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -50,17 +47,10 @@ fun LoginPage(navController: NavHostController) {
     val loginViewModel: LoginViewModel = viewModel()
     val context = LocalContext.current
 
-    var password = remember { mutableStateOf("") }
-    var username = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val username = remember { mutableStateOf("") }
 
     var isObscured by remember { mutableStateOf(true) }
-
-    val size = with(LocalDensity.current) {
-        DpSize(
-            width = LocalConfiguration.current.screenWidthDp.dp,
-            height = LocalConfiguration.current.screenHeightDp.dp
-        )
-    }
 
     val loginErrorString = stringResource(id = R.string.login_failed)
 
@@ -95,7 +85,7 @@ fun LoginPage(navController: NavHostController) {
                 painter = painterResource(R.drawable.logo),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(size.height * 0.25f)
+                    .height(100.dp)
                     .fillMaxWidth()
             )
 
@@ -191,6 +181,7 @@ fun LoginPage(navController: NavHostController) {
                         }
                     }
                 },
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.width(200.dp),
                 colors = ButtonColorScheme.buttonColors()
             ) {

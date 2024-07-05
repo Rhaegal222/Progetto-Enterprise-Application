@@ -290,6 +290,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         viewModel.deleteUser(userDTO.id, context)
                         println("User ${userDTO.firstName} ${userDTO.lastName} ${userDTO.id} deleted")
@@ -300,7 +301,10 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                 }
             },
             dismissButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(
+                    shape = RoundedCornerShape(14.dp),
+                    onClick = { showDialog = false
+                    }) {
                     Text(stringResource(id = R.string.cancel))
                 }
             },
@@ -316,6 +320,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             onDismissRequest = { showRoleDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         viewModel.changeUserRole(userDTO.id, selectedRole.toString(), context)
                         showRoleDialog = false
@@ -325,7 +330,11 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                 }
             },
             dismissButton = {
-                Button(onClick = { showRoleDialog = false }) {
+                Button(
+                    shape = RoundedCornerShape(14.dp),
+                    onClick = { showRoleDialog = false }
+                )
+                {
                     Text(stringResource(id = R.string.cancel))
                 }
             },
@@ -360,6 +369,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
             onDismissRequest = { showSelfRoleChangeDialog = false },
             confirmButton = {
                 Button(
+                    shape = RoundedCornerShape(14.dp),
                     onClick = {
                         viewModel.changeUserRole(userDTO.id, selectedRole.toString(), context)
                         viewModel.logout(context)
@@ -370,7 +380,10 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                 }
             },
             dismissButton = {
-                Button(onClick = { showSelfRoleChangeDialog = false }) {
+                Button(
+                    shape = RoundedCornerShape(14.dp),
+                    onClick = { showSelfRoleChangeDialog = false }
+                ) {
                     Text(stringResource(id = R.string.cancel))
                 }
             },

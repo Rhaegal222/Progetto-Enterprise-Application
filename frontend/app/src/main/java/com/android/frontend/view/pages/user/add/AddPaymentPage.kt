@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -231,6 +232,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
+                        shape = RoundedCornerShape(14.dp),
                         enabled = allFieldsValid,
                         onClick = {
                             try {

@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -139,6 +140,7 @@ fun ThemePage(navController: NavHostController) {
                     setAppTheme(context, isDarkTheme)
                     navController.popBackStack()
                 },
+                shape = RoundedCornerShape(14.dp),
                 colors = ButtonColorScheme.buttonColors()
             ) {
                 Text(text = "Apply Theme")
