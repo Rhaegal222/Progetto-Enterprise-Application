@@ -165,7 +165,7 @@ fun ChangePasswordPage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     changePasswordViewModel.changePassword(context) { success ->
                         if (success) {

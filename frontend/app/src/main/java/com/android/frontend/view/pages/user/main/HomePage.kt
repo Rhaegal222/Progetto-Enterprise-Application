@@ -132,7 +132,7 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                 .padding(innerPadding)
         ) {
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = { navController.navigate(Navigation.SalesProductsPage.route) }
             ) {
                 Text("Offerte del giorno")

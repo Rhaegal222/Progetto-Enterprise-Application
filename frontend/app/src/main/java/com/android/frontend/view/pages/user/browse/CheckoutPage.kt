@@ -74,7 +74,7 @@ fun CheckoutPage(
             CircularProgressIndicator(modifier = Modifier.padding(bottom = 16.dp))
         } else if (paymentMethod == null) {
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
@@ -106,7 +106,7 @@ fun CheckoutPage(
             CircularProgressIndicator(modifier = Modifier.padding(bottom = 16.dp))
         } else if (shippingAddress == null) {
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     navController.navigate(Navigation.AddAddressPage.route)
                 },
@@ -132,7 +132,7 @@ fun CheckoutPage(
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
-            shape = RoundedCornerShape(14.dp),
+            shape = RoundedCornerShape(12.dp),
             onClick = {
                 if (paymentMethod != null && shippingAddress != null) {
                     val paymentMethodId = payments.find { it.cardNumber == paymentMethod }?.id

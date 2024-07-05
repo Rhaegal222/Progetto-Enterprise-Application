@@ -232,7 +232,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         enabled = allFieldsValid,
                         onClick = {
                             try {

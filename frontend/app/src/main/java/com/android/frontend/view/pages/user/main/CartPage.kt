@@ -103,7 +103,7 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                                 containerColor = Color.Red,
                                 contentColor = Color.White
                             ),
-                            shape = RoundedCornerShape(14.dp),
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .padding(8.dp)
                         ) {
@@ -113,7 +113,7 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                             onClick = {
                                 navController.navigate(Navigation.CheckoutPage.route)
                             },
-                            shape = RoundedCornerShape(14.dp),
+                            shape = RoundedCornerShape(12.dp),
                             modifier = Modifier
                                 .padding(8.dp)
                         ) {

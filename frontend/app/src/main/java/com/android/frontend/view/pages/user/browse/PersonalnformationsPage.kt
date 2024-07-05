@@ -225,7 +225,7 @@ fun PersonalInformationContent(
                 ) {
 
                     Button(
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         onClick = {
                             if (email != firstName) {
                                 showEmailChangeDialog = true
@@ -249,7 +249,7 @@ fun PersonalInformationContent(
                     }
 
                     Button(
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         onClick = {
                             isEditMode = false
                             firstName = previusFirstName
@@ -267,7 +267,7 @@ fun PersonalInformationContent(
                 }
             } else {
                 Button(
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         isEditMode = true
                     },

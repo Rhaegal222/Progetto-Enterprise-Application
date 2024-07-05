@@ -68,7 +68,7 @@ fun AddBrandPage(navController: NavHostController, viewModel: BrandViewModel = v
                     viewModel.addBrand(brandCreateDTO, context)
                     showSuccessDialog = true
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(stringResource(id = R.string.add_brand))

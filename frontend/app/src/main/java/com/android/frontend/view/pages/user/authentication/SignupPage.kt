@@ -185,7 +185,7 @@ fun SignupPage(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         signUpViewModel.registerUser(context) { success, errorMessage ->
                             if (success) {
@@ -228,7 +228,7 @@ fun SignupPage(navController: NavHostController) {
                         }
                     }
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.width(200.dp),
                 colors = OutlinedButtonColorScheme.outlinedButtonColors()
             ) {

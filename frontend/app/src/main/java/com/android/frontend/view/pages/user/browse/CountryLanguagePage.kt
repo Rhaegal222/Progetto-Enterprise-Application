@@ -105,7 +105,7 @@ fun CountryLanguagePage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     setLocale(context, selectedLanguage)
                     navController.popBackStack()

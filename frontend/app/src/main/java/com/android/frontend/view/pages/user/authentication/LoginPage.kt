@@ -181,7 +181,7 @@ fun LoginPage(navController: NavHostController) {
                         }
                     }
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.width(200.dp),
                 colors = ButtonColorScheme.buttonColors()
             ) {
@@ -208,7 +208,7 @@ fun LoginPage(navController: NavHostController) {
                     }
                 },
                 modifier = Modifier.width(200.dp),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = OutlinedButtonColorScheme.outlinedButtonColors()
             ) {
                 Icon(

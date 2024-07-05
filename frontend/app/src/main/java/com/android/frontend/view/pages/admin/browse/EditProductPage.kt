@@ -356,7 +356,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                         )
                         showSuccessDialog = true
                     },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Text(stringResource(id = R.string.save_changes))

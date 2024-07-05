@@ -84,7 +84,7 @@ fun WishlistsPage(
                 onClick = {
                     navController.navigate(Navigation.AddWishlistPage.route)
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonColorScheme.buttonColors(),
                 modifier = Modifier
                     .padding(0.dp)

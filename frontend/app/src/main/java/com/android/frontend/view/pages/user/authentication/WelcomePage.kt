@@ -73,7 +73,7 @@ fun WelcomePage(navController: NavController) {
                         navController.navigate(Navigation.LoginPage.route)
                     },
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = OutlinedButtonColorScheme.outlinedButtonColors()
                 ) {
                     Text(
@@ -85,7 +85,7 @@ fun WelcomePage(navController: NavController) {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         navController.navigate(Navigation.SignupPage.route)
                     },

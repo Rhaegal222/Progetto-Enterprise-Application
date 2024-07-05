@@ -182,7 +182,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                     Button(
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.size(46.dp),
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
                             navController.navigate("${Navigation.EditProductPage}/${productDTO.id}")
@@ -200,7 +200,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
                     Button(
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.size(46.dp),
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
                             showDialog = true
@@ -222,7 +222,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 Button(
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         viewModel.deleteProduct(productDTO.id, context)
                         showDialog = false
@@ -234,7 +234,7 @@ fun ProductsCard(productDTO: ProductDTO, navController: NavController, viewModel
             dismissButton = {
                 Button(
                     onClick = { showDialog = false },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(stringResource(id = R.string.cancel))
                 }

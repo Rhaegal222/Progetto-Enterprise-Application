@@ -287,7 +287,7 @@ fun AddProductPage(navController: NavHostController, viewModel: AddProductViewMo
                         viewModel.addProduct(context)
                         showSuccessDialog = true
                     },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(id = R.string.add_product))

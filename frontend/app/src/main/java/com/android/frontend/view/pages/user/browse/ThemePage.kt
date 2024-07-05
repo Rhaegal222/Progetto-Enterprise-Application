@@ -140,7 +140,7 @@ fun ThemePage(navController: NavHostController) {
                     setAppTheme(context, isDarkTheme)
                     navController.popBackStack()
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = ButtonColorScheme.buttonColors()
             ) {
                 Text(text = "Apply Theme")

@@ -195,7 +195,7 @@ fun InputDialog(
         },
         confirmButton = {
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = onConfirm
             )
             {
@@ -204,7 +204,7 @@ fun InputDialog(
         },
         dismissButton = {
             Button(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = onDismiss
             ) {
                 Text(stringResource(id = R.string.dismiss))

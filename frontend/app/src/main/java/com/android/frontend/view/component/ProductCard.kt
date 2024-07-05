@@ -125,7 +125,7 @@ fun ProductCard(
             ) {
                 OutlinedButton(
                     colors = OutlinedButtonColorScheme.outlinedButtonColors(),
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     onClick = {
                         cartViewModel.addProductToCart(productDTO.id, 1, context)
                     }
