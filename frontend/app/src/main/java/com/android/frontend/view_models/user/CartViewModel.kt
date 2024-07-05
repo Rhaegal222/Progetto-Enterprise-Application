@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.CartDTO
+import com.android.frontend.dto.CartItemDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.creation.CartItemCreateDTO
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,8 @@ import java.util.UUID
 class CartViewModel : ViewModel() {
     private val _cart = MutableLiveData<CartDTO>()
     val cart: LiveData<CartDTO?> get() = _cart
+
+    val cartItems: LiveData<List<CartItemDTO>> get() = cart.map { it?.items ?: emptyList() }
 
     private val _cartItemCount = MutableStateFlow(0)
     val cartItemCount: StateFlow<Int> = _cartItemCount
@@ -64,7 +68,7 @@ class CartViewModel : ViewModel() {
                 _hasError.value = true
             }
             _isLoading.value = false
-            }
+        }
     }
 
     fun getProductDetails(context: Context, id: Long): Flow<ProductDTO?> {

@@ -45,7 +45,9 @@ fun CartPage(
 ) {
 
     val context = LocalContext.current
-    val cart by cartViewModel.cart.collectAsState()
+    val cart by cartViewModel.cart.observeAsState(null)
+    val cartItems by cartViewModel.cartItems.observeAsState()
+    val cartItemCount by cartViewModel.cartItemCount.collectAsState(null)
     val isLoading by cartViewModel.isLoading.observeAsState(false)
     val hasError by cartViewModel.hasError.observeAsState(false)
 
@@ -66,19 +68,19 @@ fun CartPage(
             errorMessage = stringResource(id = R.string.cart_load_failed)
         )
     } else {
-        CartContent(navController, cart, cartViewModel, context)
+        cartItems?.let { CartContent(navController, it, cartViewModel, context) }
     }
 }
 
 @Composable
 fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewModel: CartViewModel, context: Context) {
     Column {
-        cart?.let {
+        cart.let {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp, 0.dp)) {
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(it.items) { cartItem ->
+                    items(it) { cartItem ->
                         val productDetails by cartViewModel.getProductDetails(
                             context,
                             cartItem.productId
