@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.android.frontend.view.pages.admin.browse.ProductPage
 import com.android.frontend.view.pages.user.browse.ChangePasswordPage
 import com.android.frontend.view.pages.user.menu.AccountMenu
 import com.android.frontend.view.pages.user.menu.OtherMenu

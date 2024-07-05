@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.android.frontend.view.pages.user.browse.ProductsCard
+import com.android.frontend.view.component.ProductCard
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 
@@ -49,7 +49,7 @@ fun SalesProductsPage(
                     .padding(innerPadding)
             ) {
                 items(products ?: emptyList()) { productDTO ->
-                    ProductsCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
+                    ProductCard(productDTO, navController, productViewModel, cartViewModel, productImages?.get(productDTO.id))
                 }
             }
         }
