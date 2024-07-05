@@ -100,8 +100,6 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-
-
     fun getAllLoggedUserWishlists(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true

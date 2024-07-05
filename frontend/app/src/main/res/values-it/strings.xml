@@ -193,4 +193,5 @@
     <string name="add_to_wishlist">Aggiungi alla lista dei desideri</string>
     <string name="fullname">Nome completo</string>
     <string name="postal_code">Codice postale</string>
+    <string name="wishlist_failed_to_load">Caricamento della lista dei desideri fallito</string>
 </resources>

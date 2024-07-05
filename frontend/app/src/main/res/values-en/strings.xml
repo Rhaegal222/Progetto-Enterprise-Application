@@ -193,4 +193,6 @@
     <string name="remove_wishlist">Remove Wishlist</string>
     <string name="fullname">Full name</string>
     <string name="postal_code">Postal code</string>
+    <string name="wishlist_failed_to_load">Wishlist failed to load</string>
+    <string name="wishlist_empty">No wishlists</string>
 </resources>
