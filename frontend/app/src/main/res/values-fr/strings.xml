@@ -189,4 +189,8 @@
     <string name="add_category_successfully">Catégorie ajoutée avec succès !</string>
     <string name="order_details">Order details</string>
     <string name="remove_wishlist">Supprimer la liste souhaits</string>
+    <string name="shipping_price">Prix de livraison</string>
+    <string name="add_to_wishlist">Ajouter à la liste de souhaits</string>
+    <string name="fullname">Nom complet</string>
+    <string name="postal_code">Code postal</string>
 </resources>

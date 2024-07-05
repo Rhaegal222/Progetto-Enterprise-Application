@@ -81,6 +81,7 @@ fun SignupPage(navController: NavHostController) {
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues).padding(16.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
 
             Image(
@@ -242,8 +243,6 @@ fun SignupPage(navController: NavHostController) {
 
                 Text( text = stringResource(id = R.string.sign_up_with_google) )
             }
-
-            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

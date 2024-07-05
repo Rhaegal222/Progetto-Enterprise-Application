@@ -79,6 +79,7 @@ fun LoginPage(navController: NavHostController) {
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues).padding(16.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
 
             Image(
