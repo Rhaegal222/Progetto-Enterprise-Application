@@ -115,7 +115,7 @@
     <string name="users">Utilisateurs</string>
     <string name="checkout">Checkout</string>
     <string name="payment_method">Payment Method:</string>
-    <string name="shipping_address">Shipping Address:</string>
+    <string name="shipping_address">Adresse de livraison</string>
     <string name="purchase">Purchase</string>
     <string name="add_shipping_address">Ajouter l\'adresse de livraison</string>
     <string name="fetching_error_message">Une erreur s\'est produite lors de la récupération des données. Veuillez réessayer plus tard.</string>
@@ -132,4 +132,8 @@
     <string name="dismiss">Dismiss</string>
     <string name="product_image">Product Image</string>
     <string name="add_to_cart">Add to Cart</string>
+    <string name="default_address">Adresse par défaut</string>
+    <string name="remove">Supprimer</string>
+    <string name="add_additional_info">Ajouter des informations supplémentaires</string>
+    <string name="cart_load_failed">Échec du chargement du panier</string>
 </resources>

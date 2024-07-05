@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 
 object CardColorScheme {
 
-    val containerColorLight = Color(0xFFC0C0C0) // Grigio chiaro per il contenitore
+    val containerColorLight = Color(0xFFFFFFFF) // Grigio chiaro per il contenitore
     val contentColorLight = Color(0xFF000000)   // Nero per il contenuto
     val disabledContainerColorLight = Color(0xFFB0B0B0) // Grigio medio per il contenitore disabilitato
     val disabledContentColorLight = Color(0xFF808080)   // Grigio scuro per il contenuto disabilitato

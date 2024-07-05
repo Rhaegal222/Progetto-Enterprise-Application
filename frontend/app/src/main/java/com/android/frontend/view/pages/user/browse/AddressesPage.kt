@@ -34,7 +34,7 @@ import com.android.frontend.view.component.ErrorDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ShippingAddressesPage(navController: NavController, addressViewModel: AddressViewModel = viewModel()) {
+fun AddressesPage(navController: NavController, addressViewModel: AddressViewModel = viewModel()) {
 
     val context = LocalContext.current
 
@@ -132,13 +132,17 @@ fun AddressesContent(
                     text = stringResource(id = R.string.no_shipping_addresses),
                     modifier = Modifier.padding(16.dp)
                 )
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
+                for (address in addresses) {
+                    AddressCard(
+                        address = address,
+                        onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            for (address in addresses) {
-                AddressCard(
-                    address = address,
-                    onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
-            }
+
         }
     }
 }

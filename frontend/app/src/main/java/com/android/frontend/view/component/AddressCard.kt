@@ -1,5 +1,6 @@
 package com.android.frontend.view.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -8,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.frontend.R
 import com.android.frontend.dto.AddressDTO
-import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
@@ -22,76 +23,95 @@ fun AddressCard(address: AddressDTO, onRemove: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        shape = RoundedCornerShape(8.dp),
+            .padding(8.dp, 2.dp),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(2.dp, Color.Gray),
         colors = CardColorScheme.cardColors()
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(8.dp, 0.dp),
         ) {
-            if (address.isDefault) {
-                Text(
-                    text = stringResource(R.string.default_address),
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.set_as_default),
-                    color = Color.Gray,
-                    fontSize = 12.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = address.fullName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            AddressRow(label = "Via Risorgimento, 80", value = "")
-            Spacer(modifier = Modifier.height(4.dp))
-            AddressRow(label = "Comerconi, Vibo Valentia 89844", value = "")
-            Spacer(modifier = Modifier.height(4.dp))
-            AddressRow(label = "Italia", value = "")
-            Spacer(modifier = Modifier.height(4.dp))
-            AddressRow(label = "Numero di telefono:", value = address.phoneNumber)
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { },
-                colors = TextButtonColorScheme.textButtonColors()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
             ) {
-                Text(text = "Aggiungi istruzioni di consegna")
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Pulsanti Modifica e Rimuovi
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedButton(
-                    onClick = { },
-                    colors = OutlinedButtonColorScheme.outlinedButtonColors()
-                ) {
-                    Text(text = "Modifica")
+                if (address.isDefault) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.default_address),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End
+                    )
                 }
 
-                OutlinedButton(
-                    onClick = onRemove,
-                    colors = OutlinedButtonColorScheme.outlinedButtonColors()
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = address.fullName,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                AddressRow(value = address.street)
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                AddressRow(value = address.additionalInfo)
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Row() {
+
+                    if (address.city.isNotEmpty())
+                        AddressRow(value = address.city + ", ")
+
+
+                    if (address.postalCode.isNotEmpty())
+                        AddressRow(value = address.postalCode + " ")
+
+                    if (address.province.isNotEmpty())
+                        AddressRow(value = address.province)
+
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                AddressRow(value = address.country)
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (address.additionalInfo.isEmpty())
+                    TextButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { },
+                        colors = TextButtonColorScheme.textButtonColors()
+                    ) {
+                        Text(text = stringResource(id = R.string.add_additional_info))
+                    }
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Rimuovi")
+                    OutlinedButton(
+                        onClick = { },
+                        colors = OutlinedButtonColorScheme.outlinedButtonColors()
+                    ) {
+                        Text(text = stringResource(id = R.string.edit))
+                    }
+
+                    OutlinedButton(
+                        onClick = onRemove,
+                        colors = OutlinedButtonColorScheme.outlinedButtonColors()
+                    ) {
+                        Text(text = stringResource(id = R.string.remove))
+                    }
                 }
             }
         }
@@ -99,15 +119,10 @@ fun AddressCard(address: AddressDTO, onRemove: () -> Unit) {
 }
 
 @Composable
-fun AddressRow(label: String, value: String) {
+fun AddressRow(value: String) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label)
-
-        Spacer(modifier = Modifier.width(8.dp))
-
         if (value.isNotEmpty()) {
             Text(text = value)
         }

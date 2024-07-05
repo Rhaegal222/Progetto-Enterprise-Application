@@ -26,9 +26,9 @@ import com.android.frontend.view.pages.user.details.SaleProductDetailsPage
 import com.android.frontend.view.pages.user.main.SalesProductsPage
 import com.android.frontend.view.pages.user.add.AddAddressPage
 import com.android.frontend.view.pages.profile.AddWishlistPage
+import com.android.frontend.view.pages.user.browse.AddressesPage
 import com.android.frontend.view.pages.user.browse.AllProductsPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
-import com.android.frontend.view.pages.user.browse.ShippingAddressesPage
 import com.android.frontend.view.pages.user.browse.WishlistsPage
 import com.android.frontend.view.pages.user.details.WishlistDetailsPage
 import com.android.frontend.view_models.user.CartViewModel
@@ -53,7 +53,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
         composable(Navigation.ThemePage.route) { ThemePage(navController) }
         composable(Navigation.CountryLanguagePage.route) { CountryLanguagePage(navController) }
-        composable(Navigation.ShippingAddressesPage.route) { ShippingAddressesPage(navController) }
+        composable(Navigation.AddressesPage.route) { AddressesPage(navController) }
         composable(Navigation.AddAddressPage.route) { AddAddressPage(navController) }
         composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
         composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }

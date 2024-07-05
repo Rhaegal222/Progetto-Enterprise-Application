@@ -72,7 +72,7 @@
     <string name="enter_email">Enter the email</string>
     <string name="recover_password_text">We will send you an email with instructions to recover your password to your email address.</string>
     <string name="add_payment_method">Add payment method</string>
-    <string name="set_as_default">Set as Default</string>
+    <string name="set_as_default">Set as default</string>
     <string name="theme">Theme</string>
     <string name="country_and_language">Country and language</string>
     <string name="delete">Delete</string>
@@ -115,7 +115,7 @@
     <string name="users">Users</string>
     <string name="checkout">Checkout</string>
     <string name="payment_method">Payment Method:</string>
-    <string name="shipping_address">Shipping Address:</string>
+    <string name="shipping_address">Shipping address</string>
     <string name="purchase">Purchase</string>
     <string name="add_shipping_address">Add shipping address</string>
     <string name="fetching_error_message">An error occurred while fetching the data. Please try again later.</string>
@@ -133,4 +133,7 @@
     <string name="product_image">Product Image</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="default_address">Default address</string>
+    <string name="remove">Remove</string>
+    <string name="add_additional_info">Add additional information</string>
+    <string name="cart_load_failed">Cart load failed</string>
 </resources>

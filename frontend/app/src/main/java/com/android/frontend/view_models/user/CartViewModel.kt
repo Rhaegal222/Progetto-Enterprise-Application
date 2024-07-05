@@ -31,6 +31,11 @@ class CartViewModel : ViewModel() {
 
     private val productDetailsCache = mutableMapOf<Long, MutableStateFlow<ProductDTO?>>()
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+    private val _hasError = MutableLiveData(false)
+    val hasError: LiveData<Boolean> get() = _hasError
+
     fun getProductDetails(context: Context, id: Long): Flow<ProductDTO?> {
         if (!productDetailsCache.containsKey(id)) {
             productDetailsCache[id] = MutableStateFlow(null)

@@ -68,7 +68,7 @@ fun AddAddressPage(
                     Text(text = stringResource(id = R.string.add_address))
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Navigation.ShippingAddressesPage.route) }) {
+                    IconButton(onClick = { navController.navigate(Navigation.AddressesPage.route) }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
