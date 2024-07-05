@@ -41,7 +41,7 @@ fun CheckoutPage(
     val isLoadingPayments by paymentViewModel.isLoading.observeAsState(false)
     val isLoadingAddresses by addressViewModel.isLoading.observeAsState(false)
 
-    val cart by cartViewModel.cart.collectAsState()
+    val cartItems by cartViewModel.cartItems.observeAsState()
 
     LaunchedEffect(Unit) {
         paymentViewModel.getAllPaymentMethods(context)
@@ -141,7 +141,7 @@ fun CheckoutPage(
                         )
                         orderViewModel.addOrder(context, orderCreateDTO)
 
-                        cart?.items?.forEach { cartItem ->
+                        cartItems?.forEach { cartItem ->
                             cartViewModel.removeCartItem(cartItem.id, context)
                         }
                         navController.navigate(Navigation.CartPage.route)
