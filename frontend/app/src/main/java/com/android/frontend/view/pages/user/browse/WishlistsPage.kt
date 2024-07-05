@@ -162,13 +162,9 @@ fun WishlistCard(wishlist: WishlistDTO, navController: NavController) {
             Column {
                 Text(
                     text = wishlist.wishlistName,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = "${wishlist.products?.size ?: 0} items",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
             }
         }

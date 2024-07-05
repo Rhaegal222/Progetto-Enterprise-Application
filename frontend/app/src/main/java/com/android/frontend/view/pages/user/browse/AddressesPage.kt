@@ -1,7 +1,6 @@
 package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -141,10 +140,7 @@ fun AddressesContent(
                         address = address,
                         onRemove = { addressViewModel.deleteShippingAddress(context, address.id) })
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
-
-
         }
     }
 }
