@@ -2,6 +2,7 @@ package com.android.frontend.view.pages.admin.add
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -59,6 +60,7 @@ fun AddCategoryPage(navController: NavHostController, viewModel: CategoryViewMod
                     viewModel.addCategory(categoryCreateDTO, context)
                     showSuccessDialog = true
                 },
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(stringResource(id = R.string.add_category))

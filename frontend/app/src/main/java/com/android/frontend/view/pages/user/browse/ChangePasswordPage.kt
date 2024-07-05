@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
@@ -164,6 +165,7 @@ fun ChangePasswordPage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     changePasswordViewModel.changePassword(context) { success ->
                         if (success) {

@@ -19,8 +19,8 @@ class WishlistViewModel : ViewModel() {
     private val _wishlist = MutableLiveData<List<WishlistDTO>>()
     val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = _wishlist
 
-    private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
-    val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
+    private val _product = MutableLiveData<List<ProductDTO>>()
+    val productsLiveData: LiveData<List<ProductDTO>> = _product
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -69,6 +69,37 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
+    fun deleteWishlist(context: Context, wishlistId: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.deleteWishlist("Bearer $accessToken", wishlistId)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Deleted wishlist with ID: $wishlistId")
+                getAllLoggedUserWishlists(context)
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to delete wishlist: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun getAllLoggedUserWishlists(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -87,23 +118,17 @@ class WishlistViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlists ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Fetched wishlists: $wishlists")
-                    wishlistLiveData.postValue(wishlists)
-                    _isLoading.value = false
+                    _wishlist.value = wishlists
                 }
             } else {
-                Log.e(
-                    "DEBUG",
-                    "${getCurrentStackTrace()} Failed to fetch wishlists: ${
-                        response?.errorBody()?.string() ?: "Empty response"
-                    }"
-                )
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch wishlists: ${response?.errorBody()?.string() ?: "Empty response"}")
                 _hasError.value = true
-                _isLoading.value = false
             }
+            _isLoading.value = false
         }
     }
 
-    fun getWishlistDetails(context: Context, wishlistId: Long,wishlistName: String) {
+    fun getWishlistDetails(context: Context, wishlistId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -119,25 +144,18 @@ class WishlistViewModel : ViewModel() {
                 wishlistService.getProductByWishlistId("Bearer $accessToken", wishlistId)
             }
             if (response?.isSuccessful == true) {
-                response.body()?.let { products ->
-                    Log.d("DEBUG", "${getCurrentStackTrace()} Fetched products: $products")
-                    _productsLiveData.postValue(products)
-                    _isLoading.value = false
+                response.body()?.let {product -> Log.d("DEBUG", "${getCurrentStackTrace()} Fetched products: $product")
+                    _product.value = product
                 }
             } else {
-                Log.e(
-                    "DEBUG",
-                    "${getCurrentStackTrace()} Failed to fetch products: ${
-                        response?.errorBody()?.string() ?: "Empty response"
-                    }"
-                )
+                Log.e("DEBUG",
+                    "${getCurrentStackTrace()} Failed to fetch products: ${ response?.errorBody()?.string() ?: "Empty response"}")
                 _hasError.value = true
-                _isLoading.value = false
             }
         }
     }
 
-    fun addProductToWishlist(context: Context, productId: Long, wishlistId: Long) {
+    fun addProductToWishlist(context: Context,wishlistId: Long, productId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -150,7 +168,7 @@ class WishlistViewModel : ViewModel() {
             }
             val wishlistService = RetrofitInstance.getWishlistApi(context)
             val response = Request().executeRequest(context) {
-                wishlistService.addProductToWishlist("Bearer $accessToken", productId, wishlistId)
+                wishlistService.addProductToWishlist("Bearer $accessToken", wishlistId, productId)
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlist ->
@@ -161,6 +179,43 @@ class WishlistViewModel : ViewModel() {
                 Log.e(
                     "DEBUG",
                     "${getCurrentStackTrace()} Failed to add product to wishlist: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
+    fun removeProductFromWishlist(context: Context, productId: Long, wishlistId: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.removeProductsFromWishlist(
+                    "Bearer $accessToken",
+                    wishlistId,
+                    productId
+                )
+            }
+            if (response?.isSuccessful == true) {
+                Log.d(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Removed product from wishlist: $productId"
+                )
+                getWishlistDetails(context, wishlistId)
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to remove product from wishlist: ${
                         response?.errorBody()?.string() ?: "Empty response"
                     }"
                 )

@@ -190,4 +190,24 @@
     <string name="order_details">Order details</string>
     <string name="shipping_price">Shipping price</string>
     <string name="add_to_wishlist">Add to wishlist</string>
+    <string name="orders_load_failed">orders load failed</string>
+    <string name="orders">Orders</string>
+    <string name="no_orders">No orders available</string>
+    <string name="order_items_load_failed">Failed to load order items</string>
+    <string name="product_id">Product ID:</string>
+    <string name="quantity">Quantity:</string>
+    <string name="partial_cost">Partial Cost: %s</string>
+    <string name="total_cost">Total Cost:</string>
+    <string name="created_at">Created At:</string>
+    <string name="address">Address:</string>
+    <string name="order_items">Order Items:</string>
+    <string name="remove_wishlist">Remove Wishlist</string>
+    <string name="fullname">Full name</string>
+    <string name="postal_code">Postal code</string>
+    <string name="wishlist_failed_to_load">Wishlist failed to load</string>
+    <string name="wishlist_empty">No wishlists</string>
+    <string name="Ask_remove_product_wishlist">Are you sure you want to remove this product from the wishlist?</string>
+    <string name="remove_from_wishlist">Remove from wishlist</string>
+    <string name="Ask_Remove_wishlist">Are you sure you want to delete this wishlist?</string>
+    <string name="product_name_">Product Name:</string>
 </resources>

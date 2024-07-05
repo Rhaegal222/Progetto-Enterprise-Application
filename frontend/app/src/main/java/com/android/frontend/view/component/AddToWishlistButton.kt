@@ -53,7 +53,7 @@ fun AddToWishlistButton(
                 }
             }
         },
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(12.dp),
         // colors = OutlinedButtonColorScheme.outlinedButtonColors()
         modifier = Modifier.pointerInput(Unit) {
 

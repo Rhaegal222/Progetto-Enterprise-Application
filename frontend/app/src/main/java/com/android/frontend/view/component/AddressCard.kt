@@ -101,7 +101,7 @@ fun AddressCard(address: AddressDTO, onRemove: () -> Unit) {
                 ) {
                     OutlinedButton(
                         onClick = { },
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         colors = OutlinedButtonColorScheme.outlinedButtonColors()
                     ) {
                         Text(text = stringResource(id = R.string.edit))
@@ -109,7 +109,7 @@ fun AddressCard(address: AddressDTO, onRemove: () -> Unit) {
 
                     OutlinedButton(
                         onClick = onRemove,
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(12.dp),
                         colors = OutlinedButtonColorScheme.outlinedButtonColors()
                     ) {
                         Text(text = stringResource(id = R.string.remove))

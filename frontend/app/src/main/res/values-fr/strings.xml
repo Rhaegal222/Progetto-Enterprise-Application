@@ -188,4 +188,25 @@
     <string name="category_name">Nom de catégorie</string>
     <string name="add_category_successfully">Catégorie ajoutée avec succès !</string>
     <string name="order_details">Order details</string>
+    <string name="orders_load_failed">orders load failed</string>
+    <string name="orders">Orders</string>
+    <string name="no_orders">No orders available</string>
+    <string name="order_items_load_failed">Failed to load order items</string>
+    <string name="product_id">Product ID:</string>
+    <string name="quantity">Quantity:</string>
+    <string name="partial_cost">Partial Cost: %s</string>
+    <string name="total_cost">Total Cost:</string>
+    <string name="address">Address:</string>
+    <string name="order_items">Order Items:</string>
+    <string name="remove_wishlist">Supprimer la liste souhaits</string>
+    <string name="shipping_price">Prix de livraison</string>
+    <string name="add_to_wishlist">Ajouter à la liste de souhaits</string>
+    <string name="fullname">Nom complet</string>
+    <string name="postal_code">Code postal</string>
+    <string name="wishlist_failed_to_load">Échec du chargement de la liste de souhaits</string>
+    <string name="wishlist_empty">Aucune liste de souhaits</string>
+    <string name="Ask_remove_product_wishlist">Êtes-vous sûr de vouloir supprimer ce produit de la liste de souhaits ?</string>
+    <string name="remove_from_wishlist">Supprimer de la liste de souhaits</string>
+    <string name="Ask_Remove_wishlist">Êtes-vous sûr de vouloir supprimer cette liste de souhaits ?</string>
+    <string name="product_name_">Product Name:</string>
 </resources>

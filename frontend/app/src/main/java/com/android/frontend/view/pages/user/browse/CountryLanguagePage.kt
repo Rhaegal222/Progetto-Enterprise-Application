@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -104,6 +105,7 @@ fun CountryLanguagePage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     setLocale(context, selectedLanguage)
                     navController.popBackStack()

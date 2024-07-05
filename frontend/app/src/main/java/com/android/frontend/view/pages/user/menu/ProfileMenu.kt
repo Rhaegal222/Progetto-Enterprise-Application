@@ -51,7 +51,7 @@ fun ProfileMenuItem(navController: NavController, icon: ImageVector, textResId: 
             .padding(8.dp)
             .clickable {
                 when (textResId) {
-                    // R.string.my_orders ->
+                    R.string.my_orders -> navController.navigate(Navigation.OrdersPage.route)
                      R.string.wishlist ->navController.navigate(Navigation.WishlistsPage.route)
                     R.string.payment_methods -> navController.navigate(Navigation.PaymentsPage.route)
                     R.string.shipping_addresses -> navController.navigate(Navigation.AddressesPage.route)

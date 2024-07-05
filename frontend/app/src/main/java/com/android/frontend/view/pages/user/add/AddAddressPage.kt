@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -100,7 +101,7 @@ fun AddAddressPage(
                         onValueChange = {
                             addressViewModel.fullName = it
                         },
-                        label = { Text(stringResource(id = R.string.firstname)) },
+                        label = { Text(stringResource(id = R.string.fullname)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next
                         ),
@@ -114,6 +115,8 @@ fun AddAddressPage(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
+                    // Aggiungere un menu a discesa con i paesi di tutto il mondo e il prefisso
+
                     OutlinedTextField(
                         colors = OutlinedTextFieldColorScheme.colors(),
                         singleLine = true,
@@ -121,7 +124,7 @@ fun AddAddressPage(
                         onValueChange = {
                             addressViewModel.phoneNumber = it
                         },
-                        label = { Text(stringResource(id = R.string.lastname)) },
+                        label = { Text(stringResource(id = R.string.phone_number)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next
                         ),
@@ -184,7 +187,7 @@ fun AddAddressPage(
                         onValueChange = {
                             addressViewModel.postalCode = it
                         },
-                        label = { Text("Zip Code") },
+                        label = { Text(stringResource(id = R.string.postal_code)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next
                         ),
@@ -278,6 +281,7 @@ fun AddAddressPage(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
+                        shape = RoundedCornerShape(12.dp),
                         enabled = allFieldsValid,
                         onClick = {
                             try {

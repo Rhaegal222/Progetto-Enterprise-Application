@@ -3,6 +3,7 @@ package com.android.frontend.view.pages.user.main
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -130,7 +131,10 @@ fun HomePage(navController: NavHostController, homeViewModel: HomeViewModel = vi
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Button(onClick = { navController.navigate(Navigation.SalesProductsPage.route) }) {
+            Button(
+                shape = RoundedCornerShape(12.dp),
+                onClick = { navController.navigate(Navigation.SalesProductsPage.route) }
+            ) {
                 Text("Offerte del giorno")
             }
             Spacer(modifier = Modifier.height(8.dp))
