@@ -5,25 +5,11 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -72,14 +57,11 @@ fun ProductCard(
             .padding(32.dp, 8.dp)
             .height(400.dp)
             .clickable {
-                CurrentDataUtils.currentProductId = productDTO.id
-                CurrentDataUtils.currentProductImageUri = imageUri
-                val route = if (productDTO.onSale) {
-                    Navigation.SaleProductDetailsPage.route
+                if (productDTO.onSale) {
+                    navController.navigate("${Navigation.SaleProductDetailsPage}/${productDTO.id}")
                 } else {
-                    Navigation.ProductDetailsPage.route
+                    navController.navigate("${Navigation.ProductDetailsPage}/${productDTO.id}")
                 }
-                navController.navigate(route)
             }
     ) {
         Column(
@@ -92,6 +74,7 @@ fun ProductCard(
             } else {
                 painterResource(id = R.drawable.product_placeholder)
             }
+
             Image(
                 painter = painter,
                 contentDescription = stringResource(id = R.string.product_image),
@@ -211,9 +194,8 @@ fun WishlistDropdownMenu(
     }
 }
 
-
 @Composable
-fun ProductPrice(productDTO: ProductDTO){
+fun ProductPrice(productDTO: ProductDTO) {
     if (productDTO.onSale && productDTO.salePrice != null) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -223,7 +205,7 @@ fun ProductPrice(productDTO: ProductDTO){
                 .heightIn(min = 30.dp)
         ) {
             Text(
-                text = productDTO.salePrice.toString()+" €",
+                text = "${productDTO.salePrice} €",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -236,18 +218,17 @@ fun ProductPrice(productDTO: ProductDTO){
                     .heightIn(min = 35.dp)
             ) {
                 Text(
-                    text = productDTO.price.toString()+" €",
+                    text = "${productDTO.price} €",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.LineThrough,
-                    textAlign = TextAlign.Center,
                     color = Color.Red
                 )
             }
         }
     } else {
         Text(
-            text = productDTO.salePrice.toString()+" €",
+            text = "${productDTO.price} €",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
         )
@@ -255,7 +236,7 @@ fun ProductPrice(productDTO: ProductDTO){
 }
 
 @Composable
-fun ShippingCost(productDTO: ProductDTO){
+fun ShippingCost(productDTO: ProductDTO) {
     Row {
         Text(
             text = stringResource(id = R.string.shipping_price),
@@ -263,7 +244,7 @@ fun ShippingCost(productDTO: ProductDTO){
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = productDTO.shippingCost.toString()+" €",
+            text = "${productDTO.shippingCost} €",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )

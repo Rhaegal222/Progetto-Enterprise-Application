@@ -82,19 +82,22 @@ fun ProductPage(navController: NavHostController, viewModel: ProductViewModel = 
             )
         }
     ){
-        if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+        Column {
+            Spacer(modifier = Modifier.height(10.dp))
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (hasError) {
+                ErrorDialog(
+                    title = stringResource(id = R.string.fetching_error),
+                    onDismiss = { navController.popBackStack() },
+                    onRetry = { viewModel.fetchAllProducts(context) },
+                    errorMessage = stringResource(id = R.string.products_load_failed)
+                )
+            } else {
+                products?.let { it1 -> ProductContent(it1, navController, viewModel, productImages) }
             }
-        } else if (hasError) {
-            ErrorDialog(
-                title = stringResource(id = R.string.fetching_error),
-                onDismiss = { navController.popBackStack() },
-                onRetry = { viewModel.fetchAllProducts(context) },
-                errorMessage = stringResource(id = R.string.products_load_failed)
-            )
-        } else {
-            products?.let { it1 -> ProductContent(it1, navController, viewModel, productImages) }
         }
     }
 }

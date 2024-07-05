@@ -31,7 +31,7 @@ sealed class Navigation(val route: String) {
     object SecurityMenu : Navigation(route = "security_menu")
     object ChangePasswordPage : Navigation(route = "change_password_page")
     object ProductsPage : Navigation(route = "products_page")
-    object ProductDetailsPage : Navigation(route = "productDetails_page")
+    object ProductDetailsPage : Navigation(route = "product_details")
     object PaymentsPage : Navigation(route = "payments_page")
     object AddPaymentPage : Navigation(route = "addpayment_page")
     object SettingsMenu : Navigation(route = "settings_menu")
@@ -42,7 +42,7 @@ sealed class Navigation(val route: String) {
     object DebugMenu : Navigation(route = "debug_menu")
     object LoadingPage : Navigation(route = "loading_page")
     object SalesProductsPage : Navigation(route = "salesProducts")
-    object SaleProductDetailsPage : Navigation(route = "salesProductsDetails")
+    object SaleProductDetailsPage : Navigation(route = "sale_product_details")
 
     object AdminMenu : Navigation(route = "admin_menu")
     object AddProductPage : Navigation(route = "add_product_page")

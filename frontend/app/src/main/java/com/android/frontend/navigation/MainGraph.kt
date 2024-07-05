@@ -47,8 +47,22 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AccountMenu.route) { AccountMenu(navController) }
         composable(Navigation.SecurityMenu.route) { SecurityMenu(navController) }
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
-        composable(Navigation.ProductsPage.route) { ProductsPage(navController, ProductViewModel(), CartViewModel()) }
-        composable(Navigation.ProductDetailsPage.route) { ProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel, navController) }
+        composable(Navigation.ProductsPage.route) { ProductsPage(navController, cartViewModel = cartViewModel) }
+
+        composable("${Navigation.ProductDetailsPage}/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull()
+            if (productId != null) {
+                ProductDetailsPage(navController, cartViewModel = cartViewModel, productId)
+            }
+        }
+
+        composable("${Navigation.SaleProductDetailsPage}/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull()
+            if (productId != null) {
+                SaleProductDetailsPage(navController, cartViewModel = cartViewModel, productId)
+            }
+        }
+
         composable(Navigation.PaymentsPage.route) { PaymentMethodsPage(navController) }
         composable(Navigation.AddPaymentPage.route) { AddPaymentPage(navController) }
         composable(Navigation.SettingsMenu.route) { SettingsMenu(navController) }
@@ -57,8 +71,7 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.AddressesPage.route) { AddressesPage(navController) }
         composable(Navigation.AddAddressPage.route) { AddAddressPage(navController) }
         composable(Navigation.DebugMenu.route) { DebugMenu(navController) }
-        composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, ProductViewModel(), cartViewModel = cartViewModel) }
-        composable(Navigation.SaleProductDetailsPage.route) { SaleProductDetailsPage(ProductViewModel(), cartViewModel = cartViewModel) }
+        composable(Navigation.SalesProductsPage.route) { SalesProductsPage(navController, cartViewModel = cartViewModel) }
         composable(Navigation.WishlistsPage.route) { WishlistsPage(navController, WishlistViewModel()) }
         composable(Navigation.AddWishlistPage.route) { AddWishlistPage(navController, WishlistViewModel()) }
         composable(Navigation.CheckoutPage.route) { CheckoutPage(cartViewModel = cartViewModel, navController = navController) }

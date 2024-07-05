@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -55,6 +53,8 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
     val isLoading by viewModel.isLoading.observeAsState(false)
     val hasError by viewModel.hasError.observeAsState(false)
 
+    var showActiveUsers by remember { mutableStateOf(true) }
+
     LaunchedEffect(Unit) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Loading users")
         viewModel.fetchAllUsers(context)
@@ -65,10 +65,6 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
 
     val currentUser = activeUsers.find { it.id == currentUserId }
     val sortedActiveUsers = listOfNotNull(currentUser) + activeUsers.filter { it.id != currentUserId }
-
-
-
-
 
     Scaffold(
         topBar = {
@@ -85,19 +81,71 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
             )
         }
     ) {
-        if (isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+        Column {
+            Spacer(modifier = Modifier.height(65.dp))
+            UserTypeDropdownMenu(showActiveUsers = showActiveUsers) { selectedType ->
+                showActiveUsers = selectedType == "ACTIVE"
             }
-        } else if (hasError) {
-            ErrorDialog(
-                title = stringResource(id = R.string.fetching_error),
-                onDismiss = { navController.popBackStack() },
-                onRetry = { viewModel.fetchAllUsers(context) },
-                errorMessage = stringResource(id = R.string.users_load_failed)
-            )
-        } else {
-            UserContent(navController, deletedUsers, sortedActiveUsers, userImages, currentUserId, viewModel)
+
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (hasError) {
+                ErrorDialog(
+                    title = stringResource(id = R.string.fetching_error),
+                    onDismiss = { navController.popBackStack() },
+                    onRetry = { viewModel.fetchAllUsers(context) },
+                    errorMessage = stringResource(id = R.string.users_load_failed)
+                )
+            } else {
+                if (showActiveUsers) {
+                    UserContent(navController, emptyList(), sortedActiveUsers, userImages, currentUserId, viewModel)
+                } else {
+                    UserContent(navController, deletedUsers, emptyList(), userImages, currentUserId, viewModel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun UserTypeDropdownMenu(showActiveUsers: Boolean, onUserTypeSelected: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val userTypes = listOf("ACTIVE", "CANCELLED")
+    val selectedType = if (showActiveUsers) "ACTIVE" else "CANCELLED"
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .background(Color.LightGray, RoundedCornerShape(8.dp))
+            .clickable { expanded = true }
+            .padding(12.dp)
+    ) {
+        Text(
+            text = stringResource(id = if (showActiveUsers) R.string.active_users else R.string.deleted_users),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
+        Icon(
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = null,
+            modifier = Modifier.align(Alignment.CenterEnd)
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            userTypes.forEach { userType ->
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(id = if (userType == "ACTIVE") R.string.active_users else R.string.deleted_users)) },
+                    onClick = {
+                        onUserTypeSelected(userType)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
@@ -105,58 +153,61 @@ fun UserPage(navController: NavHostController, viewModel: UserViewModel = viewMo
 @Composable
 fun UserContent(navController: NavHostController, deletedUsers: List<UserDTO>, sortedActiveUsers: List<UserDTO>, userImages: Map<String, Uri>, currentUserId: String, viewModel: UserViewModel) {
     Column{
-        Text(
-            text = stringResource(id = R.string.active_users),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(8.dp)
-        )
-        Spacer(modifier = Modifier.height(70.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp)
-        ) {
-            items(sortedActiveUsers) { userDTO ->
-                UserCard(
-                    userDTO,
-                    navController,
-                    viewModel,
-                    userImages[userDTO.id],
-                    isDeleted = false,
-                    isCurrentUser = currentUserId == userDTO.id
-                )
+        if (sortedActiveUsers.isNotEmpty()) {
+            Text(
+                text = stringResource(id = R.string.active_users),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                items(sortedActiveUsers) { userDTO ->
+                    UserCard(
+                        userDTO,
+                        navController,
+                        viewModel,
+                        userImages[userDTO.id],
+                        isDeleted = false,
+                        isCurrentUser = currentUserId == userDTO.id
+                    )
+                }
             }
         }
 
-        Text(
-            text = stringResource(id = R.string.deleted_users),
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            modifier = Modifier.padding(8.dp)
-        )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp)
-        ) {
-            items(deletedUsers) { userDTO ->
-                UserCard(
-                    userDTO,
-                    navController,
-                    viewModel,
-                    userImages[userDTO.id],
-                    isDeleted = true,
-                    isCurrentUser = currentUserId == userDTO.id
-                )
+        if (deletedUsers.isNotEmpty()) {
+            Text(
+                text = stringResource(id = R.string.deleted_users),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                items(deletedUsers) { userDTO ->
+                    UserCard(
+                        userDTO,
+                        navController,
+                        viewModel,
+                        userImages[userDTO.id],
+                        isDeleted = true,
+                        isCurrentUser = currentUserId == userDTO.id
+                    )
+                }
             }
         }
     }
-
 }
-
 
 @Composable
 fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: UserViewModel, imageUri: Uri?, isDeleted: Boolean, isCurrentUser: Boolean) {
@@ -251,7 +302,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                         color = Color.White
                     )
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown, 
+                        imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = stringResource(id = R.string.change_user_role),
                         modifier = Modifier.size(20.dp)
                     )
@@ -275,7 +326,7 @@ fun UserCard(userDTO: UserDTO, navController: NavHostController, viewModel: User
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = stringResource(id = R.string.delete_user),
-                            modifier = Modifier.size(32.dp) 
+                            modifier = Modifier.size(32.dp)
                         )
                     }
                 }

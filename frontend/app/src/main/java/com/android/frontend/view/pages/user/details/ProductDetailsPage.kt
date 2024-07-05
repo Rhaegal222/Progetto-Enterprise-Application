@@ -12,6 +12,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,70 +26,94 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.persistence.SecurePreferences
+import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.ProductDetailsViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartViewModel, navController: NavController) {
+fun ProductDetailsPage(navController: NavController, cartViewModel: CartViewModel, productId: Long, productDetailsViewModel: ProductDetailsViewModel = viewModel()) {
     val context = LocalContext.current
-    val productId = CurrentDataUtils.currentProductId
-    val productUri = CurrentDataUtils.currentProductImageUri
-    val productDetails = productViewModel.productDetailsLiveData.observeAsState().value
-    val userId = SecurePreferences.getUser(context)?.id ?: ""
 
-    productViewModel.getProductDetails(context, productId)
+    val isLoading by productDetailsViewModel.isLoading.observeAsState(false)
+    val hasError by productDetailsViewModel.hasError.observeAsState(false)
 
-    Scaffold(
-        topBar = {
-            androidx.compose.material.TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigate(Navigation.ProductsPage.route)
-                    }) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.back)
-                        )
-                    }
-                },
-                backgroundColor = Color.Transparent,
-                elevation = 0.dp
-            )
+    LaunchedEffect(Unit) {
+        productDetailsViewModel.getProductDetails(context, productId)
+    }
+
+    val productDetails by productDetailsViewModel.productDetails.observeAsState()
+    val prodImage by productDetailsViewModel.prodImageLiveData.observeAsState()
+
+
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
-    ) {
-        Scaffold { padding ->
-            Column {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .weight(1f)
-                        .padding(padding)
-                ) {
-                    productDetails?.let { productItem ->
-                        DetailContentImageHeader(productItem = productItem, productUri)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        DetailContentDescription(productItem = productItem)
-                    }
-                }
-
+    } else if (hasError) {
+        ErrorDialog(
+            title = stringResource(id = R.string.fetching_error),
+            onDismiss = { navController.popBackStack() },
+            onRetry = {
+                productDetailsViewModel.getProductDetails(context, productId)
+            },
+            errorMessage = stringResource(id = R.string.edit_product_load_failed)
+        )
+    } else {
+        Scaffold(
+            topBar = {
+                androidx.compose.material.TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.navigate(Navigation.ProductsPage.route)
+                        }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.back)
+                            )
+                        }
+                    },
+                    backgroundColor = Color.Transparent,
+                    elevation = 0.dp
+                )
+            }
+        ) {
+            Scaffold { padding ->
                 Column {
-                    productDetails?.let {
-                        DetailButtonAddCart(
-                            productItem = it,
-                            onClickToCart = { productItem ->
-                                cartViewModel.addProductToCart(productItem.id, 1, context)
-                            }
-                        )
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .weight(1f)
+                            .padding(padding)
+                    ) {
+                        productDetails?.let { productItem ->
+                            DetailContentImageHeader(prodImage)
+                            Spacer(modifier = Modifier.height(24.dp))
+                            DetailContentDescription(productItem = productItem)
+                        }
+                    }
+
+                    Column {
+                        productDetails?.let {
+                            DetailButtonAddCart(
+                                productItem = it,
+                                onClickToCart = { productItem ->
+                                    cartViewModel.addProductToCart(productItem.id, 1, context)
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -98,7 +124,6 @@ fun ProductDetailsPage(productViewModel: ProductViewModel, cartViewModel: CartVi
 
 @Composable
 fun DetailContentImageHeader(
-    productItem: ProductDTO,
     imageUri: Uri?
 ) {
     Card(
@@ -108,7 +133,7 @@ fun DetailContentImageHeader(
             .fillMaxWidth(),
     ) {
         val painter = if (imageUri != null) {
-            rememberImagePainter(data = imageUri)
+            rememberAsyncImagePainter(model = imageUri)
         } else {
             painterResource(id = R.drawable.product_placeholder)
         }
@@ -148,7 +173,7 @@ fun DetailContentDescription(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    text = "${ productItem.brand.name }",
+                    text = productItem.brand.name,
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp
                 )

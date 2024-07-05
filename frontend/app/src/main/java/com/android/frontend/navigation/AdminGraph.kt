@@ -14,6 +14,7 @@ import com.android.frontend.view.pages.admin.browse.CategoryPage
 import com.android.frontend.view.pages.admin.browse.EditProductPage
 import com.android.frontend.view.pages.admin.browse.ProductPage
 import com.android.frontend.view.pages.admin.browse.UserPage
+import com.android.frontend.view.pages.user.details.ProductDetailsPage
 
 @Composable
 fun AdminGraph(navController: NavHostController) {

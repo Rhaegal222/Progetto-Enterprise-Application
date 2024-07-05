@@ -1,6 +1,7 @@
 package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,11 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
+import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view.component.ProductCard
+import com.android.frontend.view_models.user.AddressViewModel
 
 enum class SortOption(val displayName: String) {
     ALPHABETICAL("Alphabetical"),
@@ -29,14 +34,14 @@ enum class SortOption(val displayName: String) {
     PRICE_DESCENDING("Price: High to Low")
 }
 
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductsPage(navController: NavController, productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, productViewModel: ProductViewModel = viewModel()) {
     val context = LocalContext.current
-    val products by productViewModel.productsLiveData.observeAsState()
-    val productImages by productViewModel.productImagesLiveData.observeAsState()
-    var isLoading by remember { mutableStateOf(true) }
+    val products by productViewModel.productsLiveData.observeAsState(emptyList())
+    val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
+
     var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
@@ -45,9 +50,12 @@ fun ProductsPage(navController: NavController, productViewModel: ProductViewMode
     var dialogInput by remember { mutableStateOf("") }
     var filterType by remember { mutableStateOf("") }
 
+    val isLoading by productViewModel.isLoading.observeAsState(false)
+    val hasError by productViewModel.hasError.observeAsState(false)
+
     LaunchedEffect(Unit) {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Fetching all products")
         productViewModel.fetchAllProducts(context)
-        isLoading = false
     }
 
     val categoryString = stringResource(id = R.string.category)
@@ -69,7 +77,7 @@ fun ProductsPage(navController: NavController, productViewModel: ProductViewMode
                                 expanded = expandedSort,
                                 onDismissRequest = { expandedSort = false }
                             ) {
-                                SortOption.values().forEach { option ->
+                                SortOption.entries.forEach { option ->
                                     DropdownMenuItem(
                                         onClick = {
                                             selectedSortOption = option
@@ -112,37 +120,45 @@ fun ProductsPage(navController: NavController, productViewModel: ProductViewMode
                     }
                 }
             )
-        },
-        content = { innerPadding ->
+        }
+    ) {
+        Column{
+            Spacer(modifier = Modifier.height(65.dp))
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
+            } else if (hasError) {
+                ErrorDialog(
+                    title = stringResource(id = R.string.fetching_error),
+                    onDismiss = { navController.popBackStack() },
+                    onRetry = { productViewModel.fetchAllProducts(context) },
+                    errorMessage = stringResource(id = R.string.products_load_failed)
+                )
             } else {
                 val sortedProducts = when (selectedSortOption) {
-                    SortOption.ALPHABETICAL -> products?.sortedBy { it.name }
-                    SortOption.REVERSE_ALPHABETICAL -> products?.sortedByDescending { it.name }
-                    SortOption.PRICE_ASCENDING -> products?.sortedBy { it.price }
-                    SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.price }
+                    SortOption.ALPHABETICAL -> products.sortedBy { it.name }
+                    SortOption.REVERSE_ALPHABETICAL -> products.sortedByDescending { it.name }
+                    SortOption.PRICE_ASCENDING -> products.sortedBy { it.price }
+                    SortOption.PRICE_DESCENDING -> products.sortedByDescending { it.price }
                 }
 
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
                 ) {
-                    items(sortedProducts ?: emptyList()) { productDTO ->
+                    items(sortedProducts) { productDTO ->
                         ProductCard(
                             productDTO,
                             navController,
                             cartViewModel,
-                            productImages?.get(productDTO.id)
+                            productImages[productDTO.id]
                         )
                     }
                 }
             }
         }
-    )
+    }
 
     if (showDialog) {
         InputDialog(
