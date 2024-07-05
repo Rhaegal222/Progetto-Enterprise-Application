@@ -66,7 +66,7 @@ fun WishlistsPage(
 
     // Fetch wishlists when the composable enters composition
     LaunchedEffect(Unit) {
-        wishlistViewModel.fetchAllWishlists(context)
+        wishlistViewModel.getAllLoggedUserWishlists(context)
         isLoading = false
     }
 

@@ -55,7 +55,7 @@ class WishlistViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlist ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Added wishlist: $wishlist")
-                    fetchAllWishlists(context)
+                    getAllLoggedUserWishlists(context)
                 }
             } else {
                 Log.e(
@@ -70,7 +70,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun fetchAllWishlists(context: Context) {
+    fun getAllLoggedUserWishlists(context: Context) {
         val wishlistService = RetrofitInstance.getWishlistApi(context)
         val accessToken = TokenManager.getInstance().getAccessToken(context)
         val call = wishlistService.getAllLoggedUserWishlists("Bearer $accessToken")
@@ -149,7 +149,7 @@ class WishlistViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlist ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Added product to wishlist: $wishlist")
-                    fetchAllWishlists(context)
+                    getAllLoggedUserWishlists(context)
                 }
             } else {
                 Log.e(
