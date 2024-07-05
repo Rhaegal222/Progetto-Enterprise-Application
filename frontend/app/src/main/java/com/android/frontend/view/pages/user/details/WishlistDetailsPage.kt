@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,6 +23,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,11 +33,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -43,6 +51,7 @@ import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.view_models.user.WishlistViewModel
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
@@ -63,17 +72,20 @@ fun WishlistDetailsPage(
     val wishlistName = CurrentDataUtils.CurrentWishlistName
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
     val products = wishlistViewModel.productsLiveData.observeAsState().value
-    wishlistViewModel.getWishlistDetails(context, wishlistId, wishlistName )
+    val showDialog = remember { mutableStateOf(false) }
+
+    wishlistViewModel.getWishlistDetails(context, wishlistId, wishlistName)
 
     LaunchedEffect(Unit) {
-        wishlistViewModel.getWishlistDetails(context, wishlistId, wishlistName )
+        wishlistViewModel.getWishlistDetails(context, wishlistId, wishlistName)
     }
     Log.d("DEBUG", "Wishlist ID: $wishlistId")
     Log.d("DEBUG", "Wishlist Name: $wishlistName")
     Scaffold(
         topBar = {
             TopAppBar(title = {
-                Text(text= wishlistName) },
+                Text(text = wishlistName)
+            },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -92,7 +104,7 @@ fun WishlistDetailsPage(
                 }
             }
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Fixed(1),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
@@ -103,9 +115,68 @@ fun WishlistDetailsPage(
                 }
             }
 
+        },
+        floatingActionButton = {
+            Button(
+                onClick = {
+                    showDialog.value = true
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .padding(0.dp)
+            ) {
+                Icon(
+                    Icons.Default.Remove,
+                    contentDescription = "Remove Wishlist",
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .padding(0.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(id = R.string.remove_wishlist)
+                )
+            }
         }
     )
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = {
+                Text(text = "Conferma")
+            },
+            text = {
+                Text("Sei sicuro di voler cancellare questa wishlist?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog.value = false
+                        wishlistViewModel.deleteWishlist(context, wishlistId)
+                        navController.popBackStack()
+                    }
+                ) {
+                    Text("Conferma")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog.value = false
+                    }
+                ) {
+                    Text("Annulla")
+                }
+            }
+        )
+    }
 }
+
 @Composable
 fun ProductsWishlistCard(
     productDTO: ProductDTO,
@@ -206,6 +277,3 @@ fun ProductsWishlistCard(
         }
     }
 }
-
-
-

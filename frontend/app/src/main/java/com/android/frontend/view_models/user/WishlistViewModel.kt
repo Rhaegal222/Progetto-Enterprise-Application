@@ -69,6 +69,39 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
+    fun deleteWishlist(context: Context, wishlistId: Long) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.deleteWishlist("Bearer $accessToken", wishlistId)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Deleted wishlist with ID: $wishlistId")
+                getAllLoggedUserWishlists(context)
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to delete wishlist: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+                _isLoading.value = false
+            }
+        }
+    }
+
+
+
     fun getAllLoggedUserWishlists(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true

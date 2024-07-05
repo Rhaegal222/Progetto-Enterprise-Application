@@ -190,4 +190,5 @@
     <string name="order_details">Order details</string>
     <string name="shipping_price">Shipping price</string>
     <string name="add_to_wishlist">Add to wishlist</string>
+    <string name="remove_wishlist">Remove Wishlist</string>
 </resources>

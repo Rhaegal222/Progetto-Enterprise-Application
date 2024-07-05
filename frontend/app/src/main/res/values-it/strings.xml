@@ -188,4 +188,5 @@
     <string name="category_name">Nome della categoria</string>
     <string name="add_category_successfully">Categoria aggiunta con successo!</string>
     <string name="order_details">Order details</string>
+    <string name="remove_wishlist">Rimuovi la lista desideri</string>
 </resources>
