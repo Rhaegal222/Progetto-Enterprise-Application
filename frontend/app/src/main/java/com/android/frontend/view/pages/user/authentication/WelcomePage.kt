@@ -3,6 +3,7 @@ package com.android.frontend.view.pages.user.authentication
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -82,6 +83,7 @@ fun WelcomePage(navController: NavController) {
                         navController.navigate(Navigation.LoginPage.route)
                     },
                     modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(14.dp),
                     colors = OutlinedButtonColorScheme.outlinedButtonColors()
                 ) {
                     Text(
