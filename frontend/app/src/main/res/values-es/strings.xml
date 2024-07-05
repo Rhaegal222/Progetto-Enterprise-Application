@@ -209,4 +209,5 @@
     <string name="remove_from_wishlist">Eliminar de la lista de deseos</string>
     <string name="Ask_Remove_wishlist">¿Estás seguro de que deseas eliminar esta lista de deseos?</string>
     <string name="product_name_">Product Name:</string>
+    <string name="edit_wishlist">Editar lista de deseos</string>
 </resources>

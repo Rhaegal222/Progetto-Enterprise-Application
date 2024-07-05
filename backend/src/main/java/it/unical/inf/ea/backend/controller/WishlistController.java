@@ -90,4 +90,13 @@ public class WishlistController {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
+    @PutMapping("/updateWishlist/{wishlistId}")
+    public ResponseEntity<?> updateWishlist(@PathVariable Long wishlistId, @RequestBody WishlistDTO wishlistDTO) {
+        try {
+            WishlistDTO updatedWishlist = wishlistService.updateWishlist(wishlistId, wishlistDTO);
+            return ResponseEntity.ok(updatedWishlist);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
 }
