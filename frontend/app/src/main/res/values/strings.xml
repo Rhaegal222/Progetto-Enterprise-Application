@@ -187,4 +187,7 @@
     <string name="add_brand_successfully">Brand added successfully!</string>
     <string name="category_name">Category name</string>
     <string name="add_category_successfully">Category added successfully!</string>
+    <string name="order_details">Order details</string>
+    <string name="shipping_price">Shipping price</string>
+    <string name="add_to_wishlist">Add to wishlist</string>
 </resources>

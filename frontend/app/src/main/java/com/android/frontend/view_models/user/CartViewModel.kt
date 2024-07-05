@@ -15,13 +15,10 @@ import com.android.frontend.dto.CartDTO
 import com.android.frontend.dto.CartItemDTO
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.creation.CartItemCreateDTO
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.net.SocketTimeoutException
 import java.util.UUID
 
 class CartViewModel : ViewModel() {
@@ -30,8 +27,8 @@ class CartViewModel : ViewModel() {
 
     val cartItems: LiveData<List<CartItemDTO>> get() = cart.map { it?.items ?: emptyList() }
 
-    private val _cartItemCount = MutableStateFlow(0)
-    val cartItemCount: StateFlow<Int> = _cartItemCount
+    private val _cartItemCount = MutableLiveData(0)
+    val cartItemCount: LiveData<Int> get() = _cartItemCount
 
     private val productDetailsCache = mutableMapOf<Long, MutableStateFlow<ProductDTO?>>()
 
@@ -61,6 +58,7 @@ class CartViewModel : ViewModel() {
             if (response?.isSuccessful == true) {
                 response.body()?.let {
                     _cart.value = it
+                    _cartItemCount.value = it.items.size
                 }
             }
             else {
@@ -121,7 +119,7 @@ class CartViewModel : ViewModel() {
             val cartService = RetrofitInstance.getCartApi(context)
             val response = Request().executeRequest(context) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Updating cart item")
-                cartService.editItemInCart("Bearer ${accessToken}", cartItemId, quantity)
+                cartService.editItemInCart("Bearer $accessToken", cartItemId, quantity)
             }
             if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)
@@ -150,7 +148,7 @@ class CartViewModel : ViewModel() {
             val cartItemCreateDTO = CartItemCreateDTO(productId, quantity)
             val response = Request().executeRequest(context) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Adding product to cart")
-                cartService.addItemToCart("Bearer ${accessToken}",cartItemCreateDTO)
+                cartService.addItemToCart("Bearer $accessToken",cartItemCreateDTO)
             }
 
             if (response?.isSuccessful == true) {
@@ -179,7 +177,7 @@ class CartViewModel : ViewModel() {
             val cartService = RetrofitInstance.getCartApi(context)
             val response = Request().executeRequest(context) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Removing item from cart")
-                cartService.removeItemFromCart("Bearer ${accessToken}", cartItemId)
+                cartService.removeItemFromCart("Bearer $accessToken", cartItemId)
             }
             if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)
@@ -208,7 +206,7 @@ class CartViewModel : ViewModel() {
             val cartService = RetrofitInstance.getCartApi(context)
             val response = Request().executeRequest(context) {
                 Log.d("DEBUG", "${getCurrentStackTrace()} Clearing cart")
-                cartService.clearCart("Bearer ${accessToken}")
+                cartService.clearCart("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
                 getCartForLoggedUser(context)

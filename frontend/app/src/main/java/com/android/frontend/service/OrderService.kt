@@ -42,4 +42,10 @@ interface OrderService {
     fun getAllLoggedUserOrders(
         @Header("Authorization") authorization: String
     ): Call<List<OrderDTO>>
+
+    @GET("/api/v1/orders/getOrderItems/{orderId}")
+    fun getOrderItems(
+        @Header("Authorization") authorization: String,
+        @Path("orderId") orderId: String
+    ): Call<List<OrderItemDTO>>
 }

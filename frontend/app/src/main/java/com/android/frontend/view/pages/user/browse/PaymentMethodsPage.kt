@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -113,6 +114,7 @@ fun PaymentMethodsContent(
                 onClick = {
                     navController.navigate(Navigation.AddPaymentPage.route)
                 },
+                shape = RoundedCornerShape(14.dp),
                 colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                 modifier = Modifier
                     .padding(0.dp)

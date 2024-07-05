@@ -15,4 +15,5 @@ public interface OrderService {
     OrderDTO getOrderById(UUID id) throws IllegalAccessException;
     List<OrderDTO> getAllOrders();
     List<OrderDTO> getAllLoggedUserOrders();
+    List<OrderItemDTO> findAllOrderItemsByOrderId(UUID orderId);
 }

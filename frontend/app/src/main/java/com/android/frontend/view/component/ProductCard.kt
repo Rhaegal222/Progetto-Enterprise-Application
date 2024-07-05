@@ -1,65 +1,66 @@
 package com.android.frontend.view.component
 
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
-import com.android.frontend.persistence.SecurePreferences
-import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.CardColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.view_models.user.CartViewModel
-import com.android.frontend.view_models.user.ProductViewModel
 
 @Composable
 fun ProductCard(
     productDTO: ProductDTO,
     navController: NavController,
-    productViewModel: ProductViewModel,
     cartViewModel: CartViewModel,
     imageUri: Uri?
 ) {
     val context = LocalContext.current
-    val userId = SecurePreferences.getUser(context)?.id ?: ""
 
     Card(
+        border = BorderStroke(2.dp, Color.Gray),
+        colors = CardColorScheme.cardColors(),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
-            .padding(12.dp)
             .fillMaxWidth()
-            .height(250.dp)
+            .padding(32.dp, 8.dp)
+            .height(400.dp)
             .clickable {
                 CurrentDataUtils.currentProductId = productDTO.id
                 CurrentDataUtils.currentProductImageUri = imageUri
@@ -77,7 +78,7 @@ fun ProductCard(
                 .padding(12.dp)
         ) {
             val painter = if (imageUri != null) {
-                rememberImagePainter(data = imageUri)
+                rememberAsyncImagePainter(model = imageUri)
             } else {
                 painterResource(id = R.drawable.product_placeholder)
             }
@@ -87,21 +88,20 @@ fun ProductCard(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .height(80.dp),
+                    .height(200.dp),
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = productDTO.name,
-                fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 maxLines = 2,
-                modifier = Modifier.heightIn(min = 40.dp)
+                overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = productDTO.brand.name,
@@ -109,64 +109,98 @@ fun ProductCard(
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            if (productDTO.onSale && productDTO.salePrice != null) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "${productDTO.price}€",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        fontSize = 18.sp,
-                        textDecoration = TextDecoration.LineThrough
-                    )
+            ProductPrice(productDTO)
 
-                    Text(
-                        text = "${productDTO.salePrice}€",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        fontSize = 18.sp
-                    )
-                }
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "${productDTO.price}€",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        fontSize = 18.sp
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(4.dp))
 
-            Spacer(modifier = Modifier.height(6.dp))
+            ShippingCost(productDTO)
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(
-                    colors = ButtonColorScheme.buttonColors(),
-                    modifier = Modifier.size(46.dp),
+                OutlinedButton(
+                    colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                     shape = RoundedCornerShape(14.dp),
-                    contentPadding = PaddingValues(10.dp),
                     onClick = {
                         cartViewModel.addProductToCart(productDTO.id, 1, context)
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.fillMaxSize(),
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(id = R.string.add_to_cart)
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.add_to_cart),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+                AddToWishlistButton()
             }
         }
+    }
+}
+
+@Composable
+fun ProductPrice(productDTO: ProductDTO){
+    if (productDTO.onSale && productDTO.salePrice != null) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 30.dp)
+        ) {
+            Text(
+                text = productDTO.salePrice.toString()+" €",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .heightIn(min = 35.dp)
+            ) {
+                Text(
+                    text = productDTO.price.toString()+" €",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.LineThrough,
+                    textAlign = TextAlign.Center,
+                    color = Color.Red
+                )
+            }
+        }
+    } else {
+        Text(
+            text = productDTO.salePrice.toString()+" €",
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+fun ShippingCost(productDTO: ProductDTO){
+    Row {
+        Text(
+            text = stringResource(id = R.string.shipping_price),
+            fontSize = 16.sp,
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = productDTO.shippingCost.toString()+" €",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }

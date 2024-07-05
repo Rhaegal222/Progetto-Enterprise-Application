@@ -187,4 +187,5 @@
     <string name="add_brand_successfully">¡Marca agregada exitosamente!</string>
     <string name="category_name">Nombre de la categoría</string>
     <string name="add_category_successfully">¡Categoría agregada exitosamente!</string>
+    <string name="order_details">Order details</string>
 </resources>

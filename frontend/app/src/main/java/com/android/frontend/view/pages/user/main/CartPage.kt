@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.android.frontend.R
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.view.component.CartItemCard
 import com.android.frontend.view.component.ErrorDialog
 
 
@@ -116,55 +117,6 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                             Text("Complete Order")
                         }
                     }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CartItemCard(cartItem: CartItemDTO, product: ProductDTO, cartViewModel: CartViewModel) {
-
-    val context = LocalContext.current
-
-    var quantity by remember { mutableIntStateOf(cartItem.quantity) }
-    val price = if (product.onSale) product.salePrice ?: product.price else product.price
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Product: ${product.name}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-            Text(text = "Product Price: $price", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-            Text(text = "Delivery Price: ${product.shippingCost}", fontSize = 16.sp, modifier = Modifier.padding(bottom = 8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {
-                    if (quantity > 1) {
-                        quantity--
-                        cartViewModel.updateCartItem(cartItem.id, quantity, context)
-                    }
-                }) {
-                    Icon(Icons.Default.Remove, contentDescription = "Decrease Quantity")
-                }
-                Text(
-                    text = quantity.toString(),
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                IconButton(onClick = {
-                    quantity++
-                    cartViewModel.updateCartItem(cartItem.id, quantity, context)
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = "Increase Quantity")
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = {
-                    cartViewModel.removeCartItem(cartItem.id, context)
-                }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Remove Item")
                 }
             }
         }

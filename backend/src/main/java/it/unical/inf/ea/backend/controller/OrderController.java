@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
@@ -77,6 +78,16 @@ public class OrderController {
     public ResponseEntity<?> getAllLoggedUserOrders() {
         try {
             return ResponseEntity.ok(orderService.getAllLoggedUserOrders());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping(path = "/getOrderItems/{orderId}")
+    public ResponseEntity<?> getOrderItems(@PathVariable("orderId") UUID orderId) {
+        try {
+            List<OrderItemDTO> orderItems = orderService.findAllOrderItemsByOrderId(orderId);
+            return ResponseEntity.ok(orderItems);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore: " + e.getMessage() + "\"}");
         }
