@@ -2,9 +2,11 @@ package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FilterList
@@ -126,8 +128,7 @@ fun ProductsPage(navController: NavController, productViewModel: ProductViewMode
                     SortOption.PRICE_DESCENDING -> products?.sortedByDescending { it.price }
                 }
 
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
