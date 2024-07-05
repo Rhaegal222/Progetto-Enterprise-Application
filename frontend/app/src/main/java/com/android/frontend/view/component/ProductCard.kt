@@ -1,10 +1,12 @@
 package com.android.frontend.view.component
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +18,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +53,7 @@ import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.view_models.user.CartViewModel
+import com.android.frontend.view_models.user.WishlistViewModel
 
 @Composable
 fun ProductCard(
@@ -141,11 +152,67 @@ fun ProductCard(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                AddToWishlistButton()
+                WishlistDropdownMenu(productDTO,wishlistViewModel = WishlistViewModel())
             }
         }
     }
 }
+
+@Composable
+fun WishlistDropdownMenu(
+    productDTO: ProductDTO,
+    wishlistViewModel: WishlistViewModel
+) {
+    val context = LocalContext.current
+    val wishlists by wishlistViewModel.wishlistLiveData.observeAsState()
+    val expanded = remember { mutableStateOf(false) }
+    val selectedWishlist = remember { mutableStateOf<String?>(null) }
+
+    Box {
+        OutlinedButton(
+            colors = OutlinedButtonColorScheme.outlinedButtonColors(),
+            shape = RoundedCornerShape(12.dp),
+            onClick = { expanded.value = true }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(id = R.string.add_to_wishlist)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = selectedWishlist.value ?: stringResource(id = R.string.add_to_wishlist),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false }
+        ) {
+            wishlists?.forEach { wishlist ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedWishlist.value = wishlist.wishlistName
+                        Log.d("DEBUG", "Selected wishlist: ${wishlist.id}")
+                        Log.d("DEBUG", "Selected wishlist: ${wishlist.wishlistName}")
+                        Log.d("DEBUG", "Selected wishlist: ${wishlist.products}")
+                        Log.d("DEBUG", "Selected product id: ${productDTO.id}")
+                        wishlistViewModel.addProductToWishlist(context, wishlist.id, productDTO.id)
+                        expanded.value = false
+                    },
+                    text = { Text(wishlist.wishlistName) }
+                )
+            }
+        }
+    }
+
+    // Trigger fetching wishlists when the composable is first displayed
+    LaunchedEffect(Unit) {
+        wishlistViewModel.getAllLoggedUserWishlists(context)
+    }
+}
+
 
 @Composable
 fun ProductPrice(productDTO: ProductDTO){

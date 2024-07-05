@@ -155,7 +155,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun addProductToWishlist(context: Context, productId: Long, wishlistId: Long) {
+    fun addProductToWishlist(context: Context,wishlistId: Long, productId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -168,7 +168,7 @@ class WishlistViewModel : ViewModel() {
             }
             val wishlistService = RetrofitInstance.getWishlistApi(context)
             val response = Request().executeRequest(context) {
-                wishlistService.addProductToWishlist("Bearer $accessToken", productId, wishlistId)
+                wishlistService.addProductToWishlist("Bearer $accessToken", wishlistId, productId)
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlist ->
