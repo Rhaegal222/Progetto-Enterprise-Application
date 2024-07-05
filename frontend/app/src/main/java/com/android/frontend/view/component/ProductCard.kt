@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -180,7 +179,7 @@ fun WishlistDropdownMenu(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = selectedWishlist.value ?: stringResource(id = R.string.add_to_wishlist),
+                text = stringResource(id = R.string.add_to_wishlist),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -207,7 +206,6 @@ fun WishlistDropdownMenu(
         }
     }
 
-    // Trigger fetching wishlists when the composable is first displayed
     LaunchedEffect(Unit) {
         wishlistViewModel.getAllLoggedUserWishlists(context)
     }
