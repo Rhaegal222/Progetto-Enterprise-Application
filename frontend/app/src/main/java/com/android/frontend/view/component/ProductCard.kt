@@ -121,7 +121,7 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
-                horizontalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
@@ -142,6 +142,7 @@ fun ProductCard(
                         fontWeight = FontWeight.Bold
                     )
                 }
+
                 OutlinedButton(
                     colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                     shape = RoundedCornerShape(14.dp),
