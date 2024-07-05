@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -83,14 +84,23 @@ fun WishlistDetailsPage(
     Log.d("DEBUG", "Wishlist Name: $wishlistName")
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(text = wishlistName)
-            },
+            TopAppBar(
+                title = {
+                    Text(text = wishlistName)
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                })
+                },
+                actions = {
+                    IconButton(onClick = {
+                        CurrentDataUtils.currentWishlistId = wishlistId
+                        navController.navigate(Navigation.WishlistUpdatePage.route) }) {
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_wishlist))
+                    }
+                }
+            )
         },
 
         content = { innerPadding ->
@@ -117,7 +127,6 @@ fun WishlistDetailsPage(
                         imageUri = null,
                         onRemoveFromWishlist = { product ->
                             wishlistViewModel.removeProductFromWishlist(context, product.id, wishlistId)
-
                         }
                     )
                 }

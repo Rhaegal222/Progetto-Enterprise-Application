@@ -80,6 +80,21 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    public WishlistDTO updateWishlist(Long id, WishlistDTO wishlistDTO) {
+        try {
+            Wishlist wishlist = wishlistDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
+                throw new IllegalAccessException("User cannot update wishlist");
+            wishlist.setWishlistName(wishlistDTO.getWishlistName());
+            wishlist.setVisibility(wishlistDTO.getVisibility());
+            return mapToDto(wishlistDao.save(wishlist));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void deleteWishlist(Long id) {
         try {
             Wishlist wishlist = wishlistDao.findById(id).orElseThrow();

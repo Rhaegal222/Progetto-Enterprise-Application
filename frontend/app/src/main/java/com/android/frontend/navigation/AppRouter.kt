@@ -54,7 +54,7 @@ sealed class Navigation(val route: String) {
     object ProductPage : Navigation(route = "product_page")
     object UserPage : Navigation(route = "user_page")
     object CheckoutPage : Navigation(route = "checkout_page")
-
+    object WishlistUpdatePage : Navigation(route = "wishlistUpdate_page")
     object WishlistsPage : Navigation(route = "wishlists")
     object AddWishlistPage : Navigation(route = "addWishlist")
     object WishlistDetailsPage : Navigation(route = "wishlistDetails")

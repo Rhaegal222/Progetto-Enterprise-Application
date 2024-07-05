@@ -9,6 +9,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface WishlistService {
@@ -49,4 +50,17 @@ interface WishlistService {
     fun getAllLoggedUserWishlists(
         @Header("Authorization") authorization: String
     ): Call<List<WishlistDTO>>
+
+    @PUT("/api/v1/wishlist/updateWishlist/{wishlistId}")
+    fun updateWishlist(
+        @Header("Authorization") authorization: String,
+        @Path("wishlistId") wishlistId: Long,
+        @Body wishlistDTO: WishlistDTO
+    ): Call<WishlistDTO>
+
+    @GET("/api/v1/wishlist/getWishlistById/{wishlistId}")
+    fun getWishlistById(
+        @Header("Authorization") authorization: String,
+        @Path("wishlistId") wishlistId: Long
+    ): Call<WishlistDTO>
 }
