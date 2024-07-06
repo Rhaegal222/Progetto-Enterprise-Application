@@ -123,8 +123,8 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/wishlist/getWishlistById/{id}", "/api/v1/wishlist/getAllLoggedUserWishlists").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/googleAuthentication").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/activate").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/activate").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/activate", "/api/v1/baseUrl").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/activate", "/api/v1/baseUrl").permitAll()
                         // Autentica tutte le altre richieste
                         .anyRequest().authenticated())
 

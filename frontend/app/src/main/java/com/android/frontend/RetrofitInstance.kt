@@ -1,21 +1,47 @@
 package com.android.frontend
 
 import android.content.Context
+import android.util.Log
 import com.android.frontend.config.TokenInterceptor
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.service.*
 import it.unical.inf.ea.backend.data.services.interfaces.OrderService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
-    private val BASE_URL = CurrentDataUtils.baseUrl
+    private val CLIENT_BASE_URL = CurrentDataUtils.baseUrl
 
-    private fun getSimpleRetrofit(): Retrofit {
+    suspend fun initializeBackendBaseUrl() {
+        if (CurrentDataUtils.backendBaseUrl == "") {
+            val apiService = Retrofit.Builder()
+                .baseUrl(CLIENT_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiService::class.java)
+
+            val response = withContext(Dispatchers.IO) {
+                apiService.getBaseUrl()
+            }
+            CurrentDataUtils.backendBaseUrl = response.baseUrl
+            Log.d("DEBUG", "Backend base url: $CurrentDataUtils.backendBaseUrl")
+        }
+    }
+
+    private fun getClientRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(CLIENT_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    private fun getBackendRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(CurrentDataUtils.backendBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -26,7 +52,7 @@ object RetrofitInstance {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(CLIENT_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
@@ -58,11 +84,6 @@ object RetrofitInstance {
 
     fun getAddressApi(context: Context): AddressService {
         return getAuthenticatedRetrofit(context).create(AddressService::class.java)
-    }
-
-    // Funzione per ottenere UserService senza autenticazione
-    fun getSimpleUserApi(): UserService {
-        return getSimpleRetrofit().create(UserService::class.java)
     }
 
     fun getCartApi(context: Context): CartService {

@@ -7,14 +7,18 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.navigation.AppRouter
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.FrontendTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    private var backendBaseUrl by mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,11 +29,15 @@ class MainActivity : ComponentActivity() {
             sharedPreferences.edit().putBoolean("isDarkTheme", isDarkTheme).apply()
         }
 
-        setContent {
-            FrontendTheme {
-                val navController = rememberNavController()
-                HandleIntent(navController, intent)
-                AppRouter(navController)
+        lifecycleScope.launch {
+            RetrofitInstance.initializeBackendBaseUrl()
+            backendBaseUrl = CurrentDataUtils.backendBaseUrl
+            setContent {
+                FrontendTheme {
+                    val navController = rememberNavController()
+                    HandleIntent(navController, intent, backendBaseUrl)
+                    AppRouter(navController)
+                }
             }
         }
     }
@@ -38,11 +46,13 @@ class MainActivity : ComponentActivity() {
         if (intent.data != null) {
             super.onNewIntent(intent)
         }
-        intent.let {
+        lifecycleScope.launch {
+            RetrofitInstance.initializeBackendBaseUrl()
+            backendBaseUrl = CurrentDataUtils.backendBaseUrl
             setContent {
                 FrontendTheme {
                     val navController = rememberNavController()
-                    HandleIntent(navController, it)
+                    HandleIntent(navController, intent, backendBaseUrl)
                     AppRouter(navController)
                 }
             }
@@ -50,13 +60,13 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun HandleIntent(navController: NavHostController, intent: Intent) {
+    private fun HandleIntent(navController: NavHostController, intent: Intent, backendBaseUrl: String?) {
         LaunchedEffect(intent) {
             val appLinkData: Uri? = intent.data
             appLinkData?.let { uri ->
                 val wishlistId = uri.getQueryParameter("id")
                 wishlistId?.let {
-                    navController.navigate("wishlistDetails/$it")
+                    navController.navigate("wishlistDetails/$it?backendBaseUrl=${backendBaseUrl}")
                 }
             }
         }
