@@ -239,30 +239,42 @@ fun FilterDialog(
             Column {
                 when (filterType) {
                     "Category" -> {
-                        categories.forEach { category ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth().padding(8.dp)
-                            ) {
-                                RadioButton(
-                                    selected = selectedCategory == category,
-                                    onClick = { selectedCategory = category }
-                                )
-                                Text(category)
+                        LazyColumn(
+                            modifier = Modifier.heightIn(max = 200.dp) // Limita l'altezza a 5 elementi circa
+                        ) {
+                            items(categories) { category ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    RadioButton(
+                                        selected = selectedCategory == category,
+                                        onClick = { selectedCategory = category }
+                                    )
+                                    Text(category)
+                                }
                             }
                         }
                     }
                     "Brand" -> {
-                        brands.forEach { brand ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth().padding(8.dp)
-                            ) {
-                                RadioButton(
-                                    selected = selectedBrand == brand,
-                                    onClick = { selectedBrand = brand }
-                                )
-                                Text(brand)
+                        LazyColumn(
+                            modifier = Modifier.heightIn(max = 200.dp) // Limita l'altezza a 5 elementi circa
+                        ) {
+                            items(brands) { brand ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    RadioButton(
+                                        selected = selectedBrand == brand,
+                                        onClick = { selectedBrand = brand }
+                                    )
+                                    Text(brand)
+                                }
                             }
                         }
                     }
@@ -293,6 +305,7 @@ fun FilterDialog(
         }
     )
 }
+
 
 @Composable
 fun InputDialog(

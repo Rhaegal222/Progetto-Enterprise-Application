@@ -215,4 +215,9 @@
     <string name="product_added_success_to_wishlist">Produit ajouté avec succès à votre liste de souhaits sélectionnée</string>
     <string name="error">Error</string>
     <string name="product_added_error_to_wishlist">Impossible d\'ajouter ce produit à votre liste de souhaits</string>
+    <string name="error_dialog_title">Erreur</string>
+    <string name="ok">OK</string>
+    <string name="google_account_prompt_error">Aucune activité de compte Google détectée</string>
+    <string name="created_at">Created at</string>
+    <string name="no_google_account_activity_error">Aucune activité de compte Google détectée</string>
 </resources>

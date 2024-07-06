@@ -198,7 +198,6 @@
     <string name="quantity">Quantity:</string>
     <string name="partial_cost">Partial Cost: %s</string>
     <string name="total_cost">Total Cost:</string>
-    <string name="created_at">Created At:</string>
     <string name="address">Address:</string>
     <string name="order_items">Order Items:</string>
     <string name="remove_wishlist">Remove Wishlist</string>
@@ -216,4 +215,9 @@
     <string name="product_added_success_to_wishlist">Product added successfully to your selected wishlist</string>
     <string name="error">Error</string>
     <string name="product_added_error_to_wishlist">Cannot add this product to your wishlist</string>
+    <string name="created_at">Created at</string>
+    <string name="google_account_prompt_error">No Google account activity detected</string>
+    <string name="error_dialog_title">Error</string>
+    <string name="ok">OK</string>
+    <string name="no_google_account_activity_error">No Google account activity detected</string>
 </resources>
