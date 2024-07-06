@@ -74,12 +74,11 @@ fun WishlistDetailsPage(
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
     val products = wishlistViewModel.productsLiveData.observeAsState().value
     val showDialog = remember { mutableStateOf(false) }
-
-    wishlistViewModel.getWishlistDetails(context, wishlistId)
-
+    
     LaunchedEffect(Unit) {
         wishlistViewModel.getWishlistDetails(context, wishlistId)
     }
+
     Log.d("DEBUG", "Wishlist ID: $wishlistId")
     Log.d("DEBUG", "Wishlist Name: $wishlistName")
     Scaffold(
