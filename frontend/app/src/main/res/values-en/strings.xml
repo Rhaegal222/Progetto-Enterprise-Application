@@ -210,4 +210,6 @@
     <string name="Ask_Remove_wishlist">Are you sure you want to delete this wishlist?</string>
     <string name="product_name_">Product Name:</string>
     <string name="edit_wishlist">Edit Wishlist</string>
+    <string name="share">Share</string>
+    <string name="copy_link">Copy link</string>
 </resources>
