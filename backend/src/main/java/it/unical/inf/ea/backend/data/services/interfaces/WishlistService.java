@@ -1,6 +1,5 @@
 package it.unical.inf.ea.backend.data.services.interfaces;
 
-import it.unical.inf.ea.backend.dto.AddressDTO;
 import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
@@ -19,4 +18,6 @@ public interface WishlistService {
     void deleteWishlist(UUID wishlistId) throws IllegalAccessException;
     void addProductToWishlist(UUID wishlistId, Long productId) throws IllegalAccessException;
     void removeProductFromWishlist(UUID wishlistId, Long productId) throws IllegalAccessException;
+    void shareWishlist(UUID wishlistId, String Email) throws IllegalAccessException;
+    void removeWishlistAccess(UUID wishlistId, String email) throws IllegalAccessException;
 }

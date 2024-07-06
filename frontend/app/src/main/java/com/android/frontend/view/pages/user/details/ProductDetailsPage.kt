@@ -29,16 +29,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.persistence.CurrentDataUtils
-import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductDetailsViewModel
-import com.android.frontend.view_models.user.ProductViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

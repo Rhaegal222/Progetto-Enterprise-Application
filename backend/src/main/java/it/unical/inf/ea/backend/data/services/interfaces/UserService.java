@@ -23,8 +23,13 @@ import java.util.UUID;
 
 public interface UserService {
     UserDTO createUser(User user);
+
     UserDTO partialUpdateUser(UUID id, Map<String, Object> updates) throws IllegalAccessException;
+
+    UserBasicDTO updateMe(Map<String, Object> updates) throws IllegalAccessException;
+
     void deleteUser(UUID id);
+
     UserBasicDTO findUserById(UUID id);
 
     Optional<UserBasicDTO> findBasicByUsername(String username);

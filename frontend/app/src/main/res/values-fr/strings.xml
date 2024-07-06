@@ -220,4 +220,6 @@
     <string name="google_account_prompt_error">Aucune activité de compte Google détectée</string>
     <string name="created_at">Created at</string>
     <string name="no_google_account_activity_error">Aucune activité de compte Google détectée</string>
+    <string name="email_change">Changer l\'e-mail</string>
+    <string name="email_change_message">Pour modifier votre email, vous devez vous connecter.</string>
 </resources>

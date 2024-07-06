@@ -108,4 +108,24 @@ public class WishlistController {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
         }
     }
+    @PostMapping("/shareWishlist/{wishlistId}")
+    public ResponseEntity<?> shareWishlist(@PathVariable String wishlistId, @RequestParam String email) {
+        try {
+            UUID uuid = UUID.fromString(wishlistId);
+            wishlistService.shareWishlist(uuid, email);
+            return ResponseEntity.ok("{\"message\": \"Wishlist shared successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
+    @DeleteMapping("/removeWishlistAccess/{wishlistId}")
+    public ResponseEntity<?> removeWishlistAccess(@PathVariable String wishlistId, @RequestParam String email) {
+        try {
+            UUID uuid = UUID.fromString(wishlistId);
+            wishlistService.removeWishlistAccess(uuid, email);
+            return ResponseEntity.ok("{\"message\": \"Wishlist access removed successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
+        }
+    }
 }

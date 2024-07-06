@@ -26,13 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.view_models.user.UserViewModel
 import com.android.frontend.R
-import coil.compose.rememberAsyncImagePainter
-import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
-import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 import com.android.frontend.view.component.ErrorDialog
 
@@ -44,12 +42,8 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
     val isLoading by userViewModel.isLoading.observeAsState(false)
     val hasError by userViewModel.hasError.observeAsState(false)
 
-    val profileImage by userViewModel.profileImageLiveData.observeAsState()
-    val profile by userViewModel.profileLiveData.observeAsState()
-
     LaunchedEffect(Unit) {
-        userViewModel.getUserBasicDTO(context)
-        userViewModel.getProfileImage(context)
+        userViewModel.getUserDetails(context)
     }
 
     if (isLoading) {
@@ -60,16 +54,12 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
         ErrorDialog(
             title = stringResource(id = R.string.fetching_error),
             onDismiss = { navController.popBackStack() },
-            onRetry = { userViewModel.getUserBasicDTO(context)
-                        userViewModel.getProfileImage(context)
-                      },
+            onRetry = { userViewModel.getUserDetails(context) },
             errorMessage = stringResource(id = R.string.fetching_error_message)
         )
     } else {
         PersonalInformationContent(
             navController,
-            profile,
-            profileImage,
             userViewModel,
             context
         )
@@ -80,21 +70,11 @@ fun PersonalInformationPage(navController: NavController, userViewModel: UserVie
 @Composable
 fun PersonalInformationContent(
     navController: NavController,
-    profile: UserBasicDTO?,
-    profileImage: Uri?,
     userViewModel: UserViewModel,
-    context: Context){
-
-
-    var firstName by remember { mutableStateOf(profile?.firstName ?: "") }
-    var lastName by remember { mutableStateOf(profile?.lastName ?: "") }
-    var email by remember { mutableStateOf(profile?.email ?: "") }
-    var phoneNumber by remember { mutableStateOf(profile?.phoneNumber ?: "Nessun numero di telefono") }
-
-    val previusFirstName by remember { mutableStateOf(firstName) }
-    val previusLastName by remember { mutableStateOf(lastName) }
-    val previusEmail by remember { mutableStateOf(email) }
-    val previusPhoneNumber by remember { mutableStateOf(phoneNumber) }
+    context: Context
+) {
+    val userImage by userViewModel.profileImageLiveData.observeAsState()
+    val userDetails by userViewModel.userDetailsLiveData.observeAsState()
 
     var isEditMode by remember { mutableStateOf(false) }
     var showEmailChangeDialog by remember { mutableStateOf(false) }
@@ -106,7 +86,15 @@ fun PersonalInformationContent(
             userViewModel.updatePhotoUser(context, it)
         }
     }
-    Scaffold (
+
+    var firstName by remember { mutableStateOf(userDetails?.firstName ?: "") }
+    var lastName by remember { mutableStateOf(userDetails?.lastName ?: "") }
+    var email by remember { mutableStateOf(userDetails?.email ?: "") }
+    var phoneNumber by remember { mutableStateOf(userDetails?.phoneNumber ?: "") }
+
+    val originalEmail = userDetails?.email
+
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = {
@@ -116,29 +104,29 @@ fun PersonalInformationContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon( Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
             )
-        }) {
-        paddingValues -> Column(
+        }) { paddingValues ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
                 .padding(16.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+        ) {
 
             Spacer(modifier = Modifier.height(25.dp))
 
             Box(modifier = Modifier.size(160.dp)) {
-                if (profileImage != null) {
+                if (userImage != null) {
                     Image(
-                        painter = rememberAsyncImagePainter(model = profileImage),
+                        painter = rememberAsyncImagePainter(model = userImage),
                         contentDescription = "Profile Image",
                         modifier = Modifier
                             .size(160.dp)
@@ -170,51 +158,76 @@ fun PersonalInformationContent(
 
             Spacer(modifier = Modifier.height(25.dp))
 
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                value = firstName,
-                onValueChange = { firstName = it },
-                label = { Text(stringResource(id = R.string.firstname)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = !isEditMode
-            )
+            if (isEditMode) {
+                OutlinedTextField(
+                    value = firstName,
+                    onValueChange = { firstName = it },
+                    label = { Text(stringResource(id = R.string.firstname)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = { Text(stringResource(id = R.string.lastname)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(stringResource(id = R.string.email)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = { phoneNumber = it },
+                    label = { Text(stringResource(id = R.string.phone_number)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors()
+                )
+            } else {
+                OutlinedTextField(
+                    value = userDetails?.firstName ?: "",
+                    onValueChange = {  },
+                    label = { Text(stringResource(id = R.string.firstname)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    readOnly = true
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = userDetails?.lastName ?: "",
+                    onValueChange = { },
+                    label = { Text(stringResource(id = R.string.lastname)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    readOnly = true
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedTextField(
+                    value = userDetails?.email ?: "",
+                    onValueChange = { },
+                    label = { Text(stringResource(id = R.string.email)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    readOnly = true
+                )
+                Spacer(modifier = Modifier.height(10.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                value = lastName,
-                onValueChange = { lastName = it },
-                label = { Text(stringResource(id = R.string.lastname)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = !isEditMode
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                value = email,
-                onValueChange = { email = it },
-                label = { Text(stringResource(id = R.string.email)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = !isEditMode
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldColorScheme.colors(),
-                value = phoneNumber,
-                onValueChange = { phoneNumber = it },
-                label = { Text(stringResource(id = R.string.phone_number)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = !isEditMode
-            )
+                OutlinedTextField(
+                    value = if (userDetails?.phoneNumber.isNullOrEmpty()) "Nessun numero di cellulare" else userDetails?.phoneNumber ?: "",
+                    onValueChange = { },
+                    label = { Text(stringResource(id = R.string.phone_number)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    readOnly = true
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -223,20 +236,13 @@ fun PersonalInformationContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround
                 ) {
-
                     Button(
                         shape = RoundedCornerShape(12.dp),
                         onClick = {
-                            if (email != firstName) {
+                            if (email != originalEmail) {
                                 showEmailChangeDialog = true
                             } else {
-                                userViewModel.updateUserProfile(
-                                    context,
-                                    firstName,
-                                    lastName,
-                                    email,
-                                    phoneNumber
-                                )
+                                userViewModel.updateMe(context, firstName, lastName, email, phoneNumber)
                                 isEditMode = false
                             }
                         },
@@ -252,10 +258,10 @@ fun PersonalInformationContent(
                         shape = RoundedCornerShape(12.dp),
                         onClick = {
                             isEditMode = false
-                            firstName = previusFirstName
-                            lastName = previusLastName
-                            email = previusEmail
-                            phoneNumber = previusPhoneNumber
+                            firstName = userDetails?.firstName ?: ""
+                            lastName = userDetails?.lastName ?: ""
+                            email = userDetails?.email ?: ""
+                            phoneNumber = userDetails?.phoneNumber ?: ""
                         },
                         modifier = Modifier
                             .height(40.dp)
@@ -285,34 +291,27 @@ fun PersonalInformationContent(
             if (showEmailChangeDialog) {
                 AlertDialog(
                     onDismissRequest = { showEmailChangeDialog = false },
-                    title = { Text(text = "Cambio email") },
-                    text = { Text("Per poter modificare l'email devi rieffettuare l'accesso.") },
+                    title = { Text(text = stringResource(id = R.string.email_change)) },
+                    text = { Text(text = stringResource(id = R.string.email_change_message)) },
                     confirmButton = {
                         TextButton(
                             onClick = {
-                                userViewModel.updateUserProfile(
-                                    context,
-                                    firstName,
-                                    lastName,
-                                    email,
-                                    phoneNumber
-                                )
+                                userViewModel.updateMe(context, firstName, lastName, email, phoneNumber)
                                 userViewModel.logout(context)
-                            },
-                            colors = TextButtonColorScheme.textButtonColors()
+                                navController.navigate("LoginPage") {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                }
+                                showEmailChangeDialog = false
+                            }
                         ) {
-                            Text("Continua")
+                            Text(text = stringResource(id = R.string.confirm))
                         }
                     },
                     dismissButton = {
-                        TextButton(
-                            onClick = {
-                                showEmailChangeDialog = false
-                                isEditMode = false
-                            },
-                            colors = TextButtonColorScheme.textButtonColors()
-                        ) {
-                            Text("Cancella")
+                        TextButton(onClick = { showEmailChangeDialog = false }) {
+                            Text(text = stringResource(id = R.string.cancel))
                         }
                     }
                 )

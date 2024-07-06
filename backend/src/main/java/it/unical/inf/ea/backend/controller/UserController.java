@@ -195,6 +195,17 @@ public class UserController {
         }
     }
 
+    @PatchMapping(path = "/updateMe")
+    public ResponseEntity<?> updateMe(@RequestBody Map<String, Object> updates) {
+        try {
+            userService.updateMe(updates);
+            return ResponseEntity.ok("{\"message\": \"User updated successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Error: " + e.getMessage()));
+        }
+    }
+
+
     @PatchMapping(path = "/updateUser/{id}")
     public ResponseEntity<?> partialUpdateUser(@PathVariable("id") UUID id, @RequestBody Map<String, Object> updates) {
         try {
