@@ -1,13 +1,10 @@
 package com.android.frontend.view.pages.user.main
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,18 +15,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.dto.CartItemDTO
-import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.view_models.user.CartViewModel
-import kotlinx.coroutines.flow.firstOrNull
-import java.math.BigDecimal
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -37,16 +28,17 @@ import com.android.frontend.R
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.view.component.CartItemCard
 import com.android.frontend.view.component.ErrorDialog
-
+import kotlinx.coroutines.flow.firstOrNull
+import java.math.BigDecimal
 
 @Composable
 fun CartPage(
     navController: NavController,
     cartViewModel: CartViewModel = viewModel()
 ) {
-
     val context = LocalContext.current
     val cartItems by cartViewModel.cartItems.observeAsState()
+    val productImages by cartViewModel.productImagesLiveData.observeAsState(emptyMap())
     val isLoading by cartViewModel.isLoading.observeAsState(false)
     val hasError by cartViewModel.hasError.observeAsState(false)
 
@@ -67,12 +59,12 @@ fun CartPage(
             errorMessage = stringResource(id = R.string.cart_load_failed)
         )
     } else {
-        cartItems?.let { CartContent(navController, it, cartViewModel) }
+        cartItems?.let { CartContent(navController, it, productImages, cartViewModel) }
     }
 }
 
 @Composable
-fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewModel: CartViewModel) {
+fun CartContent(navController: NavController, cart: List<CartItemDTO>, productImages: Map<Long, Uri>, cartViewModel: CartViewModel) {
     val context = LocalContext.current
     Column {
         cart.let {
@@ -88,7 +80,7 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
                             cartItem.productId
                         ).collectAsState(null)
                         productDetails?.let { product ->
-                            CartItemCard(cartItem, product, cartViewModel)
+                            CartItemCard(cartItem, product, cartViewModel, productImages[product.id])
                         }
                     }
                 }
@@ -126,9 +118,9 @@ fun CartContent(navController: NavController, cart: List<CartItemDTO>, cartViewM
     }
 }
 
+
 @Composable
 fun CartSummary(cartItems: List<CartItemDTO>, cartViewModel: CartViewModel) {
-
     val context = LocalContext.current
     var total by remember { mutableStateOf(BigDecimal.ZERO) }
 

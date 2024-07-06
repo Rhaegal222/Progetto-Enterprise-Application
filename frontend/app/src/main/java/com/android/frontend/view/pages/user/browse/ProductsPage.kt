@@ -25,7 +25,6 @@ import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view.component.ProductCard
-import com.android.frontend.view_models.user.AddressViewModel
 
 enum class SortOption(val displayName: String) {
     ALPHABETICAL("Alphabetical"),
@@ -34,28 +33,35 @@ enum class SortOption(val displayName: String) {
     PRICE_DESCENDING("Price: High to Low")
 }
 
-@SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, productViewModel: ProductViewModel = viewModel()) {
     val context = LocalContext.current
     val products by productViewModel.productsLiveData.observeAsState(emptyList())
     val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
+    val categories by productViewModel.categoriesLiveData.observeAsState(emptyList())
+    val brands by productViewModel.brandsLiveData.observeAsState(emptyList())
 
     var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
     var expandedSort by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
 
+    var selectedCategory by remember { mutableStateOf("") }
+    var selectedBrand by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
-    var dialogInput by remember { mutableStateOf("") }
     var filterType by remember { mutableStateOf("") }
+
+    var dialogInput by remember { mutableStateOf("") }
 
     val isLoading by productViewModel.isLoading.observeAsState(false)
     val hasError by productViewModel.hasError.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        Log.d("DEBUG", "${getCurrentStackTrace()} Fetching all products")
+        Log.d("DEBUG", "${getCurrentStackTrace()} Fetching all products, categories, and brands")
         productViewModel.fetchAllProducts(context)
+        productViewModel.fetchAllCategories(context)
+        productViewModel.fetchAllBrands(context)
     }
 
     val categoryString = stringResource(id = R.string.category)
@@ -77,7 +83,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                                 expanded = expandedSort,
                                 onDismissRequest = { expandedSort = false }
                             ) {
-                                SortOption.entries.forEach { option ->
+                                SortOption.values().forEach { option ->
                                     DropdownMenuItem(
                                         onClick = {
                                             selectedSortOption = option
@@ -122,7 +128,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
             )
         }
     ) {
-        Column{
+        Column {
             Spacer(modifier = Modifier.height(65.dp))
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -136,11 +142,16 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                     errorMessage = stringResource(id = R.string.products_load_failed)
                 )
             } else {
+                val filteredProducts = products.filter {
+                    (selectedCategory.isEmpty() || it.category.name == selectedCategory) &&
+                            (selectedBrand.isEmpty() || it.brand.name == selectedBrand)
+                }
+
                 val sortedProducts = when (selectedSortOption) {
-                    SortOption.ALPHABETICAL -> products.sortedBy { it.name }
-                    SortOption.REVERSE_ALPHABETICAL -> products.sortedByDescending { it.name }
-                    SortOption.PRICE_ASCENDING -> products.sortedBy { it.price }
-                    SortOption.PRICE_DESCENDING -> products.sortedByDescending { it.price }
+                    SortOption.ALPHABETICAL -> filteredProducts.sortedBy { it.name }
+                    SortOption.REVERSE_ALPHABETICAL -> filteredProducts.sortedByDescending { it.name }
+                    SortOption.PRICE_ASCENDING -> filteredProducts.sortedBy { it.price }
+                    SortOption.PRICE_DESCENDING -> filteredProducts.sortedByDescending { it.price }
                 }
 
                 LazyColumn(
@@ -161,28 +172,119 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
     }
 
     if (showDialog) {
-        InputDialog(
-            filterType = filterType,
-            dialogInput = dialogInput,
-            onInputChange = { dialogInput = it },
-            onDismiss = {
-                showDialog = false
-                dialogInput = ""
-            },
-            onConfirm = {
-                showDialog = false
+        if (filterType == priceRangeString) {
+            InputDialog(
+                filterType = filterType,
+                dialogInput = dialogInput,
+                onInputChange = { dialogInput = it },
+                onDismiss = {
+                    showDialog = false
+                    dialogInput = ""
+                },
+                onConfirm = {
+                    showDialog = false
+                    val (minPrice, maxPrice) = dialogInput.split("-").map { it.trim().toDouble() }
+                    productViewModel.fetchProductsByPriceRange(context, minPrice, maxPrice)
+                    dialogInput = ""
+                }
+            )
+        } else {
+            FilterDialog(
+                filterType = filterType,
+                tempSelectedCategory = selectedCategory,
+                tempSelectedBrand = selectedBrand,
+                categories = categories.map { it.name },
+                brands = brands.map { it.name },
+                onDismiss = { showDialog = false },
+                onConfirmCategory = { category ->
+                    selectedCategory = category
+                    productViewModel.fetchProductsByCategory(context, category)
+                    showDialog = false
+                },
+                onConfirmBrand = { brand ->
+                    selectedBrand = brand
+                    productViewModel.fetchProductsByBrand(context, brand)
+                    showDialog = false
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun FilterDialog(
+    filterType: String,
+    tempSelectedCategory: String,
+    tempSelectedBrand: String,
+    categories: List<String>,
+    brands: List<String>,
+    onDismiss: () -> Unit,
+    onConfirmCategory: (String) -> Unit,
+    onConfirmBrand: (String) -> Unit
+) {
+    var selectedCategory by remember { mutableStateOf(tempSelectedCategory) }
+    var selectedBrand by remember { mutableStateOf(tempSelectedBrand) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Select $filterType") },
+        text = {
+            Column {
                 when (filterType) {
-                    categoryString -> productViewModel.fetchProductsByCategory(context, dialogInput)
-                    brandString -> productViewModel.fetchProductsByBrand(context, dialogInput)
-                    priceRangeString -> {
-                        val (minPrice, maxPrice) = dialogInput.split("-").map { it.trim().toDouble() }
-                        productViewModel.fetchProductsByPriceRange(context, minPrice, maxPrice)
+                    "Category" -> {
+                        categories.forEach { category ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            ) {
+                                RadioButton(
+                                    selected = selectedCategory == category,
+                                    onClick = { selectedCategory = category }
+                                )
+                                Text(category)
+                            }
+                        }
+                    }
+                    "Brand" -> {
+                        brands.forEach { brand ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            ) {
+                                RadioButton(
+                                    selected = selectedBrand == brand,
+                                    onClick = { selectedBrand = brand }
+                                )
+                                Text(brand)
+                            }
+                        }
                     }
                 }
-                dialogInput = ""
             }
-        )
-    }
+        },
+        confirmButton = {
+            Button(
+                shape = RoundedCornerShape(12.dp),
+                onClick = {
+                    if (filterType == "Category") {
+                        onConfirmCategory(selectedCategory)
+                    } else if (filterType == "Brand") {
+                        onConfirmBrand(selectedBrand)
+                    }
+                }
+            ) {
+                Text(stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            Button(
+                shape = RoundedCornerShape(12.dp),
+                onClick = onDismiss
+            ) {
+                Text(stringResource(id = R.string.dismiss))
+            }
+        }
+    )
 }
 
 @Composable
@@ -213,8 +315,7 @@ fun InputDialog(
             Button(
                 shape = RoundedCornerShape(12.dp),
                 onClick = onConfirm
-            )
-            {
+            ) {
                 Text(stringResource(id = R.string.confirm))
             }
         },

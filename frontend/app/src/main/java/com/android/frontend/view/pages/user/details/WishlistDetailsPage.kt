@@ -1,8 +1,12 @@
 package com.android.frontend.view.pages.user.details
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
@@ -74,6 +80,8 @@ fun WishlistDetailsPage(
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
     val products = wishlistViewModel.productsLiveData.observeAsState().value
     val showDialog = remember { mutableStateOf(false) }
+    val showShareDialog = remember { mutableStateOf(false) }
+    val shareLink = "http://frontend.com/api/v1/wishlist/$wishlistId"
 
     LaunchedEffect(Unit) {
         wishlistViewModel.getWishlistDetails(context, wishlistId)
@@ -102,7 +110,6 @@ fun WishlistDetailsPage(
                 }
             )
         },
-
         content = { innerPadding ->
             if (wishlistDetails != null) {
                 Column(
@@ -138,30 +145,40 @@ fun WishlistDetailsPage(
 
         },
         floatingActionButton = {
-            Button(
-                onClick = {
-                    showDialog.value = true
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .padding(0.dp)
-            ) {
-                Icon(
-                    Icons.Default.Remove,
-                    contentDescription = stringResource(id = R.string.remove_wishlist),
-                    modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
-                        .padding(0.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(id = R.string.remove_wishlist)
-                )
+            Column {
+                FloatingActionButton(
+                    onClick = { showShareDialog.value = true },
+                    containerColor = Color.Blue,
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Icon(Icons.Default.Share, contentDescription = stringResource(id = R.string.share))
+                }
+                Button(
+                    onClick = {
+                        showDialog.value = true
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.padding(0.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Remove,
+                        contentDescription = stringResource(id = R.string.remove_wishlist),
+                        modifier = Modifier
+                            .width(40.dp)
+                            .height(40.dp)
+                            .padding(0.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.remove_wishlist)
+                    )
+                }
             }
         }
     )
@@ -203,7 +220,48 @@ fun WishlistDetailsPage(
             }
         )
     }
+
+    if (showShareDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showShareDialog.value = false },
+            title = {
+                Text(text = stringResource(id = R.string.share))
+            },
+            text = {
+                Text(text = shareLink)
+            },
+            confirmButton = {
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Blue,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = {
+                        showShareDialog.value = false
+                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Wishlist Link", shareLink)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.copy_link))
+                }
+            },
+            dismissButton = {
+                Button(
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = {
+                        showShareDialog.value = false
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+            }
+        )
+    }
 }
+
 
 @Composable
 fun ProductsWishlistCard(

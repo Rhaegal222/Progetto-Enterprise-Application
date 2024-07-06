@@ -12,6 +12,8 @@ import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.BrandDTO
+import com.android.frontend.dto.CategoryDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,11 +30,14 @@ class ProductViewModel : ViewModel() {
     private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
 
-    private val productDetails = MutableLiveData<ProductDTO>()
-    val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
-
     private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
     val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
+
+    private val _categoriesLiveData = MutableLiveData<List<CategoryDTO>>()
+    val categoriesLiveData: LiveData<List<CategoryDTO>> = _categoriesLiveData
+
+    private val _brandsLiveData = MutableLiveData<List<BrandDTO>>()
+    val brandsLiveData: LiveData<List<BrandDTO>> = _brandsLiveData
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -40,39 +45,6 @@ class ProductViewModel : ViewModel() {
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
-    fun getProductDetails(context: Context, id: Long) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
-            val productService = RetrofitInstance.getProductApi(context)
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val call = productService.getProductById("Bearer $accessToken", id)
-            call.enqueue(object : Callback<ProductDTO> {
-                override fun onResponse(call: Call<ProductDTO>, response: Response<ProductDTO>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { product ->
-                            Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
-                            productDetails.value = product
-                        }
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
-                        _hasError.value = true
-                    }
-                    _isLoading.value = false
-                }
-
-                override fun onFailure(call: Call<ProductDTO>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
-                    }
-                    _isLoading.value = false
-                    _hasError.value = true
-                }
-            })
-        }
-    }
 
     fun fetchAllProducts(context: Context) {
         viewModelScope.launch {
@@ -286,6 +258,48 @@ class ProductViewModel : ViewModel() {
                     }
                     _isLoading.value = false
                     _hasError.value = true
+                }
+            })
+        }
+    }
+
+    fun fetchAllCategories(context: Context) {
+        viewModelScope.launch {
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val categoryService = RetrofitInstance.getProductCategoryApi(context)
+            val call = categoryService.getAllCategories("Bearer $accessToken")
+            call.enqueue(object : Callback<List<CategoryDTO>> {
+                override fun onResponse(call: Call<List<CategoryDTO>>, response: Response<List<CategoryDTO>>) {
+                    if (response.isSuccessful) {
+                        _categoriesLiveData.postValue(response.body() ?: emptyList())
+                    } else {
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch categories: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<CategoryDTO>>, t: Throwable) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching categories", t)
+                }
+            })
+        }
+    }
+
+    fun fetchAllBrands(context: Context) {
+        viewModelScope.launch {
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            val brandService = RetrofitInstance.getBrandApi(context)
+            val call = brandService.getAllBrands("Bearer $accessToken")
+            call.enqueue(object : Callback<List<BrandDTO>> {
+                override fun onResponse(call: Call<List<BrandDTO>>, response: Response<List<BrandDTO>>) {
+                    if (response.isSuccessful) {
+                        _brandsLiveData.postValue(response.body() ?: emptyList())
+                    } else {
+                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch brands: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<BrandDTO>>, t: Throwable) {
+                    Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching brands", t)
                 }
             })
         }
