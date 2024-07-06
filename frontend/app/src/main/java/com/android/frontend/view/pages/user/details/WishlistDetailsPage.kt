@@ -93,7 +93,7 @@ fun WishlistDetailsPage(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = wishlistName)
+                    Text(wishlistName)
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

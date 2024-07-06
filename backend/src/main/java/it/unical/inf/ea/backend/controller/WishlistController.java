@@ -56,6 +56,7 @@ public class WishlistController {
         }
     }
 
+
     @DeleteMapping("/{wishlistId}/removeProductsFromWishlist/{productId}")
     public ResponseEntity<?> removeProductsFromWishlist(@PathVariable String wishlistId, @PathVariable Long productId) {
         try {

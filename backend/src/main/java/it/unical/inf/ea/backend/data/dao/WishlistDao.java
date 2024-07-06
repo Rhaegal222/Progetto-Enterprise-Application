@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface WishlistDao extends JpaRepository<Wishlist, String>{
     List<Wishlist> findAllByUserId(UUID userId);
     Wishlist findById(UUID id);
+    void deleteById(UUID id);
 }

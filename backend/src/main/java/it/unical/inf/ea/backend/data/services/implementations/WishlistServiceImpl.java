@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -104,6 +105,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
+    @Transactional
     public void deleteWishlist(UUID wishlistId) {
         try {
             Wishlist wishlist = wishlistDao.findById(wishlistId);
@@ -114,11 +116,12 @@ public class WishlistServiceImpl implements WishlistService {
             if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
                 throw new IllegalAccessException("User cannot delete wishlist");
 
-            wishlistDao.deleteById(String.valueOf(wishlistId));
+            wishlistDao.deleteById(wishlistId);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void addProductToWishlist(UUID wishlistId, Long productId) {
