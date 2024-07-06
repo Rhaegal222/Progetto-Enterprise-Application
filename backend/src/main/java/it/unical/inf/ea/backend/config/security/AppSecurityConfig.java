@@ -58,14 +58,14 @@ public class AppSecurityConfig {
                                 "/api/v1/addresses/getAllLoggedUserAddresses").authenticated()
 
                         // BRAND
-                        .requestMatchers(HttpMethod.POST, "/api/v1/brand/addBrand").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/brand/deleteBrand").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/brand/addBrand").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/brand/deleteBrand").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/brand/allBrands", "api/v1/brand/getBrandById", "api/v1/brand/getBrandByName").authenticated()
 
                         // CATEGORY
-                        .requestMatchers(HttpMethod.POST, "/api/v1/category/addCategory").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/category/updateCategory").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/category/deleteCategory").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/category/addCategory").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/category/updateCategory").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/category/deleteCategory").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/category/getCategoryById", "/api/v1/category/getAllCategories").authenticated()
 
                         // CART
@@ -76,8 +76,8 @@ public class AppSecurityConfig {
 
                         //ORDER
                         .requestMatchers(HttpMethod.POST, "/api/v1/orders/addOrder").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/orders/updateOrder/{id}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/orders/deleteOrder/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/orders/updateOrder/{id}").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/orders/deleteOrder/{id}").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/orders/getOrder/{id}", "/api/v1/orders/getAllOrders").authenticated()
 
                         // PAYMENT METHOD
@@ -88,18 +88,18 @@ public class AppSecurityConfig {
                                 "api/v1/paymentMethods/getAllLoggedUserPaymentMethods").authenticated()
 
                         // PRODUCT
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products/addProduct").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/products/updateProduct/{id}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/deleteProduct/{id}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/addProduct").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/products/updateProduct/{id}").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/deleteProduct/{id}").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/getProductById/","/api/v1/products/getProductsByCategory/" ,
                                 "/api/v1/products/getProductsByCategory/", "/api/v1/products/getAllProducts",
                                 "/api/v1/products/getProductsByBrand/","/api/v1/products/getProductsByPriceRange/", "/api/v1/products/getSalesProducts").authenticated()
 
                         // PRODUCT IMAGE
-                        .requestMatchers(HttpMethod.POST, "/api/v1/productPicture/uploadInitialPhotoProductById/{productId}").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/productPicture/uploadInitialPhotoProductById/{productId}").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/productPicture/getPhotoProductById/{productId}").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/productPicture/replacePhotoProductById/{productId}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productPicture/deletePhotoProductById/{productId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productPicture/deletePhotoProductById/{productId}").hasAnyAuthority("ROLE_ADMIN")
 
                         // USER
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/logout", "/api/v1/users/changeRole/",
