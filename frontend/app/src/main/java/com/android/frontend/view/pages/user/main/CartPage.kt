@@ -137,7 +137,8 @@ fun CartSummary(cartItems: List<CartItemDTO>, cartViewModel: CartViewModel) {
         for (cartItem in cartItems) {
             val product = cartViewModel.getProductDetails(context, cartItem.productId).firstOrNull()
             product?.let {
-                total += (it.price * BigDecimal(cartItem.quantity)) + it.shippingCost
+                val price = if (it.onSale) it.salePrice ?: it.price else it.price
+                total += (price * BigDecimal(cartItem.quantity)) + it.shippingCost
             }
         }
     }
