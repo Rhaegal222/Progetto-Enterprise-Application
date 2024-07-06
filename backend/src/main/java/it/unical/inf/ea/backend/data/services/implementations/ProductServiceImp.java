@@ -110,18 +110,27 @@ public class ProductServiceImp implements ProductService {
             throw new IllegalAccessException("Only administrators can update products");
         }
 
-        // Applica gli aggiornamenti alle proprietà del prodotto
         BeanWrapper beanWrapper = new BeanWrapperImpl(product);
         updates.forEach((key, value) -> {
             if (beanWrapper.isWritableProperty(key)) {
-                beanWrapper.setPropertyValue(key, value);
+                if (value instanceof Map) {
+                    if (key.equals("brand")) {
+                        Brand brand = convertMapToBrand((Map<String, Object>) value);
+                        beanWrapper.setPropertyValue(key, brand);
+                    } else if (key.equals("category")) {
+                        Category category = convertMapToCategory((Map<String, Object>) value);
+                        beanWrapper.setPropertyValue(key, category);
+                    }
+                } else {
+                    beanWrapper.setPropertyValue(key, value);
+                }
             }
         });
 
-        // Salva l'utente aggiornato
-        Product updateProduct = productDao.save(product);
-        return mapToDto(updateProduct);
+        Product updatedProduct = productDao.save(product);
+        return mapToDto(updatedProduct);
     }
+
 
     @Override
     public void deleteProduct(Long id) throws IllegalAccessException {
@@ -143,4 +152,25 @@ public class ProductServiceImp implements ProductService {
 
     public ProductDTO mapToDto(Product product){return modelMapper.map(product, ProductDTO.class);}
 
+    private Brand convertMapToBrand(Map<String, Object> map) {
+        Brand brand = new Brand();
+        BeanWrapper brandWrapper = new BeanWrapperImpl(brand);
+        map.forEach((key, value) -> {
+            if (brandWrapper.isWritableProperty(key)) {
+                brandWrapper.setPropertyValue(key, value);
+            }
+        });
+        return brand;
+    }
+
+    private Category convertMapToCategory(Map<String, Object> map) {
+        Category category = new Category();
+        BeanWrapper categoryWrapper = new BeanWrapperImpl(category);
+        map.forEach((key, value) -> {
+            if (categoryWrapper.isWritableProperty(key)) {
+                categoryWrapper.setPropertyValue(key, value);
+            }
+        });
+        return category;
+    }
 }

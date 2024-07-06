@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -52,7 +51,6 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
 
     val productDetails by viewModel.productDetails.observeAsState()
 
-    // State variables for product details
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var ingredients by remember { mutableStateOf("") }
@@ -63,39 +61,40 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
     var shippingCost by remember { mutableStateOf(BigDecimal.ZERO) }
     var onSale by remember { mutableStateOf(false) }
     var salePrice by remember { mutableStateOf(BigDecimal.ZERO) }
+    var availability by remember { mutableStateOf(ProductDTO.Availability.IN_STOCK) }
 
-    LaunchedEffect(productDetails) {
-        productDetails?.let {
-            name = it.name
-            description = it.description.toString()
-            ingredients = it.ingredients.toString()
-            nutritionalValues = it.nutritionalValues.toString()
-            weight = it.weight
-            quantity = it.quantity
-            price = it.price
-            shippingCost = it.shippingCost
-            onSale = it.onSale
-            salePrice = it.salePrice
-        }
-    }
+    val prodImage by viewModel.prodImageLiveData.observeAsState()
 
     val allBrands by viewModel.allBrands.observeAsState(emptyList())
     val allCategories by viewModel.allCategories.observeAsState(emptyList())
 
     val selectedBrand by viewModel.brand.observeAsState()
     val selectedCategory by viewModel.category.observeAsState()
-    val selectedAvailability by viewModel.availability.observeAsState()
+
     var showSuccessDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(productDetails) {
+        productDetails?.let {
+            name = it.name ?: ""
+            description = it.description ?: ""
+            ingredients = it.ingredients ?: ""
+            nutritionalValues = it.nutritionalValues ?: ""
+            weight = it.weight ?: ""
+            quantity = it.quantity ?: 0
+            price = it.price ?: BigDecimal.ZERO
+            shippingCost = it.shippingCost ?: BigDecimal.ZERO
+            onSale = it.onSale ?: false
+            salePrice = it.salePrice ?: BigDecimal.ZERO
+            availability = it.availability ?: ProductDTO.Availability.IN_STOCK
+        }
+    }
 
     LaunchedEffect(productDetails) {
         productDetails?.let {
             viewModel.brand.value = it.brand
             viewModel.category.value = it.category
-            viewModel.availability.value = it.availability
         }
     }
-
-    val prodImage by viewModel.prodImageLiveData.observeAsState()
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -133,33 +132,40 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                     }
                 )
             }
-        ) {
+        ) { paddingValues ->
             Spacer(modifier = Modifier.height(70.dp))
+
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(paddingValues)
+                    .padding(16.dp, 0.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(stringResource(id = R.string.edit_product), fontSize = 24.sp)
 
-                if (prodImage != null) {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = prodImage),
-                        contentDescription = stringResource(id = R.string.product_image),
-                        modifier = Modifier
-                            .size(160.dp)
-                            .clip(CircleShape)
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.product_placeholder),
-                        contentDescription = stringResource(id = R.string.product_image),
-                        modifier = Modifier
-                            .size(160.dp)
-                            .clip(CircleShape)
-                    )
+                Spacer(modifier = Modifier.height(25.dp))
+
+                Box(modifier = Modifier.size(160.dp)) {
+                    if (prodImage != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(model = prodImage),
+                            contentDescription = stringResource(id = R.string.product_image),
+                            modifier = Modifier
+                                .size(160.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.product_placeholder),
+                            contentDescription = stringResource(id = R.string.product_image),
+                            modifier = Modifier
+                                .size(160.dp)
+                                .clip(CircleShape)
+                        )
+                    }
                 }
+
                 IconButton(
                     onClick = { imagePickerLauncher.launch("image/*") },
                     modifier = Modifier
@@ -179,8 +185,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = selectedAvailability?.name
-                            ?: stringResource(id = R.string.select_availability),
+                        text = availability.name,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(onClick = { expandedAvailability = true })
@@ -195,7 +200,7 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                             DropdownMenuItem(
                                 text = { Text(option.name) },
                                 onClick = {
-                                    viewModel.availability.value = option
+                                    availability = option
                                     expandedAvailability = false
                                 }
                             )
@@ -221,11 +226,11 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                         onDismissRequest = { expandedBrand = false },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        allBrands.forEach { brand ->
+                        allBrands.forEach { option ->
                             DropdownMenuItem(
-                                text = { Text(brand.name) },
+                                text = { Text(option.name) },
                                 onClick = {
-                                    viewModel.brand.value = brand
+                                    viewModel.brand.value = option
                                     expandedBrand = false
                                 }
                             )
@@ -250,11 +255,11 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                         onDismissRequest = { expandedCategory = false },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        allCategories.forEach { category ->
+                        allCategories.forEach { option ->
                             DropdownMenuItem(
-                                text = { Text(category.name) },
+                                text = { Text(option.name) },
                                 onClick = {
-                                    viewModel.category.value = category
+                                    viewModel.category.value = option
                                     expandedCategory = false
                                 }
                             )
@@ -318,61 +323,68 @@ fun EditProductPage(navController: NavHostController, viewModel: EditProductView
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Text(stringResource(id = R.string.on_sale), modifier = Modifier.padding(top = 8.dp))
-                Switch(
-                    checked = onSale,
-                    onCheckedChange = {
-                        onSale = it
-                        if (!it) {
-                            salePrice = BigDecimal.ZERO
-                        }
-                    }
-                )
-
-                if (onSale) {
-                    TextField(
-                        value = salePrice.toPlainString(),
-                        onValueChange = { salePrice = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
-                        label = { Text(stringResource(id = R.string.discounted_price)) },
-                        modifier = Modifier.fillMaxWidth()
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(id = R.string.on_sale), modifier = Modifier.padding(end = 8.dp))
+                    Checkbox(
+                        checked = onSale,
+                        onCheckedChange = { onSale = it }
                     )
+
+                    Spacer(modifier = Modifier.width(8.dp)) // Adjust spacing if needed
+
+                    if (onSale) {
+                        TextField(
+                            value = salePrice.toPlainString(),
+                            onValueChange = { salePrice = it.toBigDecimalOrNull() ?: BigDecimal.ZERO },
+                            label = { Text(stringResource(id = R.string.discounted_price)) },
+                            modifier = Modifier.weight(1f) // Adjusted to use weight for equal distribution
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
                     onClick = {
                         viewModel.updateProduct(
-                            context,
-                            productId,
-                            name,
-                            description,
-                            ingredients,
-                            nutritionalValues,
-                            weight,
-                            quantity,
-                            price,
-                            shippingCost,
-                            onSale,
-                            salePrice
+                            context = context,
+                            productId = productId,
+                            name = name,
+                            description = description,
+                            ingredients = ingredients,
+                            nutritionalValues = nutritionalValues,
+                            weight = weight,
+                            quantity = quantity,
+                            price = price,
+                            shippingCost = shippingCost,
+                            availability = availability,
+                            onSale = onSale,
+                            salePrice = salePrice
                         )
                         showSuccessDialog = true
                     },
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(id = R.string.save_changes))
                 }
+            }
 
-                if (showSuccessDialog) {
-                    AlertDialog(
-                        onDismissRequest = { showSuccessDialog = false },
-                        confirmButton = {
-                            TextButton(onClick = { showSuccessDialog = false }) {
-                                Text(stringResource(id = R.string.okay))
+            if (showSuccessDialog) {
+                AlertDialog(
+                    onDismissRequest = { showSuccessDialog = false },
+                    title = { Text(stringResource(id = R.string.success)) },
+                    text = { Text(stringResource(id = R.string.product_updated_successfully)) },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                showSuccessDialog = false
+                                navController.navigate(Navigation.ProductPage.route)
                             }
-                        },
-                        text = { Text(stringResource(id = R.string.product_update_successfully)) }
-                    )
-                }
+                        ) {
+                            Text(stringResource(id = R.string.ok))
+                        }
+                    }
+                )
             }
         }
     }

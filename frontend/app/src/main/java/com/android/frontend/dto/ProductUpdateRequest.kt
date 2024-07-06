@@ -15,5 +15,5 @@ data class ProductUpdateRequest(
     var brand: BrandDTO,
     var category: CategoryDTO,
     var onSale: Boolean,
-    var discountedPrice: BigDecimal
+    var salePrice: BigDecimal
 )

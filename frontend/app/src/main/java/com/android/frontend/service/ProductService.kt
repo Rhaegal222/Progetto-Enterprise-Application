@@ -28,7 +28,7 @@ interface ProductService {
         @Path("id") id: Long
     ): Call<Void>
 
-    @PATCH("/api/v1/updateProduct/{id}")
+    @PATCH("/api/v1/products/updateProduct/{id}")
     fun updateProduct(
         @Header("Authorization") authorization: String,
         @Path("id") id: Long,
