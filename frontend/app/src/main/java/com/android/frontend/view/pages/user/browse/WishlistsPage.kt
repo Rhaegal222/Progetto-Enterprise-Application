@@ -44,6 +44,7 @@ import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
 import com.android.frontend.view.component.ErrorDialog
+import com.android.frontend.view.component.WishlistCard
 import com.android.frontend.view_models.user.WishlistViewModel
 
 @SuppressLint("SuspiciousIndentation")
@@ -137,36 +138,4 @@ fun WishlistsContent(
     }
 }
 
-@Composable
-fun WishlistCard(wishlist: WishlistDTO, navController: NavController) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .clickable {
-                CurrentDataUtils.currentWishlistId = wishlist.id
-                CurrentDataUtils.CurrentWishlistName = wishlist.wishlistName
-                navController.navigate(Navigation.WishlistDetailsPage.route)
-            },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    text = wishlist.wishlistName,
-                )
-                Text(
-                    text = "${wishlist.products?.size ?: 0} items",
-                )
-            }
-        }
-    }
-}
+

@@ -53,7 +53,7 @@ fun AddWishlistPage(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.add_wishlist).uppercase(),
+                        text = stringResource(id = R.string.add_wishlist),
                     )
                 },
                 navigationIcon = {

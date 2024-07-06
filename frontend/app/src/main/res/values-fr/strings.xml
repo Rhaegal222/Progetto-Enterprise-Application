@@ -210,4 +210,6 @@
     <string name="Ask_Remove_wishlist">Êtes-vous sûr de vouloir supprimer cette liste de souhaits ?</string>
     <string name="product_name_">Product Name:</string>
     <string name="edit_wishlist">Modifier la liste de souhaits</string>
+    <string name="share">Partager</string>
+    <string name="copy_link">Copier le lien</string>
 </resources>
