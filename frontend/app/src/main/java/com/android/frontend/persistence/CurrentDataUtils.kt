@@ -8,20 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger
 object CurrentDataUtils {
 
     private var _baseUrl: String = "http://10.0.2.2:8080/"
-    private var _backendBaseUrl: String = ""
 
     private var _currentProductId: Long = 0
     private var _currentProductImageUri: Uri? = null
     private var _currentWishlistId: String = ""
     private var _currentWishlistName: String = ""
     var refreshAttempts = AtomicInteger(0)
-
-
-    var backendBaseUrl: String
-        get() = _backendBaseUrl
-        set(newValue){
-            _backendBaseUrl = newValue
-        }
 
     var currentProductId: Long
         get() = _currentProductId
