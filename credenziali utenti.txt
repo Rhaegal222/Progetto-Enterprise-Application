@@ -1,0 +1,34 @@
+firstname: Gaetano
+lastname: Larocca
+email: gaetano@larocca.com
+password: Tanotano_7
+
+firstname: Giuseppe
+lastname: Lentini
+email: giuseppe@lentini.com
+password: Peppepeppe_21
+
+firstname: Francesco
+lastname: Vecchio
+email: francesco@vecchio.com
+password: Cicciociccio_10
+
+firstname: Peter
+lastname: Mahrous
+email: peter@mahrous.com
+password: Peterpeter_11
+
+firstname: AdminName
+lastname: AdminLastName
+email: admin@admin.com
+password: Adminadmin_1
+
+firstname: UserName
+lastname: UserLastName
+email: user@user.com
+password: Useruser_1
+
+firstname: DeletedUserName
+lastname: DeletedUserLastName
+email: deleteduser@deleteduser.com
+password: Deleteduser_33
