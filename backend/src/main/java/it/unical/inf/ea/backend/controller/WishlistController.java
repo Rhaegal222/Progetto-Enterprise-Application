@@ -33,7 +33,7 @@ public class WishlistController {
     }
 
     @PostMapping("/{wishlistId}/addProductsToWishlist/{productId}")
-    public ResponseEntity<?> addProductsToWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
+    public ResponseEntity<?> addProductsToWishlist(@PathVariable String wishlistId, @PathVariable Long productId) {
         try {
             wishlistService.addProductToWishlist(wishlistId,productId );
             return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
@@ -43,7 +43,7 @@ public class WishlistController {
     }
 
     @DeleteMapping(path = "/deleteWishlist/{wishlistId}")
-    public ResponseEntity<?> deleteWishlist(@PathVariable("wishlistId") Long wishlistId) {
+    public ResponseEntity<?> deleteWishlist(@PathVariable("wishlistId") String wishlistId) {
         try {
             wishlistService.deleteWishlist(wishlistId);
             return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
@@ -53,7 +53,7 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{wishlistId}/removeProductsFromWishlist/{productId}")
-    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable Long wishlistId, @PathVariable Long productId) {
+    public ResponseEntity<?> removeProductsFromWishlist(@PathVariable String wishlistId, @PathVariable Long productId) {
         try {
             wishlistService.removeProductFromWishlist(wishlistId, productId);
             return ResponseEntity.ok("{\"message\": \"Product removed from wishlist successfully\"}");
@@ -63,7 +63,7 @@ public class WishlistController {
     }
 
     @GetMapping(path = "/getWishlistById/{wishlistId}")
-    public ResponseEntity<?> getWishlistById(@PathVariable Long wishlistId){
+    public ResponseEntity<?> getWishlistById(@PathVariable String wishlistId){
         try {
             WishlistDTO wishlist = wishlistService.getWishlistById(wishlistId);
             return ResponseEntity.ok(wishlist);
@@ -73,7 +73,7 @@ public class WishlistController {
     }
 
     @GetMapping("/getProductByWishlistId/{wishlistId}")
-    public ResponseEntity<?> getProductByWishlistId(@PathVariable Long wishlistId){
+    public ResponseEntity<?> getProductByWishlistId(@PathVariable  String wishlistId){
         try {
             List<ProductDTO> product = wishlistService.getProductByWishlistId(wishlistId);
             return ResponseEntity.ok(product);
@@ -91,7 +91,7 @@ public class WishlistController {
         }
     }
     @PutMapping("/updateWishlist/{wishlistId}")
-    public ResponseEntity<?> updateWishlist(@PathVariable Long wishlistId, @RequestBody WishlistDTO wishlistDTO) {
+    public ResponseEntity<?> updateWishlist(@PathVariable String wishlistId, @RequestBody WishlistDTO wishlistDTO) {
         try {
             WishlistDTO updatedWishlist = wishlistService.updateWishlist(wishlistId, wishlistDTO);
             return ResponseEntity.ok(updatedWishlist);
