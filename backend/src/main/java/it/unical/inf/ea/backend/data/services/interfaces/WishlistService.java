@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface WishlistService {
     void addWishlist(WishlistCreateDTO wishListCreateDTO) throws IllegalAccessException;
     List<WishlistDTO> getAllLoggedUserWishlists();
-    WishlistDTO getWishlistById(UUID wishlistId);
+    WishlistDTO getWishlistById(UUID wishlistId) throws IllegalAccessException;
     List<ProductDTO> getProductByWishlistId(UUID wishlistId) throws IllegalAccessException;
     WishlistDTO updateWishlist(UUID wishlistId, WishlistDTO wishlistDTO) throws IllegalAccessException;
     void deleteWishlist(UUID wishlistId) throws IllegalAccessException;

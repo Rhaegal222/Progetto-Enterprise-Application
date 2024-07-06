@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +45,8 @@ fun DropdownButtonMenu(
     val selectedWishlistId = remember { mutableStateOf<String?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     val addProductResult by wishlistViewModel.addProductResult
-
 
     Box {
         OutlinedCard(
@@ -64,11 +65,6 @@ fun DropdownButtonMenu(
                     onClick = {
                         selectedWishlistId.value?.let { wishlistId ->
                             wishlistViewModel.addProductToWishlist(context, wishlistId, productDTO.id)
-                            if (addProductResult){
-                                showSuccessDialog = true
-                            }else {
-                                showErrorDialog = true
-                            }
                         }
                     },
                 ) {
@@ -138,6 +134,19 @@ fun DropdownButtonMenu(
                 )
             }
         }
+
+        LaunchedEffect(addProductResult) {
+            addProductResult?.let { result ->
+                if (result.isSuccess) {
+                    showSuccessDialog = true
+                } else {
+                    errorMessage = result.exceptionOrNull()?.message.toString()
+                    showErrorDialog = true
+                }
+                wishlistViewModel.addProductResult.value = null
+            }
+        }
+
         if (showSuccessDialog) {
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
@@ -152,11 +161,12 @@ fun DropdownButtonMenu(
                 }
             )
         }
+
         if (showErrorDialog) {
             AlertDialog(
                 onDismissRequest = { showErrorDialog = false },
                 title = { Text(stringResource(id = R.string.error)) },
-                text = { Text(stringResource(id = R.string.product_added_error_to_wishlist)) },
+                text = { Text(errorMessage) },
                 confirmButton = {
                     TextButton(onClick = {
                         showErrorDialog = false
@@ -168,3 +178,4 @@ fun DropdownButtonMenu(
         }
     }
 }
+
