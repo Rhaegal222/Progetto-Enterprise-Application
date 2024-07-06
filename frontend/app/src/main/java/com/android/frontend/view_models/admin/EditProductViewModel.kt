@@ -12,6 +12,7 @@ import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.*
+import com.android.frontend.dto.basic.UserBasicDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,12 +32,11 @@ class EditProductViewModel : ViewModel() {
 
     val brand = MutableLiveData<BrandDTO?>()
     val category = MutableLiveData<CategoryDTO?>()
-    val availability = MutableLiveData<ProductDTO.Availability?>()
 
     val productDetails = MutableLiveData<ProductDTO>()
 
     private val prodImage = MutableLiveData<Uri?>(null)
-    val prodImageLiveData : LiveData<Uri?> get() = prodImage
+    val prodImageLiveData: LiveData<Uri?> get() = prodImage
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -46,35 +46,33 @@ class EditProductViewModel : ViewModel() {
 
     fun getProductDetails(context: Context, id: Long) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                _isLoading.value = false
-                _hasError.value = true
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
                 return@launch
             }
 
             val productService = RetrofitInstance.getProductApi(context)
-            val response = Request().executeRequest(context){
+            val response = Request().executeRequest(context) {
                 productService.getProductById("Bearer $accessToken", id)
             }
-            if (response?.isSuccessful == true){
+            if (response?.isSuccessful == true) {
                 response.body()?.let { product ->
                     Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
                     productDetails.postValue(product)
                     fetchProductImage(context, id)
                 }
-            }
-            else {
+            } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response?.errorBody()?.string()}")
-                _hasError.value = true
+                _hasError.postValue(true)
             }
-            _isLoading.value = false
+            _isLoading.postValue(false)
         }
     }
-
 
     fun replacePhotoProduct(context: Context, productId: Long, imageUri: Uri) {
         viewModelScope.launch {
@@ -82,15 +80,15 @@ class EditProductViewModel : ViewModel() {
         }
     }
 
-    fun updateProduct(context: Context, productId: Long, name: String, description: String, ingredients: String, nutritionalValues: String, weight: String, quantity: Int, price: BigDecimal, shippingCost: BigDecimal, onSale: Boolean, discountedPrice: BigDecimal) {
+    fun updateProduct(context: Context, productId: Long, name: String, description: String, ingredients: String, nutritionalValues: String, weight: String, quantity: Int, price: BigDecimal, shippingCost: BigDecimal, availability : ProductDTO.Availability, onSale: Boolean, salePrice: BigDecimal) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                _isLoading.value = false
-                _hasError.value = true
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
                 return@launch
             }
 
@@ -103,11 +101,11 @@ class EditProductViewModel : ViewModel() {
                 quantity = quantity,
                 price = price,
                 shippingCost = shippingCost,
-                availability = availability.value!!,
+                availability = availability,
                 brand = brand.value!!,
                 category = category.value!!,
                 onSale = onSale,
-                discountedPrice = discountedPrice
+                salePrice = salePrice
             )
 
             val productService = RetrofitInstance.getProductApi(context)
@@ -115,15 +113,19 @@ class EditProductViewModel : ViewModel() {
                 productService.updateProduct("Bearer $accessToken", productId, updateRequest)
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()} Product updated successfully: ${response.body()}")
+                response.body()?.let { user ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Product updated successfully: ${response.body()}")
+                    productDetails.postValue(user)
+                    fetchProductImage(context, productId)
+                    getProductDetails(context, productId)
+                }
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Failed to update product: ${response?.errorBody()?.string()}")
-                _hasError.value = true
+                _hasError.postValue(true)
             }
-            _isLoading.value = false
+            _isLoading.postValue(false)
         }
     }
-
 
     private suspend fun getPhotoProductById(context: Context, productId: Long): ResponseBody? {
         return withContext(Dispatchers.IO) {
@@ -145,6 +147,7 @@ class EditProductViewModel : ViewModel() {
                 response.body()
             } else {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching image: ${response?.errorBody()?.string()}")
+                _hasError.postValue(true)
                 null
             }
         }
@@ -152,8 +155,8 @@ class EditProductViewModel : ViewModel() {
 
     private fun fetchProductImage(context: Context, productId: Long) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
             try {
                 val responseBody = getPhotoProductById(context, productId)
                 responseBody?.let {
@@ -162,17 +165,16 @@ class EditProductViewModel : ViewModel() {
                     prodImage.postValue(imageUri)
                 } ?: run {
                     Log.e("DEBUG", "${getCurrentStackTrace()}, Image retrieval failed")
-                    _hasError.value = true
+                    _hasError.postValue(true)
                 }
             } catch (e: Exception) {
                 Log.e("DEBUG", "${getCurrentStackTrace()}, Image retrieval error: ${e.message}")
-                _hasError.value = true
+                _hasError.postValue(true)
             } finally {
-                _isLoading.value = false
+                _isLoading.postValue(false)
             }
         }
     }
-
 
     fun fetchAllBrands(context: Context) {
         viewModelScope.launch {
@@ -224,7 +226,6 @@ class EditProductViewModel : ViewModel() {
         }
     }
 
-
     private suspend fun uploadImage(context: Context, productId: Long, imageUri: Uri) {
         withContext(Dispatchers.IO) {
             val file = getFileFromUri(context, imageUri) ?: return@withContext
@@ -267,7 +268,6 @@ class EditProductViewModel : ViewModel() {
         }
     }
 
-
     private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {
             val tempFile = File.createTempFile("product", "png", context.cacheDir)
@@ -295,5 +295,4 @@ class EditProductViewModel : ViewModel() {
         }
         return tempFile
     }
-
 }
