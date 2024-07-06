@@ -75,7 +75,10 @@ class LoginViewModel : ViewModel() {
                             onResult(false, error)
                         }
                     } else {
-                        onResult(false, error)
+                        viewModelScope.launch(Dispatchers.Main) {
+                            if (error == "No credentials available")
+                                googleAuth.promptAddGoogleAccount()
+                        }
                     }
                 }
             }

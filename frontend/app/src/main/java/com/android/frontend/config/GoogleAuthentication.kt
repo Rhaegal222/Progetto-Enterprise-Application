@@ -1,43 +1,29 @@
 package com.android.frontend.config
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.provider.Settings
 import android.util.Log
-import android.widget.ImageView
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
-import androidx.lifecycle.MutableLiveData
 import com.android.frontend.R
 import com.android.frontend.RetrofitInstance
-import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.service.GoogleAuthenticationService
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
-import java.io.InputStream
 import kotlin.random.Random
 
 class GoogleAuthentication(private val context: Context) {
@@ -47,9 +33,7 @@ class GoogleAuthentication(private val context: Context) {
     private val webClientId = context.getString(R.string.web_client_id)
     private val credentialManager = CredentialManager.create(context)
     private val googleAuthService: GoogleAuthenticationService = RetrofitInstance.getGoogleAuthApi(context)
-    private val profileImage: ImageView = ImageView(context)
 
-    private val user = MutableLiveData<UserBasicDTO>()
     private var accessToken = TokenManager.getInstance().getAccessToken(context) ?: ""
     private var refreshToken = TokenManager.getInstance().getRefreshToken(context) ?: ""
     private var provider = SecurePreferences.getProvider(context) ?: ""
@@ -89,11 +73,25 @@ class GoogleAuthentication(private val context: Context) {
             .build()
     }
 
-    private fun promptAddGoogleAccount() {
-        Log.d("DEBUG", "${getCurrentStackTrace()} Prompting user to add Google account")
-        val intent = Intent(Settings.ACTION_ADD_ACCOUNT)
-        intent.putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
-        context.startActivity(intent)
+    private val REQUEST_ADD_ACCOUNT = 1001
+
+    @SuppressLint("QueryPermissionsNeeded")
+    fun promptAddGoogleAccount() {
+        try {
+            Log.d("DEBUG", "${getCurrentStackTrace()} Prompting user to add Google account")
+
+            val intent = Intent(Settings.ACTION_ADD_ACCOUNT).apply {
+                putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
+            }
+
+            if (intent.resolveActivity(context.packageManager) != null) {
+                (context as Activity).startActivityForResult(intent, REQUEST_ADD_ACCOUNT)
+            } else {
+                Log.e("ERROR", "No activity found to handle add account intent")
+            }
+        } catch (e: Exception) {
+            Log.e("ERROR", "Exception while prompting user to add Google account: ${e.message}", e)
+        }
     }
 
     private fun userAlreadySignedIn(): Boolean {
@@ -114,7 +112,6 @@ class GoogleAuthentication(private val context: Context) {
         } catch (e: GetCredentialException) {
             Log.e("DEBUG", "${getCurrentStackTrace()} Error creating request: ${e.message}")
             TokenManager.getInstance().clearTokens(context)
-            promptAddGoogleAccount()
             GetCredentialRequest.Builder().build()
         }
     }
@@ -169,7 +166,6 @@ class GoogleAuthentication(private val context: Context) {
                 if (response.isSuccessful) {
                     val tokenMap = response.body()!!
                     Log.d("DEBUG", "${getCurrentStackTrace()} Map received: $tokenMap")
-                    val pictureUrl = tokenMap["pictureUrl"].toString()
                     onResult(tokenMap)
                     refreshAccessToken()
                 } else {
