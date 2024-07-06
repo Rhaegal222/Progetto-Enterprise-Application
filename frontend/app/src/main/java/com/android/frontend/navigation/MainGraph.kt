@@ -30,6 +30,7 @@ import com.android.frontend.view.pages.user.browse.OrdersPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
 import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view.pages.user.browse.WishlistsPage
+import com.android.frontend.view.pages.user.details.WishlistDetailsPage
 import com.android.frontend.view.pages.user.details.WishlistUpdatePage
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.WishlistViewModel
@@ -59,6 +60,13 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
             val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull()
             if (productId != null) {
                 SaleProductDetailsPage(navController, cartViewModel = cartViewModel, productId)
+            }
+        }
+
+        composable("${Navigation.WishlistDetailsPage}/{wishlistId}") { backStackEntry ->
+            val wishlistId = backStackEntry.arguments?.getString("wishlistId")
+            if (wishlistId != null) {
+                WishlistDetailsPage(navController, wishlistId)
             }
         }
 
