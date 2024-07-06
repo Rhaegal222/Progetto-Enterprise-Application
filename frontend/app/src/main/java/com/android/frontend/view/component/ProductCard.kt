@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -82,7 +84,7 @@ fun ProductCard(
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
                     .height(200.dp),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -113,84 +115,34 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
                     colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                     shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.padding(0.dp),
                     onClick = {
                         cartViewModel.addProductToCart(productDTO.id, 1, context)
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        modifier = Modifier.padding(0.dp),
+                        imageVector = Icons.Default.AddShoppingCart,
                         contentDescription = stringResource(id = R.string.add_to_cart)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
+                        modifier = Modifier.padding(0.dp),
                         text = stringResource(id = R.string.add_to_cart),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
-                WishlistDropdownMenu(productDTO,wishlistViewModel = WishlistViewModel())
+                DropdownButtonMenu(productDTO, wishlistViewModel = WishlistViewModel())
             }
         }
-    }
-}
-
-@Composable
-fun WishlistDropdownMenu(
-    productDTO: ProductDTO,
-    wishlistViewModel: WishlistViewModel
-) {
-    val context = LocalContext.current
-    val wishlists by wishlistViewModel.wishlistLiveData.observeAsState()
-    val expanded = remember { mutableStateOf(false) }
-    val selectedWishlist = remember { mutableStateOf<String?>(null) }
-
-    Box {
-        OutlinedButton(
-            colors = OutlinedButtonColorScheme.outlinedButtonColors(),
-            shape = RoundedCornerShape(12.dp),
-            onClick = { expanded.value = true }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = stringResource(id = R.string.add_to_wishlist)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(id = R.string.add_to_wishlist),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded.value,
-            onDismissRequest = { expanded.value = false }
-        ) {
-            wishlists?.forEach { wishlist ->
-                DropdownMenuItem(
-                    onClick = {
-                        selectedWishlist.value = wishlist.wishlistName
-                        Log.d("DEBUG", "Selected wishlist: ${wishlist.id}")
-                        Log.d("DEBUG", "Selected wishlist: ${wishlist.wishlistName}")
-                        Log.d("DEBUG", "Selected wishlist: ${wishlist.products}")
-                        Log.d("DEBUG", "Selected product id: ${productDTO.id}")
-                        wishlistViewModel.addProductToWishlist(context, wishlist.id, productDTO.id)
-                        expanded.value = false
-                    },
-                    text = { Text(wishlist.wishlistName) }
-                )
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        wishlistViewModel.getAllLoggedUserWishlists(context)
     }
 }
 

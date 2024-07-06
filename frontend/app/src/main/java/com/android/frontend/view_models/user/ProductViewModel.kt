@@ -30,9 +30,6 @@ class ProductViewModel : ViewModel() {
     private val _productsLiveData = MutableLiveData<List<ProductDTO>>()
     val productsLiveData: LiveData<List<ProductDTO>> = _productsLiveData
 
-    private val productDetails = MutableLiveData<ProductDTO>()
-    val productDetailsLiveData: LiveData<ProductDTO> get() = productDetails
-
     private val _productImagesLiveData = MutableLiveData<Map<Long, Uri>>()
     val productImagesLiveData: LiveData<Map<Long, Uri>> = _productImagesLiveData
 
@@ -48,39 +45,6 @@ class ProductViewModel : ViewModel() {
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
-    fun getProductDetails(context: Context, id: Long) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
-            val productService = RetrofitInstance.getProductApi(context)
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            val call = productService.getProductById("Bearer $accessToken", id)
-            call.enqueue(object : Callback<ProductDTO> {
-                override fun onResponse(call: Call<ProductDTO>, response: Response<ProductDTO>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { product ->
-                            Log.d("DEBUG", "${getCurrentStackTrace()} Product details: $product")
-                            productDetails.value = product
-                        }
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products: ${response.errorBody()?.string()}")
-                        _hasError.value = true
-                    }
-                    _isLoading.value = false
-                }
-
-                override fun onFailure(call: Call<ProductDTO>, t: Throwable) {
-                    if (t is SocketTimeoutException) {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Timeout error fetching product details", t)
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching product details", t)
-                    }
-                    _isLoading.value = false
-                    _hasError.value = true
-                }
-            })
-        }
-    }
 
     fun fetchAllProducts(context: Context) {
         viewModelScope.launch {
