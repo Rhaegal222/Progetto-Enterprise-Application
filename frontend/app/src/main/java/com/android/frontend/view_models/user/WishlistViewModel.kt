@@ -155,7 +155,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun addProductToWishlist(context: Context,wishlistId: Long, productId: Long) {
+    fun addProductToWishlist(context: Context,wishlistId: String, productId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -226,7 +226,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun updateWishlist(context: Context, wishlistId: Long, wishlistDTO: WishlistDTO) {
+    fun updateWishlist(context: Context, wishlistId: String, wishlistDTO: WishlistDTO) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -259,7 +259,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun getWishlistById(context: Context, wishlistId: Long) {
+    fun getWishlistById(context: Context, wishlistId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false

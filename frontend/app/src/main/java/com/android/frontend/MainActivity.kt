@@ -9,7 +9,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.navigation.AppRouter
@@ -29,7 +28,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FrontendTheme {
                 val navController = rememberNavController()
-                handleIntent(navController, intent)
+                HandleIntent(navController, intent)
                 AppRouter(navController)
             }
         }
@@ -43,7 +42,7 @@ class MainActivity : ComponentActivity() {
             setContent {
                 FrontendTheme {
                     val navController = rememberNavController()
-                    handleIntent(navController, it)
+                    HandleIntent(navController, it)
                     AppRouter(navController)
                 }
             }
@@ -51,7 +50,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun handleIntent(navController: NavHostController, intent: Intent) {
+    private fun HandleIntent(navController: NavHostController, intent: Intent) {
         LaunchedEffect(intent) {
             val appLinkData: Uri? = intent.data
             appLinkData?.let { uri ->

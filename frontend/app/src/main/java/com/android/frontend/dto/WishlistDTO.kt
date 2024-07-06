@@ -3,7 +3,7 @@ package com.android.frontend.dto
 import java.time.LocalDateTime
 
 data class WishlistDTO (
-    var id: Long,
+    var id: String,
     var wishlistName: String,
     var visibility: WishlistVisibility,
     var products: List<ProductDTO>? = null,
