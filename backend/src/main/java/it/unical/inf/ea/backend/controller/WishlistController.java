@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
+
 import static it.unical.inf.ea.backend.config.security.AppSecurityConfig.SECURITY_CONFIG_NAME;
 
 @RestController
@@ -35,7 +37,8 @@ public class WishlistController {
     @PostMapping("/{wishlistId}/addProductsToWishlist/{productId}")
     public ResponseEntity<?> addProductsToWishlist(@PathVariable String wishlistId, @PathVariable Long productId) {
         try {
-            wishlistService.addProductToWishlist(wishlistId,productId );
+            UUID uuid = UUID.fromString(wishlistId);
+            wishlistService.addProductToWishlist(uuid,productId);
             return ResponseEntity.ok("{\"message\": \"Product added to wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -45,7 +48,8 @@ public class WishlistController {
     @DeleteMapping(path = "/deleteWishlist/{wishlistId}")
     public ResponseEntity<?> deleteWishlist(@PathVariable("wishlistId") String wishlistId) {
         try {
-            wishlistService.deleteWishlist(wishlistId);
+            UUID uuid = UUID.fromString(wishlistId);
+            wishlistService.deleteWishlist(uuid);
             return ResponseEntity.ok("{\"message\": \"Wishlist deleted successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -55,7 +59,8 @@ public class WishlistController {
     @DeleteMapping("/{wishlistId}/removeProductsFromWishlist/{productId}")
     public ResponseEntity<?> removeProductsFromWishlist(@PathVariable String wishlistId, @PathVariable Long productId) {
         try {
-            wishlistService.removeProductFromWishlist(wishlistId, productId);
+            UUID uuid = UUID.fromString(wishlistId);
+            wishlistService.removeProductFromWishlist(uuid, productId);
             return ResponseEntity.ok("{\"message\": \"Product removed from wishlist successfully\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -65,7 +70,8 @@ public class WishlistController {
     @GetMapping(path = "/getWishlistById/{wishlistId}")
     public ResponseEntity<?> getWishlistById(@PathVariable String wishlistId){
         try {
-            WishlistDTO wishlist = wishlistService.getWishlistById(wishlistId);
+            UUID uuid = UUID.fromString(wishlistId);
+            WishlistDTO wishlist = wishlistService.getWishlistById(uuid);
             return ResponseEntity.ok(wishlist);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -75,7 +81,8 @@ public class WishlistController {
     @GetMapping("/getProductByWishlistId/{wishlistId}")
     public ResponseEntity<?> getProductByWishlistId(@PathVariable  String wishlistId){
         try {
-            List<ProductDTO> product = wishlistService.getProductByWishlistId(wishlistId);
+            UUID uuid = UUID.fromString(wishlistId);
+            List<ProductDTO> product = wishlistService.getProductByWishlistId(uuid);
             return ResponseEntity.ok(product);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
@@ -93,7 +100,8 @@ public class WishlistController {
     @PutMapping("/updateWishlist/{wishlistId}")
     public ResponseEntity<?> updateWishlist(@PathVariable String wishlistId, @RequestBody WishlistDTO wishlistDTO) {
         try {
-            WishlistDTO updatedWishlist = wishlistService.updateWishlist(wishlistId, wishlistDTO);
+            UUID uuid = UUID.fromString(wishlistId);
+            WishlistDTO updatedWishlist = wishlistService.updateWishlist(uuid, wishlistDTO);
             return ResponseEntity.ok(updatedWishlist);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Error: " + e.getMessage() + "\"}");
