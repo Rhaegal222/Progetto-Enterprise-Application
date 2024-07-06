@@ -84,7 +84,7 @@ fun ProductCard(
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
                     .height(200.dp),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(8.dp))
