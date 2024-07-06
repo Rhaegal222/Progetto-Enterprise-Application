@@ -212,4 +212,12 @@
     <string name="edit_wishlist">Editar lista de deseos</string>
     <string name="share">Compartir</string>
     <string name="copy_link">Copiar link</string>
+    <string name="product_added_success_to_wishlist">Producto agregado exitosamente a su lista de deseos seleccionada</string>
+    <string name="error">Error</string>
+    <string name="product_added_error_to_wishlist">No puedes agregar este producto a tu lista de deseos</string>
+    <string name="error_dialog_title">Error</string>
+    <string name="ok">Ok</string>
+    <string name="google_account_prompt_error">No se detectó actividad en la cuenta de Google</string>
+    <string name="created_at">Created at</string>
+    <string name="no_google_account_activity_error">No se ha detectado actividad en la cuenta de Google</string>
 </resources>

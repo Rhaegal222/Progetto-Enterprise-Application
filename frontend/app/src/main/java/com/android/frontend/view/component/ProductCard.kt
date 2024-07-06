@@ -35,6 +35,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
@@ -46,7 +47,8 @@ fun ProductCard(
     productDTO: ProductDTO,
     navController: NavController,
     cartViewModel: CartViewModel,
-    imageUri: Uri?
+    imageUri: Uri?,
+    wishlists: List<WishlistDTO>
 ) {
     val context = LocalContext.current
 
@@ -140,7 +142,7 @@ fun ProductCard(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                DropdownButtonMenu(productDTO, wishlistViewModel = WishlistViewModel())
+                DropdownButtonMenu(productDTO,wishlists,wishlistViewModel= WishlistViewModel())
             }
         }
     }

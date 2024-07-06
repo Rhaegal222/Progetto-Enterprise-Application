@@ -1,11 +1,12 @@
 package com.android.frontend.config
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -73,25 +74,33 @@ class GoogleAuthentication(private val context: Context) {
             .build()
     }
 
-    private val REQUEST_ADD_ACCOUNT = 1001
-
     @SuppressLint("QueryPermissionsNeeded")
-    fun promptAddGoogleAccount() {
+    private fun promptAddGoogleAccount() {
+        Log.d("DEBUG", "${getCurrentStackTrace()} Prompting user to add Google account")
         try {
-            Log.d("DEBUG", "${getCurrentStackTrace()} Prompting user to add Google account")
-
             val intent = Intent(Settings.ACTION_ADD_ACCOUNT).apply {
                 putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
 
             if (intent.resolveActivity(context.packageManager) != null) {
-                (context as Activity).startActivityForResult(intent, REQUEST_ADD_ACCOUNT)
+                context.startActivity(intent)
             } else {
-                Log.e("ERROR", "No activity found to handle add account intent")
+                Log.e("ERROR", "${getCurrentStackTrace()} No activity found to handle Google account addition")
+                showErrorDialog(R.string.no_google_account_activity_error)
             }
         } catch (e: Exception) {
-            Log.e("ERROR", "Exception while prompting user to add Google account: ${e.message}", e)
+            Log.e("ERROR", "${getCurrentStackTrace()} Failed to prompt for Google account addition", e)
+            showErrorDialog(R.string.google_account_prompt_error)
         }
+    }
+
+    private fun showErrorDialog(@StringRes messageResId: Int) {
+        AlertDialog.Builder(context)
+            .setTitle(R.string.error_dialog_title)
+            .setMessage(messageResId)
+            .setPositiveButton(R.string.ok, null)
+            .show()
     }
 
     private fun userAlreadySignedIn(): Boolean {
@@ -112,6 +121,7 @@ class GoogleAuthentication(private val context: Context) {
         } catch (e: GetCredentialException) {
             Log.e("DEBUG", "${getCurrentStackTrace()} Error creating request: ${e.message}")
             TokenManager.getInstance().clearTokens(context)
+            promptAddGoogleAccount()
             GetCredentialRequest.Builder().build()
         }
     }

@@ -3,6 +3,7 @@ package com.android.frontend.view_models.user
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,6 +40,7 @@ class WishlistViewModel : ViewModel() {
 
     private val wishlistDetails = MutableLiveData<WishlistDTO>()
     val wishlistDetailsLiveData: MutableLiveData<WishlistDTO> get() = wishlistDetails
+    val addProductResult = mutableStateOf<Boolean>(false)
 
     fun createWishlist(
         context: Context,
@@ -68,7 +70,7 @@ class WishlistViewModel : ViewModel() {
             } else {
                 Log.e(
                     "DEBUG",
-                    "${getCurrentStackTrace()} Failed to add shipping address: ${
+                    "${getCurrentStackTrace()} Failed to add wishlist  ${
                         response?.errorBody()?.string() ?: "Empty response"
                     }"
                 )
@@ -167,13 +169,13 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun addProductToWishlist(context: Context,wishlistId: String, productId: Long) {
+    fun addProductToWishlist(context: Context, wishlistId: String, productId: Long) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                Log.e("DEBUG", "Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
                 return@launch
@@ -184,15 +186,15 @@ class WishlistViewModel : ViewModel() {
             }
             if (response?.isSuccessful == true) {
                 response.body()?.let { wishlist ->
-                    Log.d("DEBUG", "${getCurrentStackTrace()} Added product to wishlist: $wishlist")
+                    Log.d("DEBUG", "Added product to wishlist: $wishlist")
                     getAllLoggedUserWishlists(context)
+                    addProductResult.value = true
                 }
+
             } else {
                 Log.e(
                     "DEBUG",
-                    "${getCurrentStackTrace()} Failed to add product to wishlist: ${
-                        response?.errorBody()?.string() ?: "Empty response"
-                    }"
+                    "Failed to add product to wishlist: ${response?.errorBody()?.string() ?: "Empty response"}"
                 )
                 _hasError.value = true
             }
