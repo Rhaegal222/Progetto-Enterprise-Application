@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -16,10 +17,9 @@ import java.util.List;
 public class Wishlist {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishlist_seq")
-    @SequenceGenerator(name = "wishlist_seq", sequenceName = "wishlist_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false)
     private String wishlistName;
