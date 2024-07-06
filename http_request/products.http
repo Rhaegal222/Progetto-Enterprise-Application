@@ -1,4 +1,3 @@
-
 POST http://localhost:8080/api/v1/products/addProduct
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiW1JPTEVfVVNFUl0iLCJuYmYiOjE3MjAyNTEzMDcsImV4cCI6MTcyMDI1NDkwNywiaWF0IjoxNzIwMjUxMzA3LCJ1c2VybmFtZSI6ImZyYW5jZXNjb3ZlY2NoaW8wMUBnbWFpbC5jb20ifQ.TVXMVzisMvs0dlvKosPbw2KxTLjr6-V9bYZw7RF3kDs
 Content-Type: application/json
