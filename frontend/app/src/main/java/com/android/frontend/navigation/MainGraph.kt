@@ -49,9 +49,11 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
         composable(Navigation.ProductsPage.route) { ProductsPage(navController, cartViewModel = cartViewModel) }
 
-        composable(Navigation.WishlistDetailsPage.route + "/{wishlistId}") { backStackEntry ->
+        composable("${Navigation.WishlistDetailsPage}/{wishlistId}") { backStackEntry ->
             val wishlistId = backStackEntry.arguments?.getString("wishlistId")
-            wishlistId?.let { WishlistDetailsPage(navController = navController, wishlistId = it) }
+            if (wishlistId != null) {
+                WishlistDetailsPage(navController, wishlistId, wishlistViewModel = WishlistViewModel())
+            }
         }
 
         composable("${Navigation.ProductDetailsPage}/{productId}") { backStackEntry ->

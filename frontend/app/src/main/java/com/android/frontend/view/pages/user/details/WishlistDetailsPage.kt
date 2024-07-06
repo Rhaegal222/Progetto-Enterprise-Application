@@ -43,6 +43,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
@@ -78,7 +79,8 @@ fun WishlistDetailsPage(
     val context = LocalContext.current
     val wishlistName = CurrentDataUtils.CurrentWishlistName
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
-    val products = wishlistViewModel.productsLiveData.observeAsState().value
+    val products by wishlistViewModel.productsLiveData.observeAsState(emptyList())
+    val productImages by wishlistViewModel.productImagesLiveData.observeAsState(emptyMap())
     val showDialog = remember { mutableStateOf(false) }
     val showShareDialog = remember { mutableStateOf(false) }
     val shareLink = "http://frontend.com/api/v1/wishlist/$wishlistId"
@@ -126,12 +128,12 @@ fun WishlistDetailsPage(
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                items(products ?: emptyList()) { productDTO ->
+                items(products) { productDTO ->
                     Log.d("DEBUG", "Product: $productDTO")
                     ProductsWishlistCard(
                         productDTO = productDTO,
                         navController = navController,
-                        imageUri = null,
+                        imageUri = productImages[productDTO.id],
                         onRemoveFromWishlist = { product ->
                             wishlistViewModel.removeProductFromWishlist(
                                 context,
@@ -278,14 +280,11 @@ fun ProductsWishlistCard(
             .padding(12.dp)
             .fillMaxWidth()
             .clickable {
-                CurrentDataUtils.currentProductId = productDTO.id
-                CurrentDataUtils.currentProductImageUri = imageUri
-                val route = if (productDTO.onSale) {
-                    Navigation.SaleProductDetailsPage.route
+                if (productDTO.onSale) {
+                    navController.navigate("${Navigation.SaleProductDetailsPage}/${productDTO.id}")
                 } else {
-                    Navigation.ProductDetailsPage.route
+                    navController.navigate("${Navigation.ProductDetailsPage}/${productDTO.id}")
                 }
-                navController.navigate(route)
             }
     ) {
         Column(
