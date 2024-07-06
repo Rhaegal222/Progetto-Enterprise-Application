@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.persistence.CurrentDataUtils
 
 @Composable
 fun WishlistCard(wishlist: WishlistDTO, navController: NavController) {
@@ -26,6 +27,7 @@ fun WishlistCard(wishlist: WishlistDTO, navController: NavController) {
             .padding(8.dp)
             .fillMaxWidth()
             .clickable {
+                CurrentDataUtils.CurrentWishlistName = wishlist.wishlistName
                 navController.navigate("${Navigation.WishlistDetailsPage.route}/${wishlist.id}")
             },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
