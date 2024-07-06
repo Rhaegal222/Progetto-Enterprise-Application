@@ -32,9 +32,11 @@ import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
+import com.android.frontend.view.component.DropdownButtonMenu
 import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductDetailsViewModel
+import com.android.frontend.view_models.user.WishlistViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -109,6 +111,7 @@ fun ProductDetailsPage(navController: NavController, cartViewModel: CartViewMode
                                     cartViewModel.addProductToCart(productItem.id, 1, context)
                                 }
                             )
+                            // DropdownButtonMenu(productDTO,wishlists,wishlistViewModel= WishlistViewModel())
                         }
                     }
                 }

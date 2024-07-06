@@ -59,7 +59,6 @@ fun ProductCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(32.dp, 8.dp)
-            .height(400.dp)
             .clickable {
                 if (productDTO.onSale) {
                     navController.navigate("${Navigation.SaleProductDetailsPage}/${productDTO.id}")
@@ -116,9 +115,8 @@ fun ProductCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedButton(
@@ -142,7 +140,6 @@ fun ProductCard(
                         fontWeight = FontWeight.Bold
                     )
                 }
-                DropdownButtonMenu(productDTO,wishlists,wishlistViewModel= WishlistViewModel())
             }
         }
     }
