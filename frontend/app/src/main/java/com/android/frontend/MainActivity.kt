@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
@@ -15,10 +16,12 @@ import com.android.frontend.navigation.AppRouter
 import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.FrontendTheme
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 
 class MainActivity : ComponentActivity() {
 
     private var backendBaseUrl by mutableStateOf<String?>(null)
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,44 +32,61 @@ class MainActivity : ComponentActivity() {
             sharedPreferences.edit().putBoolean("isDarkTheme", isDarkTheme).apply()
         }
 
-        lifecycleScope.launch {
-            RetrofitInstance.initializeBackendBaseUrl()
-            backendBaseUrl = CurrentDataUtils.backendBaseUrl
-            setContent {
-                FrontendTheme {
-                    val navController = rememberNavController()
-                    HandleIntent(navController, intent, backendBaseUrl)
-                    AppRouter(navController)
-                }
+        setContent {
+            FrontendTheme {
+                navController = rememberNavController()
+                AppRouter(navController)
             }
         }
+
+        initializeBackend()
+        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
-        if (intent.data != null) {
-            super.onNewIntent(intent)
-        }
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun initializeBackend() {
         lifecycleScope.launch {
-            RetrofitInstance.initializeBackendBaseUrl()
-            backendBaseUrl = CurrentDataUtils.backendBaseUrl
-            setContent {
-                FrontendTheme {
-                    val navController = rememberNavController()
-                    HandleIntent(navController, intent, backendBaseUrl)
-                    AppRouter(navController)
-                }
+            try {
+                RetrofitInstance.initializeBackendBaseUrl()
+                backendBaseUrl = CurrentDataUtils.backendBaseUrl
+            } catch (e: SocketTimeoutException) {
+                Log.e("ERROR", "Backend initialization failed", e)
+                // Show error screen or handle the error accordingly
+                navController.navigate("welcomeScreen")
+            } catch (e: Exception) {
+                Log.e("ERROR", "Unexpected error during backend initialization", e)
+                // Show error screen or handle the error accordingly
+                navController.navigate("welcomeScreen")
             }
         }
     }
 
-    @Composable
-    private fun HandleIntent(navController: NavHostController, intent: Intent, backendBaseUrl: String?) {
-        LaunchedEffect(intent) {
-            val appLinkData: Uri? = intent.data
-            appLinkData?.let { uri ->
-                val wishlistId = uri.getQueryParameter("id")
-                wishlistId?.let {
-                    navController.navigate("wishlistDetails/$it?backendBaseUrl=${backendBaseUrl}")
+    private fun handleIntent(intent: Intent) {
+        Log.d("DEBUG", "handleIntent: $intent")
+        val appLinkData: Uri? = intent.data
+        appLinkData?.let { uri ->
+            val wishlistId = uri.getQueryParameter("id")
+            wishlistId?.let {
+                if (::navController.isInitialized) {
+                    lifecycleScope.launch {
+                        try {
+                            RetrofitInstance.initializeBackendBaseUrl()
+                            backendBaseUrl = CurrentDataUtils.backendBaseUrl
+                            navController.navigate("wishlistDetails/$it?backendBaseUrl=${backendBaseUrl}")
+                        } catch (e: SocketTimeoutException) {
+                            Log.e("ERROR", "Backend initialization failed", e)
+                            // Show error screen or handle the error accordingly
+                            navController.navigate("welcomeScreen")
+                        } catch (e: Exception) {
+                            Log.e("ERROR", "Unexpected error during backend initialization", e)
+                            // Show error screen or handle the error accordingly
+                            navController.navigate("welcomeScreen")
+                        }
+                    }
                 }
             }
         }
