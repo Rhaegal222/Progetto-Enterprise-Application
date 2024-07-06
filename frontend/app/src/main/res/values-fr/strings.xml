@@ -212,4 +212,9 @@
     <string name="edit_wishlist">Modifier la liste de souhaits</string>
     <string name="share">Partager</string>
     <string name="copy_link">Copier le lien</string>
+    <string name="error_dialog_title">Erreur</string>
+    <string name="ok">OK</string>
+    <string name="google_account_prompt_error">Aucune activité de compte Google détectée</string>
+    <string name="created_at">Created at</string>
+    <string name="no_google_account_activity_error">Aucune activité de compte Google détectée</string>
 </resources>
