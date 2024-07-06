@@ -1,11 +1,11 @@
 package com.android.frontend.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppRouter() {
-    val navController = rememberNavController()
+fun AppRouter(navController: NavHostController = rememberNavController()) {
     RootGraph(navController = navController)
 }
 
@@ -57,7 +57,6 @@ sealed class Navigation(val route: String) {
     object WishlistUpdatePage : Navigation(route = "wishlistUpdate_page")
     object WishlistsPage : Navigation(route = "wishlists")
     object AddWishlistPage : Navigation(route = "addWishlist")
-    object WishlistDetailsPage : Navigation(route = "wishlistDetails")
+    object WishlistDetailsPage : Navigation(route = "wishlistDetails/{wishlistId}")
     object OrdersPage: Navigation(route = "order_page")
-
 }

@@ -13,7 +13,6 @@ import com.android.frontend.view.pages.user.menu.DebugMenu
 import com.android.frontend.view.pages.user.menu.SecurityMenu
 import com.android.frontend.view.pages.user.menu.SettingsMenu
 import com.android.frontend.view.pages.user.main.HomePage
-import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view.pages.user.add.AddPaymentPage
 import com.android.frontend.view.pages.user.browse.AboutPage
 import com.android.frontend.view.pages.user.browse.PersonalInformationPage
@@ -50,6 +49,11 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.ChangePasswordPage.route) { ChangePasswordPage(navController) }
         composable(Navigation.ProductsPage.route) { ProductsPage(navController, cartViewModel = cartViewModel) }
 
+        composable(Navigation.WishlistDetailsPage.route + "/{wishlistId}") { backStackEntry ->
+            val wishlistId = backStackEntry.arguments?.getString("wishlistId")
+            wishlistId?.let { WishlistDetailsPage(navController = navController, wishlistId = it) }
+        }
+
         composable("${Navigation.ProductDetailsPage}/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull()
             if (productId != null) {
@@ -76,7 +80,6 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
         composable(Navigation.WishlistsPage.route) { WishlistsPage(navController, WishlistViewModel()) }
         composable(Navigation.AddWishlistPage.route) { AddWishlistPage(navController, WishlistViewModel()) }
         composable(Navigation.CheckoutPage.route) { CheckoutPage(cartViewModel = cartViewModel, navController = navController) }
-        composable(Navigation.WishlistDetailsPage.route) { WishlistDetailsPage(wishlistViewModel = WishlistViewModel(), navController = navController)}
         composable(Navigation.OrdersPage.route) { OrdersPage(navController)}
         composable(Navigation.WishlistUpdatePage.route) { WishlistUpdatePage(wishlistViewModel = WishlistViewModel(), navController = navController)}
     }

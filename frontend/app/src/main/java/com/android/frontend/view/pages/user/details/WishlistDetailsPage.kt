@@ -66,10 +66,10 @@ import com.android.frontend.dto.ProductDTO
 @Composable
 fun WishlistDetailsPage(
     navController: NavController,
+    wishlistId: String,
     wishlistViewModel: WishlistViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-    val wishlistId = CurrentDataUtils.currentWishlistId
     val wishlistName = CurrentDataUtils.CurrentWishlistName
     val wishlistDetails = wishlistViewModel.wishlistDetailsLiveData.observeAsState().value
     val products = wishlistViewModel.productsLiveData.observeAsState().value
@@ -96,7 +96,8 @@ fun WishlistDetailsPage(
                 actions = {
                     IconButton(onClick = {
                         CurrentDataUtils.currentWishlistId = wishlistId
-                        navController.navigate(Navigation.WishlistUpdatePage.route) }) {
+                        navController.navigate(Navigation.WishlistUpdatePage.route)
+                    }) {
                         Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_wishlist))
                     }
                 }
@@ -126,7 +127,11 @@ fun WishlistDetailsPage(
                         navController = navController,
                         imageUri = null,
                         onRemoveFromWishlist = { product ->
-                            wishlistViewModel.removeProductFromWishlist(context, product.id, wishlistId)
+                            wishlistViewModel.removeProductFromWishlist(
+                                context,
+                                product.id,
+                                wishlistId
+                            )
                         }
                     )
                 }

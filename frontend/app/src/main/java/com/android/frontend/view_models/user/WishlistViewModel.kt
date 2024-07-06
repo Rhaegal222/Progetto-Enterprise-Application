@@ -69,7 +69,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun deleteWishlist(context: Context, wishlistId: Long) {
+    fun deleteWishlist(context: Context, wishlistId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -128,7 +128,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun getWishlistDetails(context: Context, wishlistId: Long) {
+    fun getWishlistDetails(context: Context, wishlistId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
@@ -188,7 +188,7 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
-    fun removeProductFromWishlist(context: Context, productId: Long, wishlistId: Long) {
+    fun removeProductFromWishlist(context: Context, productId: Long, wishlistId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
