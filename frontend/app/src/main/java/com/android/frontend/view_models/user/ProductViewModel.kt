@@ -334,4 +334,34 @@ class ProductViewModel : ViewModel() {
             _isLoading.value = false
         }
     }
+
+    fun searchProducts(context: Context, query: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val productService = RetrofitInstance.getProductApi(context)
+            val response = Request().executeRequest(context) {
+                productService.getAllProducts("Bearer $accessToken")
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Fetched all products for search")
+                val products = response.body()?.filter { it.name.contains(query, ignoreCase = true) } ?: emptyList()
+                _productsLiveData.postValue(products)
+                products.forEach { product ->
+                    fetchProductImage(context, product.id)
+                }
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch products for search: ${response?.errorBody()?.string()}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
 }
