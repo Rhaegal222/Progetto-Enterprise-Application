@@ -13,9 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.navigation.AppRouter
-import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.FrontendTheme
-import com.android.frontend.view.pages.user.details.WishlistDetailsPage
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -55,17 +53,25 @@ class MainActivity : ComponentActivity() {
 
         val appLinkData: Uri? = intent.data
         Log.d("DEBUG", "App link data: $appLinkData")
-        appLinkData?.let { uri ->
-            val pathSegments = uri.pathSegments
-            if (pathSegments.size > 4 && pathSegments[3] == "getWishlistById") {
-                val wishlistId = pathSegments[4]
-                Log.d("DEBUG", "Wishlist ID: $wishlistId")
-                wishlistId?.let {
-                    Log.d("DEBUG", "Navigating to wishlist/$wishlistId")
-                    lifecycleScope.launch {
-                        navController.navigate("wishlist/$wishlistId")
+        if (appLinkData != null) {
+            appLinkData.let { uri ->
+                val pathSegments = uri.pathSegments
+                if (pathSegments.size > 4 && pathSegments[3] == "getWishlistById") {
+                    val wishlistId = pathSegments[4]
+                    Log.d("DEBUG", "Wishlist ID: $wishlistId")
+                    wishlistId?.let {
+                        Log.d("DEBUG", "Navigating to wishlist/$wishlistId")
+                        lifecycleScope.launch {
+                            navController.navigate("wishlist/$wishlistId")
+                        }
                     }
                 }
+            }
+        } else {
+            // Navigate to the main page if there is no deep link data
+            Log.d("DEBUG", "No deep link data, navigating to main page")
+            lifecycleScope.launch {
+                navController.navigate("root")
             }
         }
     }
