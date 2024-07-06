@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,24 +66,32 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public WishlistDTO getWishlistById(String wishlistId) {
-        Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow(() -> new EntityNotFoundException("Wishlist not found with id: " + wishlistId));
+    public WishlistDTO getWishlistById(UUID wishlistId) {
+        Wishlist wishlist = wishlistDao.findById(wishlistId);
+        if (wishlist == null) {
+            throw new EntityNotFoundException("Wishlist not found");
+        }
         return modelMapper.map(wishlist, WishlistDTO.class);
     }
 
     @Override
-    public List<ProductDTO> getProductByWishlistId(String wishlistId) throws IllegalAccessException {
-        Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
-        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+    public List<ProductDTO> getProductByWishlistId(UUID wishlistId) throws IllegalAccessException {
+        Wishlist wishlist = wishlistDao.findById(wishlistId);
+        if (wishlist == null) {
+            throw new EntityNotFoundException("Wishlist not found");
+        }        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
             throw new IllegalAccessException("User cannot get products from this wishlist");
         return wishlist.getProducts().stream().map(product -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
     }
 
     @Override
-    public WishlistDTO updateWishlist(String wishlistId, WishlistDTO wishlistDTO) {
+    public WishlistDTO updateWishlist(UUID wishlistId, WishlistDTO wishlistDTO) {
         try {
-            Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+            Wishlist wishlist = wishlistDao.findById(wishlistId);
+            if (wishlist == null) {
+                throw new EntityNotFoundException("Wishlist not found");
+            }
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
                 throw new IllegalAccessException("User cannot update wishlist");
@@ -95,27 +104,35 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public void deleteWishlist(String wishlistId) {
+    public void deleteWishlist(UUID wishlistId) {
         try {
-            Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow();
+            Wishlist wishlist = wishlistDao.findById(wishlistId);
+            if (wishlist == null) {
+                throw new EntityNotFoundException("Wishlist not found");
+            }
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
                 throw new IllegalAccessException("User cannot delete wishlist");
-            wishlistDao.deleteById(wishlistId);
+
+            wishlistDao.deleteById(String.valueOf(wishlistId));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void addProductToWishlist(String wishlistId, Long productId) {
+    public void addProductToWishlist(UUID wishlistId, Long productId) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
                 throw new IllegalStateException("Logged user cannot be null");
             }
 
-            Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+            Wishlist wishlist = wishlistDao.findById(wishlistId);
+            if (wishlist == null) {
+                throw new EntityNotFoundException("Wishlist not found");
+            }
+
             Product product = productDao.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
             if (!wishlist.getProducts().contains(product)) {
@@ -131,7 +148,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public void removeProductFromWishlist(String wishlistId, Long productId) {
+    public void removeProductFromWishlist(UUID wishlistId, Long productId) {
         try {
             User loggedUser = jwtContextUtils.getUserLoggedFromContext();
             if (loggedUser == null) {
@@ -139,7 +156,11 @@ public class WishlistServiceImpl implements WishlistService {
             }
 
             Product product = productDao.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product not found"));
-            Wishlist wishlist = wishlistDao.findById(wishlistId).orElseThrow(() -> new EntityNotFoundException("Wishlist not found"));
+
+            Wishlist wishlist = wishlistDao.findById(wishlistId);
+            if (wishlist == null) {
+                throw new EntityNotFoundException("Wishlist not found");
+            }
 
             if (wishlist.getProducts().contains(product)) {
                 wishlist.getProducts().remove(product);
