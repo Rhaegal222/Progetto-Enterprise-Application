@@ -15,6 +15,7 @@ import com.android.frontend.RetrofitInstance
 import com.android.frontend.config.Request
 import com.android.frontend.config.TokenManager
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.basic.UserBasicDTO
 import com.android.frontend.dto.UserDTO
 import com.android.frontend.dto.UserUpdateRequest
@@ -32,74 +33,48 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-
 class UserViewModel(application: Application) : AndroidViewModel(application) {
-    private val _user = MutableLiveData<UserDTO>()
-    val userLiveData: LiveData<UserDTO> get() = _user
 
-    private val _profile = MutableLiveData<UserBasicDTO>()
-    val profileLiveData: LiveData<UserBasicDTO> get() = _profile
+    private val userDetails = MutableLiveData<UserBasicDTO?>(null)
+    val userDetailsLiveData: LiveData<UserBasicDTO?> get() = userDetails
 
     private val profileImage = MutableLiveData<Uri?>(null)
     val profileImageLiveData: LiveData<Uri?> get() = profileImage
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
+
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
-    fun getUserBasicDTO(context: Context) {
+    fun getUserDetails(context: Context) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                _isLoading.value = false
-                _hasError.value = true
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
                 return@launch
             }
+
             val userService = RetrofitInstance.getUserApi(context)
             val response = Request().executeRequest(context) {
                 userService.userBasicDTOCall("Bearer $accessToken")
             }
             if (response?.isSuccessful == true) {
-                Log.d("DEBUG", "${getCurrentStackTrace()} User profile fetched successfully")
-                response.body()?.let {
-                    _profile.value = it
+                response.body()?.let { user ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} User details: $user")
+                    userDetails.postValue(user)
+                    Log.d("DEBUG", "Fetching profile image: $user")
+                    getProfileImage(context)
                 }
             } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch user profile: ${response?.errorBody()?.string()}")
-                _hasError.value = true
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch user: ${response?.errorBody()?.string()}")
+                _hasError.postValue(true)
             }
-            _isLoading.value = false
-        }
-    }
-
-    fun getUserDTO(context: Context) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
-            val accessToken = TokenManager.getInstance().getAccessToken(context)
-            if (accessToken == null) {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
-                _isLoading.value = false
-                _hasError.value = true
-                return@launch
-            }
-            val userService = RetrofitInstance.getUserApi(context)
-            val response = Request().executeRequest(context) {
-                userService.userDTOCall("Bearer $accessToken")
-            }
-            if (response?.isSuccessful == true) {
-                response.body()?.let {
-                    _user.value = it
-                }
-            } else {
-                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch user profile: ${response?.errorBody()?.string()}")
-                _hasError.value = true
-            }
-            _isLoading.value = false
+            _isLoading.postValue(false)
         }
     }
 
@@ -132,8 +107,8 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getProfileImage(context: Context) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _hasError.value = false
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
             try {
                 val responseBody = getMyPhotoProfile(context)
                 responseBody?.let {
@@ -141,20 +116,28 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                     profileImage.postValue(Uri.fromFile(tempFile))
                 } ?: run {
                     Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval failed")
-                    _hasError.value = true
+                    _hasError.postValue(true)
                 }
             } catch (e: Exception) {
                 Log.e("DEBUG", "${getCurrentStackTrace()},Image retrieval error: ${e.message}")
-                _isLoading.value = false
+                _isLoading.postValue(false)
             } finally {
-                _isLoading.value = false
+                _isLoading.postValue(false)
             }
         }
     }
 
-    fun updateUserProfile(context: Context, firstName: String, lastName: String, email: String, phoneNumber: String) {
+    fun updateMe(context: Context, firstName: String, lastName: String, email: String, phoneNumber: String) {
         viewModelScope.launch {
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
             val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.postValue(false)
+                _hasError.postValue(true)
+                return@launch
+            }
 
             val updateRequest = UserUpdateRequest(
                 firstName = firstName,
@@ -163,30 +146,25 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
                 phoneNumber = phoneNumber,
                 username = email
             )
-
-            if (_user.value?.id == "-1" || _user.value?.id == null || _user.value?.id == "" || _user.value?.id == "null") {
-                Log.e("DEBUG", "${getCurrentStackTrace()},User ID is not set")
-                return@launch
-            }
             val userService = RetrofitInstance.getUserApi(context)
-            val call = userService.updateUser("Bearer $accessToken", _user.value?.id ?: "", updateRequest)
-            call.enqueue(object : Callback<UserDTO> {
-                override fun onResponse(call: Call<UserDTO>, response: Response<UserDTO>) {
-                    if (response.isSuccessful) {
-                        viewModelScope.launch {
-                            getUserBasicDTO(context)
-                        }
-                    } else {
-                        Log.e("DEBUG", "${getCurrentStackTrace()},Failed to update user profile: ${response.errorBody()?.string()}")
-                    }
+            val response = Request().executeRequest(context) {
+                userService.updateMe("Bearer $accessToken", updateRequest)
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let { user ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} User update, details: $user")
+                    userDetails.postValue(user)
+                    getProfileImage(context)
+                    getUserDetails(context)
                 }
-
-                override fun onFailure(call: Call<UserDTO>, t: Throwable) {
-                    Log.e("DEBUG", "${getCurrentStackTrace()},Error updating user profile", t)
-                }
-            })
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to update user: ${response?.errorBody()?.string()}")
+                _hasError.postValue(true)
+            }
+            _isLoading.postValue(false)
         }
     }
+
 
     fun logout(context: Context) {
         TokenManager.getInstance().clearTokens(context)
@@ -200,7 +178,17 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updatePhotoUser(context: Context, imageUri: Uri) {
         viewModelScope.launch {
-            uploadImage(context, imageUri)
+            _isLoading.postValue(true)
+            _hasError.postValue(false)
+            try {
+                uploadImage(context, imageUri)
+                getUserDetails(context)
+            } catch (e: Exception) {
+                Log.e("DEBUG", "${getCurrentStackTrace()},Image update error: ${e.message}")
+                _hasError.postValue(true)
+            } finally {
+                _isLoading.postValue(false)
+            }
         }
     }
 
@@ -259,18 +247,17 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun getFileFromUri(context: Context, uri: Uri): File? {
-        val fileName = "photoProfile.png"
-        val tempFile = File(context.cacheDir, fileName)
-        try {
-            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val tempFile = File.createTempFile("tempImage", null, context.cacheDir)
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
             val outputStream = FileOutputStream(tempFile)
-            inputStream?.copyTo(outputStream)
-            inputStream?.close()
+            inputStream.copyTo(outputStream)
+            inputStream.close()
             outputStream.close()
+            tempFile
         } catch (e: Exception) {
-            e.printStackTrace()
-            return null
+            Log.e("DEBUG", "${getCurrentStackTrace()}, Error getting file from URI: ${e.message}")
+            null
         }
-        return tempFile
     }
 }

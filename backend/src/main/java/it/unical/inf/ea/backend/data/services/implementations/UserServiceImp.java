@@ -89,7 +89,7 @@ public class UserServiceImp implements UserService{
         // Verifica se l'username è già esistente
         if (updates.containsKey("username")) {
             String newUsername = (String) updates.get("username");
-            if (!user.getEmail().equals(newUsername) && userDao.findByEmail(newUsername) != null) {
+            if (!user.getEmail().equals(newUsername) && userDao.findByUsername(newUsername).isPresent()) {
                 throw new IllegalArgumentException("Username already exists");
             }
         }
@@ -97,7 +97,7 @@ public class UserServiceImp implements UserService{
         // Verifica se l'email è già esistente
         if (updates.containsKey("email")) {
             String newEmail = (String) updates.get("email");
-            if (!user.getEmail().equals(newEmail) && userDao.findByEmail(newEmail) != null) {
+            if (!user.getEmail().equals(newEmail) && userDao.findByEmail(newEmail).isPresent()) {
                 throw new IllegalArgumentException("Email already exists");
             }
         }
@@ -113,6 +113,45 @@ public class UserServiceImp implements UserService{
         // Salva l'utente aggiornato
         User updatedUser = userDao.save(user);
         return mapToDto(updatedUser);
+    }
+
+    @Override
+    public UserBasicDTO updateMe(Map<String, Object> updates) throws IllegalAccessException {
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+
+        User user = userDao.findById(loggedUser.getId()).orElseThrow();
+
+        if (!loggedUser.getId().equals(user.getId())) {
+            throw new IllegalAccessException("User cannot change another user");
+        }
+
+        // Verifica se l'username è già esistente
+        if (updates.containsKey("username")) {
+            String newUsername = (String) updates.get("username");
+            if (!user.getEmail().equals(newUsername) && userDao.findByUsername(newUsername).isPresent()) {
+                throw new IllegalArgumentException("Username already exists");
+            }
+        }
+
+        // Verifica se l'email è già esistente
+        if (updates.containsKey("email")) {
+            String newEmail = (String) updates.get("email");
+            if (!user.getEmail().equals(newEmail) && userDao.findByEmail(newEmail).isPresent()) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+        }
+
+        // Applica gli aggiornamenti alle proprietà dell'utente
+        BeanWrapper beanWrapper = new BeanWrapperImpl(user);
+        updates.forEach((key, value) -> {
+            if (beanWrapper.isWritableProperty(key)) {
+                beanWrapper.setPropertyValue(key, value);
+            }
+        });
+
+        // Salva l'utente aggiornato
+        User updatedUser = userDao.save(user);
+        return mapToBasicDto(updatedUser);
     }
 
     @Override

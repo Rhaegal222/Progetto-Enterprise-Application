@@ -105,6 +105,7 @@ public class AppSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/logout", "/api/v1/users/changeRole/",
                                 "/api/v1/users/deleteUser/", "/api/v1/users/changePassword").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/deleteUser/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/updateUser/{id}", "/api/v1/users/updateMe").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/getUserByUsername", "/api/v1/users/getUserByEmail", "/api/v1/users/me",
                                 "/api/v1/users/me", "/api/v1/users/refreshToken", "/api/v1/users/rejectToken", "/api/v1/users/getAllUsers",
                                 "/api/v1/users/resetPassword", "/api/v1/users/retrieveUserProfile", "/api/v1/users/findUserById/", "/api/v1/users/findByUsername",

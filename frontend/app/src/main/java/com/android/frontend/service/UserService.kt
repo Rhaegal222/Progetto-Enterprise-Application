@@ -82,6 +82,12 @@ interface UserService {
         @Body patch: UserUpdateRequest
     ): Call<UserDTO>
 
+    @PATCH("/api/v1/users/updateMe")
+    fun updateMe(
+        @Header("Authorization") authorization: String,
+        @Body patch: UserUpdateRequest
+    ): Call<UserBasicDTO>
+
     @DELETE("/api/v1/users/{id}")
     fun deleteUser(
         @Path("id") id: String

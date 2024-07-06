@@ -1,0 +1,67 @@
+[
+    {
+        "name": "Nduja calabra",
+        "description": "Produttore artigianale di nduja calabrese."
+    },
+    {
+        "name": "Orto calabrese",
+        "description": "Prodotti freschi e biologici dalla Calabria."
+    },
+    {
+        "name": "Caseificio calabro",
+        "description": "Produttore di formaggi tipici calabresi."
+    },
+    {
+        "name": "Dolci calabresi",
+        "description": "Produttore di dolci tradizionali calabresi."
+    },
+    {
+        "name": "Liquori calabresi",
+        "description": "Produttore di liquori artigianali calabresi."
+    },
+    
+    {
+        "name": "Salumi calabresi",
+        "description": "Produttore di salumi tradizionali calabresi."
+    },
+    {
+        "name": "Formaggi della Sila",
+        "description": "Produttore di formaggi tipici della Sila."
+    },
+    {
+        "name": "Frutta calabrese",
+        "description": "Prodotti di frutta essiccata dalla Calabria."
+    },
+    {
+        "name": "Olive calabresi",
+        "description": "Produttore di olive e derivati calabresi."
+    },
+    {
+        "name": "Vini calabresi",
+        "description": "Cantina produttrice di vini DOC calabresi."
+    },
+    {
+        "name": "Api calabresi",
+        "description": "Produttore di mieli biologici calabresi."
+    },
+    {
+        "name": "Specialità calabresi",
+        "description": "Produttore di specialità tradizionali calabresi."
+    },
+    {
+        "name": "Forno calabrese",
+        "description": "Produttore di pane e prodotti da forno calabresi."
+    },
+    {
+        "name": "Gelati calabresi",
+        "description": "Produttore di gelati artigianali calabresi."
+    },
+    {
+        "name": "Orto di Calabria",
+        "description": "Prodotti freschi e conservati dell'orto calabrese."
+    },
+    {
+        "name": "Distillerie calabresi",
+        "description": "Produttore di distillati artigianali calabresi."
+    }
+]

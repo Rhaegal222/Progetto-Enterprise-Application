@@ -220,4 +220,6 @@
     <string name="error_dialog_title">Errore</string>
     <string name="ok">OK</string>
     <string name="no_google_account_activity_error">Nessuna attività dell\'account Google rilevata</string>
+    <string name="email_change">Cambia email</string>
+    <string name="email_change_message">Per modificare la tua email devi effettuare il login.</string>
 </resources>

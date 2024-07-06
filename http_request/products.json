@@ -1,0 +1,510 @@
+[
+    {
+        "name": "Nduja di Spilinga",
+        "description": "Un insaccato calabrese piccante, spalmabile e fatto con carne di maiale e peperoncino.",
+        "ingredients": "Carne di maiale, peperoncino, sale",
+        "nutritionalValues": "Proteine: 20g, Grassi: 30g, Carboidrati: 2g",
+        "weight": "500g",
+        "quantity": 50,
+        "price": 15,
+        "shippingCost": 5,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "1",
+            "name": "Nduja calabra",
+            "description": "Produttore artigianale di nduja calabrese."
+        },
+        "category": {
+            "id": "2",
+            "name": "Salumi"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Cipolla Rossa di Tropea",
+        "description": "Una cipolla dolce e succosa coltivata nella zona di Tropea.",
+        "ingredients": "Cipolla rossa",
+        "nutritionalValues": "Proteine: 1g, Grassi: 0g, Carboidrati: 9g",
+        "weight": "1kg",
+        "quantity": 100,
+        "price": 4,
+        "shippingCost": 3,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "2",
+            "name": "Orto calabrese",
+            "description": "Prodotti freschi e biologici dalla Calabria."
+        },
+        "category": {
+            "id": "3",
+            "name": "Verdure"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 3.5
+    },
+    {
+        "name": "Pecorino Crotonese",
+        "description": "Formaggio stagionato di pecora, tipico della provincia di Crotone.",
+        "ingredients": "Latte di pecora, caglio, sale",
+        "nutritionalValues": "Proteine: 25g, Grassi: 33g, Carboidrati: 1g",
+        "weight": "1kg",
+        "quantity": 30,
+        "price": 20,
+        "shippingCost": 7,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "3",
+            "name": "Caseificio calabro",
+            "description": "Produttore di formaggi tipici calabresi."
+        },
+        "category": {
+            "id": "4",
+            "name": "Formaggi"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 18
+    },
+    {
+        "name": "Pitta 'mpigliata",
+        "description": "Dolce tradizionale calabrese fatto con pasta sfoglia e ripieno di frutta secca e miele.",
+        "ingredients": "Farina, miele, noci, uvetta, mandorle, vino cotto",
+        "nutritionalValues": "Proteine: 5g, Grassi: 15g, Carboidrati: 60g",
+        "weight": "500g",
+        "quantity": 40,
+        "price": 12,
+        "shippingCost": 5,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "4",
+            "name": "Dolci calabresi",
+            "description": "Produttore di dolci tradizionali calabresi."
+        },
+        "category": {
+            "id": "1",
+            "name": "Dolci"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Liquore al Bergamotto",
+        "description": "Liquore artigianale fatto con il bergamotto calabrese.",
+        "ingredients": "Alcool, zucchero, essenza di bergamotto",
+        "nutritionalValues": "Proteine: 0g, Grassi: 0g, Carboidrati: 30g",
+        "weight": "700ml",
+        "quantity": 60,
+        "price": 18,
+        "shippingCost": 6,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "5",
+            "name": "Liquori calabresi",
+            "description": "Produttore di liquori artigianali calabresi."
+        },
+        "category": {
+            "id": "5",
+            "name": "Liquori"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 16
+    },
+
+    {
+        "name": "Soppressata di Calabria",
+        "description": "Salame tradizionale calabrese, stagionato e speziato.",
+        "ingredients": "Carne di maiale, sale, peperoncino",
+        "nutritionalValues": "Proteine: 22g, Grassi: 28g, Carboidrati: 1g",
+        "weight": "400g",
+        "quantity": 45,
+        "price": 14,
+        "shippingCost": 5,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "6",
+            "name": "Salumi calabresi",
+            "description": "Produttore di salumi tradizionali calabresi."
+        },
+        "category": {
+            "id": "2",
+            "name": "Salumi"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Caciocavallo Silano",
+        "description": "Formaggio a pasta filata tipico della Sila, stagionato.",
+        "ingredients": "Latte di vacca, caglio, sale",
+        "nutritionalValues": "Proteine: 24g, Grassi: 31g, Carboidrati: 2g",
+        "weight": "800g",
+        "quantity": 25,
+        "price": 18,
+        "shippingCost": 7,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "7",
+            "name": "Formaggi della Sila",
+            "description": "Produttore di formaggi tipici della Sila."
+        },
+        "category": {
+            "id": "4",
+            "name": "Formaggi"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Fichi secchi di Cosenza",
+        "description": "Fichi secchi dolci e succosi, coltivati nella zona di Cosenza.",
+        "ingredients": "Fichi secchi",
+        "nutritionalValues": "Proteine: 3g, Grassi: 1g, Carboidrati: 60g",
+        "weight": "500g",
+        "quantity": 60,
+        "price": 10,
+        "shippingCost": 4,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "8",
+            "name": "Frutta calabrese",
+            "description": "Prodotti di frutta essiccata dalla Calabria."
+        },
+        "category": {
+            "id": "6",
+            "name": "Frutta secca"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Olive schiacciate calabresi",
+        "description": "Olive verdi schiacciate, condite con peperoncino e aglio.",
+        "ingredients": "Olive, peperoncino, aglio, olio di oliva, sale",
+        "nutritionalValues": "Proteine: 1g, Grassi: 15g, Carboidrati: 2g",
+        "weight": "300g",
+        "quantity": 70,
+        "price": 6,
+        "shippingCost": 3,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "9",
+            "name": "Olive calabresi",
+            "description": "Produttore di olive e derivati calabresi."
+        },
+        "category": {
+            "id": "7",
+            "name": "Conserve"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 5
+    },
+    {
+        "name": "Vino Cirò Rosso",
+        "description": "Vino rosso DOC della zona di Cirò, robusto e aromatico.",
+        "ingredients": "Uva Gaglioppo",
+        "nutritionalValues": "Proteine: 0g, Grassi: 0g, Carboidrati: 3g",
+        "weight": "750ml",
+        "quantity": 80,
+        "price": 15,
+        "shippingCost": 6,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "10",
+            "name": "Vini calabresi",
+            "description": "Cantina produttrice di vini DOC calabresi."
+        },
+        "category": {
+            "id": "8",
+            "name": "Vini"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 13
+    },
+    {
+        "name": "Miele di Castagno",
+        "description": "Miele prodotto dai fiori di castagno, dal gusto intenso e aromatico.",
+        "ingredients": "Miele di castagno",
+        "nutritionalValues": "Proteine: 0g, Grassi: 0g, Carboidrati: 82g",
+        "weight": "500g",
+        "quantity": 50,
+        "price": 12,
+        "shippingCost": 4,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "11",
+            "name": "Api calabresi",
+            "description": "Produttore di mieli biologici calabresi."
+        },
+        "category": {
+            "id": "9",
+            "name": "Miele"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Liquore alla liquirizia",
+        "description": "Liquore artigianale fatto con radice di liquirizia calabrese.",
+        "ingredients": "Alcool, zucchero, radice di liquirizia",
+        "nutritionalValues": "Proteine: 0g, Grassi: 0g, Carboidrati: 35g",
+        "weight": "700ml",
+        "quantity": 40,
+        "price": 20,
+        "shippingCost": 6,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "5",
+            "name": "Liquori calabresi",
+            "description": "Produttore di liquori artigianali calabresi."
+        },
+        "category": {
+            "id": "5",
+            "name": "Liquori"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 18
+    },
+    {
+        "name": "Sardella calabrese",
+        "description": "Crema di sardine e peperoncino, tradizionale della Calabria.",
+        "ingredients": "Sardine, peperoncino, sale, olio di oliva",
+        "nutritionalValues": "Proteine: 15g, Grassi: 12g, Carboidrati: 3g",
+        "weight": "200g",
+        "quantity": 50,
+        "price": 8,
+        "shippingCost": 4,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "12",
+            "name": "Specialità calabresi",
+            "description": "Produttore di specialità tradizionali calabresi."
+        },
+        "category": {
+            "id": "10",
+            "name": "Specialità"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Pane casereccio",
+        "description": "Pane tradizionale calabrese, croccante e gustoso.",
+        "ingredients": "Farina di grano duro, acqua, lievito, sale",
+        "nutritionalValues": "Proteine: 10g, Grassi: 2g, Carboidrati: 50g",
+        "weight": "1kg",
+        "quantity": 100,
+        "price": 6,
+        "shippingCost": 5,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "13",
+            "name": "Forno calabrese",
+            "description": "Produttore di pane e prodotti da forno calabresi."
+        },
+        "category": {
+            "id": "11",
+            "name": "Pane"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 5.5
+    },
+    {
+        "name": "Tartufo di Pizzo",
+        "description": "Gelato tradizionale calabrese con cuore di cioccolato fuso.",
+        "ingredients": "Latte, zucchero, cioccolato, panna",
+        "nutritionalValues": "Proteine: 4g, Grassi: 15g, Carboidrati: 30g",
+        "weight": "200g",
+        "quantity": 80,
+        "price": 7,
+        "shippingCost": 6,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "14",
+            "name": "Gelati calabresi",
+            "description": "Produttore di gelati artigianali calabresi."
+        },
+        "category": {
+            "id": "12",
+            "name": "Gelati"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Peperoni arrostiti",
+        "description": "Peperoni rossi arrostiti e conservati sott'olio.",
+        "ingredients": "Peperoni, olio di oliva, sale, aceto",
+        "nutritionalValues": "Proteine: 1g, Grassi: 8g, Carboidrati: 5g",
+        "weight": "300g",
+        "quantity": 70,
+        "price": 6,
+        "shippingCost": 4,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "15",
+            "name": "Orto di Calabria",
+            "description": "Prodotti freschi e conservati dell'orto calabrese."
+        },
+        "category": {
+            "id": "7",
+            "name": "Conserve"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 5
+    },
+    {
+        "name": "Crema di carciofi",
+        "description": "Crema spalmabile fatta con carciofi freschi calabresi.",
+        "ingredients": "Carciofi, olio di oliva, sale, aglio",
+        "nutritionalValues": "Proteine: 2g, Grassi: 10g, Carboidrati: 4g",
+        "weight": "180g",
+        "quantity": 50,
+        "price": 5,
+        "shippingCost": 3,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "15",
+            "name": "Orto di Calabria",
+            "description": "Prodotti freschi e conservati dell'orto calabrese."
+        },
+        "category": {
+            "id": "13",
+            "name": "Creme"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Paté di pomodori secchi",
+        "description": "Paté spalmabile fatto con pomodori secchi calabresi.",
+        "ingredients": "Pomodori secchi, olio di oliva, sale, aglio",
+        "nutritionalValues": "Proteine: 2g, Grassi: 15g, Carboidrati: 5g",
+        "weight": "180g",
+        "quantity": 60,
+        "price": 6,
+        "shippingCost": 3,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "15",
+            "name": "Orto di Calabria",
+            "description": "Prodotti freschi e conservati dell'orto calabrese."
+        },
+        "category": {
+            "id": "13",
+            "name": "Creme"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 5.5
+    },
+    {
+        "name": "Salame piccante calabrese",
+        "description": "Salame stagionato calabrese, dal gusto intenso e piccante.",
+        "ingredients": "Carne di maiale, peperoncino, sale",
+        "nutritionalValues": "Proteine: 22g, Grassi: 29g, Carboidrati: 1g",
+        "weight": "400g",
+        "quantity": 40,
+        "price": 13,
+        "shippingCost": 5,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "6",
+            "name": "Salumi calabresi",
+            "description": "Produttore di salumi tradizionali calabresi."
+        },
+        "category": {
+            "id": "2",
+            "name": "Salumi"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 12
+    },
+    {
+        "name": "Pecorino della Sila",
+        "description": "Formaggio di pecora stagionato, prodotto nella zona della Sila.",
+        "ingredients": "Latte di pecora, caglio, sale",
+        "nutritionalValues": "Proteine: 26g, Grassi: 32g, Carboidrati: 1g",
+        "weight": "1kg",
+        "quantity": 35,
+        "price": 22,
+        "shippingCost": 7,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "7",
+            "name": "Formaggi della Sila",
+            "description": "Produttore di formaggi tipici della Sila."
+        },
+        "category": {
+            "id": "4",
+            "name": "Formaggi"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 20
+    },
+    {
+        "name": "Mostaccioli calabresi",
+        "description": "Dolci tradizionali calabresi a base di miele e spezie.",
+        "ingredients": "Farina, miele, mandorle, cannella, chiodi di garofano",
+        "nutritionalValues": "Proteine: 4g, Grassi: 10g, Carboidrati: 50g",
+        "weight": "300g",
+        "quantity": 50,
+        "price": 8,
+        "shippingCost": 5,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "4",
+            "name": "Dolci calabresi",
+            "description": "Produttore di dolci tradizionali calabresi."
+        },
+        "category": {
+            "id": "1",
+            "name": "Dolci"
+        },
+        "image": null,
+        "onSale": false,
+        "salePrice": 0
+    },
+    {
+        "name": "Grappa calabrese",
+        "description": "Distillato di vinacce calabresi, dal gusto forte e deciso.",
+        "ingredients": "Vinacce",
+        "nutritionalValues": "Proteine: 0g, Grassi: 0g, Carboidrati: 0g",
+        "weight": "700ml",
+        "quantity": 30,
+        "price": 22,
+        "shippingCost": 6,
+        "availability": "IN_STOCK",
+        "brand": {
+            "id": "16",
+            "name": "Distillerie calabresi",
+            "description": "Produttore di distillati artigianali calabresi."
+        },
+        "category": {
+            "id": "5",
+            "name": "Liquori"
+        },
+        "image": null,
+        "onSale": true,
+        "salePrice": 20
+    }
+ 
+]
