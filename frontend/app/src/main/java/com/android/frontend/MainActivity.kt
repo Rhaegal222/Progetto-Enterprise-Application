@@ -5,16 +5,20 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.android.frontend.navigation.AppRouter
 import com.android.frontend.ui.theme.FrontendTheme
+import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,36 +31,39 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FrontendTheme {
-                val navController = rememberNavController()
-                HandleIntent(navController, intent)
+                navController = rememberNavController()
                 AppRouter(navController)
             }
         }
+        handleIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
-        if (intent.data != null) {
-            super.onNewIntent(intent)
-        }
-        intent.let {
-            setContent {
-                FrontendTheme {
-                    val navController = rememberNavController()
-                    HandleIntent(navController, it)
-                    AppRouter(navController)
-                }
-            }
-        }
+        super.onNewIntent(intent)
+        handleIntent(intent)
     }
 
-    @Composable
-    private fun HandleIntent(navController: NavHostController, intent: Intent) {
-        LaunchedEffect(intent) {
-            val appLinkData: Uri? = intent.data
-            appLinkData?.let { uri ->
-                val wishlistId = uri.getQueryParameter("id")
-                wishlistId?.let {
-                    navController.navigate("wishlistDetails/$it")
+    private fun handleIntent(intent: Intent) {
+        Log.d("DEBUG", "handleIntent: $intent")
+        val appLinkData: Uri? = intent.data
+        appLinkData?.let { uri ->
+            val wishlistId = uri.getQueryParameter("id")
+            wishlistId?.let {
+                if (::navController.isInitialized) {
+                    lifecycleScope.launch {
+                        try {
+                            Log.d("DEBUG", "Navigating to wishlistDetails/$it")
+                            navController.navigate("wishlistDetails/$it")
+                        } catch (e: SocketTimeoutException) {
+                            Log.e("ERROR", "Backend initialization failed", e)
+                            // Naviga alla schermata di benvenuto
+                            navController.navigate("welcomeScreen")
+                        } catch (e: Exception) {
+                            Log.e("ERROR", "Unexpected error during backend initialization", e)
+                            // Naviga alla schermata di benvenuto
+                            navController.navigate("welcomeScreen")
+                        }
+                    }
                 }
             }
         }

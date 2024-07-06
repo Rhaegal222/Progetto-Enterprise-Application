@@ -13,13 +13,6 @@ object RetrofitInstance {
 
     private val BASE_URL = "http://192.168.169.200:8080/"
 
-    private fun getSimpleRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
     private fun getAuthenticatedRetrofit(context: Context): Retrofit {
         val client = OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor(context))
@@ -58,11 +51,6 @@ object RetrofitInstance {
 
     fun getAddressApi(context: Context): AddressService {
         return getAuthenticatedRetrofit(context).create(AddressService::class.java)
-    }
-
-    // Funzione per ottenere UserService senza autenticazione
-    fun getSimpleUserApi(): UserService {
-        return getSimpleRetrofit().create(UserService::class.java)
     }
 
     fun getCartApi(context: Context): CartService {
