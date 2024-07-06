@@ -14,9 +14,6 @@ import com.android.frontend.persistence.SecurePreferences
 import com.android.frontend.service.UserService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginViewModel : ViewModel() {
 
@@ -75,10 +72,7 @@ class LoginViewModel : ViewModel() {
                             onResult(false, error)
                         }
                     } else {
-                        viewModelScope.launch(Dispatchers.Main) {
-                            if (error == "No credentials available")
-                                googleAuth.promptAddGoogleAccount()
-                        }
+                        onResult(false, error)
                     }
                 }
             }

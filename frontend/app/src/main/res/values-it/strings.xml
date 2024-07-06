@@ -212,4 +212,9 @@
     <string name="edit_wishlist">Modifica la lista dei desideri</string>
     <string name="share">Condividi</string>
     <string name="copy_link">Copia link</string>
+    <string name="google_account_prompt_error">Nessuna attività dell\'account Google rilevata</string>
+    <string name="created_at">Creato il</string>
+    <string name="error_dialog_title">Errore</string>
+    <string name="ok">OK</string>
+    <string name="no_google_account_activity_error">Nessuna attività dell\'account Google rilevata</string>
 </resources>
