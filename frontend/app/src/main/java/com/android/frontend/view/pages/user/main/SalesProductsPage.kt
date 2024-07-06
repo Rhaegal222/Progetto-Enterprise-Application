@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,9 +30,10 @@ fun SalesProductsPage(
     val context = LocalContext.current
     val products = productViewModel.productsLiveData.observeAsState().value
     val productImages = productViewModel.productImagesLiveData.observeAsState().value
-
+    val wishlists by productViewModel.wishlistLiveData.observeAsState(emptyList())
     LaunchedEffect(Unit) {
         productViewModel.fetchSalesProducts(context)
+
     }
 
     Scaffold (
@@ -52,7 +54,8 @@ fun SalesProductsPage(
                         productDTO,
                         navController,
                         cartViewModel,
-                        productImages?.get(productDTO.id)
+                        productImages?.get(productDTO.id),
+                        wishlists
                     )
                 }
             }

@@ -42,6 +42,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
     val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
     val categories by productViewModel.categoriesLiveData.observeAsState(emptyList())
     val brands by productViewModel.brandsLiveData.observeAsState(emptyList())
+    val wishlists by productViewModel.wishlistLiveData.observeAsState(emptyList())
 
     var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
     var expandedSort by remember { mutableStateOf(false) }
@@ -62,6 +63,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
         productViewModel.fetchAllProducts(context)
         productViewModel.fetchAllCategories(context)
         productViewModel.fetchAllBrands(context)
+        productViewModel.getAllLoggedUserWishlists(context)
     }
 
     val categoryString = stringResource(id = R.string.category)
@@ -138,7 +140,11 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                 ErrorDialog(
                     title = stringResource(id = R.string.fetching_error),
                     onDismiss = { navController.popBackStack() },
-                    onRetry = { productViewModel.fetchAllProducts(context) },
+                    onRetry = {
+                        productViewModel.fetchAllProducts(context)
+                        productViewModel.fetchAllCategories(context)
+                        productViewModel.fetchAllBrands(context)
+                        productViewModel.getAllLoggedUserWishlists(context) },
                     errorMessage = stringResource(id = R.string.products_load_failed)
                 )
             } else {
@@ -163,7 +169,8 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                             productDTO,
                             navController,
                             cartViewModel,
-                            productImages[productDTO.id]
+                            productImages[productDTO.id],
+                            wishlists
                         )
                     }
                 }

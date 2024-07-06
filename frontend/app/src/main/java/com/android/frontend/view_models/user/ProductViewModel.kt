@@ -14,6 +14,7 @@ import com.android.frontend.dto.ProductDTO
 import com.android.frontend.config.getCurrentStackTrace
 import com.android.frontend.dto.BrandDTO
 import com.android.frontend.dto.CategoryDTO
+import com.android.frontend.dto.WishlistDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,6 +46,8 @@ class ProductViewModel : ViewModel() {
     private val _hasError = MutableLiveData(false)
     val hasError: LiveData<Boolean> get() = _hasError
 
+    private val _wishlist = MutableLiveData<List<WishlistDTO>>()
+    val wishlistLiveData: MutableLiveData<List<WishlistDTO>> get() = _wishlist
 
     fun fetchAllProducts(context: Context) {
         viewModelScope.launch {
@@ -302,6 +305,33 @@ class ProductViewModel : ViewModel() {
                     Log.e("DEBUG", "${getCurrentStackTrace()} Error fetching brands", t)
                 }
             })
+        }
+    }
+    fun getAllLoggedUserWishlists(context: Context) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.getAllLoggedUserWishlists("Bearer $accessToken")
+            }
+            if (response?.isSuccessful == true) {
+                response.body()?.let { wishlists ->
+                    Log.d("DEBUG", "${getCurrentStackTrace()} Fetched wishlists: $wishlists")
+                    _wishlist.value = wishlists
+                }
+            } else {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Failed to fetch wishlists: ${response?.errorBody()?.string() ?: "Empty response"}")
+                _hasError.value = true
+            }
+            _isLoading.value = false
         }
     }
 }

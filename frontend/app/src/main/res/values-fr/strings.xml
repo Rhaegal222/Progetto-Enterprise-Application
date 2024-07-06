@@ -212,4 +212,7 @@
     <string name="edit_wishlist">Modifier la liste de souhaits</string>
     <string name="share">Partager</string>
     <string name="copy_link">Copier le lien</string>
+    <string name="product_added_success_to_wishlist">Produit ajouté avec succès à votre liste de souhaits sélectionnée</string>
+    <string name="error">Error</string>
+    <string name="product_added_error_to_wishlist">Impossible d\'ajouter ce produit à votre liste de souhaits</string>
 </resources>

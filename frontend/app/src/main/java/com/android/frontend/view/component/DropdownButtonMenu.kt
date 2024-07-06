@@ -10,11 +10,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.ui.theme.colors.IconButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedCardColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
@@ -35,17 +35,17 @@ import com.android.frontend.view_models.user.WishlistViewModel
 @Composable
 fun DropdownButtonMenu(
     productDTO: ProductDTO,
+    wishlists: List<WishlistDTO>,
     wishlistViewModel: WishlistViewModel
 ) {
     val context = LocalContext.current
-    val wishlists by wishlistViewModel.wishlistLiveData.observeAsState()
     val expanded = remember { mutableStateOf(false) }
     val selectedWishlist = remember { mutableStateOf<String?>(null) }
     val selectedWishlistId = remember { mutableStateOf<String?>(null) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    val addProductResult by wishlistViewModel.addProductResult
 
-    LaunchedEffect(Unit) {
-        wishlistViewModel.getAllLoggedUserWishlists(context)
-    }
 
     Box {
         OutlinedCard(
@@ -64,6 +64,11 @@ fun DropdownButtonMenu(
                     onClick = {
                         selectedWishlistId.value?.let { wishlistId ->
                             wishlistViewModel.addProductToWishlist(context, wishlistId, productDTO.id)
+                            if (addProductResult){
+                                showSuccessDialog = true
+                            }else {
+                                showErrorDialog = true
+                            }
                         }
                     },
                 ) {
@@ -113,7 +118,7 @@ fun DropdownButtonMenu(
             border = BorderStroke(1.dp, OutlinedCardColorScheme.outlinedCardBorder()),
             shape = RoundedCornerShape(12.dp)
         ) {
-            wishlists?.forEach { wishlist ->
+            wishlists.forEach { wishlist ->
                 DropdownMenuItem(
                     modifier = Modifier.padding(0.dp),
                     onClick = {
@@ -132,6 +137,34 @@ fun DropdownButtonMenu(
                     }
                 )
             }
+        }
+        if (showSuccessDialog) {
+            AlertDialog(
+                onDismissRequest = { showSuccessDialog = false },
+                title = { Text(stringResource(id = R.string.success)) },
+                text = { Text(stringResource(id = R.string.product_added_success_to_wishlist)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showSuccessDialog = false
+                    }) {
+                        Text(stringResource(id = R.string.okay))
+                    }
+                }
+            )
+        }
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text(stringResource(id = R.string.error)) },
+                text = { Text(stringResource(id = R.string.product_added_error_to_wishlist)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showErrorDialog = false
+                    }) {
+                        Text(stringResource(id = R.string.okay))
+                    }
+                }
+            )
         }
     }
 }
