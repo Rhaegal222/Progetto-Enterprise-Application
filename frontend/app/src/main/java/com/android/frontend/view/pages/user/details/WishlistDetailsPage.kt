@@ -83,7 +83,7 @@ fun WishlistDetailsPage(
     val productImages by wishlistViewModel.productImagesLiveData.observeAsState(emptyMap())
     val showDialog = remember { mutableStateOf(false) }
     val showShareDialog = remember { mutableStateOf(false) }
-    val shareLink = "${CurrentDataUtils.backendBaseUrl}wishlist/getWishlistById/$wishlistId"
+    val shareLink = "https://example.com/api/v1/wishlist/getWishlistById/$wishlistId"
 
     LaunchedEffect(Unit) {
         wishlistViewModel.getWishlistDetails(context, wishlistId)
