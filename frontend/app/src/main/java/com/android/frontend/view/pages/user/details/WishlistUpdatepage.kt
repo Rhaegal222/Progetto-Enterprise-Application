@@ -179,8 +179,7 @@ fun WishlistUpdatePage(
                                 )
                                 wishlistViewModel.updateWishlist(context, wishlistId, wishlistDTO)
                                 CurrentDataUtils.CurrentWishlistName = wishlistName.text
-                                navController.navigate("${Navigation.WishlistDetailsPage.route}/${wishlistId}")
-                            } catch (e: Exception) {
+                                navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")                            } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                             }
                         },

@@ -40,7 +40,8 @@ class WishlistViewModel : ViewModel() {
 
     private val wishlistDetails = MutableLiveData<WishlistDTO>()
     val wishlistDetailsLiveData: MutableLiveData<WishlistDTO> get() = wishlistDetails
-    val addProductResult = mutableStateOf<Boolean>(false)
+
+    val addProductResult = mutableStateOf<Result<String>?>(null)
 
     fun createWishlist(
         context: Context,
@@ -173,11 +174,13 @@ class WishlistViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _hasError.value = false
+            addProductResult.value = null // Reset result state
             val accessToken = TokenManager.getInstance().getAccessToken(context)
             if (accessToken == null) {
                 Log.e("DEBUG", "Access token missing")
                 _isLoading.value = false
                 _hasError.value = true
+                addProductResult.value = Result.failure(Exception("Access token missing"))
                 return@launch
             }
             val wishlistService = RetrofitInstance.getWishlistApi(context)
@@ -188,15 +191,15 @@ class WishlistViewModel : ViewModel() {
                 response.body()?.let { wishlist ->
                     Log.d("DEBUG", "Added product to wishlist: $wishlist")
                     getAllLoggedUserWishlists(context)
-                    addProductResult.value = true
+                    addProductResult.value = Result.success("Product added successfully to wishlist")
                 }
-
             } else {
                 Log.e(
                     "DEBUG",
                     "Failed to add product to wishlist: ${response?.errorBody()?.string() ?: "Empty response"}"
                 )
                 _hasError.value = true
+                addProductResult.value = Result.failure(Exception(response?.errorBody()?.string() ?: "Unknown error"))
             }
             _isLoading.value = false
         }

@@ -11,6 +11,7 @@ import it.unical.inf.ea.backend.dto.ProductDTO;
 import it.unical.inf.ea.backend.dto.WishlistDTO;
 import it.unical.inf.ea.backend.dto.creation.WishlistCreateDTO;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
+import it.unical.inf.ea.backend.dto.enums.WishlistVisibility;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -67,11 +68,14 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public WishlistDTO getWishlistById(UUID wishlistId) {
+    public WishlistDTO getWishlistById(UUID wishlistId) throws IllegalAccessException {
         Wishlist wishlist = wishlistDao.findById(wishlistId);
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (wishlist == null) {
             throw new EntityNotFoundException("Wishlist not found");
         }
+        if (wishlist.getVisibility().equals(WishlistVisibility.PRIVATE) && !wishlist.getUser().equals(loggedUser)&& !loggedUser.getRole().equals(UserRole.ADMIN))
+            throw new IllegalAccessException("User cannot get this wishlist");
         return modelMapper.map(wishlist, WishlistDTO.class);
     }
 
@@ -80,7 +84,8 @@ public class WishlistServiceImpl implements WishlistService {
         Wishlist wishlist = wishlistDao.findById(wishlistId);
         if (wishlist == null) {
             throw new EntityNotFoundException("Wishlist not found");
-        }        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+        }
+        User loggedUser = jwtContextUtils.getUserLoggedFromContext();
         if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
             throw new IllegalAccessException("User cannot get products from this wishlist");
         return wishlist.getProducts().stream().map(product -> modelMapper.map(product, ProductDTO.class)).collect(Collectors.toList());
