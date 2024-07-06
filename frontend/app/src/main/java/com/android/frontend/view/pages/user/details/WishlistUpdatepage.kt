@@ -91,7 +91,7 @@ fun WishlistUpdatePage(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.edit_wishlist).uppercase(),
+                        text = stringResource(id = R.string.edit_wishlist),
                     )
                 },
                 navigationIcon = {

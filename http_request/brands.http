@@ -1,0 +1,48 @@
+POST http://localhost:8080/api/v1/brand/addBrand
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiW1JPTEVfVVNFUl0iLCJuYmYiOjE3MjAyNTEzMDcsImV4cCI6MTcyMDI1NDkwNywiaWF0IjoxNzIwMjUxMzA3LCJ1c2VybmFtZSI6ImZyYW5jZXNjb3ZlY2NoaW8wMUBnbWFpbC5jb20ifQ.TVXMVzisMvs0dlvKosPbw2KxTLjr6-V9bYZw7RF3kDs
+Content-Type: application/json
+
+{
+  "name": "Nduja calabra",
+  "description": "Produttore artigianale di nduja calabrese."
+}
+
+###
+POST http://localhost:8080/api/v1/brand/addBrand
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiW1JPTEVfVVNFUl0iLCJuYmYiOjE3MjAyNTEzMDcsImV4cCI6MTcyMDI1NDkwNywiaWF0IjoxNzIwMjUxMzA3LCJ1c2VybmFtZSI6ImZyYW5jZXNjb3ZlY2NoaW8wMUBnbWFpbC5jb20ifQ.TVXMVzisMvs0dlvKosPbw2KxTLjr6-V9bYZw7RF3kDs
+Content-Type: application/json
+
+{
+  "name": "Orto calabrese",
+  "description": "Prodotti freschi e biologici dalla Calabria."
+}
+
+###
+POST http://localhost:8080/api/v1/brand/addBrand
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiW1JPTEVfVVNFUl0iLCJuYmYiOjE3MjAyNTEzMDcsImV4cCI6MTcyMDI1NDkwNywiaWF0IjoxNzIwMjUxMzA3LCJ1c2VybmFtZSI6ImZyYW5jZXNjb3ZlY2NoaW8wMUBnbWFpbC5jb20ifQ.TVXMVzisMvs0dlvKosPbw2KxTLjr6-V9bYZw7RF3kDs
+Content-Type: application/json
+
+{
+  "name": "Caseificio calabro",
+  "description": "Produttore di formaggi tipici calabresi."
+}
+
+###
+POST http://localhost:8080/api/v1/brand/addBrand
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiW1JPTEVfVVNFUl0iLCJuYmYiOjE3MjAyNTEzMDcsImV4cCI6MTcyMDI1NDkwNywiaWF0IjoxNzIwMjUxMzA3LCJ1c2VybmFtZSI6ImZyYW5jZXNjb3ZlY2NoaW8wMUBnbWFpbC5jb20ifQ.TVXMVzisMvs0dlvKosPbw2KxTLjr6-V9bYZw7RF3kDs
+Content-Type: application/json
+
+{
+  "name": "Dolci calabresi",
+  "description": "Produttore di dolci tradizionali calabresi."
+}
+
+###
+POST http://localhost:8080/api/v1/brand/addBrand
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiW1JPTEVfVVNFUl0iLCJuYmYiOjE3MjAyNTEzMDcsImV4cCI6MTcyMDI1NDkwNywiaWF0IjoxNzIwMjUxMzA3LCJ1c2VybmFtZSI6ImZyYW5jZXNjb3ZlY2NoaW8wMUBnbWFpbC5jb20ifQ.TVXMVzisMvs0dlvKosPbw2KxTLjr6-V9bYZw7RF3kDs
+Content-Type: application/json
+
+{
+  "name": "Liquori calabresi",
+  "description": "Produttore di liquori artigianali calabresi."
+}

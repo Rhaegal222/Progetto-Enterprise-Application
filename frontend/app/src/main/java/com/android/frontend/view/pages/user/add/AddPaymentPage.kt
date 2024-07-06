@@ -60,7 +60,7 @@ fun AddPaymentPage(navController: NavHostController, paymentViewModel: PaymentVi
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.add_payment_card).uppercase(),
+                        text = stringResource(id = R.string.add_payment_card),
                         )
                 },
                 navigationIcon = {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +34,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.navigation.Navigation
-import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.view_models.user.CartViewModel
@@ -157,7 +157,7 @@ fun WishlistDropdownMenu(
             onClick = { expanded.value = true }
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                imageVector = Icons.Default.Favorite,
                 contentDescription = stringResource(id = R.string.add_to_wishlist)
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -227,11 +227,19 @@ fun ProductPrice(productDTO: ProductDTO) {
             }
         }
     } else {
-        Text(
-            text = "${productDTO.price} €",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 30.dp)
+        ) {
+            Text(
+                text = "${productDTO.price} €",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
