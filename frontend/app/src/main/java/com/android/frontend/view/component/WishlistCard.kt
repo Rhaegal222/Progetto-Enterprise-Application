@@ -51,6 +51,8 @@ fun WishlistCard(
             confirmButton = {
                 Button(
                     onClick = {
+                        if (wishlist.visibility.toString() == "SHARED")
+                            wishlistViewModel.deleteSharedWishlistAccessByWishlistId(context, wishlist.id)
                         wishlistViewModel.deleteWishlist(context, wishlist.id)
                         navController.navigate(Navigation.WishlistsPage.route)
                         showDialog.value = false
