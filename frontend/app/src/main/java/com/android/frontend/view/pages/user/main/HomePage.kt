@@ -159,7 +159,12 @@ fun HomePage(
                 .padding(innerPadding)
         ) {
             if (isLoading) {
-                CircularProgressIndicator()
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             } else if (hasError) {
                 Text(text = stringResource(id = R.string.error_dialog_title))
             } else if (focusOnTextField) {

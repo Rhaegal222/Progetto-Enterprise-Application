@@ -6,22 +6,35 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.persistence.CurrentDataUtils
+import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
@@ -38,7 +51,17 @@ enum class SortOption(val displayName: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, productViewModel: ProductViewModel = viewModel()) {
+
+    var searchQuery by remember { mutableStateOf(CurrentDataUtils.searchQuery) }
+    var focusOnTextField by remember { mutableStateOf(false) }
+    val focusRequester = FocusRequester()
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+
+    val categoryString = stringResource(id = R.string.category)
+    val brandString = stringResource(id = R.string.brand)
+    val priceRangeString = stringResource(id = R.string.price_range)
+
     val products by productViewModel.productsLiveData.observeAsState(emptyList())
     val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
     val categories by productViewModel.categoriesLiveData.observeAsState(emptyList())
@@ -61,73 +84,109 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
 
     LaunchedEffect(Unit) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Fetching all products, categories, and brands")
-        productViewModel.searchProducts(context, CurrentDataUtils.searchQuery)
+        if (searchQuery.isEmpty())
+            productViewModel.fetchAllProducts(context)
+        else
+            productViewModel.searchProducts(context, CurrentDataUtils.searchQuery)
+
         productViewModel.fetchAllCategories(context)
         productViewModel.fetchAllBrands(context)
         productViewModel.getAllLoggedUserWishlists(context)
     }
 
-    val categoryString = stringResource(id = R.string.category)
-    val brandString = stringResource(id = R.string.brand)
-    val priceRangeString = stringResource(id = R.string.price_range)
-
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(id = R.string.all_products)) },
-                actions = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(stringResource(id = R.string.sort_by), modifier = Modifier.padding(end = 8.dp))
-                        Box {
-                            IconButton(onClick = { expandedSort = true }) {
-                                Icon(Icons.Filled.ArrowDropDown, contentDescription = stringResource(id = R.string.sort))
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                leadingIcon = {
+                    if (focusOnTextField)
+                        IconButton(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                                searchQuery = ""
+                                focusOnTextField = false
+                                focusManager.clearFocus()
                             }
-                            DropdownMenu(
-                                expanded = expandedSort,
-                                onDismissRequest = { expandedSort = false }
-                            ) {
-                                SortOption.values().forEach { option ->
-                                    DropdownMenuItem(
-                                        onClick = {
-                                            selectedSortOption = option
-                                            expandedSort = false
-                                        },
-                                        text = { Text(option.displayName) }
-                                    )
-                                }
-                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(0.dp),
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.cancel),
+                            )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(stringResource(id = R.string.filter_by), modifier = Modifier.padding(end = 8.dp))
-                        Box {
-                            IconButton(onClick = { expandedFilter = true }) {
-                                Icon(Icons.Filled.FilterList, contentDescription = stringResource(id = R.string.filter))
+                    else
+                        Icon(
+                            modifier = Modifier.padding(0.dp),
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = stringResource(id = R.string.search),
+                        )
+                },
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty())
+                        IconButton(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                                searchQuery = ""
+                                CurrentDataUtils.searchQuery = ""
+                                focusOnTextField = false
+                                focusManager.clearFocus()
+                                productViewModel.fetchAllProducts(context)
                             }
-                            DropdownMenu(
-                                expanded = expandedFilter,
-                                onDismissRequest = { expandedFilter = false }
-                            ) {
-                                DropdownMenuItem(onClick = {
-                                    expandedFilter = false
-                                    filterType = categoryString
-                                    showDialog = true
-                                }, text = { Text(categoryString) })
-
-                                DropdownMenuItem(onClick = {
-                                    expandedFilter = false
-                                    filterType = brandString
-                                    showDialog = true
-                                }, text = { Text(brandString) })
-
-                                DropdownMenuItem(onClick = {
-                                    expandedFilter = false
-                                    filterType = priceRangeString
-                                    showDialog = true
-                                }, text = { Text(priceRangeString) })
-                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(0.dp),
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(id = R.string.cancel),
+                            )
                         }
+                    else if (!focusOnTextField)
+                        IconButton(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(0.dp),
+                                imageVector = Icons.Filled.QrCodeScanner,
+                                contentDescription = stringResource(id = R.string.search),
+                            )
+                        }
+                    else
+                        IconButton(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                                CurrentDataUtils.searchQuery = searchQuery
+                                navController.navigate(Navigation.ProductsPage.route)
+                                focusManager.clearFocus()
+                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(0.dp),
+                                imageVector = Icons.Default.Search,
+                                contentDescription = stringResource(id = R.string.cancel),
+                            )
+                        }
+                },
+                singleLine = true,
+                colors = OutlinedTextFieldColorScheme.colors(),
+                placeholder = { Text(text = stringResource(id = R.string.search)) },
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .onFocusChanged { focusState ->
+                        focusOnTextField = focusState.isFocused
+                    },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        productViewModel.searchProducts(context, searchQuery)
+                        focusManager.clearFocus()
                     }
-                }
+                )
             )
         }
     ) {
