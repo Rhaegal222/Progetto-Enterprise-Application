@@ -119,7 +119,10 @@ fun WishlistDetailsPage(
                         IconButton(onClick = {
                             showPermitDialog.value = true // Set state to show permit dialog
                         }) {
-                            Icon(Icons.Default.AddTask, contentDescription = stringResource(id = R.string.permit_user_Email))
+                            Icon(
+                                Icons.Default.AddTask,
+                                contentDescription = stringResource(id = R.string.permit_user_Email)
+                            )
                             Spacer(modifier = Modifier.width(16.dp))
                         }
                         Spacer(modifier = Modifier.width(16.dp))
@@ -128,12 +131,18 @@ fun WishlistDetailsPage(
                         CurrentDataUtils.currentWishlistId = wishlistId
                         navController.navigate(Navigation.WishlistUpdatePage.route)
                     }) {
-                        Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_wishlist))
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = stringResource(id = R.string.edit_wishlist)
+                        )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     IconButton(onClick = { showShareDialog.value = true }) {
-                        Icon(Icons.Default.Share, contentDescription = stringResource(id = R.string.share))
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = stringResource(id = R.string.share)
+                        )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 }
@@ -191,7 +200,10 @@ fun WishlistDetailsPage(
                     ),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
-                        wishlistViewModel.deleteSharedWishlistAccessByWishlistId(context, wishlistId)
+                        wishlistViewModel.deleteSharedWishlistAccessByWishlistId(
+                            context,
+                            wishlistId
+                        )
                         //wishlistViewModel.deleteWishlist(context, wishlistId)
                         navController.navigate(Navigation.WishlistsPage.route)
                         showDialog.value = false
@@ -231,10 +243,12 @@ fun WishlistDetailsPage(
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
                         showShareDialog.value = false
-                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clipboard =
+                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText("Wishlist Link", shareLink)
                         clipboard.setPrimaryClip(clip)
-                        Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Link copied to clipboard", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 ) {
                     Text(text = stringResource(id = R.string.copy_link))
@@ -258,8 +272,14 @@ fun WishlistDetailsPage(
             showDialog = showPermitDialog,
             onConfirm = { email ->
                 Log.d("DEBUG", "Email: $email")
-                wishlistViewModel.shareWishlist(context, CurrentDataUtils.currentWishlistId, email)
-                navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")
+                val wishlistId = CurrentDataUtils.currentWishlistId
+                Log.d("DEBUG", "Current Wishlist ID: $wishlistId")
+                if (wishlistId != null && email.isNotBlank()) {
+                    wishlistViewModel.shareWishlist(context, wishlistId, email)
+                    navController.navigate("${Navigation.WishlistDetailsPage}/$wishlistId")
+                } else {
+                    Log.e("DEBUG", "Invalid wishlistId or email")
+                }
             }
         )
     }
@@ -318,7 +338,8 @@ fun PermitDialog(
 }
 
 
-@Composable
+
+    @Composable
 fun ProductsWishlistCard(
     productDTO: ProductDTO,
     navController: NavController,
