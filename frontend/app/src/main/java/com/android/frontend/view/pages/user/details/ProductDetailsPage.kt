@@ -104,7 +104,13 @@ fun ProductDetailsPage(
                 productDetails?.let { product ->
                     item { DetailContentImageHeader(prodImage) }
                     item { Spacer(modifier = Modifier.height(16.dp)) }
-                    item { ActionButtons(product, wishlists, cartViewModel, wishlistViewModel) }
+                    item { ActionButtons(
+                        navController,
+                        product,
+                        wishlists,
+                        cartViewModel,
+                        wishlistViewModel
+                    ) }
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                     item { ProductHeader(product) }
                     item { Spacer(modifier = Modifier.height(8.dp)) }
@@ -152,6 +158,7 @@ fun DetailContentImageHeader(imageUri: Uri?) {
 
 @Composable
 fun ActionButtons(
+    navController: NavController,
     product: ProductDTO,
     wishlists: List<WishlistDTO>,
     cartViewModel: CartViewModel,
@@ -190,7 +197,7 @@ fun ActionButtons(
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
-        DropdownButtonMenu(product, wishlists, wishlistViewModel)
+        DropdownButtonMenu(navController, product, wishlists, wishlistViewModel)
     }
 }
 

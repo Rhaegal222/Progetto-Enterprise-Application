@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
 import com.android.frontend.dto.WishlistDTO
+import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.IconButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedCardColorScheme
 import com.android.frontend.ui.theme.colors.TextButtonColorScheme
@@ -34,6 +36,7 @@ import com.android.frontend.view_models.user.WishlistViewModel
 
 @Composable
 fun DropdownButtonMenu(
+    navController: NavController,
     productDTO: ProductDTO,
     wishlists: List<WishlistDTO>,
     wishlistViewModel: WishlistViewModel
@@ -45,7 +48,6 @@ fun DropdownButtonMenu(
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     val errorMessage by remember { mutableStateOf("") }
-    val addProductResult by wishlistViewModel.addProductResult
 
     Box {
         OutlinedCard(
@@ -121,13 +123,23 @@ fun DropdownButtonMenu(
                         expanded.value = false
                     },
                     text = {
-                        Text(
-                            stringResource(id = R.string.no_wishlists),
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                        DropdownMenuItem(
+                            modifier = Modifier.padding(0.dp),
+                            onClick = {
+                                selectedWishlist.value = "Create a wishlist"
+                                navController.navigate(Navigation.AddWishlistPage.route)
+                                expanded.value = false
+                            },
+                            text = {
+                                Text(
+                                    "Create a wishlist",
+                                    fontSize = 12.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                HorizontalDivider()
+                            }
                         )
-                        HorizontalDivider()
                     }
                 )
             } else {

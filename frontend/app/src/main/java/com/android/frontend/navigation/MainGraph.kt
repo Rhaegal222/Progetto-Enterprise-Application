@@ -21,7 +21,6 @@ import com.android.frontend.view.pages.user.browse.CountryLanguagePage
 import com.android.frontend.view.pages.user.main.CartPage
 import com.android.frontend.view.pages.user.browse.CheckoutPage
 import com.android.frontend.view.pages.user.details.ProductDetailsPage
-import com.android.frontend.view.pages.user.details.SaleProductDetailsPage
 import com.android.frontend.view.pages.user.main.SalesProductsPage
 import com.android.frontend.view.pages.user.add.AddAddressPage
 import com.android.frontend.view.pages.profile.AddWishlistPage
@@ -53,13 +52,6 @@ fun MainGraph(navController: NavHostController, cartViewModel: CartViewModel, mo
             val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull()
             if (productId != null) {
                 ProductDetailsPage(navController, cartViewModel = cartViewModel, productId)
-            }
-        }
-
-        composable("${Navigation.SaleProductDetailsPage}/{productId}") { backStackEntry ->
-            val productId = backStackEntry.arguments?.getString("productId")?.toLongOrNull()
-            if (productId != null) {
-                SaleProductDetailsPage(navController, cartViewModel = cartViewModel, productId)
             }
         }
 

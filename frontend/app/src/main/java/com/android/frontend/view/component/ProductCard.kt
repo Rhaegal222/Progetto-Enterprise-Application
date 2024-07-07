@@ -47,11 +47,7 @@ fun ProductCard(
             .fillMaxWidth()
             .padding(32.dp, 8.dp)
             .clickable {
-                if (productDTO.onSale) {
-                    navController.navigate("${Navigation.SaleProductDetailsPage}/${productDTO.id}")
-                } else {
-                    navController.navigate("${Navigation.ProductDetailsPage}/${productDTO.id}")
-                }
+                navController.navigate("${Navigation.ProductDetailsPage}/${productDTO.id}")
             }
     ) {
         Column(
