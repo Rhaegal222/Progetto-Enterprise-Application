@@ -112,12 +112,6 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                                 contentDescription = stringResource(id = R.string.cancel),
                             )
                         }
-                    else
-                        Icon(
-                            modifier = Modifier.padding(0.dp),
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = stringResource(id = R.string.search),
-                        )
                 },
                 trailingIcon = {
                     if (!focusOnTextField && searchQuery.isNotEmpty())
