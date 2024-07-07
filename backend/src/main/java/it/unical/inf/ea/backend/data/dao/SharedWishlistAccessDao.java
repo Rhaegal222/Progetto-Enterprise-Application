@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface SharedWishlistAccessDao extends JpaRepository<SharedWishlistAccess, Long> {
     Optional<SharedWishlistAccess> findByWishlistIdAndUserId(UUID wishlist_id, UUID user_id);
+     void deleteByWishlistId(UUID wishlist_id);
+
 }

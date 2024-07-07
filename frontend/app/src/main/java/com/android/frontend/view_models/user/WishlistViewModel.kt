@@ -327,6 +327,95 @@ class WishlistViewModel : ViewModel() {
         }
     }
 
+     fun shareWishlist(context: Context, wishlistId: String, email: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.shareWishlist("Bearer $accessToken", wishlistId, email)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Shared wishlist with email: $email")
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to share wishlist: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun removeWishlistAccess(context: Context, wishlistId: String, email: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.removeWishlistAccess("Bearer $accessToken", wishlistId, email)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Removed wishlist access with email: $ {email}")
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to remove wishlist access: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
+    fun deleteSharedWishlistAccessByWishlistId(context: Context, wishlistId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _hasError.value = false
+            val accessToken = TokenManager.getInstance().getAccessToken(context)
+            if (accessToken == null) {
+                Log.e("DEBUG", "${getCurrentStackTrace()} Access token missing")
+                _isLoading.value = false
+                _hasError.value = true
+                return@launch
+            }
+            val wishlistService = RetrofitInstance.getWishlistApi(context)
+            val response = Request().executeRequest(context) {
+                wishlistService.deleteSharedWishlistAccessByWishlistId("Bearer $accessToken", wishlistId)
+            }
+            if (response?.isSuccessful == true) {
+                Log.d("DEBUG", "${getCurrentStackTrace()} Deleted shared wishlist access with ID: $wishlistId")
+            } else {
+                Log.e(
+                    "DEBUG",
+                    "${getCurrentStackTrace()} Failed to delete shared wishlist access: ${
+                        response?.errorBody()?.string() ?: "Empty response"
+                    }"
+                )
+                _hasError.value = true
+            }
+            _isLoading.value = false
+        }
+    }
+
     private suspend fun getPhotoProductById(context: Context, productId: Long): ResponseBody? {
         return withContext(Dispatchers.IO) {
             val accessToken = TokenManager.getInstance().getAccessToken(context)
@@ -349,6 +438,7 @@ class WishlistViewModel : ViewModel() {
             }
         }
     }
+
 
     private suspend fun saveImageToFile(context: Context, responseBody: ResponseBody): File {
         return withContext(Dispatchers.IO) {

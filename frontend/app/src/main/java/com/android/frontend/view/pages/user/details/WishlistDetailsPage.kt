@@ -10,14 +10,12 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,7 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AddShoppingCart
+import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Share
@@ -42,10 +40,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -64,7 +63,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -91,7 +90,10 @@ fun WishlistDetailsPage(
     val productImages by wishlistViewModel.productImagesLiveData.observeAsState(emptyMap())
     val showDialog = remember { mutableStateOf(false) }
     val showShareDialog = remember { mutableStateOf(false) }
+    val showPermitDialog = remember { mutableStateOf(false) } // Add state for permit dialog
     val shareLink = "https://example.com/api/v1/wishlist/getWishlistById/$wishlistId"
+    val wishlistVisibility = CurrentDataUtils.CurrentWishlistVisibility
+    Log.d("DEBUG", "Wishlist Visibility: $wishlistVisibility")
 
     LaunchedEffect(Unit) {
         wishlistViewModel.getWishlistDetails(context, wishlistId)
@@ -106,11 +108,22 @@ fun WishlistDetailsPage(
                     Text(wishlistName)
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        navController.navigate(Navigation.WishlistsPage.route)
+                    }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
+                    if (wishlistVisibility == "SHARED") {
+                        IconButton(onClick = {
+                            showPermitDialog.value = true // Set state to show permit dialog
+                        }) {
+                            Icon(Icons.Default.AddTask, contentDescription = stringResource(id = R.string.permit_user_Email))
+                            Spacer(modifier = Modifier.width(16.dp))
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
                     IconButton(onClick = {
                         CurrentDataUtils.currentWishlistId = wishlistId
                         navController.navigate(Navigation.WishlistUpdatePage.route)
@@ -178,9 +191,10 @@ fun WishlistDetailsPage(
                     ),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
+                        wishlistViewModel.deleteSharedWishlistAccessByWishlistId(context, wishlistId)
+                        //wishlistViewModel.deleteWishlist(context, wishlistId)
+                        navController.navigate(Navigation.WishlistsPage.route)
                         showDialog.value = false
-                        wishlistViewModel.deleteWishlist(context, wishlistId)
-                        navController.popBackStack()
                     }
                 ) {
                     Text(text = stringResource(id = R.string.confirm))
@@ -238,6 +252,69 @@ fun WishlistDetailsPage(
             }
         )
     }
+
+    if (showPermitDialog.value) {
+        PermitDialog(
+            showDialog = showPermitDialog,
+            onConfirm = { email ->
+                Log.d("DEBUG", "Email: $email")
+                wishlistViewModel.shareWishlist(context, CurrentDataUtils.currentWishlistId, email)
+                navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")
+            }
+        )
+    }
+}
+
+@Composable
+fun PermitDialog(
+    showDialog: MutableState<Boolean>,
+    onConfirm: (String) -> Unit
+) {
+    val email = remember { mutableStateOf(TextFieldValue("")) }
+
+    AlertDialog(
+        onDismissRequest = { showDialog.value = false },
+        title = {
+            Text(text = stringResource(id = R.string.permit_user_Email))
+        },
+        text = {
+            Column {
+                Text(text = stringResource(id = R.string.enter_email))
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = email.value,
+                    onValueChange = { email.value = it },
+                    label = { Text(text = stringResource(id = R.string.email)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Blue,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp),
+                onClick = {
+                    showDialog.value = false
+                    onConfirm(email.value.text)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.confirm))
+            }
+        },
+        dismissButton = {
+            Button(
+                shape = RoundedCornerShape(12.dp),
+                onClick = {
+                    showDialog.value = false
+                }
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
+            }
+        }
+    )
 }
 
 
@@ -380,3 +457,5 @@ fun ProductsWishlistCard(
         )
     }
 }
+
+

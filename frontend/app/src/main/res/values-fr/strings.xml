@@ -225,4 +225,5 @@
     <string name="product_updated_successfully">Produit mis à jour avec succès</string>
     <string name="no_wishlists">Pas de listes de souhaits</string>
     <string name="on_offer">En promotion</string>
+    <string name="permit_user_Email">Autoriser l\'utilisateur par e-mail</string>
 </resources>

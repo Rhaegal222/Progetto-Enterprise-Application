@@ -14,6 +14,7 @@ object CurrentDataUtils {
     private var _currentProductImageUri: Uri? = null
     private var _currentWishlistId: String = ""
     private var _currentWishlistName: String = ""
+    private var _currentWishlistVisibility: String = ""
     var refreshAttempts = AtomicInteger(0)
     private var _searchQuery: String = ""
     private var _searchSuggestions: List<String> = listOf()
@@ -51,6 +52,12 @@ object CurrentDataUtils {
         get() = _currentWishlistName
         set(newValue){
             _currentWishlistName = newValue
+        }
+
+    var CurrentWishlistVisibility: String
+        get() = _currentWishlistVisibility
+        set(newValue){
+            _currentWishlistVisibility = newValue
         }
 
     var baseUrl: String

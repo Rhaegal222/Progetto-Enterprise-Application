@@ -23,7 +23,7 @@ import com.android.frontend.view.pages.user.browse.CheckoutPage
 import com.android.frontend.view.pages.user.details.ProductDetailsPage
 import com.android.frontend.view.pages.user.main.SalesProductsPage
 import com.android.frontend.view.pages.user.add.AddAddressPage
-import com.android.frontend.view.pages.profile.AddWishlistPage
+import com.android.frontend.view.pages.user.add.AddWishlistPage
 import com.android.frontend.view.pages.user.browse.AddressesPage
 import com.android.frontend.view.pages.user.browse.OrdersPage
 import com.android.frontend.view.pages.user.browse.PaymentMethodsPage
