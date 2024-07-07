@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,19 +50,28 @@ fun DropdownButtonMenu(
     var showErrorDialog by remember { mutableStateOf(false) }
     val errorMessage by remember { mutableStateOf("") }
 
+    LaunchedEffect (key1 = Unit) {
+        wishlistViewModel.getAllLoggedUserWishlists(context)
+    }
+
     Box {
         OutlinedCard(
             colors = OutlinedCardColorScheme.outlinedCardColors(),
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, OutlinedCardColorScheme.outlinedCardBorder()),
-            modifier = Modifier.padding(0.dp).width(180.dp).height(40.dp)
+            modifier = Modifier
+                .padding(0.dp)
+                .width(180.dp)
+                .height(40.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(0.dp)
             ) {
                 TextButton(
-                    modifier = Modifier.padding(0.dp).width(140.dp),
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .width(140.dp),
                     colors = TextButtonColorScheme.textButtonColorsCard(),
                     onClick = {
                         selectedWishlistId.value?.let { wishlistId ->
@@ -89,7 +99,9 @@ fun DropdownButtonMenu(
                     )
                 }
                 IconButton(
-                    modifier = Modifier.padding(0.dp).width(30.dp),
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .width(30.dp),
                     colors = IconButtonColorScheme.iconButtonColorsCard(),
                     onClick = {
                         expanded.value = true

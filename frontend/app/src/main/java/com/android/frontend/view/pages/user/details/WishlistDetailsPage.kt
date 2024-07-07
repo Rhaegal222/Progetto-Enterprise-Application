@@ -7,6 +7,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Share
@@ -41,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -62,10 +65,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.ui.theme.colors.CardColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
+import com.android.frontend.view.component.ProductPrice
+import com.android.frontend.view.component.ShippingCost
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,44 +149,6 @@ fun WishlistDetailsPage(
                                 wishlistId
                             )
                         }
-                    )
-                }
-            }
-
-        },
-        floatingActionButton = {
-            Column {
-                FloatingActionButton(
-                    onClick = { showShareDialog.value = true },
-                    containerColor = Color.Blue,
-                    contentColor = Color.White,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.padding(bottom = 16.dp)
-                ) {
-                    Icon(Icons.Default.Share, contentDescription = stringResource(id = R.string.share))
-                }
-                Button(
-                    onClick = {
-                        showDialog.value = true
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.padding(0.dp)
-                ) {
-                    Icon(
-                        Icons.Default.Remove,
-                        contentDescription = stringResource(id = R.string.remove_wishlist),
-                        modifier = Modifier
-                            .width(40.dp)
-                            .height(40.dp)
-                            .padding(0.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.remove_wishlist)
                     )
                 }
             }
@@ -275,16 +245,14 @@ fun ProductsWishlistCard(
     val showDialog = remember { mutableStateOf(false) }
 
     Card(
+        border = BorderStroke(2.dp, Color.Gray),
+        colors = CardColorScheme.cardColors(),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
-            .padding(12.dp)
             .fillMaxWidth()
+            .padding(32.dp, 8.dp)
             .clickable {
-                if (productDTO.onSale) {
-                    navController.navigate("${Navigation.SaleProductDetailsPage}/${productDTO.id}")
-                } else {
-                    navController.navigate("${Navigation.ProductDetailsPage}/${productDTO.id}")
-                }
+                navController.navigate("${Navigation.ProductDetailsPage}/${productDTO.id}")
             }
     ) {
         Column(
@@ -297,27 +265,35 @@ fun ProductsWishlistCard(
             } else {
                 painterResource(id = R.drawable.product_placeholder)
             }
+
             Image(
                 painter = painter,
-                contentDescription = "Product Image",
+                contentDescription = stringResource(id = R.string.product_image),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth()
-                    .height(80.dp),
-                contentScale = ContentScale.Crop
+                    .height(200.dp),
+                contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = productDTO.name,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                maxLines = 2,
-                modifier = Modifier.heightIn(min = 40.dp)
-            )
+            Row {
+                Text(
+                    text = productDTO.name + " - ",
+                    fontSize = 16.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = productDTO.weight,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = productDTO.brand.name,
@@ -325,61 +301,38 @@ fun ProductsWishlistCard(
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            if (productDTO.onSale && productDTO.salePrice != null) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "${productDTO.price}€",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        fontSize = 18.sp,
-                        textDecoration = TextDecoration.LineThrough
-                    )
+            ProductPrice(productDTO)
 
-                    Text(
-                        text = "${productDTO.salePrice}€",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        fontSize = 18.sp
-                    )
-                }
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "${productDTO.price}€",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        fontSize = 18.sp
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(4.dp))
+
+            ShippingCost(productDTO)
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.Start,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(
-                    onClick = { showDialog.value = true },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    ),
+                OutlinedButton(
+                    colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                     shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(0.dp),
+                    onClick = {
+                    }
                 ) {
+                    Icon(
+                        modifier = Modifier.padding(0.dp),
+                        imageVector = Icons.Default.Remove,
+                        contentDescription = stringResource(id = R.string.remove_from_wishlist)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
+                        modifier = Modifier.padding(0.dp),
                         text = stringResource(id = R.string.remove_from_wishlist),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }

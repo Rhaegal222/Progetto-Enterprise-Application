@@ -79,7 +79,8 @@ fun WishlistsPage(
 @Composable
 fun WishlistsContent(
     navController: NavController,
-    wishlists: List<WishlistDTO>
+    wishlists: List<WishlistDTO>,
+    wishlistViewModel: WishlistViewModel = viewModel()
 ) {
     Scaffold(
         topBar = {
@@ -125,7 +126,11 @@ fun WishlistsContent(
                 )
             } else {
                 for (wishlist in wishlists) {
-                    WishlistCard(wishlist = wishlist, navController = navController)
+                    WishlistCard(
+                        wishlist = wishlist,
+                        navController = navController,
+                        wishlistViewModel = wishlistViewModel
+                    )
                 }
             }
         }
