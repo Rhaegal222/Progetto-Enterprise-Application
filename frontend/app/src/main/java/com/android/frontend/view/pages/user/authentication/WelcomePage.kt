@@ -2,6 +2,7 @@ package com.android.frontend.view.pages.user.authentication
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -36,8 +37,12 @@ fun WelcomePage(navController: NavController) {
         ) {
 
             Image(
-                painter = painterResource(R.drawable.logo),
-                contentDescription = "ChatBot Image",
+                painter = if (isSystemInDarkTheme()) {
+                    painterResource(id = R.drawable.logo_white)
+                } else {
+                    painterResource(id = R.drawable.logo)
+                },
+                contentDescription = "Logo",
                 modifier = Modifier
                     .height(200.dp)
                     .fillMaxWidth()

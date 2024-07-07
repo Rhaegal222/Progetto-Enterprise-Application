@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -85,7 +86,11 @@ fun SignupPage(navController: NavHostController) {
         ) {
 
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = if (isSystemInDarkTheme()) {
+                    painterResource(id = R.drawable.logo_white)
+                } else {
+                    painterResource(id = R.drawable.logo)
+                },
                 contentDescription = null,
                 modifier = Modifier
                     .height(100.dp)

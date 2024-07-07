@@ -16,9 +16,6 @@ import com.android.frontend.navigation.Navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.FactCheck
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -55,9 +52,6 @@ fun AccountMenu(navController: NavHostController) {
         ) {
             AccountItem(navController, Icons.AutoMirrored.Filled.FactCheck, R.string.personal_informations)
             AccountItem(navController, Icons.Default.Security, R.string.access_and_security)
-            AccountItem(navController, Icons.Default.Notifications, R.string.notifications)
-            AccountItem(navController, Icons.Default.PrivacyTip, R.string.privacy)
-            AccountItem(navController, Icons.Default.Delete, R.string.delete_account)
         }
     }
 
