@@ -53,14 +53,6 @@ fun BottomBar(navController: NavHostController, cartViewModel: CartViewModel) {
             )
 
             NavigationBarItem(
-                selected = currentNavigation.value?.destination?.route == Navigation.ProductsPage.route,
-                onClick = { navController.navigate(Navigation.ProductsPage.route) },
-                icon = {
-                    Icon(Icons.Default.ManageSearch, modifier = Modifier.size(30.dp), contentDescription = stringResource(id = R.string.profile))
-                }
-            )
-
-            NavigationBarItem(
                 selected = currentNavigation.value?.destination?.route == Navigation.ProfileMenu.route,
                 onClick = { navController.navigate(Navigation.ProfileMenu.route) },
                 icon = {

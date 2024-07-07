@@ -8,7 +8,6 @@ import it.unical.inf.ea.backend.data.services.implementations.AddressServiceImp;
 import it.unical.inf.ea.backend.dto.AddressDTO;
 import it.unical.inf.ea.backend.dto.creation.AddressCreateDTO;
 import it.unical.inf.ea.backend.dto.enums.UserRole;
-import it.unical.inf.ea.backend.exception.IdMismatchException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -58,10 +57,10 @@ public class AddressServiceImpTest {
                 .build();
 
         defaultAddressCreateDTO = AddressCreateDTO.builder()
-                .fullName("John Doe")
+                .fullName("Mario Rossi")
                 .phoneNumber("1234567890")
-                .street("Main Street")
-                .additionalInfo("Apt 101")
+                .street("Street")
+                .additionalInfo("N 26")
                 .postalCode("12345")
                 .city("CityName")
                 .province("ProvinceName")
@@ -71,10 +70,10 @@ public class AddressServiceImpTest {
 
         defaultAddressEntity = Address.builder()
                 .id(UUID.fromString("00000001-0001-0001-0001-000000000001"))
-                .fullName("John Doe")
+                .fullName("Mario Rossi")
                 .phoneNumber("1234567890")
-                .street("Main Street")
-                .additionalInfo("Apt 101")
+                .street("Street")
+                .additionalInfo("N 26")
                 .postalCode("12345")
                 .city("CityName")
                 .province("ProvinceName")
@@ -85,10 +84,10 @@ public class AddressServiceImpTest {
 
         defaultAddressDTO = AddressDTO.builder()
                 .id(UUID.fromString("00000001-0001-0001-0001-000000000001"))
-                .fullName("John Doe")
+                .fullName("Mario Rossi")
                 .phoneNumber("1234567890")
-                .street("Main Street")
-                .additionalInfo("Apt 101")
+                .street("Street")
+                .additionalInfo("N 26")
                 .postalCode("12345")
                 .city("CityName")
                 .province("ProvinceName")
@@ -134,9 +133,9 @@ public class AddressServiceImpTest {
 
         AddressDTO addressDTO = AddressDTO.builder()
                 .id(nonExistentId)  // Assicurati che l'ID nel DTO corrisponda a quello non esistente
-                .fullName("John Doe")
+                .fullName("Mario Rossi")
                 .phoneNumber("123456789")
-                .street("123 Main St")
+                .street("123")
                 .postalCode("12345")
                 .city("City")
                 .province("Province")

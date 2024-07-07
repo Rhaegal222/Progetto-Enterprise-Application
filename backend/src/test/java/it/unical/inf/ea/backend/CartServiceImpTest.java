@@ -2,14 +2,12 @@ package it.unical.inf.ea.backend;
 
 import it.unical.inf.ea.backend.config.security.JwtContextUtils;
 import it.unical.inf.ea.backend.data.dao.CartDao;
-import it.unical.inf.ea.backend.data.dao.CartItemDao;
 import it.unical.inf.ea.backend.data.entities.Cart;
 import it.unical.inf.ea.backend.data.entities.CartItem;
 import it.unical.inf.ea.backend.data.entities.User;
 import it.unical.inf.ea.backend.data.services.implementations.CartServiceImp;
 import it.unical.inf.ea.backend.dto.CartDTO;
 import it.unical.inf.ea.backend.dto.CartItemDTO;
-import it.unical.inf.ea.backend.dto.creation.CartItemCreateDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -36,8 +34,7 @@ public class CartServiceImpTest {
 
     @Mock
     private CartDao cartDao;
-    @Mock
-    private CartItemDao cartItemDao;
+
     @Mock
     private ModelMapper modelMapper;
     @Mock

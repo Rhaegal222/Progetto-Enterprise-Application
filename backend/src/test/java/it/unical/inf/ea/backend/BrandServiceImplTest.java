@@ -5,7 +5,6 @@ import it.unical.inf.ea.backend.data.entities.Brand;
 import it.unical.inf.ea.backend.data.services.implementations.BrandServiceImpl;
 import it.unical.inf.ea.backend.dto.BrandDTO;
 import it.unical.inf.ea.backend.dto.creation.BrandCreateDTO;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -18,10 +17,8 @@ import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
