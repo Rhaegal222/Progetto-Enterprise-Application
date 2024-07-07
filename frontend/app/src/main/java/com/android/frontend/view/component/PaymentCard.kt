@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,11 +18,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.android.frontend.R
 import com.android.frontend.dto.PaymentMethodDTO
 import com.android.frontend.ui.theme.cardHeight
 import com.android.frontend.ui.theme.cardWidth
+import com.android.frontend.ui.theme.colors.IconButtonColorScheme
 
 @Composable
 fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
@@ -39,7 +42,9 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    Box(modifier = Modifier.fillMaxWidth().height(60.dp))
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp))
 
                     val cardNumber = payment.cardNumber
                     Text(
@@ -102,15 +107,21 @@ fun PaymentCard(payment: PaymentMethodDTO, onRemove: () -> Unit) {
             onClick = onRemove,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .offset(x = 10.dp, y = -10.dp) // Sposta il bottone fuori dall'angolo
+                .offset(x = 10.dp, y = (-10).dp)
                 .clip(CircleShape)
-                .size(30.dp) // Aumenta la dimensione del cerchio
-                .padding(4.dp) // Aggiunge padding intorno all'icona
+                .size(30.dp)
+                .padding(4.dp),
+            colors = IconButtonColorScheme.iconButtonColors(
+                containerColor = Color.Red,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.Gray,
+                disabledContentColor = Color.White
+            )
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                modifier = Modifier.size(20.dp) // Dimensione dell'icona
+                modifier = Modifier.size(20.dp),
             )
         }
     }
