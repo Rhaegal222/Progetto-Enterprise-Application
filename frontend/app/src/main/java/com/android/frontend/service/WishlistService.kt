@@ -11,6 +11,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface WishlistService {
 
@@ -63,4 +64,25 @@ interface WishlistService {
         @Header("Authorization") authorization: String,
         @Path("wishlistId") wishlistId: String
     ): Call<WishlistDTO>
+
+    @POST("/api/v1/wishlist/shareWishlist/{wishlistId}/{email}")
+    fun shareWishlist(
+        @Header("Authorization") authorization: String,
+        @Path("wishlistId") wishlistId: String,
+        @Path("email") email: String
+    ): Call<Void>
+
+    @DELETE("/api/v1/wishlist/removeWishlistAccess/{wishlistId}/{email}")
+    fun removeWishlistAccess(
+        @Header("Authorization") authorization: String,
+        @Path("wishlistId") wishlistId: String,
+        @Path("email") email: String
+    ): Call<Void>
+
+    @DELETE("/api/v1/wishlist/deleteSharedWishlistAccessByWishlistId/{wishlistId}")
+    fun deleteSharedWishlistAccessByWishlistId(
+        @Header("Authorization") authorization: String,
+        @Path("wishlistId") wishlistId: String
+    ): Call<Void>
+
 }

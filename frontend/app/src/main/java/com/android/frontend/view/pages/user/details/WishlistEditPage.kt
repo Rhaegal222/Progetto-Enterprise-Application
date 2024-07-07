@@ -97,7 +97,8 @@ fun WishlistUpdatePage(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")
+                    }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
@@ -179,6 +180,7 @@ fun WishlistUpdatePage(
                                     visibility = WishlistDTO.WishlistVisibility.valueOf(selectedVisibility.uppercase())
                                 )
                                 wishlistViewModel.updateWishlist(context, wishlistId, wishlistDTO)
+                                CurrentDataUtils.CurrentWishlistVisibility = selectedVisibility
                                 CurrentDataUtils.CurrentWishlistName = wishlistName.text
                                 navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")} catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
@@ -196,12 +198,12 @@ fun WishlistUpdatePage(
                     Button(
                         shape = RoundedCornerShape(12.dp),
                         onClick = {
-                            wishlistViewModel.deleteWishlist(context, wishlistId)
+                            navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")
                         },
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = stringResource(id = R.string.delete))
+                        Text(text = stringResource(id = R.string.cancel))
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }

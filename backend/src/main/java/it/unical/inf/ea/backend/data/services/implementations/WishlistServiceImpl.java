@@ -214,7 +214,7 @@ public class WishlistServiceImpl implements WishlistService {
         if (!wishlist.getVisibility().equals(WishlistVisibility.SHARED)) {
             throw new IllegalAccessException("User cannot share this wishlist");
         }
-        if (!wishlist.getUser().equals(loggedUser)) {
+        if (!wishlist.getUser().equals(loggedUser)  && loggedUser.getRole().equals(UserRole.USER)) {
             throw new IllegalAccessException("User cannot share this wishlist");
         }
         User user = userDao.findByEmail(email)
@@ -241,7 +241,7 @@ public class WishlistServiceImpl implements WishlistService {
         if (!wishlist.getVisibility().equals(WishlistVisibility.SHARED)) {
             throw new IllegalAccessException("User cannot modify access to this wishlist");
         }
-        if (!wishlist.getUser().equals(loggedUser) && !loggedUser.getRole().equals("ADMIN")) {
+        if (!wishlist.getUser().equals(loggedUser) && loggedUser.getRole().equals(UserRole.USER)) {
             throw new IllegalAccessException("User cannot modify access to this wishlist");
         }
         User user = userDao.findByEmail(email)
@@ -252,6 +252,23 @@ public class WishlistServiceImpl implements WishlistService {
         sharedWishlistAccessDao.delete(sharedWishlistAccess);
     }
 
+    @Override
+    @Transactional
+    public void deleteSharedWishlistAccessByWishlistId(UUID wishlistId) {
+        try {
+            Wishlist wishlist = wishlistDao.findById(wishlistId);
+            if (wishlist == null) {
+                throw new EntityNotFoundException("Wishlist not found");
+            }
+            User loggedUser = jwtContextUtils.getUserLoggedFromContext();
+            if (loggedUser.getRole().equals(UserRole.USER) && !wishlist.getUser().equals(loggedUser))
+                throw new IllegalAccessException("User cannot delete shared wishlist access");
+
+            sharedWishlistAccessDao.deleteByWishlistId(wishlistId);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private LocalDateTime getTimeNow() {
@@ -261,14 +278,3 @@ public class WishlistServiceImpl implements WishlistService {
     public Wishlist mapToEntity(WishlistCreateDTO wishlistCreateDTO) { return modelMapper.map(wishlistCreateDTO, Wishlist.class);}
     public WishlistDTO mapToDto(Wishlist wishlist) { return modelMapper.map(wishlist, WishlistDTO.class); }
 }
-
-
-
-
-
-
-
-
-
-
-

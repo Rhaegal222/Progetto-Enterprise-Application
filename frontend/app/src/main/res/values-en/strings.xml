@@ -224,5 +224,7 @@
     <string name="email_change_message">To change your email you must log in.</string>
     <string name="product_updated_successfully">Product updated successfully</string>
     <string name="no_wishlists">No wishlists</string>
+    <string name="on_offer">On offer</string>
+    <string name="permit_user_Email">Permit user by E-mail</string>
     <string name="create_wishlist">Create a wishlist</string>
 </resources>

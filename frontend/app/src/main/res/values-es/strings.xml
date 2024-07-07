@@ -224,4 +224,6 @@
     <string name="email_change_message">Para cambiar tu correo electrónico debes iniciar sesión.</string>
     <string name="product_updated_successfully">Producto actualizado exitosamente</string>
     <string name="no_wishlists">No hay listas de deseos</string>
+    <string name="on_offer">en oferta</string>
+    <string name="permit_user_Email">Permitir usuario por correo electrónico</string>
 </resources>
