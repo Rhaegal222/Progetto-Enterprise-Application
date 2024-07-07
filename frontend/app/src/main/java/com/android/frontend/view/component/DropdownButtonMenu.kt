@@ -138,13 +138,13 @@ fun DropdownButtonMenu(
                         DropdownMenuItem(
                             modifier = Modifier.padding(0.dp),
                             onClick = {
-                                selectedWishlist.value = "Create a wishlist"
+                                selectedWishlist.value = ""
                                 navController.navigate(Navigation.AddWishlistPage.route)
                                 expanded.value = false
                             },
                             text = {
                                 Text(
-                                    "Create a wishlist",
+                                    stringResource(id = R.string.create_wishlist),
                                     fontSize = 12.sp,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
@@ -161,6 +161,7 @@ fun DropdownButtonMenu(
                         onClick = {
                             selectedWishlist.value = wishlist.wishlistName
                             selectedWishlistId.value = wishlist.id
+                            wishlistViewModel.addProductToWishlist(context, wishlist.id, productDTO.id)
                             expanded.value = false
                         },
                         text = {
