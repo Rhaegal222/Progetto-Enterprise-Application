@@ -3,6 +3,7 @@ package com.android.frontend.view.pages.user.main
 import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -47,17 +49,17 @@ fun HomePage(
     productViewModel: ProductViewModel = viewModel(),
     cartViewModel: CartViewModel = viewModel()
 ) {
+    val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
+    val products by productViewModel.productsLiveData.observeAsState(emptyList())
+
+    val isLoading by productViewModel.isLoading.observeAsState(false)
+    val hasError by productViewModel.hasError.observeAsState(false)
+
     var searchQuery by remember { mutableStateOf("") }
     var focusOnTextField by remember { mutableStateOf(false) }
-
     val focusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-
-    val products by productViewModel.productsLiveData.observeAsState(emptyList())
-    val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
-    val isLoading by productViewModel.isLoading.observeAsState(false)
-    val hasError by productViewModel.hasError.observeAsState(false)
 
     LaunchedEffect(Unit) {
         productViewModel.fetchSalesProducts(context)
@@ -160,16 +162,16 @@ fun HomePage(
                 Suggestion()
             } else if (searchQuery.isNotEmpty()) {
                 ProductList(
-                    products = products,
                     navController = navController,
                     cartViewModel = cartViewModel,
-                    productImages = productImages
+                    productViewModel = productViewModel
                 )
             } else {
-                HomePagePreview(
+                OnOfferProducts(
                     navController = navController,
                     pagerState = rememberPagerState(0),
                     products = products,
+                    productImages = productImages,
                     cartViewModel = cartViewModel
                 )
             }
@@ -178,7 +180,14 @@ fun HomePage(
 }
 
 @Composable
-fun ProductList(products: List<ProductDTO>, navController: NavHostController, cartViewModel: CartViewModel, productImages: Map<Long, Uri>) {
+fun ProductList(
+    navController: NavHostController,
+    cartViewModel: CartViewModel,
+    productViewModel: ProductViewModel
+) {
+    val products by productViewModel.productsLiveData.observeAsState(emptyList())
+    val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
+
     LazyColumn {
         items(products) { product ->
             ProductCard(
@@ -193,24 +202,26 @@ fun ProductList(products: List<ProductDTO>, navController: NavHostController, ca
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomePagePreview(
+fun OnOfferProducts(
     navController: NavHostController,
     pagerState: PagerState,
-    products: List<ProductDTO> = emptyList(),
-    productImages: Map<Long, Uri> = emptyMap(),
+    products: List<ProductDTO>,
+    productImages: Map<Long, Uri>,
     cartViewModel: CartViewModel,
 ) {
 
     var currentPage by remember { mutableIntStateOf(0) }
+
     val totalPages = products.size
 
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(10000)
-            if (totalPages == 0) return@LaunchedEffect
-            currentPage = (currentPage + 1) % totalPages
-            tween<Float>(2000)
-            pagerState.animateScrollToPage(page = currentPage)
+    LaunchedEffect(totalPages) {
+        if (totalPages > 0) {
+            while (true) {
+                delay(10000)
+                currentPage = (currentPage + 1) % totalPages
+                tween<Float>(2000)
+                pagerState.animateScrollToPage(page = currentPage)
+            }
         }
     }
 
@@ -219,6 +230,18 @@ fun HomePagePreview(
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
+
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(id = R.string.on_offer),
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         HorizontalPager(
             state = pagerState,
             count = totalPages,
@@ -230,6 +253,27 @@ fun HomePagePreview(
                 cartViewModel = cartViewModel,
                 imageUri = productImages[products[page].id]
             )
+        }
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            for (i in 0 until totalPages) {
+                Box(
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .size(10.dp)
+                        .background(
+                            color = if (i == currentPage) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(
+                                alpha = 0.5f
+                            ),
+                            shape = MaterialTheme.shapes.small
+                        )
+                )
+            }
         }
     }
 }

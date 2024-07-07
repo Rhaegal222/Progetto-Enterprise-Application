@@ -223,4 +223,6 @@
     <string name="email_change">Cambia email</string>
     <string name="email_change_message">Per modificare la tua email devi effettuare il login.</string>
     <string name="product_updated_successfully">Prodotto aggiornato con successo</string>
+    <string name="no_wishlists">Nessuna lista dei desideri</string>
+    <string name="on_offer">In offerta</string>
 </resources>

@@ -166,7 +166,6 @@ fun WishlistUpdatePage(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Button(
                         shape = RoundedCornerShape(12.dp),
                         enabled = wishlistName.text.isNotEmpty() && selectedVisibility.isNotEmpty(),
@@ -182,6 +181,21 @@ fun WishlistUpdatePage(
                                 navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")                            } catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                             }
+                        },
+                        colors = ButtonColorScheme.buttonColors(),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(id = R.string.confirm).uppercase())
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = wishlistName.text.isNotEmpty() && selectedVisibility.isNotEmpty(),
+                        onClick = {
+                            wishlistViewModel.deleteWishlist(context, wishlistId)
                         },
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.fillMaxWidth()

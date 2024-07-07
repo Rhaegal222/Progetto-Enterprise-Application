@@ -223,4 +223,5 @@
     <string name="email_change">Cambiar e-mail</string>
     <string name="email_change_message">Para cambiar tu correo electrónico debes iniciar sesión.</string>
     <string name="product_updated_successfully">Producto actualizado exitosamente</string>
+    <string name="no_wishlists">No hay listas de deseos</string>
 </resources>
