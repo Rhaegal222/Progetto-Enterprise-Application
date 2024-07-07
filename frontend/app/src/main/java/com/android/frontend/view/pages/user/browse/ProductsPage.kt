@@ -2,6 +2,7 @@ package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,11 +11,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -48,7 +48,6 @@ enum class SortOption(val displayName: String) {
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, productViewModel: ProductViewModel = viewModel()) {
 
@@ -105,7 +104,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                             modifier = Modifier.padding(0.dp),
                             onClick = {
                                 searchQuery = ""
-                                focusOnTextField = false
+                                focusOnTextField = true
                                 focusManager.clearFocus()
                             }
                         ) {
@@ -123,7 +122,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                         )
                 },
                 trailingIcon = {
-                    if (searchQuery.isNotEmpty())
+                    if (!focusOnTextField && searchQuery.isNotEmpty())
                         IconButton(
                             modifier = Modifier.padding(0.dp),
                             onClick = {
@@ -139,24 +138,12 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                                 imageVector = Icons.Default.Close,
                                 contentDescription = stringResource(id = R.string.cancel),
                             )
-                        }
-                    else if (!focusOnTextField)
-                        IconButton(
-                            modifier = Modifier.padding(0.dp),
-                            onClick = {
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.padding(0.dp),
-                                imageVector = Icons.Filled.QrCodeScanner,
-                                contentDescription = stringResource(id = R.string.search),
-                            )
-                        }
-                    else
+                        } else
                         IconButton(
                             modifier = Modifier.padding(0.dp),
                             onClick = {
                                 CurrentDataUtils.searchQuery = searchQuery
+                                CurrentDataUtils.searchSuggestions.toMutableList().add(searchQuery)
                                 navController.navigate(Navigation.ProductsPage.route)
                                 focusManager.clearFocus()
                             }
@@ -190,8 +177,11 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
             )
         }
     ) {
-        Column {
-            Spacer(modifier = Modifier.height(65.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+        ) {
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
@@ -218,6 +208,85 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                     SortOption.REVERSE_ALPHABETICAL -> filteredProducts.sortedByDescending { it.name }
                     SortOption.PRICE_ASCENDING -> filteredProducts.sortedBy { it.price }
                     SortOption.PRICE_DESCENDING -> filteredProducts.sortedByDescending { it.price }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box {
+                        IconButton(
+                            onClick = { expandedSort = !expandedSort }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.SortByAlpha,
+                                contentDescription = stringResource(id = R.string.sort),
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        DropdownMenu(
+                            expanded = expandedSort,
+                            onDismissRequest = { expandedSort = false },
+                            modifier = Modifier.padding(16.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            SortOption.entries.forEach { option ->
+                                DropdownMenuItem(
+                                    text = { Text(option.displayName) },
+                                    onClick = {
+                                        selectedSortOption = option
+                                        expandedSort = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Box {
+                        IconButton(
+                            onClick = { expandedFilter = !expandedFilter }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.FilterAlt,
+                                contentDescription = stringResource(id = R.string.filter),
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = expandedFilter,
+                            onDismissRequest = { expandedFilter = false },
+                            modifier = Modifier.padding(16.dp),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(categoryString) },
+                                onClick = {
+                                    filterType = categoryString
+                                    showDialog = true
+                                    expandedFilter = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(brandString) },
+                                onClick = {
+                                    filterType = brandString
+                                    showDialog = true
+                                    expandedFilter = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(priceRangeString) },
+                                onClick = {
+                                    filterType = priceRangeString
+                                    showDialog = true
+                                    expandedFilter = false
+                                }
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
                 }
 
                 LazyColumn(

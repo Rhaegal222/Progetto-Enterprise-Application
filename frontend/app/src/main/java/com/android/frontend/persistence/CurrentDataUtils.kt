@@ -16,6 +16,14 @@ object CurrentDataUtils {
     private var _currentWishlistName: String = ""
     var refreshAttempts = AtomicInteger(0)
     private var _searchQuery: String = ""
+    private var _searchSuggestions: List<String> = listOf()
+
+    var searchSuggestions: List<String>
+        get() = _searchSuggestions
+        set(newValue){
+            _searchSuggestions = newValue
+        }
+
     var searchQuery: String
         get() = _searchQuery
         set(newValue){

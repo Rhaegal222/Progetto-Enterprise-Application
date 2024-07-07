@@ -11,7 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -35,7 +35,6 @@ import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.ProductCard
 import com.android.frontend.view.component.Suggestion
-import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -85,7 +84,7 @@ fun HomePage(
                             modifier = Modifier.padding(0.dp),
                             onClick = {
                                 searchQuery = ""
-                                focusOnTextField = false
+                                focusOnTextField = true
                                 focusManager.clearFocus()
                             }
                         ) {
@@ -103,33 +102,38 @@ fun HomePage(
                         )
                 },
                 trailingIcon = {
-                    if (!focusOnTextField)
+                    if (!focusOnTextField && searchQuery.isNotEmpty())
                         IconButton(
                             modifier = Modifier.padding(0.dp),
                             onClick = {
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.padding(0.dp),
-                                imageVector = Icons.Filled.QrCodeScanner,
-                                contentDescription = stringResource(id = R.string.search),
-                            )
-                        }
-                    else
-                        IconButton(
-                            modifier = Modifier.padding(0.dp),
-                            onClick = {
-                                CurrentDataUtils.searchQuery = searchQuery
-                                navController.navigate(Navigation.ProductsPage.route)
+                                searchQuery = ""
+                                CurrentDataUtils.searchQuery = ""
+                                focusOnTextField = false
                                 focusManager.clearFocus()
+                                productViewModel.fetchAllProducts(context)
                             }
                         ) {
                             Icon(
                                 modifier = Modifier.padding(0.dp),
-                                imageVector = Icons.Default.Search,
+                                imageVector = Icons.Default.Close,
                                 contentDescription = stringResource(id = R.string.cancel),
                             )
-                        }
+                        } else
+                            IconButton(
+                                modifier = Modifier.padding(0.dp),
+                                onClick = {
+                                    CurrentDataUtils.searchQuery = searchQuery
+                                    CurrentDataUtils.searchSuggestions.toMutableList().add(searchQuery)
+                                    navController.navigate(Navigation.ProductsPage.route)
+                                    focusManager.clearFocus()
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier.padding(0.dp),
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = stringResource(id = R.string.cancel),
+                                )
+                            }
                 },
                 singleLine = true,
                 colors = OutlinedTextFieldColorScheme.colors(),
@@ -168,7 +172,7 @@ fun HomePage(
             } else if (hasError) {
                 Text(text = stringResource(id = R.string.error_dialog_title))
             } else if (focusOnTextField) {
-                Suggestion()
+                Suggestion(navController)
             } else if (searchQuery.isNotEmpty()) {
                 ProductList(
                     navController = navController,
