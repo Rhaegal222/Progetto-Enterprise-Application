@@ -19,7 +19,6 @@ import com.android.frontend.R
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
-import com.android.frontend.view.component.ServerSwitch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -35,8 +34,6 @@ fun WelcomePage(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            ServerSwitch()
 
             Image(
                 painter = painterResource(R.drawable.logo),

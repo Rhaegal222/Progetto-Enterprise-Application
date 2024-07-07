@@ -31,6 +31,7 @@ fun SalesProductsPage(
     val products = productViewModel.productsLiveData.observeAsState().value
     val productImages = productViewModel.productImagesLiveData.observeAsState().value
     val wishlists by productViewModel.wishlistLiveData.observeAsState(emptyList())
+
     LaunchedEffect(Unit) {
         productViewModel.fetchSalesProducts(context)
 

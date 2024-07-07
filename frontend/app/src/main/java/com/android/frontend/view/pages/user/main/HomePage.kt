@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -29,14 +28,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
-import com.android.frontend.dto.WishlistDTO
-import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.ProductCard
 import com.android.frontend.view.component.Suggestion
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
-import com.android.frontend.view_models.user.WishlistViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -46,8 +42,11 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalPagerApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomePage(navController: NavHostController, wishlistViewModel: WishlistViewModel = viewModel(), productViewModel: ProductViewModel = viewModel(), cartViewModel: CartViewModel = viewModel()) {
-
+fun HomePage(
+    navController: NavHostController,
+    productViewModel: ProductViewModel = viewModel(),
+    cartViewModel: CartViewModel = viewModel()
+) {
     var searchQuery by remember { mutableStateOf("") }
     var focusOnTextField by remember { mutableStateOf(false) }
 
@@ -55,11 +54,14 @@ fun HomePage(navController: NavHostController, wishlistViewModel: WishlistViewMo
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
-    val wishlistes by wishlistViewModel.wishlistLiveData.observeAsState(emptyList())
     val products by productViewModel.productsLiveData.observeAsState(emptyList())
     val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
     val isLoading by productViewModel.isLoading.observeAsState(false)
     val hasError by productViewModel.hasError.observeAsState(false)
+
+    LaunchedEffect(Unit) {
+        productViewModel.fetchSalesProducts(context)
+    }
 
     LaunchedEffect(focusOnTextField) {
         if (!focusOnTextField) {
@@ -125,7 +127,7 @@ fun HomePage(navController: NavHostController, wishlistViewModel: WishlistViewMo
                 },
                 singleLine = true,
                 colors = OutlinedTextFieldColorScheme.colors(),
-                placeholder = { stringResource(id = R.string.search) },
+                placeholder = { Text(text = stringResource(id = R.string.search)) },
                 modifier = Modifier
                     .padding(5.dp)
                     .fillMaxWidth()
@@ -150,13 +152,6 @@ fun HomePage(navController: NavHostController, wishlistViewModel: WishlistViewMo
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Button(
-                shape = RoundedCornerShape(12.dp),
-                onClick = { navController.navigate(Navigation.SalesProductsPage.route) }
-            ) {
-                Text("Offerte del giorno")
-            }
-            Spacer(modifier = Modifier.height(8.dp))
             if (isLoading) {
                 CircularProgressIndicator()
             } else if (hasError) {
@@ -164,16 +159,26 @@ fun HomePage(navController: NavHostController, wishlistViewModel: WishlistViewMo
             } else if (focusOnTextField) {
                 Suggestion()
             } else if (searchQuery.isNotEmpty()) {
-                ProductList(products = products, navController = navController, cartViewModel = cartViewModel, productImages = productImages, wishlistDTO = wishlistes)
+                ProductList(
+                    products = products,
+                    navController = navController,
+                    cartViewModel = cartViewModel,
+                    productImages = productImages
+                )
             } else {
-                HomePagePreview(rememberPagerState(initialPage = 0))
+                HomePagePreview(
+                    navController = navController,
+                    pagerState = rememberPagerState(0),
+                    products = products,
+                    cartViewModel = cartViewModel
+                )
             }
         }
     }
 }
 
 @Composable
-fun ProductList(products: List<ProductDTO>, navController: NavHostController, cartViewModel: CartViewModel, productImages: Map<Long, Uri>, wishlistDTO: List<WishlistDTO>) {
+fun ProductList(products: List<ProductDTO>, navController: NavHostController, cartViewModel: CartViewModel, productImages: Map<Long, Uri>) {
     LazyColumn {
         items(products) { product ->
             ProductCard(
@@ -188,16 +193,22 @@ fun ProductList(products: List<ProductDTO>, navController: NavHostController, ca
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomePagePreview(pagerState: PagerState) {
-    val featuredOffers = listOf<Any>()
+fun HomePagePreview(
+    navController: NavHostController,
+    pagerState: PagerState,
+    products: List<ProductDTO> = emptyList(),
+    productImages: Map<Long, Uri> = emptyMap(),
+    cartViewModel: CartViewModel,
+) {
 
     var currentPage by remember { mutableIntStateOf(0) }
-    val totalPages by remember { mutableIntStateOf(featuredOffers.size) }
+    val totalPages = products.size
 
     LaunchedEffect(Unit) {
         while (true) {
             delay(10000)
-            currentPage = (currentPage + 1) % 3
+            if (totalPages == 0) return@LaunchedEffect
+            currentPage = (currentPage + 1) % totalPages
             tween<Float>(2000)
             pagerState.animateScrollToPage(page = currentPage)
         }
@@ -213,17 +224,12 @@ fun HomePagePreview(pagerState: PagerState) {
             count = totalPages,
             modifier = Modifier.fillMaxWidth()
         ) { page ->
-            when (page) {
-                0 -> {
-                    Text(text = "Pagina 1")
-                }
-                1 -> {
-                    Text(text = "Pagina 2")
-                }
-                2 -> {
-                    Text(text = "Pagina 3")
-                }
-            }
+            ProductCard(
+                productDTO = products[page],
+                navController = navController,
+                cartViewModel = cartViewModel,
+                imageUri = productImages[products[page].id]
+            )
         }
     }
 }
