@@ -249,7 +249,7 @@ fun OnOfferProducts(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(id = R.string.on_offer),
+                text = stringResource(id = R.string.on_sale),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(4.dp)
             )
