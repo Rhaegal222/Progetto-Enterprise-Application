@@ -2,7 +2,6 @@ package com.android.frontend.view.pages.user.browse
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -65,7 +64,6 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
     val productImages by productViewModel.productImagesLiveData.observeAsState(emptyMap())
     val categories by productViewModel.categoriesLiveData.observeAsState(emptyList())
     val brands by productViewModel.brandsLiveData.observeAsState(emptyList())
-    val wishlists by productViewModel.wishlistLiveData.observeAsState(emptyList())
 
     var selectedSortOption by remember { mutableStateOf(SortOption.ALPHABETICAL) }
     var expandedSort by remember { mutableStateOf(false) }
@@ -176,11 +174,11 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                 )
             )
         }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
         ) {
             if (isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
