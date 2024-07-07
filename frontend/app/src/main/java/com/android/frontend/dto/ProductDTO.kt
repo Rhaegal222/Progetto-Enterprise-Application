@@ -1,6 +1,5 @@
 package com.android.frontend.dto
 
-import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 data class ProductDTO(
@@ -20,8 +19,6 @@ data class ProductDTO(
     var onSale: Boolean,
     var salePrice: BigDecimal? = null
 ) {
-
-
     enum class Availability{
         IN_STOCK,
         OUT_OF_STOCK,

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 object CurrentDataUtils {
 
-    private var _baseUrl: String = "http://192.168.42.137:8080/"
+    private var _baseUrl: String = "http://10.0.2.2:8080/"
 
     private var _currentProductId: Long = 0
     private var _currentProductImageUri: Uri? = null

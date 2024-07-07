@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +44,7 @@ fun DropdownButtonMenu(
     val selectedWishlistId = remember { mutableStateOf<String?>(null) }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
+    val errorMessage by remember { mutableStateOf("") }
     val addProductResult by wishlistViewModel.addProductResult
 
     Box {
@@ -53,7 +52,7 @@ fun DropdownButtonMenu(
             colors = OutlinedCardColorScheme.outlinedCardColors(),
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(1.dp, OutlinedCardColorScheme.outlinedCardBorder()),
-            modifier = Modifier.padding(0.dp).width(180.dp)
+            modifier = Modifier.padding(0.dp).width(180.dp).height(40.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -114,17 +113,16 @@ fun DropdownButtonMenu(
             border = BorderStroke(1.dp, OutlinedCardColorScheme.outlinedCardBorder()),
             shape = RoundedCornerShape(12.dp)
         ) {
-            wishlists.forEach { wishlist ->
+
+            if (wishlists.isEmpty()) {
                 DropdownMenuItem(
                     modifier = Modifier.padding(0.dp),
                     onClick = {
-                        selectedWishlist.value = wishlist.wishlistName
-                        selectedWishlistId.value = wishlist.id
                         expanded.value = false
                     },
                     text = {
                         Text(
-                            wishlist.wishlistName,
+                            stringResource(id = R.string.no_wishlists),
                             fontSize = 12.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -132,18 +130,26 @@ fun DropdownButtonMenu(
                         HorizontalDivider()
                     }
                 )
-            }
-        }
-
-        LaunchedEffect(addProductResult) {
-            addProductResult?.let { result ->
-                if (result.isSuccess) {
-                    showSuccessDialog = true
-                } else {
-                    errorMessage = result.exceptionOrNull()?.message.toString()
-                    showErrorDialog = true
+            } else {
+                wishlists.forEach { wishlist ->
+                    DropdownMenuItem(
+                        modifier = Modifier.padding(0.dp),
+                        onClick = {
+                            selectedWishlist.value = wishlist.wishlistName
+                            selectedWishlistId.value = wishlist.id
+                            expanded.value = false
+                        },
+                        text = {
+                            Text(
+                                wishlist.wishlistName,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            HorizontalDivider()
+                        }
+                    )
                 }
-                wishlistViewModel.addProductResult.value = null
             }
         }
 

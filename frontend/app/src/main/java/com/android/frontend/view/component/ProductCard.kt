@@ -1,23 +1,15 @@
 package com.android.frontend.view.component
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddShoppingCart
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,29 +18,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
-import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.CardColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.view_models.user.CartViewModel
-import com.android.frontend.view_models.user.WishlistViewModel
 
 @Composable
 fun ProductCard(
     productDTO: ProductDTO,
     navController: NavController,
     cartViewModel: CartViewModel,
-    imageUri: Uri?,
-    wishlists: List<WishlistDTO>
+    imageUri: Uri?
 ) {
     val context = LocalContext.current
 
@@ -90,12 +77,21 @@ fun ProductCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = productDTO.name,
-                fontSize = 16.sp,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row {
+                Text(
+                    text = productDTO.name + " - ",
+                    fontSize = 16.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = productDTO.weight,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                )
+            }
+
 
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -145,67 +141,4 @@ fun ProductCard(
     }
 }
 
-@Composable
-fun ProductPrice(productDTO: ProductDTO) {
-    if (productDTO.onSale && productDTO.salePrice != null) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 30.dp)
-        ) {
-            Text(
-                text = "${productDTO.salePrice} €",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-            )
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .heightIn(min = 35.dp)
-            ) {
-                Text(
-                    text = "${productDTO.price} €",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textDecoration = TextDecoration.LineThrough,
-                    color = Color.Red
-                )
-            }
-        }
-    } else {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 30.dp)
-        ) {
-            Text(
-                text = "${productDTO.price} €",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-    }
-}
-
-@Composable
-fun ShippingCost(productDTO: ProductDTO) {
-    Row {
-        Text(
-            text = stringResource(id = R.string.shipping_price),
-            fontSize = 16.sp,
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = "${productDTO.shippingCost} €",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}

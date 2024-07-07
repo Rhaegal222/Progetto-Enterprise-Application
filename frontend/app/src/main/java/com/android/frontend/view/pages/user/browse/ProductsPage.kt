@@ -169,8 +169,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
                             productDTO,
                             navController,
                             cartViewModel,
-                            productImages[productDTO.id],
-                            wishlists
+                            productImages[productDTO.id]
                         )
                     }
                 }

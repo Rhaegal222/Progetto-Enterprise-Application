@@ -35,7 +35,6 @@ import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.ProductCard
 import com.android.frontend.view.component.Suggestion
 import com.android.frontend.view_models.user.CartViewModel
-import com.android.frontend.view_models.user.HomeViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 import com.android.frontend.view_models.user.WishlistViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -181,8 +180,7 @@ fun ProductList(products: List<ProductDTO>, navController: NavHostController, ca
                 productDTO = product,
                 navController = navController,
                 cartViewModel = cartViewModel,
-                imageUri = productImages[product.id],
-                wishlists = wishlistDTO
+                imageUri = productImages[product.id]
             )
         }
     }

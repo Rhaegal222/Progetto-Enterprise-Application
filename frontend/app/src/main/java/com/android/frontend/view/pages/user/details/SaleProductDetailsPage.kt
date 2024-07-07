@@ -92,7 +92,7 @@ fun SaleProductDetailsPage(navController: NavController, cartViewModel: CartView
                             .padding(padding)
                     ) {
                         productDetails?.let { productItem ->
-                            DetailContentImageHeader(prodImage)
+                            // DetailContentImageHeader(prodImage)
                             Spacer(modifier = Modifier.height(24.dp))
                             DetailContentDescriptionWithDiscount(productItem = productItem)
                         }
