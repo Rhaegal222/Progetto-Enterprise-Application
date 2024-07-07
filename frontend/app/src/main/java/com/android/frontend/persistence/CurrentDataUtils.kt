@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 object CurrentDataUtils {
 
+
     private var _baseUrl: String = "http://10.0.2.2:8080/"
 
     private var _currentProductId: Long = 0
@@ -14,7 +15,12 @@ object CurrentDataUtils {
     private var _currentWishlistId: String = ""
     private var _currentWishlistName: String = ""
     var refreshAttempts = AtomicInteger(0)
-
+    private var _searchQuery: String = ""
+    var searchQuery: String
+        get() = _searchQuery
+        set(newValue){
+            _searchQuery = newValue
+        }
     var currentProductId: Long
         get() = _currentProductId
         set(newValue){

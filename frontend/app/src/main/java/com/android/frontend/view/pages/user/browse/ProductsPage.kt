@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.android.frontend.R
 import com.android.frontend.config.getCurrentStackTrace
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.view.component.ErrorDialog
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
@@ -60,7 +61,7 @@ fun ProductsPage(navController: NavController, cartViewModel: CartViewModel, pro
 
     LaunchedEffect(Unit) {
         Log.d("DEBUG", "${getCurrentStackTrace()} Fetching all products, categories, and brands")
-        productViewModel.fetchAllProducts(context)
+        productViewModel.searchProducts(context, CurrentDataUtils.searchQuery)
         productViewModel.fetchAllCategories(context)
         productViewModel.fetchAllBrands(context)
         productViewModel.getAllLoggedUserWishlists(context)

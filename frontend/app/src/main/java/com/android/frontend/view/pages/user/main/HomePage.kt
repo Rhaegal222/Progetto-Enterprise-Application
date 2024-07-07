@@ -30,9 +30,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.frontend.R
 import com.android.frontend.dto.ProductDTO
+import com.android.frontend.navigation.Navigation
+import com.android.frontend.persistence.CurrentDataUtils
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view.component.ProductCard
 import com.android.frontend.view.component.Suggestion
+import com.android.frontend.view.pages.user.browse.ProductsPage
 import com.android.frontend.view_models.user.CartViewModel
 import com.android.frontend.view_models.user.ProductViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -116,7 +119,8 @@ fun HomePage(
                         IconButton(
                             modifier = Modifier.padding(0.dp),
                             onClick = {
-                                productViewModel.searchProducts(context, searchQuery)
+                                CurrentDataUtils.searchQuery = searchQuery
+                                navController.navigate(Navigation.ProductsPage.route)
                                 focusManager.clearFocus()
                             }
                         ) {
@@ -217,7 +221,7 @@ fun OnOfferProducts(
     LaunchedEffect(totalPages) {
         if (totalPages > 0) {
             while (true) {
-                delay(10000)
+                delay(5000)
                 currentPage = (currentPage + 1) % totalPages
                 tween<Float>(2000)
                 pagerState.animateScrollToPage(page = currentPage)

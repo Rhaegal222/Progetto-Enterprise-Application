@@ -23,6 +23,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,6 +49,7 @@ import com.android.frontend.R
 import com.android.frontend.dto.WishlistDTO
 import com.android.frontend.navigation.Navigation
 import com.android.frontend.ui.theme.colors.ButtonColorScheme
+import com.android.frontend.ui.theme.colors.OutlinedButtonColorScheme
 import com.android.frontend.ui.theme.colors.OutlinedTextFieldColorScheme
 import com.android.frontend.view_models.user.WishlistViewModel
 
@@ -166,7 +168,7 @@ fun WishlistUpdatePage(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(
+                    OutlinedButton(
                         shape = RoundedCornerShape(12.dp),
                         enabled = wishlistName.text.isNotEmpty() && selectedVisibility.isNotEmpty(),
                         onClick = {
@@ -178,14 +180,14 @@ fun WishlistUpdatePage(
                                 )
                                 wishlistViewModel.updateWishlist(context, wishlistId, wishlistDTO)
                                 CurrentDataUtils.CurrentWishlistName = wishlistName.text
-                                navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")                            } catch (e: Exception) {
+                                navController.navigate("${Navigation.WishlistDetailsPage}/${wishlistId}")} catch (e: Exception) {
                                 Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
                             }
                         },
-                        colors = ButtonColorScheme.buttonColors(),
+                        colors = OutlinedButtonColorScheme.outlinedButtonColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = stringResource(id = R.string.confirm).uppercase())
+                        Text(text = stringResource(id = R.string.confirm))
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
@@ -193,14 +195,13 @@ fun WishlistUpdatePage(
 
                     Button(
                         shape = RoundedCornerShape(12.dp),
-                        enabled = wishlistName.text.isNotEmpty() && selectedVisibility.isNotEmpty(),
                         onClick = {
                             wishlistViewModel.deleteWishlist(context, wishlistId)
                         },
                         colors = ButtonColorScheme.buttonColors(),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(text = stringResource(id = R.string.confirm).uppercase())
+                        Text(text = stringResource(id = R.string.delete))
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }

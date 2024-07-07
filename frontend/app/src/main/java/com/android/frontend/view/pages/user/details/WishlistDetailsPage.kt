@@ -116,6 +116,12 @@ fun WishlistDetailsPage(
                         navController.navigate(Navigation.WishlistUpdatePage.route)
                     }) {
                         Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_wishlist))
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    IconButton(onClick = { showShareDialog.value = true }) {
+                        Icon(Icons.Default.Share, contentDescription = stringResource(id = R.string.share))
+                        Spacer(modifier = Modifier.width(16.dp))
                     }
                 }
             )
